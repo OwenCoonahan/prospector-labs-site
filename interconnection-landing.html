@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interconnection Due Diligence | Grid Intelligence for Energy Investors</title>
+  <meta name="description" content="Due diligence and risk analysis for interconnection queue projects. Built for PE firms and infrastructure investors.">
+  <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --white: #ffffff;
+      --black: #0a0a0a;
+      --gray-50: #fafafa;
+      --gray-100: #f5f5f5;
+      --gray-200: #e5e5e5;
+      --gray-300: #d4d4d4;
+      --gray-400: #a3a3a3;
+      --gray-500: #737373;
+      --gray-600: #525252;
+      --gray-700: #404040;
+      --gray-800: #262626;
+      --gray-900: #171717;
+      --accent: #2563eb;
+      --accent-dark: #1d4ed8;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Geist', system-ui, sans-serif;
+      background: var(--white);
+      color: var(--black);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* NAV */
+    nav {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    nav .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-logo {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-logo span {
+      color: var(--gray-400);
+      font-weight: 400;
+    }
+
+    .nav-cta {
+      font-size: 14px;
+      font-weight: 500;
+      padding: 10px 20px;
+      background: var(--black);
+      color: var(--white);
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .nav-cta:hover { background: var(--gray-800); }
+
+    /* HERO */
+    .hero {
+      padding: 100px 0 80px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .hero-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+
+    .hero-subtitle {
+      font-size: 18px;
+      color: var(--gray-600);
+      margin-bottom: 32px;
+      max-width: 500px;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 14px 28px;
+      background: var(--black);
+      color: var(--white);
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .hero-cta:hover {
+      background: var(--gray-800);
+      transform: translateY(-1px);
+    }
+
+    .hero-visual {
+      background: var(--gray-900);
+      border-radius: 12px;
+      padding: 32px;
+      color: var(--white);
+    }
+
+    .hero-stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .hero-stat {
+      padding: 20px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+    }
+
+    .hero-stat-value {
+      font-size: 36px;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 4px;
+    }
+
+    .hero-stat-label {
+      font-size: 13px;
+      color: var(--gray-400);
+    }
+
+    .hero-stat.highlight {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .hero-stat.highlight .hero-stat-value {
+      color: #fca5a5;
+    }
+
+    /* PROBLEM */
+    .problem {
+      padding: 80px 0;
+      background: var(--gray-50);
+    }
+
+    .problem-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .section-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: 36px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    .section-subtitle {
+      font-size: 18px;
+      color: var(--gray-600);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+
+    .problem-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 32px;
+    }
+
+    .problem-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--gray-100);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .problem-card h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .problem-card p {
+      font-size: 15px;
+      color: var(--gray-600);
+      line-height: 1.6;
+    }
+
+    /* SOLUTION */
+    .solution {
+      padding: 80px 0;
+    }
+
+    .solution-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .solution-content h2 {
+      font-size: 36px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+    }
+
+    .solution-content p {
+      font-size: 17px;
+      color: var(--gray-600);
+      margin-bottom: 32px;
+    }
+
+    .solution-list {
+      list-style: none;
+    }
+
+    .solution-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .solution-list li:last-child {
+      border-bottom: none;
+    }
+
+    .check-icon {
+      width: 20px;
+      height: 20px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 12px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .solution-visual {
+      background: var(--gray-900);
+      border-radius: 12px;
+      padding: 24px;
+      color: var(--white);
+    }
+
+    .report-preview {
+      background: var(--white);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .report-header {
+      background: var(--gray-100);
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .report-header h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--black);
+    }
+
+    .report-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      background: #dcfce7;
+      color: #166534;
+      border-radius: 20px;
+    }
+
+    .report-badge.warning {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .report-body {
+      padding: 20px;
+      color: var(--black);
+    }
+
+    .report-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--gray-100);
+      font-size: 13px;
+    }
+
+    .report-row:last-child {
+      border-bottom: none;
+    }
+
+    .report-label {
+      color: var(--gray-500);
+    }
+
+    .report-value {
+      font-weight: 500;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* DELIVERABLES */
+    .deliverables {
+      padding: 80px 0;
+      background: var(--gray-900);
+      color: var(--white);
+    }
+
+    .deliverables .section-label {
+      color: var(--gray-400);
+    }
+
+    .deliverables .section-title {
+      color: var(--white);
+    }
+
+    .deliverables .section-subtitle {
+      color: var(--gray-400);
+    }
+
+    .deliverables-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-top: 60px;
+    }
+
+    .deliverable-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 28px;
+    }
+
+    .deliverable-card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .deliverable-card p {
+      font-size: 14px;
+      color: var(--gray-400);
+      line-height: 1.6;
+    }
+
+    /* CLIENTS */
+    .clients {
+      padding: 80px 0;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .clients-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .clients-header p {
+      font-size: 14px;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .client-types {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .client-type {
+      text-align: center;
+    }
+
+    .client-type-icon {
+      width: 64px;
+      height: 64px;
+      background: var(--gray-100);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin: 0 auto 12px;
+    }
+
+    .client-type h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .client-type p {
+      font-size: 13px;
+      color: var(--gray-500);
+    }
+
+    /* CTA */
+    .cta {
+      padding: 100px 0;
+      text-align: center;
+    }
+
+    .cta h2 {
+      font-size: 42px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    .cta p {
+      font-size: 18px;
+      color: var(--gray-600);
+      margin-bottom: 32px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+
+    .cta-primary {
+      font-size: 15px;
+      font-weight: 500;
+      padding: 14px 32px;
+      background: var(--black);
+      color: var(--white);
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .cta-primary:hover {
+      background: var(--gray-800);
+      transform: translateY(-1px);
+    }
+
+    .cta-secondary {
+      font-size: 15px;
+      font-weight: 500;
+      padding: 14px 32px;
+      background: var(--white);
+      color: var(--black);
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .cta-secondary:hover {
+      border-color: var(--gray-400);
+      background: var(--gray-50);
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 32px 0;
+      border-top: 1px solid var(--gray-200);
+    }
+
+    footer .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    footer p {
+      font-size: 13px;
+      color: var(--gray-500);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--gray-500);
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--black);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 48px; }
+      .problem-grid { grid-template-columns: 1fr; }
+      .solution-grid { grid-template-columns: 1fr; }
+      .deliverables-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      .hero { padding: 60px 0; }
+      .hero h1 { font-size: 36px; }
+      .hero-stat-grid { grid-template-columns: 1fr; }
+      .section-title { font-size: 28px; }
+      .deliverables-grid { grid-template-columns: 1fr; }
+      .client-types { gap: 32px; }
+      .cta h2 { font-size: 32px; }
+      .cta-buttons { flex-direction: column; }
+      footer .container { flex-direction: column; gap: 16px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="container">
+      <a href="/" class="nav-logo">
+        Prospector Labs <span>/ Grid Intelligence</span>
+      </a>
+      <a href="mailto:owen@prospectorlabs.io" class="nav-cta">Get in Touch</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <div class="hero-label">Interconnection Due Diligence</div>
+          <h1>Know which projects will actually get built</h1>
+          <p class="hero-subtitle">
+            We analyze interconnection queue projects for PE firms and infrastructure investors. Risk scoring, timeline analysis, and developer benchmarking—so you can invest with confidence.
+          </p>
+          <a href="mailto:owen@prospectorlabs.io?subject=Interconnection DD Inquiry" class="hero-cta">
+            Request a Sample Report →
+          </a>
+        </div>
+        <div class="hero-visual">
+          <div class="hero-stat-grid">
+            <div class="hero-stat">
+              <div class="hero-stat-value">2,600 GW</div>
+              <div class="hero-stat-label">In US Interconnection Queues</div>
+            </div>
+            <div class="hero-stat highlight">
+              <div class="hero-stat-value">~70%</div>
+              <div class="hero-stat-label">Will Never Get Built</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">35,000+</div>
+              <div class="hero-stat-label">Projects We Track</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">9 ISOs</div>
+              <div class="hero-stat-label">Full Coverage</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem -->
+  <section class="problem">
+    <div class="container">
+      <div class="problem-header">
+        <div class="section-label">The Challenge</div>
+        <h2 class="section-title">Energy deals are getting harder to underwrite</h2>
+        <p class="section-subtitle">
+          Interconnection queues are congested, timelines are slipping, and most projects fail. You need better intel.
+        </p>
+      </div>
+      <div class="problem-grid">
+        <div class="problem-card">
+          <div class="problem-icon">📊</div>
+          <h3>Opaque Queue Data</h3>
+          <p>ISO queue data is scattered, inconsistent, and hard to analyze. Getting a clear picture requires weeks of manual work.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">⏱️</div>
+          <h3>Timeline Risk</h3>
+          <p>Average interconnection timelines have doubled. Projects routinely miss COD by 2-4 years. Your IRR models are wrong.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">🎯</div>
+          <h3>Developer Quality</h3>
+          <p>Not all developers are equal. Some have 80% completion rates, others have 5%. You need to know which is which.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Solution -->
+  <section class="solution">
+    <div class="container">
+      <div class="solution-grid">
+        <div class="solution-content">
+          <h2>Institutional-grade analysis for every project</h2>
+          <p>
+            We've built the infrastructure to analyze any interconnection queue project in the US. You get a comprehensive risk assessment in days, not weeks.
+          </p>
+          <ul class="solution-list">
+            <li>
+              <span class="check-icon">✓</span>
+              <div>
+                <strong>Risk Scoring</strong> — 100-point model covering timeline, developer, location, and market factors
+              </div>
+            </li>
+            <li>
+              <span class="check-icon">✓</span>
+              <div>
+                <strong>Timeline Probability</strong> — P10/P25/P50/P75/P90 scenarios based on historical cohort data
+              </div>
+            </li>
+            <li>
+              <span class="check-icon">✓</span>
+              <div>
+                <strong>Developer Benchmarking</strong> — Track record, portfolio analysis, regional experience
+              </div>
+            </li>
+            <li>
+              <span class="check-icon">✓</span>
+              <div>
+                <strong>POI Analysis</strong> — Substation congestion, competing projects, upgrade requirements
+              </div>
+            </li>
+            <li>
+              <span class="check-icon">✓</span>
+              <div>
+                <strong>Comparable Projects</strong> — Similar projects in the region and their outcomes
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="solution-visual">
+          <div class="report-preview">
+            <div class="report-header">
+              <h4>Project AH2-113 — PJM Solar 250MW</h4>
+              <span class="report-badge">Score: 72/100</span>
+            </div>
+            <div class="report-body">
+              <div class="report-row">
+                <span class="report-label">Developer</span>
+                <span class="report-value">NextEra Energy</span>
+              </div>
+              <div class="report-row">
+                <span class="report-label">Queue Position</span>
+                <span class="report-value">#847 of 1,942 active</span>
+              </div>
+              <div class="report-row">
+                <span class="report-label">P50 Timeline</span>
+                <span class="report-value">3.8 years</span>
+              </div>
+              <div class="report-row">
+                <span class="report-label">Developer Track Record</span>
+                <span class="report-value">78% completion rate</span>
+              </div>
+              <div class="report-row">
+                <span class="report-label">POI Congestion</span>
+                <span class="report-value">12 competing projects</span>
+              </div>
+              <div class="report-row">
+                <span class="report-label">Recommendation</span>
+                <span class="report-value" style="color: #16a34a;">Proceed with monitoring</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Deliverables -->
+  <section class="deliverables">
+    <div class="container">
+      <div class="problem-header">
+        <div class="section-label">What You Get</div>
+        <h2 class="section-title">Comprehensive due diligence packages</h2>
+        <p class="section-subtitle">
+          Everything you need to make informed investment decisions on interconnection projects.
+        </p>
+      </div>
+      <div class="deliverables-grid">
+        <div class="deliverable-card">
+          <h3>Risk Assessment</h3>
+          <p>100-point scoring model with breakdown across timeline, developer, location, and market risk factors.</p>
+        </div>
+        <div class="deliverable-card">
+          <h3>Timeline Analysis</h3>
+          <p>Probability-weighted scenarios (P10-P90) based on historical completion data for similar projects.</p>
+        </div>
+        <div class="deliverable-card">
+          <h3>Developer Profile</h3>
+          <p>Full track record analysis including completion rates, portfolio size, and regional experience.</p>
+        </div>
+        <div class="deliverable-card">
+          <h3>Market Context</h3>
+          <p>ISO-specific dynamics, queue trends, policy impacts, and competitive landscape analysis.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Clients -->
+  <section class="clients">
+    <div class="container">
+      <div class="clients-header">
+        <p>Built for energy infrastructure investors</p>
+      </div>
+      <div class="client-types">
+        <div class="client-type">
+          <div class="client-type-icon">🏦</div>
+          <h4>PE Firms</h4>
+          <p>Infrastructure & energy funds</p>
+        </div>
+        <div class="client-type">
+          <div class="client-type-icon">📈</div>
+          <h4>Hedge Funds</h4>
+          <p>Energy-focused strategies</p>
+        </div>
+        <div class="client-type">
+          <div class="client-type-icon">🏗️</div>
+          <h4>Developers</h4>
+          <p>Market intel & benchmarking</p>
+        </div>
+        <div class="client-type">
+          <div class="client-type-icon">💼</div>
+          <h4>Investment Banks</h4>
+          <p>M&A transaction support</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="container">
+      <h2>Ready to see what we can do?</h2>
+      <p>
+        Get a sample report on any project in our database, or tell us what you're working on.
+      </p>
+      <div class="cta-buttons">
+        <a href="mailto:owen@prospectorlabs.io?subject=Sample Report Request" class="cta-primary">Request Sample Report</a>
+        <a href="https://owencoonahan.github.io/prospector-data-tools/iso-comparison/" class="cta-secondary">Explore Our Data</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>© 2026 Prospector Labs</p>
+      <div class="footer-links">
+        <a href="https://prospectorlabs.io">Main Site</a>
+        <a href="https://owencoonahan.github.io/prospector-data-tools/">Data Tools</a>
+        <a href="https://linkedin.com/in/owencoonahan">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
