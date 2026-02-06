@@ -273,6 +273,137 @@
       transform: translateX(0);
     }
 
+    /* INTRO */
+    .intro {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .intro-left {
+      padding: 80px 64px;
+      border-right: 1px solid var(--gray-200);
+    }
+
+    .intro-left h2 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--gray-400);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    .intro-right {
+      padding: 80px 64px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .intro-right p {
+      font-size: 28px;
+      font-weight: 500;
+      line-height: 1.4;
+      letter-spacing: -0.02em;
+      color: var(--gray-800);
+    }
+
+    /* PORTFOLIO PREVIEW */
+    .portfolio {
+      background: var(--gray-50);
+      padding: 80px 64px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .portfolio-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 48px;
+    }
+
+    .portfolio-header h2 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--gray-400);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    .portfolio-link {
+      font-size: 14px;
+      color: var(--gray-500);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s;
+    }
+
+    .portfolio-link:hover { color: var(--black); }
+
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .portfolio-item {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+
+    .portfolio-item:hover {
+      border-color: var(--gray-300);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    .portfolio-item-image {
+      height: 180px;
+      background: var(--gray-100);
+      overflow: hidden;
+    }
+
+    .portfolio-item-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s;
+    }
+
+    .portfolio-item:hover .portfolio-item-image img {
+      transform: scale(1.05);
+    }
+
+    .portfolio-item-content {
+      padding: 20px;
+    }
+
+    .portfolio-item-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--gray-400);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+
+    .portfolio-item h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .portfolio-item p {
+      font-size: 14px;
+      color: var(--gray-500);
+      line-height: 1.5;
+    }
+
     /* PROCESS - Anduril style */
     .process {
       padding: 120px 64px;
@@ -439,6 +570,10 @@
     @media (max-width: 1024px) {
       .products { grid-template-columns: 1fr; }
       .product-card { height: 280px; }
+      .intro { grid-template-columns: 1fr; }
+      .intro-left { border-right: none; border-bottom: 1px solid var(--gray-200); padding: 48px 64px; }
+      .intro-right { padding: 48px 64px; }
+      .portfolio-grid { grid-template-columns: 1fr; }
       .process-steps { grid-template-columns: 1fr; background: transparent; gap: 24px; }
       .step { border: 1px solid var(--gray-200); }
       .cta-grid { grid-template-columns: 1fr; gap: 48px; }
@@ -450,6 +585,10 @@
       .nav-links { display: none; }
       .hero { padding: 48px 24px; min-height: 70vh; }
       .hero h1 { font-size: 32px; }
+      .intro-left, .intro-right { padding: 32px 24px; }
+      .intro-right p { font-size: 22px; }
+      .portfolio { padding: 48px 24px; }
+      .portfolio-header { flex-direction: column; gap: 16px; align-items: flex-start; }
       .process { padding: 80px 24px; }
       .process-header p { font-size: 28px; }
       .cta { padding: 80px 24px; }
@@ -512,6 +651,56 @@
       </div>
       <span class="product-arrow">→</span>
     </a>
+  </section>
+
+  <!-- Intro -->
+  <section class="intro">
+    <div class="intro-left">
+      <h2>What We Build</h2>
+    </div>
+    <div class="intro-right">
+      <p>End-to-end data infrastructure — from collection to intelligence.</p>
+    </div>
+  </section>
+
+  <!-- Portfolio Preview -->
+  <section class="portfolio">
+    <div class="portfolio-header">
+      <h2>Selected Work</h2>
+      <a href="https://owencoonahan.github.io/prospector-data-tools/" class="portfolio-link">View All Projects →</a>
+    </div>
+    <div class="portfolio-grid">
+      <a href="https://owencoonahan.github.io/prospector-data-tools/queue-lookup/" class="portfolio-item">
+        <div class="portfolio-item-image">
+          <img src="https://owencoonahan.github.io/prospector-data-tools/queue-lookup/screenshots/light-loaded.png" alt="Queue Lookup">
+        </div>
+        <div class="portfolio-item-content">
+          <div class="portfolio-item-meta">Energy • Dashboard</div>
+          <h3>US Interconnection Queue</h3>
+          <p>35,000+ projects across 9 ISOs</p>
+        </div>
+      </a>
+      <a href="https://owencoonahan.github.io/prospector-data-tools/iso-comparison/" class="portfolio-item">
+        <div class="portfolio-item-image">
+          <img src="https://owencoonahan.github.io/prospector-data-tools/iso-comparison/screenshots/light.jpg" alt="ISO Comparison">
+        </div>
+        <div class="portfolio-item-content">
+          <div class="portfolio-item-meta">Energy • Analytics</div>
+          <h3>ISO Queue Comparison</h3>
+          <p>Side-by-side regional analysis</p>
+        </div>
+      </a>
+      <a href="https://owencoonahan.github.io/prospector-data-tools/congress-trades/" class="portfolio-item">
+        <div class="portfolio-item-image">
+          <img src="https://owencoonahan.github.io/prospector-data-tools/congress-trades/screenshot.png" alt="Congress Trades">
+        </div>
+        <div class="portfolio-item-content">
+          <div class="portfolio-item-meta">Finance • Intelligence</div>
+          <h3>Congress Stock Tracker</h3>
+          <p>Real-time STOCK Act filings</p>
+        </div>
+      </a>
+    </div>
   </section>
 
   <!-- Process -->
