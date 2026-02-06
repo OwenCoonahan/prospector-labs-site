@@ -168,6 +168,103 @@
       box-shadow: 0 8px 24px rgba(255,255,255,0.2);
     }
 
+    /* PRODUCTS - Colored blocks */
+    .products {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .product-card {
+      position: relative;
+      height: 360px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 32px;
+      color: var(--white);
+      transition: all 0.4s;
+      text-decoration: none;
+    }
+
+    .product-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent 40%, rgba(0,0,0,0.85));
+      z-index: 1;
+    }
+
+    .product-card:hover {
+      transform: scale(1.02);
+    }
+
+    .product-card:hover .product-bg {
+      transform: scale(1.05);
+    }
+
+    .product-bg {
+      position: absolute;
+      inset: 0;
+      transition: transform 0.6s;
+    }
+
+    .product-card:nth-child(1) .product-bg {
+      background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+    }
+
+    .product-card:nth-child(2) .product-bg {
+      background: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
+    }
+
+    .product-card:nth-child(3) .product-bg {
+      background: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 100%);
+    }
+
+    .product-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .product-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 8px;
+    }
+
+    .product-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .product-desc {
+      font-size: 14px;
+      opacity: 0.75;
+      max-width: 280px;
+      line-height: 1.5;
+    }
+
+    .product-arrow {
+      position: absolute;
+      top: 32px;
+      right: 32px;
+      font-size: 20px;
+      z-index: 2;
+      opacity: 0;
+      transform: translateX(-10px);
+      transition: all 0.3s;
+    }
+
+    .product-card:hover .product-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
     /* SERVICES - Vertical layout instead of horizontal */
     .services {
       padding: 100px 64px;
@@ -430,6 +527,8 @@
 
     /* RESPONSIVE */
     @media (max-width: 1024px) {
+      .products { grid-template-columns: 1fr; }
+      .product-card { height: 280px; }
       .service { grid-template-columns: 1fr; gap: 32px; }
       .service:nth-child(even) { direction: ltr; }
       .process-steps { grid-template-columns: 1fr; gap: 40px; }
@@ -477,6 +576,37 @@
       <p class="hero-subtitle">Production scrapers, reliable pipelines, dashboards people use. Fixed scope, fast turnaround, no babysitting required.</p>
       <a href="mailto:owen@prospectorlabs.io" class="hero-cta">Start a Project →</a>
     </div>
+  </section>
+
+  <!-- Product Cards - Colored blocks -->
+  <section class="products">
+    <a href="#scrapers" class="product-card">
+      <div class="product-bg"></div>
+      <div class="product-content">
+        <div class="product-label">Core Service</div>
+        <h3 class="product-title">Production Scrapers</h3>
+        <p class="product-desc">Reliable data extraction from any source. Built to run 24/7 without babysitting.</p>
+      </div>
+      <span class="product-arrow">→</span>
+    </a>
+    <a href="#pipelines" class="product-card">
+      <div class="product-bg"></div>
+      <div class="product-content">
+        <div class="product-label">Core Service</div>
+        <h3 class="product-title">Data Pipelines</h3>
+        <p class="product-desc">ETL that doesn't break. Ingest, transform, deliver — on your schedule.</p>
+      </div>
+      <span class="product-arrow">→</span>
+    </a>
+    <a href="#dashboards" class="product-card">
+      <div class="product-bg"></div>
+      <div class="product-content">
+        <div class="product-label">Core Service</div>
+        <h3 class="product-title">Dashboards & Tools</h3>
+        <p class="product-desc">Internal tools, customer-facing apps. Fast builds, clean UI.</p>
+      </div>
+      <span class="product-arrow">→</span>
+    </a>
   </section>
 
   <!-- Services - Vertical alternating layout -->
