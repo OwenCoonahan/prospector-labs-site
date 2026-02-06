@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prospector Labs — Data Intelligence for Energy & Infrastructure</title>
+  <meta name="description" content="We build data tools that cut through complexity. Energy infrastructure intelligence, supply chain visibility, and custom data solutions.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FAFAFA;
+      --bg-card: #FFFFFF;
+      --text: #0A0A0A;
+      --text-secondary: #525252;
+      --text-muted: #A3A3A3;
+      --border: #E5E5E5;
+      --accent: #2563EB;
+      --accent-light: #DBEAFE;
+      --font-sans: 'Geist', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(250, 250, 250, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-weight: 600;
+      font-size: 1.125rem;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .logo span {
+      color: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      background: var(--text);
+      color: var(--bg);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+
+    .nav-cta:hover { background: #262626; }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8rem 2rem 4rem;
+      text-align: center;
+    }
+
+    .hero-content {
+      max-width: 800px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--accent-light);
+      color: var(--accent);
+      padding: 0.375rem 0.875rem;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 .highlight {
+      background: linear-gradient(135deg, var(--accent) 0%, #7C3AED 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--text);
+      color: white;
+      padding: 0.875rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.15s;
+    }
+
+    .btn-primary:hover { background: #262626; transform: translateY(-1px); }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      padding: 0.875rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.15s;
+    }
+
+    .btn-secondary:hover { border-color: var(--text-secondary); }
+
+    /* Stats */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 4rem;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      letter-spacing: -0.02em;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 0.25rem;
+    }
+
+    /* Section Base */
+    section {
+      padding: 6rem 2rem;
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 4rem;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-size: 2.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+
+    .section-desc {
+      color: var(--text-secondary);
+      font-size: 1.125rem;
+    }
+
+    /* Projects */
+    #projects { background: white; }
+
+    .projects-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px -8px rgba(0,0,0,0.08);
+    }
+
+    .project-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--accent-light);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .project-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .project-desc {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      flex-grow: 1;
+      margin-bottom: 1rem;
+    }
+
+    .project-meta {
+      display: flex;
+      gap: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .project-meta span {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    /* Capabilities */
+    #capabilities { background: var(--bg); }
+
+    .capabilities-grid {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .capability {
+      padding: 1.5rem;
+    }
+
+    .capability-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .capability h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .capability p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    /* Process */
+    #process { background: white; }
+
+    .process-steps {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+
+    .process-step {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .step-number {
+      width: 48px;
+      height: 48px;
+      background: var(--text);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      margin: 0 auto 1.5rem;
+    }
+
+    .process-step h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .process-step p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    /* CTA */
+    .cta-section {
+      background: var(--text);
+      color: white;
+      text-align: center;
+      padding: 6rem 2rem;
+    }
+
+    .cta-section h2 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+
+    .cta-section p {
+      color: #A3A3A3;
+      font-size: 1.125rem;
+      margin-bottom: 2rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-section .btn-primary {
+      background: white;
+      color: var(--text);
+    }
+
+    .cta-section .btn-primary:hover {
+      background: #F5F5F5;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.15s;
+    }
+
+    .footer-links a:hover { color: var(--text); }
+
+    .footer-right {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .stats { gap: 2rem; flex-wrap: wrap; }
+      .process-steps { grid-template-columns: 1fr; }
+      .footer-inner { flex-direction: column; gap: 1.5rem; text-align: center; }
+      .footer-left { flex-direction: column; gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="logo">Prospector<span>Labs</span></a>
+      <ul class="nav-links">
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#capabilities">Capabilities</a></li>
+        <li><a href="#process">Process</a></li>
+      </ul>
+      <a href="mailto:owen@prospectorlabs.io" class="nav-cta">Get in Touch</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">Now Building</div>
+      <h1>Data tools that <span class="highlight">cut through complexity</span></h1>
+      <p class="hero-sub">
+        We build intelligence platforms for energy, infrastructure, and supply chains. 
+        From interconnection queues to critical minerals — data that moves markets.
+      </p>
+      <div class="hero-ctas">
+        <a href="https://owencoonahan.github.io/prospector-data-tools/" class="btn-primary">
+          View Live Tools
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+        </a>
+        <a href="mailto:owen@prospectorlabs.io" class="btn-secondary">Work With Us</a>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-value">35K+</div>
+          <div class="stat-label">Projects Tracked</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">6.3 TW</div>
+          <div class="stat-label">Queue Capacity</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">9</div>
+          <div class="stat-label">US ISOs Covered</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">12</div>
+          <div class="stat-label">Critical Minerals</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="section-header">
+      <div class="section-label">Live Projects</div>
+      <h2 class="section-title">Data tools built for decision-makers</h2>
+      <p class="section-desc">
+        Each tool solves a real problem. Searchable, visual, and built to ship.
+      </p>
+    </div>
+    <div class="projects-grid">
+      <a href="https://owencoonahan.github.io/prospector-data-tools/queue-lookup/" class="project-card">
+        <div class="project-icon">🔍</div>
+        <h3 class="project-title">Queue Lookup</h3>
+        <p class="project-desc">Search 35,000+ interconnection queue projects across all US ISOs. Filter by region, type, status, developer, and capacity.</p>
+        <div class="project-meta">
+          <span>35,469 projects</span>
+          <span>•</span>
+          <span>Real-time search</span>
+        </div>
+      </a>
+      <a href="https://owencoonahan.github.io/prospector-data-tools/developer-scorecard/" class="project-card">
+        <div class="project-icon">📊</div>
+        <h3 class="project-title">Developer Scorecard</h3>
+        <p class="project-desc">Track records for 6,000+ energy developers. Success rates, timelines, operational capacity, and project portfolios.</p>
+        <div class="project-meta">
+          <span>6,271 developers</span>
+          <span>•</span>
+          <span>Performance metrics</span>
+        </div>
+      </a>
+      <a href="https://owencoonahan.github.io/prospector-data-tools/iso-comparison/" class="project-card">
+        <div class="project-icon">📈</div>
+        <h3 class="project-title">ISO Comparison</h3>
+        <p class="project-desc">Side-by-side metrics across all 9 US interconnection regions. Withdrawal rates, timelines, capacity mix, and trends.</p>
+        <div class="project-meta">
+          <span>9 ISOs</span>
+          <span>•</span>
+          <span>Interactive charts</span>
+        </div>
+      </a>
+      <a href="https://owencoonahan.github.io/prospector-data-tools/grid-stress-monitor/" class="project-card">
+        <div class="project-icon">⚡</div>
+        <h3 class="project-title">Grid Stress Monitor</h3>
+        <p class="project-desc">Real-time visualization of grid congestion, LMP spreads, and transmission constraints across major ISOs.</p>
+        <div class="project-meta">
+          <span>Live LMP data</span>
+          <span>•</span>
+          <span>Mapbox-powered</span>
+        </div>
+      </a>
+      <a href="https://owencoonahan.github.io/prospector-data-tools/critical-minerals-v2/" class="project-card">
+        <div class="project-icon">🪨</div>
+        <h3 class="project-title">Critical Minerals Tracker</h3>
+        <p class="project-desc">Supply chain intelligence for 12 energy transition minerals. Prices, production, reserves, and concentration risk.</p>
+        <div class="project-meta">
+          <span>12 minerals</span>
+          <span>•</span>
+          <span>Supply chain risk</span>
+        </div>
+      </a>
+      <a href="https://owencoonahan.github.io/prospector-data-tools/transformer-tracker/" class="project-card">
+        <div class="project-icon">🔌</div>
+        <h3 class="project-title">Grid Supply Chain</h3>
+        <p class="project-desc">Power transformer lead times, manufacturer intelligence, and material supply constraints for grid infrastructure.</p>
+        <div class="project-meta">
+          <span>14 manufacturers</span>
+          <span>•</span>
+          <span>Lead time tracking</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <section id="capabilities">
+    <div class="section-header">
+      <div class="section-label">Capabilities</div>
+      <h2 class="section-title">What we build</h2>
+      <p class="section-desc">
+        Complex data, simple interfaces. We turn messy datasets into actionable intelligence.
+      </p>
+    </div>
+    <div class="capabilities-grid">
+      <div class="capability">
+        <div class="capability-icon">🗄️</div>
+        <h3>Data Aggregation</h3>
+        <p>We pull from hundreds of sources — ISO filings, regulatory databases, APIs, and public records — and normalize it all.</p>
+      </div>
+      <div class="capability">
+        <div class="capability-icon">🧹</div>
+        <h3>Data Cleaning</h3>
+        <p>Deduplication, standardization, and validation. We turn messy government data into analysis-ready datasets.</p>
+      </div>
+      <div class="capability">
+        <div class="capability-icon">📐</div>
+        <h3>Visual Intelligence</h3>
+        <p>Clean, interactive visualizations that make complex data understandable. Maps, charts, dashboards — all built fast.</p>
+      </div>
+      <div class="capability">
+        <div class="capability-icon">🔗</div>
+        <h3>API Development</h3>
+        <p>Need programmatic access? We build APIs that let you integrate our data directly into your workflows.</p>
+      </div>
+      <div class="capability">
+        <div class="capability-icon">📡</div>
+        <h3>Real-time Monitoring</h3>
+        <p>Live data feeds, alerts, and change tracking. Know when something important happens.</p>
+      </div>
+      <div class="capability">
+        <div class="capability-icon">🎯</div>
+        <h3>Custom Research</h3>
+        <p>Need something specific? We build custom datasets and tools for PE due diligence, market research, and competitive intel.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="process">
+    <div class="section-header">
+      <div class="section-label">How We Work</div>
+      <h2 class="section-title">From problem to prototype — fast</h2>
+      <p class="section-desc">
+        We ship quickly. Most projects go from kickoff to working prototype in days, not months.
+      </p>
+    </div>
+    <div class="process-steps">
+      <div class="process-step">
+        <div class="step-number">1</div>
+        <h3>Define the Problem</h3>
+        <p>What decision are you trying to make? What data would help? We start with the outcome.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-number">2</div>
+        <h3>Build & Iterate</h3>
+        <p>We ship a working version fast, then refine based on your feedback. No lengthy spec phases.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-number">3</div>
+        <h3>Deliver & Support</h3>
+        <p>You get the tool, the data, and ongoing support. We can also maintain and update as data changes.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <h2>Ready to build something?</h2>
+    <p>Tell us what data problem you're solving. We'll tell you if we can help — and how fast.</p>
+    <a href="mailto:owen@prospectorlabs.io" class="btn-primary">
+      Start a Conversation
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-left">
+        <a href="/" class="logo">Prospector<span>Labs</span></a>
+        <ul class="footer-links">
+          <li><a href="https://owencoonahan.github.io/prospector-data-tools/">Tools</a></li>
+          <li><a href="mailto:owen@prospectorlabs.io">Contact</a></li>
+          <li><a href="https://twitter.com/OwenCoonahan">Twitter</a></li>
+          <li><a href="https://linkedin.com/in/owencoonahan">LinkedIn</a></li>
+        </ul>
+      </div>
+      <div class="footer-right">
+        © 2026 Prospector Labs
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
