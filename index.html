@@ -3,674 +3,851 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prospector Labs — Data Intelligence for Energy</title>
-  <meta name="description" content="Data infrastructure for energy markets. Interconnection queues, supply chains, critical minerals — intelligence that moves markets.">
+  <title>Prospector Labs</title>
   <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #000000;
-      --bg-elevated: #0a0a0a;
-      --text: #ffffff;
-      --text-secondary: #999999;
-      --text-muted: #555555;
-      --accent: #00ff88;
-      --accent-glow: rgba(0, 255, 136, 0.15);
-      --border: #1a1a1a;
+      --black: #000;
+      --white: #fff;
+      --gray-100: #f5f5f5;
+      --gray-200: #e5e5e5;
+      --gray-400: #a3a3a3;
+      --gray-500: #737373;
+      --gray-600: #525252;
+      --gray-800: #262626;
+      --gray-900: #171717;
+      --green: #00ff88;
+      --green-dim: rgba(0,255,136,0.1);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Geist', system-ui, -apple-system, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.5;
+      font-family: 'Geist', system-ui, sans-serif;
+      background: var(--black);
+      color: var(--white);
       overflow-x: hidden;
     }
 
-    /* Subtle grid */
-    .grid-bg {
+    /* ═══════════════════════════════════════════
+       COMPONENT: Floating Nav
+    ═══════════════════════════════════════════ */
+    .nav {
       position: fixed;
-      inset: 0;
-      background-image: 
-        linear-gradient(rgba(0,255,136,0.015) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,136,0.015) 1px, transparent 1px);
-      background-size: 100px 100px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* Nav */
-    nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      padding: 1.25rem 3rem;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      background: rgba(0,0,0,0.8);
+      gap: 8px;
+      padding: 6px;
+      background: rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 100px;
       backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
     }
 
-    .logo {
-      font-size: 1rem;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-
-    .logo-mark {
-      width: 24px;
-      height: 24px;
-      background: var(--accent);
-      border-radius: 4px;
+    .nav-logo {
+      width: 32px;
+      height: 32px;
+      background: var(--green);
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.75rem;
-    }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 2.5rem;
+      font-size: 14px;
+      margin-left: 4px;
     }
 
     .nav-links {
       display: flex;
-      gap: 2rem;
-      list-style: none;
+      gap: 4px;
     }
 
-    .nav-links a {
-      color: var(--text-secondary);
+    .nav-link {
+      padding: 8px 16px;
+      color: var(--gray-400);
       text-decoration: none;
-      font-size: 0.8125rem;
+      font-size: 13px;
       font-weight: 500;
-      transition: color 0.2s;
-      letter-spacing: 0.02em;
-    }
-
-    .nav-links a:hover { color: var(--text); }
-
-    .nav-cta {
-      background: var(--text);
-      color: var(--bg);
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      font-size: 0.8125rem;
-      font-weight: 600;
-      text-decoration: none;
+      border-radius: 100px;
       transition: all 0.2s;
     }
 
-    .nav-cta:hover { background: var(--accent); }
+    .nav-link:hover {
+      color: var(--white);
+      background: rgba(255,255,255,0.05);
+    }
 
-    /* Hero */
+    .nav-cta {
+      padding: 8px 20px;
+      background: var(--white);
+      color: var(--black);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 100px;
+      transition: all 0.2s;
+    }
+
+    .nav-cta:hover {
+      background: var(--green);
+    }
+
+    /* ═══════════════════════════════════════════
+       COMPONENT: Massive Type Hero
+    ═══════════════════════════════════════════ */
     .hero {
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 10rem 2rem 6rem;
+      padding: 120px 48px 80px;
       position: relative;
-      z-index: 1;
     }
 
-    /* Hero background effects */
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      z-index: -1;
-      overflow: hidden;
-    }
-
-    /* Central glow */
-    .hero-glow {
-      position: absolute;
-      top: 40%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 800px;
-      height: 600px;
-      background: radial-gradient(ellipse, var(--accent-glow) 0%, transparent 60%);
-      animation: glow-pulse 8s ease-in-out infinite;
-    }
-
-    @keyframes glow-pulse {
-      0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
-      50% { opacity: 0.3; transform: translate(-50%, -50%) scale(1.1); }
-    }
-
-    /* Data streams */
-    .data-stream {
-      position: absolute;
-      width: 2px;
-      background: linear-gradient(180deg, transparent 0%, var(--accent) 50%, transparent 100%);
-      opacity: 0.3;
-      animation: stream 3s linear infinite;
-    }
-
-    .data-stream:nth-child(1) { left: 15%; height: 200px; animation-delay: 0s; }
-    .data-stream:nth-child(2) { left: 30%; height: 150px; animation-delay: 0.5s; }
-    .data-stream:nth-child(3) { left: 70%; height: 180px; animation-delay: 1s; }
-    .data-stream:nth-child(4) { left: 85%; height: 120px; animation-delay: 1.5s; }
-
-    @keyframes stream {
-      0% { top: -200px; opacity: 0; }
-      20% { opacity: 0.3; }
-      80% { opacity: 0.3; }
-      100% { top: 100%; opacity: 0; }
-    }
-
-    .hero-content {
-      max-width: 900px;
-    }
-
-    .hero-eyebrow {
-      font-size: 0.75rem;
-      font-weight: 500;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 2rem;
-    }
-
-    .hero h1 {
-      font-size: clamp(3.5rem, 12vw, 8rem);
+    .hero-headline {
+      font-size: clamp(80px, 15vw, 200px);
       font-weight: 700;
-      letter-spacing: -0.05em;
-      line-height: 0.9;
-      margin-bottom: 1.5rem;
+      letter-spacing: -0.06em;
+      line-height: 0.85;
+      max-width: 1400px;
     }
 
-    .hero-tagline {
-      font-size: clamp(1.25rem, 3vw, 1.75rem);
-      font-weight: 500;
-      color: var(--text);
-      margin-bottom: 1rem;
-      letter-spacing: -0.02em;
+    .hero-headline .line-2 {
+      color: var(--green);
+      display: block;
     }
 
     .hero-sub {
-      font-size: 1.125rem;
-      color: var(--text-secondary);
-      max-width: 480px;
-      margin: 0 auto 3rem;
-    }
-
-    .hero-ctas {
+      margin-top: 48px;
       display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 80px;
     }
 
-    .btn-primary {
-      background: var(--accent);
-      color: #000;
-      padding: 0.875rem 1.75rem;
-      border-radius: 4px;
-      font-weight: 600;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: all 0.2s;
-      font-size: 0.9375rem;
-    }
-
-    .btn-primary:hover { 
-      box-shadow: 0 0 40px rgba(0,255,136,0.4);
-    }
-
-    .btn-secondary {
-      background: transparent;
-      color: var(--text);
-      padding: 0.875rem 1.75rem;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      font-weight: 600;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: all 0.2s;
-      font-size: 0.9375rem;
-    }
-
-    .btn-secondary:hover { 
-      border-color: var(--text-muted);
-    }
-
-    /* Stats section - prominent social proof */
-    .stats-section {
-      padding: 5rem 3rem;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      position: relative;
-      z-index: 1;
-    }
-
-    .stats-grid {
-      display: flex;
-      justify-content: center;
-      gap: 6rem;
-      flex-wrap: wrap;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    .stat {
-      text-align: center;
-    }
-
-    .stat-value {
-      font-size: clamp(2.5rem, 6vw, 4rem);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      color: var(--text);
-      line-height: 1;
-    }
-
-    .stat-value .accent {
-      color: var(--accent);
-    }
-
-    .stat-label {
-      font-size: 0.8125rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      margin-top: 0.75rem;
-    }
-
-    /* Trust section */
-    .trust-section {
-      padding: 4rem 3rem;
-      text-align: center;
-      position: relative;
-      z-index: 1;
-    }
-
-    .trust-label {
-      font-size: 0.6875rem;
-      font-weight: 500;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 2rem;
-    }
-
-    .trust-logos {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 4rem;
-      flex-wrap: wrap;
-      opacity: 0.4;
-    }
-
-    .trust-logo {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      letter-spacing: 0.05em;
-    }
-
-    /* Tools section */
-    .tools-section {
-      padding: 8rem 3rem;
-      position: relative;
-      z-index: 1;
-    }
-
-    .section-header {
-      text-align: center;
-      margin-bottom: 4rem;
-    }
-
-    .section-eyebrow {
-      font-size: 0.6875rem;
-      font-weight: 500;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 1rem;
-    }
-
-    .section-title {
-      font-size: clamp(2rem, 5vw, 3rem);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-    }
-
-    .tools-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .tool-card {
-      background: var(--bg);
-      padding: 2.5rem;
-      text-decoration: none;
-      color: inherit;
-      transition: all 0.3s;
-      position: relative;
-    }
-
-    .tool-card:hover {
-      background: var(--bg-elevated);
-    }
-
-    .tool-card:hover .tool-arrow {
-      opacity: 1;
-      transform: translateX(0);
-    }
-
-    .tool-number {
-      font-size: 0.6875rem;
-      font-weight: 600;
-      letter-spacing: 0.2em;
-      color: var(--text-muted);
-      margin-bottom: 1.25rem;
-    }
-
-    .tool-title {
-      font-size: 1.375rem;
-      font-weight: 600;
-      margin-bottom: 0.75rem;
-      letter-spacing: -0.02em;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .tool-title .icon {
-      font-size: 1.5rem;
-    }
-
-    .tool-desc {
-      font-size: 0.9375rem;
-      color: var(--text-secondary);
+    .hero-desc {
+      font-size: 18px;
+      color: var(--gray-400);
+      max-width: 400px;
       line-height: 1.6;
     }
 
-    .tool-arrow {
-      position: absolute;
-      top: 2.5rem;
-      right: 2.5rem;
-      color: var(--accent);
-      font-size: 1.25rem;
-      opacity: 0;
-      transform: translateX(-10px);
-      transition: all 0.3s;
+    .hero-stats {
+      display: flex;
+      gap: 48px;
     }
 
-    /* Mission section */
-    .mission-section {
-      padding: 8rem 3rem;
-      text-align: center;
-      position: relative;
-      z-index: 1;
-      background: var(--bg-elevated);
+    .hero-stat {
+      font-family: 'JetBrains Mono', monospace;
     }
 
-    .mission-content {
-      max-width: 700px;
-      margin: 0 auto;
+    .hero-stat-value {
+      font-size: 36px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
     }
 
-    .mission-section h2 {
-      font-size: clamp(1.75rem, 4vw, 2.5rem);
-      font-weight: 700;
+    .hero-stat-label {
+      font-size: 11px;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 4px;
+    }
+
+    /* ═══════════════════════════════════════════
+       COMPONENT: Terminal Data Feed
+    ═══════════════════════════════════════════ */
+    .terminal-section {
+      padding: 0 48px 120px;
+    }
+
+    .terminal {
+      background: var(--gray-900);
+      border: 1px solid var(--gray-800);
+      border-radius: 12px;
+      overflow: hidden;
+      max-width: 900px;
+    }
+
+    .terminal-header {
+      padding: 12px 16px;
+      background: var(--gray-800);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .terminal-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--gray-600);
+    }
+
+    .terminal-dot.red { background: #ff5f57; }
+    .terminal-dot.yellow { background: #febc2e; }
+    .terminal-dot.green { background: #28c840; }
+
+    .terminal-title {
+      margin-left: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+
+    .terminal-body {
+      padding: 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    .terminal-line {
+      display: flex;
+      gap: 12px;
+    }
+
+    .terminal-prompt {
+      color: var(--green);
+    }
+
+    .terminal-cmd {
+      color: var(--white);
+    }
+
+    .terminal-output {
+      color: var(--gray-400);
+      padding-left: 24px;
+    }
+
+    .terminal-output.highlight {
+      color: var(--green);
+    }
+
+    /* ═══════════════════════════════════════════
+       COMPONENT: Bento Grid Tools
+    ═══════════════════════════════════════════ */
+    .bento-section {
+      padding: 80px 48px 120px;
+    }
+
+    .bento-header {
+      margin-bottom: 48px;
+    }
+
+    .bento-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--green);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      margin-bottom: 16px;
+    }
+
+    .bento-title {
+      font-size: 48px;
+      font-weight: 600;
       letter-spacing: -0.03em;
-      margin-bottom: 1.5rem;
-      line-height: 1.2;
     }
 
-    .mission-section p {
-      font-size: 1.125rem;
-      color: var(--text-secondary);
-      line-height: 1.7;
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: repeat(3, 280px);
+      gap: 16px;
+      max-width: 1400px;
     }
 
-    /* CTA Section */
-    .cta-section {
-      padding: 10rem 3rem;
-      text-align: center;
+    .bento-card {
+      background: var(--gray-900);
+      border: 1px solid var(--gray-800);
+      border-radius: 16px;
+      padding: 32px;
       position: relative;
-      z-index: 1;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
     }
 
-    .cta-section h2 {
-      font-size: clamp(2.5rem, 7vw, 5rem);
+    .bento-card:hover {
+      border-color: var(--gray-600);
+      transform: translateY(-4px);
+    }
+
+    .bento-card:hover .bento-preview {
+      opacity: 1;
+    }
+
+    /* Bento card sizes */
+    .bento-lg { grid-column: span 7; grid-row: span 2; }
+    .bento-md { grid-column: span 5; }
+    .bento-sm { grid-column: span 4; }
+    .bento-wide { grid-column: span 8; }
+
+    .bento-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--green-dim);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 24px;
+    }
+
+    .bento-name {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .bento-desc {
+      font-size: 15px;
+      color: var(--gray-400);
+      line-height: 1.5;
+      max-width: 320px;
+    }
+
+    .bento-meta {
+      margin-top: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--gray-500);
+      display: flex;
+      gap: 16px;
+    }
+
+    .bento-preview {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 60%;
+      height: 70%;
+      background: linear-gradient(135deg, var(--gray-800) 0%, var(--gray-900) 100%);
+      border-top-left-radius: 12px;
+      opacity: 0.7;
+      transition: opacity 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .bento-preview-inner {
+      width: 90%;
+      height: 85%;
+      background: var(--black);
+      border-radius: 8px;
+      border: 1px solid var(--gray-800);
+      padding: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--gray-500);
+      overflow: hidden;
+    }
+
+    /* Mini data viz in preview */
+    .mini-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      height: 60px;
+      margin-top: 12px;
+    }
+
+    .mini-bar {
+      width: 8px;
+      background: var(--green);
+      border-radius: 2px;
+      opacity: 0.6;
+    }
+
+    .mini-table {
+      margin-top: 12px;
+    }
+
+    .mini-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      border-bottom: 1px solid var(--gray-800);
+    }
+
+    /* ═══════════════════════════════════════════
+       COMPONENT: Marquee Stats
+    ═══════════════════════════════════════════ */
+    .marquee-section {
+      padding: 48px 0;
+      border-top: 1px solid var(--gray-800);
+      border-bottom: 1px solid var(--gray-800);
+      overflow: hidden;
+    }
+
+    .marquee {
+      display: flex;
+      gap: 80px;
+      animation: marquee 20s linear infinite;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .marquee-item {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .marquee-value {
+      font-size: 32px;
+      font-weight: 600;
+    }
+
+    .marquee-label {
+      font-size: 12px;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .marquee-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+    }
+
+    /* ═══════════════════════════════════════════
+       COMPONENT: Split CTA
+    ═══════════════════════════════════════════ */
+    .cta-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 500px;
+    }
+
+    .cta-left {
+      background: var(--green);
+      padding: 80px 64px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .cta-left h2 {
+      font-size: 56px;
       font-weight: 700;
       letter-spacing: -0.04em;
-      margin-bottom: 1.5rem;
-      line-height: 0.95;
+      color: var(--black);
+      line-height: 1;
+      margin-bottom: 24px;
     }
 
-    .cta-section p {
-      color: var(--text-secondary);
-      font-size: 1.125rem;
-      margin-bottom: 2.5rem;
+    .cta-left p {
+      font-size: 18px;
+      color: rgba(0,0,0,0.6);
+      margin-bottom: 32px;
     }
 
-    /* Footer */
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 32px;
+      background: var(--black);
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 600;
+      border-radius: 8px;
+      width: fit-content;
+      transition: all 0.2s;
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .cta-right {
+      background: var(--gray-900);
+      padding: 80px 64px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .cta-right h3 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 32px;
+    }
+
+    .cta-services {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .cta-service {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: var(--gray-800);
+      border-radius: 8px;
+    }
+
+    .cta-service-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--black);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cta-service-text {
+      font-size: 15px;
+    }
+
+    /* ═══════════════════════════════════════════
+       COMPONENT: Minimal Footer
+    ═══════════════════════════════════════════ */
     footer {
-      padding: 2rem 3rem;
-      border-top: 1px solid var(--border);
+      padding: 48px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      position: relative;
-      z-index: 1;
+      border-top: 1px solid var(--gray-800);
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .footer-logo {
+      width: 24px;
+      height: 24px;
+      background: var(--green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    .footer-name {
+      font-weight: 600;
+      font-size: 14px;
     }
 
     .footer-links {
       display: flex;
-      gap: 2rem;
-      list-style: none;
+      gap: 32px;
     }
 
     .footer-links a {
-      color: var(--text-muted);
+      color: var(--gray-500);
       text-decoration: none;
-      font-size: 0.8125rem;
+      font-size: 13px;
       transition: color 0.2s;
     }
 
-    .footer-links a:hover { color: var(--text); }
-
-    .footer-copy {
-      color: var(--text-muted);
-      font-size: 0.8125rem;
+    .footer-links a:hover {
+      color: var(--white);
     }
 
-    /* Mobile */
-    @media (max-width: 768px) {
-      nav { padding: 1rem 1.5rem; }
-      .nav-links { display: none; }
-      .hero { padding: 8rem 1.5rem 4rem; }
-      .hero h1 { font-size: 3rem; }
-      .stats-section { padding: 3rem 1.5rem; }
-      .stats-grid { gap: 3rem; }
-      .stat-value { font-size: 2.5rem; }
-      .trust-section { padding: 3rem 1.5rem; }
-      .trust-logos { gap: 2rem; }
-      .tools-section { padding: 4rem 1.5rem; }
-      .tool-card { padding: 2rem; }
-      .mission-section { padding: 4rem 1.5rem; }
-      .cta-section { padding: 5rem 1.5rem; }
-      footer { 
-        flex-direction: column; 
-        gap: 1rem; 
-        text-align: center;
-        padding: 1.5rem;
+    /* ═══════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════ */
+    @media (max-width: 1024px) {
+      .hero { padding: 100px 24px 60px; }
+      .hero-headline { font-size: 64px; }
+      .hero-sub { flex-direction: column; gap: 32px; align-items: flex-start; }
+      .bento-section { padding: 60px 24px; }
+      .bento-grid { 
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
       }
+      .bento-lg, .bento-md, .bento-sm, .bento-wide { 
+        grid-column: span 1; 
+        grid-row: span 1;
+      }
+      .bento-card { min-height: 240px; }
+      .bento-preview { display: none; }
+      .cta-section { grid-template-columns: 1fr; }
+      .terminal-section { padding: 0 24px 80px; }
+    }
+
+    @media (max-width: 640px) {
+      .nav { width: calc(100% - 32px); }
+      .nav-links { display: none; }
+      .hero-headline { font-size: 48px; }
+      .cta-left, .cta-right { padding: 48px 24px; }
+      .cta-left h2 { font-size: 36px; }
+      footer { flex-direction: column; gap: 24px; }
     }
   </style>
 </head>
 <body>
-  <div class="grid-bg"></div>
 
-  <nav>
-    <div class="logo">
-      <div class="logo-mark">⚡</div>
-      Prospector Labs
+  <!-- Floating Pill Nav -->
+  <nav class="nav">
+    <div class="nav-logo">⚡</div>
+    <div class="nav-links">
+      <a href="#tools" class="nav-link">Tools</a>
+      <a href="https://owencoonahan.github.io/prospector-data-tools/" class="nav-link">Demo</a>
     </div>
-    <div class="nav-right">
-      <ul class="nav-links">
-        <li><a href="#tools">Tools</a></li>
-        <li><a href="https://owencoonahan.github.io/prospector-data-tools/">Live Demo</a></li>
-      </ul>
-      <a href="mailto:owen@prospectorlabs.io" class="nav-cta">Contact</a>
-    </div>
+    <a href="mailto:owen@prospectorlabs.io" class="nav-cta">Contact</a>
   </nav>
 
+  <!-- Massive Type Hero -->
   <section class="hero">
-    <div class="hero-bg">
-      <div class="hero-glow"></div>
-      <div class="data-stream"></div>
-      <div class="data-stream"></div>
-      <div class="data-stream"></div>
-      <div class="data-stream"></div>
-    </div>
-    
-    <div class="hero-content">
-      <div class="hero-eyebrow">Data Intelligence</div>
-      <h1>From Queue<br>to Grid</h1>
-      <p class="hero-tagline">Infrastructure for Energy Markets</p>
-      <p class="hero-sub">
-        Turn fragmented energy data into connected, decision-ready intelligence.
+    <h1 class="hero-headline">
+      Energy<br>
+      <span class="line-2">Intelligence</span>
+    </h1>
+    <div class="hero-sub">
+      <p class="hero-desc">
+        We build data tools for interconnection queues, supply chains, and critical minerals. 
+        Aggregated from hundreds of sources. Made decision-ready.
       </p>
-      <div class="hero-ctas">
-        <a href="#tools" class="btn-primary">
-          Explore Tools
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
-        </a>
-        <a href="mailto:owen@prospectorlabs.io" class="btn-secondary">Work With Us</a>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-value">35,469</div>
+          <div class="hero-stat-label">Projects</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value">6.3TW</div>
+          <div class="hero-stat-label">Tracked</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-value">9</div>
+          <div class="hero-stat-label">ISOs</div>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="stats-section">
-    <div class="stats-grid">
-      <div class="stat">
-        <div class="stat-value">35<span class="accent">,</span>469</div>
-        <div class="stat-label">Projects Tracked</div>
+  <!-- Terminal Data Feed -->
+  <section class="terminal-section">
+    <div class="terminal">
+      <div class="terminal-header">
+        <span class="terminal-dot red"></span>
+        <span class="terminal-dot yellow"></span>
+        <span class="terminal-dot green"></span>
+        <span class="terminal-title">prospector-cli</span>
       </div>
-      <div class="stat">
-        <div class="stat-value">6.3<span class="accent">TW</span></div>
-        <div class="stat-label">Queue Capacity</div>
-      </div>
-      <div class="stat">
-        <div class="stat-value"><span class="accent">9</span></div>
-        <div class="stat-label">US ISOs</div>
-      </div>
-      <div class="stat">
-        <div class="stat-value">12</div>
-        <div class="stat-label">Critical Minerals</div>
+      <div class="terminal-body">
+        <div class="terminal-line">
+          <span class="terminal-prompt">$</span>
+          <span class="terminal-cmd">prospector queue --iso=MISO --status=active</span>
+        </div>
+        <div class="terminal-output">
+          Found 2,847 active projects in MISO (232 GW)
+        </div>
+        <div class="terminal-line" style="margin-top: 16px;">
+          <span class="terminal-prompt">$</span>
+          <span class="terminal-cmd">prospector developer "NextEra Energy" --metrics</span>
+        </div>
+        <div class="terminal-output">
+          Portfolio: 847 projects | 42.3 GW | Success rate: 23.4%
+        </div>
+        <div class="terminal-output highlight">
+          Top 5% of developers by operational capacity
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="trust-section">
-    <div class="trust-label">Trusted by Energy Professionals</div>
-    <div class="trust-logos">
-      <span class="trust-logo">PE FIRMS</span>
-      <span class="trust-logo">DEVELOPERS</span>
-      <span class="trust-logo">UTILITIES</span>
-      <span class="trust-logo">ANALYSTS</span>
+  <!-- Marquee Stats -->
+  <section class="marquee-section">
+    <div class="marquee">
+      <div class="marquee-item">
+        <span class="marquee-value">35,469</span>
+        <span class="marquee-label">Projects Tracked</span>
+        <span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-item">
+        <span class="marquee-value">6.3 TW</span>
+        <span class="marquee-label">Queue Capacity</span>
+        <span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-item">
+        <span class="marquee-value">6,271</span>
+        <span class="marquee-label">Developers</span>
+        <span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-item">
+        <span class="marquee-value">12</span>
+        <span class="marquee-label">Critical Minerals</span>
+        <span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-item">
+        <span class="marquee-value">$85B</span>
+        <span class="marquee-label">Grid Equipment Market</span>
+        <span class="marquee-dot"></span>
+      </div>
+      <!-- Duplicate for seamless loop -->
+      <div class="marquee-item">
+        <span class="marquee-value">35,469</span>
+        <span class="marquee-label">Projects Tracked</span>
+        <span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-item">
+        <span class="marquee-value">6.3 TW</span>
+        <span class="marquee-label">Queue Capacity</span>
+        <span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-item">
+        <span class="marquee-value">6,271</span>
+        <span class="marquee-label">Developers</span>
+        <span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-item">
+        <span class="marquee-value">12</span>
+        <span class="marquee-label">Critical Minerals</span>
+        <span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-item">
+        <span class="marquee-value">$85B</span>
+        <span class="marquee-label">Grid Equipment Market</span>
+        <span class="marquee-dot"></span>
+      </div>
     </div>
   </section>
 
-  <section class="tools-section" id="tools">
-    <div class="section-header">
-      <div class="section-eyebrow">Live Tools</div>
-      <h2 class="section-title">Intelligence Products</h2>
+  <!-- Bento Grid Tools -->
+  <section class="bento-section" id="tools">
+    <div class="bento-header">
+      <div class="bento-label">Live Tools</div>
+      <h2 class="bento-title">Intelligence Products</h2>
     </div>
-    
-    <div class="tools-grid">
-      <a href="https://owencoonahan.github.io/prospector-data-tools/queue-lookup/" class="tool-card">
-        <div class="tool-number">01</div>
-        <h3 class="tool-title"><span class="icon">🔍</span> Queue Lookup</h3>
-        <p class="tool-desc">Search 35,000+ interconnection projects across all US ISOs. Instant filtering, complete data.</p>
-        <div class="tool-arrow">→</div>
+
+    <div class="bento-grid">
+      <!-- Large card -->
+      <a href="https://owencoonahan.github.io/prospector-data-tools/queue-lookup/" class="bento-card bento-lg">
+        <div class="bento-icon">🔍</div>
+        <h3 class="bento-name">Queue Lookup</h3>
+        <p class="bento-desc">Search every interconnection project across all 9 US ISOs. Instant filtering by developer, region, technology, status.</p>
+        <div class="bento-meta">
+          <span>35,469 projects</span>
+          <span>Real-time</span>
+        </div>
+        <div class="bento-preview">
+          <div class="bento-preview-inner">
+            <div>QUEUE_ID | DEVELOPER | MW | STATUS</div>
+            <div class="mini-table">
+              <div class="mini-row"><span>J4075</span><span style="color:var(--green)">850 MW</span></div>
+              <div class="mini-row"><span>AF2-132</span><span style="color:var(--green)">500 MW</span></div>
+              <div class="mini-row"><span>26INR0155</span><span style="color:var(--green)">1,000 MW</span></div>
+            </div>
+          </div>
+        </div>
       </a>
-      
-      <a href="https://owencoonahan.github.io/prospector-data-tools/developer-scorecard/" class="tool-card">
-        <div class="tool-number">02</div>
-        <h3 class="tool-title"><span class="icon">📊</span> Developer Scorecard</h3>
-        <p class="tool-desc">Track records for 6,000+ energy developers. Success rates, timelines, portfolios.</p>
-        <div class="tool-arrow">→</div>
+
+      <!-- Medium cards -->
+      <a href="https://owencoonahan.github.io/prospector-data-tools/developer-scorecard/" class="bento-card bento-md">
+        <div class="bento-icon">📊</div>
+        <h3 class="bento-name">Developer Scorecard</h3>
+        <p class="bento-desc">Track records for 6,271 energy developers. Success rates, timelines, regional benchmarks.</p>
+        <div class="bento-meta">
+          <span>Percentile rankings</span>
+        </div>
       </a>
-      
-      <a href="https://owencoonahan.github.io/prospector-data-tools/iso-comparison/" class="tool-card">
-        <div class="tool-number">03</div>
-        <h3 class="tool-title"><span class="icon">📈</span> ISO Comparison</h3>
-        <p class="tool-desc">Side-by-side metrics across all 9 US interconnection regions with Sankey flows.</p>
-        <div class="tool-arrow">→</div>
+
+      <a href="https://owencoonahan.github.io/prospector-data-tools/iso-comparison/" class="bento-card bento-md">
+        <div class="bento-icon">📈</div>
+        <h3 class="bento-name">ISO Comparison</h3>
+        <p class="bento-desc">Side-by-side metrics across all 9 regions. Sankey flow diagrams for capacity, technology, status.</p>
+        <div class="bento-meta">
+          <span>Interactive flows</span>
+        </div>
       </a>
-      
-      <a href="https://owencoonahan.github.io/prospector-data-tools/critical-minerals-v2/" class="tool-card">
-        <div class="tool-number">04</div>
-        <h3 class="tool-title"><span class="icon">🪨</span> Critical Minerals</h3>
-        <p class="tool-desc">Supply chain intelligence for energy transition minerals. Concentration risk analysis.</p>
-        <div class="tool-arrow">→</div>
+
+      <!-- Wide card -->
+      <a href="https://owencoonahan.github.io/prospector-data-tools/critical-minerals-v2/" class="bento-card bento-wide">
+        <div class="bento-icon">🪨</div>
+        <h3 class="bento-name">Critical Minerals</h3>
+        <p class="bento-desc">Supply chain intelligence for 12 energy transition minerals. Production geography, processing concentration, company profiles.</p>
+        <div class="bento-meta">
+          <span>Lithium</span>
+          <span>Cobalt</span>
+          <span>Rare Earths</span>
+          <span>+9 more</span>
+        </div>
       </a>
-      
-      <a href="https://owencoonahan.github.io/prospector-data-tools/transformer-tracker/" class="tool-card">
-        <div class="tool-number">05</div>
-        <h3 class="tool-title"><span class="icon">⚡</span> Grid Supply Chain</h3>
-        <p class="tool-desc">Power equipment intelligence. Transformers, switchgear, lead times, materials.</p>
-        <div class="tool-arrow">→</div>
+
+      <!-- Small card -->
+      <a href="https://owencoonahan.github.io/prospector-data-tools/transformer-tracker/" class="bento-card bento-sm">
+        <div class="bento-icon">⚡</div>
+        <h3 class="bento-name">Grid Supply Chain</h3>
+        <p class="bento-desc">Power equipment market. Lead times, import dependencies, bottlenecks.</p>
+        <div class="bento-meta">
+          <span>$85B market</span>
+        </div>
       </a>
     </div>
   </section>
 
-  <section class="mission-section">
-    <div class="mission-content">
-      <h2>Energy data is fragmented.<br>We fix that.</h2>
-      <p>
-        ISO filings, regulatory databases, supply chain records — scattered across hundreds of sources. 
-        We aggregate, clean, and visualize it so you can make decisions, not chase data.
-      </p>
-    </div>
-  </section>
-
+  <!-- Split CTA -->
   <section class="cta-section">
-    <h2>Let's build<br>something</h2>
-    <p>Custom tools. Research. Due diligence. We ship fast.</p>
-    <a href="mailto:owen@prospectorlabs.io" class="btn-primary">
-      Start a Conversation
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </a>
+    <div class="cta-left">
+      <h2>Let's build something</h2>
+      <p>Custom data tools. Due diligence reports. Market intelligence. We ship fast.</p>
+      <a href="mailto:owen@prospectorlabs.io" class="cta-btn">
+        Start a conversation
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+    <div class="cta-right">
+      <h3>What we do</h3>
+      <div class="cta-services">
+        <div class="cta-service">
+          <div class="cta-service-icon">📋</div>
+          <span class="cta-service-text">Interconnection due diligence for PE firms</span>
+        </div>
+        <div class="cta-service">
+          <div class="cta-service-icon">🔧</div>
+          <span class="cta-service-text">Custom data tools and dashboards</span>
+        </div>
+        <div class="cta-service">
+          <div class="cta-service-icon">📊</div>
+          <span class="cta-service-text">Market research and analysis</span>
+        </div>
+      </div>
+    </div>
   </section>
 
+  <!-- Minimal Footer -->
   <footer>
-    <ul class="footer-links">
-      <li><a href="https://owencoonahan.github.io/prospector-data-tools/">Tools</a></li>
-      <li><a href="mailto:owen@prospectorlabs.io">Contact</a></li>
-      <li><a href="https://twitter.com/OwenCoonahan">Twitter</a></li>
-      <li><a href="https://linkedin.com/in/owencoonahan">LinkedIn</a></li>
-    </ul>
-    <span class="footer-copy">© 2026 Prospector Labs</span>
+    <div class="footer-left">
+      <div class="footer-logo">⚡</div>
+      <span class="footer-name">Prospector Labs</span>
+    </div>
+    <div class="footer-links">
+      <a href="https://owencoonahan.github.io/prospector-data-tools/">Tools</a>
+      <a href="mailto:owen@prospectorlabs.io">Contact</a>
+      <a href="https://twitter.com/OwenCoonahan">Twitter</a>
+      <a href="https://linkedin.com/in/owencoonahan">LinkedIn</a>
+    </div>
   </footer>
+
 </body>
 </html>
