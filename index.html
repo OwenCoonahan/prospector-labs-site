@@ -3,64 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prospector Labs — Data Intelligence</title>
-  <meta name="description" content="We build data tools that cut through complexity. Energy infrastructure intelligence, supply chain visibility, and custom data solutions.">
+  <title>Prospector Labs — Data Intelligence for Energy</title>
+  <meta name="description" content="Data infrastructure for energy markets. Interconnection queues, supply chains, critical minerals — intelligence that moves markets.">
   <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #000000;
-      --bg-subtle: #0a0a0a;
-      --bg-card: #111111;
+      --bg-elevated: #0a0a0a;
       --text: #ffffff;
-      --text-secondary: #888888;
+      --text-secondary: #999999;
       --text-muted: #555555;
       --accent: #00ff88;
-      --accent-dim: rgba(0, 255, 136, 0.15);
-      --blue: #0066ff;
-      --purple: #8855ff;
-      --border: #222222;
+      --accent-glow: rgba(0, 255, 136, 0.15);
+      --border: #1a1a1a;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Geist', system-ui, sans-serif;
+      font-family: 'Geist', system-ui, -apple-system, sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.6;
+      line-height: 1.5;
       overflow-x: hidden;
     }
 
-    /* Grid Background */
+    /* Subtle grid */
     .grid-bg {
       position: fixed;
       inset: 0;
       background-image: 
-        linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px);
-      background-size: 60px 60px;
+        linear-gradient(rgba(0,255,136,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,136,0.015) 1px, transparent 1px);
+      background-size: 100px 100px;
       pointer-events: none;
       z-index: 0;
     }
-
-    /* Glow effects */
-    .glow-orb {
-      position: fixed;
-      width: 600px;
-      height: 600px;
-      border-radius: 50%;
-      filter: blur(120px);
-      opacity: 0.15;
-      pointer-events: none;
-      z-index: 0;
-    }
-    
-    .glow-1 { background: var(--accent); top: -200px; left: -200px; }
-    .glow-2 { background: var(--blue); bottom: -200px; right: -200px; }
-    .glow-3 { background: var(--purple); top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.08; }
 
     /* Nav */
     nav {
@@ -69,7 +48,7 @@
       left: 0;
       right: 0;
       z-index: 100;
-      padding: 1.5rem 3rem;
+      padding: 1.25rem 3rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -79,53 +58,60 @@
     }
 
     .logo {
-      font-size: 1.25rem;
-      font-weight: 700;
-      letter-spacing: -0.03em;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.6rem;
     }
 
-    .logo-icon {
-      width: 32px;
-      height: 32px;
+    .logo-mark {
+      width: 24px;
+      height: 24px;
       background: var(--accent);
-      border-radius: 8px;
+      border-radius: 4px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1rem;
+      font-size: 0.75rem;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
     }
 
     .nav-links {
       display: flex;
-      gap: 2.5rem;
+      gap: 2rem;
       list-style: none;
     }
 
     .nav-links a {
       color: var(--text-secondary);
       text-decoration: none;
-      font-size: 0.875rem;
+      font-size: 0.8125rem;
       font-weight: 500;
       transition: color 0.2s;
+      letter-spacing: 0.02em;
     }
 
     .nav-links a:hover { color: var(--text); }
 
     .nav-cta {
-      background: var(--accent);
-      color: #000;
-      padding: 0.625rem 1.25rem;
-      border-radius: 6px;
-      font-size: 0.875rem;
+      background: var(--text);
+      color: var(--bg);
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-size: 0.8125rem;
       font-weight: 600;
       text-decoration: none;
       transition: all 0.2s;
     }
 
-    .nav-cta:hover { box-shadow: 0 0 30px rgba(0,255,136,0.4); }
+    .nav-cta:hover { background: var(--accent); }
 
     /* Hero */
     .hero {
@@ -133,390 +119,361 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 8rem 3rem 4rem;
+      align-items: center;
+      text-align: center;
+      padding: 10rem 2rem 6rem;
       position: relative;
       z-index: 1;
+    }
+
+    /* Hero background effects */
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    /* Central glow */
+    .hero-glow {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px;
+      height: 600px;
+      background: radial-gradient(ellipse, var(--accent-glow) 0%, transparent 60%);
+      animation: glow-pulse 8s ease-in-out infinite;
+    }
+
+    @keyframes glow-pulse {
+      0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 0.3; transform: translate(-50%, -50%) scale(1.1); }
+    }
+
+    /* Data streams */
+    .data-stream {
+      position: absolute;
+      width: 2px;
+      background: linear-gradient(180deg, transparent 0%, var(--accent) 50%, transparent 100%);
+      opacity: 0.3;
+      animation: stream 3s linear infinite;
+    }
+
+    .data-stream:nth-child(1) { left: 15%; height: 200px; animation-delay: 0s; }
+    .data-stream:nth-child(2) { left: 30%; height: 150px; animation-delay: 0.5s; }
+    .data-stream:nth-child(3) { left: 70%; height: 180px; animation-delay: 1s; }
+    .data-stream:nth-child(4) { left: 85%; height: 120px; animation-delay: 1.5s; }
+
+    @keyframes stream {
+      0% { top: -200px; opacity: 0; }
+      20% { opacity: 0.3; }
+      80% { opacity: 0.3; }
+      100% { top: 100%; opacity: 0; }
     }
 
     .hero-content {
       max-width: 900px;
     }
 
-    .hero-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: var(--accent-dim);
-      border: 1px solid rgba(0,255,136,0.3);
-      padding: 0.5rem 1rem;
-      border-radius: 100px;
-      font-family: 'JetBrains Mono', monospace;
+    .hero-eyebrow {
       font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
       color: var(--accent);
       margin-bottom: 2rem;
     }
 
-    .hero-tag .pulse {
-      width: 8px;
-      height: 8px;
-      background: var(--accent);
-      border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,255,136,0.4); }
-      50% { opacity: 0.8; box-shadow: 0 0 0 10px rgba(0,255,136,0); }
-    }
-
     .hero h1 {
-      font-size: clamp(3rem, 8vw, 6rem);
+      font-size: clamp(3.5rem, 12vw, 8rem);
       font-weight: 700;
-      letter-spacing: -0.04em;
-      line-height: 1;
+      letter-spacing: -0.05em;
+      line-height: 0.9;
       margin-bottom: 1.5rem;
     }
 
-    .hero h1 .gradient {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--blue) 50%, var(--purple) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    .hero-tagline {
+      font-size: clamp(1.25rem, 3vw, 1.75rem);
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
     }
 
     .hero-sub {
-      font-size: 1.25rem;
+      font-size: 1.125rem;
       color: var(--text-secondary);
-      max-width: 600px;
-      margin-bottom: 2.5rem;
-      line-height: 1.7;
+      max-width: 480px;
+      margin: 0 auto 3rem;
     }
 
     .hero-ctas {
       display: flex;
       gap: 1rem;
-      margin-bottom: 4rem;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
     .btn-primary {
       background: var(--accent);
       color: #000;
-      padding: 1rem 2rem;
-      border-radius: 8px;
+      padding: 0.875rem 1.75rem;
+      border-radius: 4px;
       font-weight: 600;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
       transition: all 0.2s;
-      font-size: 1rem;
+      font-size: 0.9375rem;
     }
 
     .btn-primary:hover { 
-      transform: translateY(-2px); 
-      box-shadow: 0 0 40px rgba(0,255,136,0.5);
+      box-shadow: 0 0 40px rgba(0,255,136,0.4);
     }
 
     .btn-secondary {
       background: transparent;
       color: var(--text);
-      padding: 1rem 2rem;
+      padding: 0.875rem 1.75rem;
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: 4px;
       font-weight: 600;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
       transition: all 0.2s;
-      font-size: 1rem;
+      font-size: 0.9375rem;
     }
 
-    .btn-secondary:hover { border-color: var(--text-secondary); }
+    .btn-secondary:hover { 
+      border-color: var(--text-muted);
+    }
 
-    /* Live Stats */
-    .live-stats {
-      display: flex;
-      gap: 3rem;
-      padding-top: 2rem;
+    /* Stats section - prominent social proof */
+    .stats-section {
+      padding: 5rem 3rem;
       border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      z-index: 1;
+    }
+
+    .stats-grid {
+      display: flex;
+      justify-content: center;
+      gap: 6rem;
+      flex-wrap: wrap;
+      max-width: 1000px;
+      margin: 0 auto;
     }
 
     .stat {
-      display: flex;
-      flex-direction: column;
+      text-align: center;
     }
 
     .stat-value {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 2.5rem;
+      font-size: clamp(2.5rem, 6vw, 4rem);
       font-weight: 700;
-      color: var(--accent);
+      letter-spacing: -0.03em;
+      color: var(--text);
       line-height: 1;
     }
 
+    .stat-value .accent {
+      color: var(--accent);
+    }
+
     .stat-label {
-      font-size: 0.75rem;
+      font-size: 0.8125rem;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-top: 0.5rem;
+      letter-spacing: 0.15em;
+      margin-top: 0.75rem;
     }
 
-    /* Data Viz Preview */
-    .data-viz-preview {
-      position: absolute;
-      right: 3rem;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 500px;
-      height: 400px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      display: none;
+    /* Trust section */
+    .trust-section {
+      padding: 4rem 3rem;
+      text-align: center;
+      position: relative;
+      z-index: 1;
     }
 
-    @media (min-width: 1400px) {
-      .data-viz-preview { display: block; }
-    }
-
-    .viz-header {
-      padding: 1rem;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .viz-header span {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
+    .trust-label {
+      font-size: 0.6875rem;
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
       color: var(--text-muted);
+      margin-bottom: 2rem;
     }
 
-    .viz-dots {
+    .trust-logos {
       display: flex;
-      gap: 6px;
-    }
-
-    .viz-dots span {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--border);
-    }
-
-    .viz-dots span:nth-child(1) { background: #ff5f56; }
-    .viz-dots span:nth-child(2) { background: #ffbd2e; }
-    .viz-dots span:nth-child(3) { background: #27ca40; }
-
-    .viz-content {
-      padding: 1.5rem;
-      height: calc(100% - 50px);
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .viz-bar {
-      display: flex;
+      justify-content: center;
       align-items: center;
-      gap: 1rem;
+      gap: 4rem;
+      flex-wrap: wrap;
+      opacity: 0.4;
     }
 
-    .viz-bar-label {
-      width: 60px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.7rem;
+    .trust-logo {
+      font-size: 1rem;
+      font-weight: 600;
       color: var(--text-secondary);
+      letter-spacing: 0.05em;
     }
 
-    .viz-bar-track {
-      flex: 1;
-      height: 24px;
-      background: var(--bg);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .viz-bar-fill {
-      height: 100%;
-      border-radius: 4px;
-      animation: grow 2s ease-out forwards;
-    }
-
-    @keyframes grow {
-      from { width: 0; }
-    }
-
-    /* Projects Section */
-    .projects-section {
-      padding: 6rem 3rem;
+    /* Tools section */
+    .tools-section {
+      padding: 8rem 3rem;
       position: relative;
       z-index: 1;
     }
 
     .section-header {
+      text-align: center;
       margin-bottom: 4rem;
     }
 
-    .section-label {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
-      color: var(--accent);
+    .section-eyebrow {
+      font-size: 0.6875rem;
+      font-weight: 500;
+      letter-spacing: 0.3em;
       text-transform: uppercase;
-      letter-spacing: 0.15em;
+      color: var(--accent);
       margin-bottom: 1rem;
     }
 
     .section-title {
-      font-size: 3rem;
+      font-size: clamp(2rem, 5vw, 3rem);
       font-weight: 700;
       letter-spacing: -0.03em;
-      margin-bottom: 1rem;
     }
 
-    .section-desc {
-      font-size: 1.125rem;
-      color: var(--text-secondary);
-      max-width: 600px;
-    }
-
-    .projects-grid {
+    .tools-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
-    .project-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 2rem;
+    .tool-card {
+      background: var(--bg);
+      padding: 2.5rem;
       text-decoration: none;
       color: inherit;
       transition: all 0.3s;
       position: relative;
-      overflow: hidden;
     }
 
-    .project-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(0,255,136,0.05) 0%, transparent 50%);
-      opacity: 0;
-      transition: opacity 0.3s;
+    .tool-card:hover {
+      background: var(--bg-elevated);
     }
 
-    .project-card:hover {
-      border-color: var(--accent);
-      transform: translateY(-4px);
+    .tool-card:hover .tool-arrow {
+      opacity: 1;
+      transform: translateX(0);
     }
 
-    .project-card:hover::before { opacity: 1; }
-
-    .project-icon {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-
-    .project-title {
-      font-size: 1.25rem;
+    .tool-number {
+      font-size: 0.6875rem;
       font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-
-    .project-desc {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      margin-bottom: 1.5rem;
-    }
-
-    .project-stats {
-      display: flex;
-      gap: 1.5rem;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
-    }
-
-    .project-stats span {
+      letter-spacing: 0.2em;
       color: var(--text-muted);
+      margin-bottom: 1.25rem;
     }
 
-    .project-stats strong {
-      color: var(--accent);
+    .tool-title {
+      font-size: 1.375rem;
       font-weight: 600;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
     }
 
-    /* Capabilities */
-    .capabilities-section {
-      padding: 6rem 3rem;
-      background: var(--bg-subtle);
-      position: relative;
-      z-index: 1;
+    .tool-title .icon {
+      font-size: 1.5rem;
     }
 
-    .capabilities-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
+    .tool-desc {
+      font-size: 0.9375rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
     }
 
-    .capability {
-      padding: 2rem;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--bg);
+    .tool-arrow {
+      position: absolute;
+      top: 2.5rem;
+      right: 2.5rem;
+      color: var(--accent);
+      font-size: 1.25rem;
+      opacity: 0;
+      transform: translateX(-10px);
       transition: all 0.3s;
     }
 
-    .capability:hover {
-      border-color: var(--accent);
+    /* Mission section */
+    .mission-section {
+      padding: 8rem 3rem;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      background: var(--bg-elevated);
     }
 
-    .capability-icon {
-      font-size: 2rem;
-      margin-bottom: 1rem;
+    .mission-content {
+      max-width: 700px;
+      margin: 0 auto;
     }
 
-    .capability h3 {
+    .mission-section h2 {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+    }
+
+    .mission-section p {
       font-size: 1.125rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-
-    .capability p {
-      font-size: 0.9rem;
       color: var(--text-secondary);
+      line-height: 1.7;
     }
 
     /* CTA Section */
     .cta-section {
-      padding: 8rem 3rem;
+      padding: 10rem 3rem;
       text-align: center;
       position: relative;
       z-index: 1;
     }
 
     .cta-section h2 {
-      font-size: 3rem;
+      font-size: clamp(2.5rem, 7vw, 5rem);
       font-weight: 700;
-      letter-spacing: -0.03em;
-      margin-bottom: 1rem;
+      letter-spacing: -0.04em;
+      margin-bottom: 1.5rem;
+      line-height: 0.95;
     }
 
     .cta-section p {
       color: var(--text-secondary);
       font-size: 1.125rem;
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
     }
 
     /* Footer */
     footer {
-      padding: 3rem;
+      padding: 2rem 3rem;
       border-top: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
@@ -534,7 +491,7 @@
     .footer-links a {
       color: var(--text-muted);
       text-decoration: none;
-      font-size: 0.875rem;
+      font-size: 0.8125rem;
       transition: color 0.2s;
     }
 
@@ -542,220 +499,167 @@
 
     .footer-copy {
       color: var(--text-muted);
-      font-size: 0.875rem;
+      font-size: 0.8125rem;
     }
 
+    /* Mobile */
     @media (max-width: 768px) {
-      nav { padding: 1rem; }
+      nav { padding: 1rem 1.5rem; }
       .nav-links { display: none; }
-      .hero { padding: 6rem 1.5rem 3rem; }
-      .hero h1 { font-size: 2.5rem; }
-      .live-stats { flex-wrap: wrap; gap: 2rem; }
-      .projects-section, .capabilities-section, .cta-section { padding: 4rem 1.5rem; }
-      footer { flex-direction: column; gap: 1.5rem; text-align: center; }
+      .hero { padding: 8rem 1.5rem 4rem; }
+      .hero h1 { font-size: 3rem; }
+      .stats-section { padding: 3rem 1.5rem; }
+      .stats-grid { gap: 3rem; }
+      .stat-value { font-size: 2.5rem; }
+      .trust-section { padding: 3rem 1.5rem; }
+      .trust-logos { gap: 2rem; }
+      .tools-section { padding: 4rem 1.5rem; }
+      .tool-card { padding: 2rem; }
+      .mission-section { padding: 4rem 1.5rem; }
+      .cta-section { padding: 5rem 1.5rem; }
+      footer { 
+        flex-direction: column; 
+        gap: 1rem; 
+        text-align: center;
+        padding: 1.5rem;
+      }
     }
   </style>
 </head>
 <body>
   <div class="grid-bg"></div>
-  <div class="glow-orb glow-1"></div>
-  <div class="glow-orb glow-2"></div>
-  <div class="glow-orb glow-3"></div>
 
   <nav>
     <div class="logo">
-      <div class="logo-icon">⚡</div>
+      <div class="logo-mark">⚡</div>
       Prospector Labs
     </div>
-    <ul class="nav-links">
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#capabilities">Capabilities</a></li>
-      <li><a href="https://owencoonahan.github.io/prospector-data-tools/">Live Tools</a></li>
-    </ul>
-    <a href="mailto:owen@prospectorlabs.io" class="nav-cta">Get in Touch</a>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="#tools">Tools</a></li>
+        <li><a href="https://owencoonahan.github.io/prospector-data-tools/">Live Demo</a></li>
+      </ul>
+      <a href="mailto:owen@prospectorlabs.io" class="nav-cta">Contact</a>
+    </div>
   </nav>
 
   <section class="hero">
+    <div class="hero-bg">
+      <div class="hero-glow"></div>
+      <div class="data-stream"></div>
+      <div class="data-stream"></div>
+      <div class="data-stream"></div>
+      <div class="data-stream"></div>
+    </div>
+    
     <div class="hero-content">
-      <div class="hero-tag">
-        <span class="pulse"></span>
-        BUILDING IN PUBLIC
-      </div>
-      <h1>Data tools for<br><span class="gradient">energy intelligence</span></h1>
+      <div class="hero-eyebrow">Data Intelligence</div>
+      <h1>From Queue<br>to Grid</h1>
+      <p class="hero-tagline">Infrastructure for Energy Markets</p>
       <p class="hero-sub">
-        We build infrastructure intelligence platforms. Interconnection queues, supply chains, 
-        critical minerals — data that's hard to find, cleaned and visualized.
+        Turn fragmented energy data into connected, decision-ready intelligence.
       </p>
       <div class="hero-ctas">
-        <a href="https://owencoonahan.github.io/prospector-data-tools/" class="btn-primary">
-          Explore Live Tools
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+        <a href="#tools" class="btn-primary">
+          Explore Tools
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
         </a>
         <a href="mailto:owen@prospectorlabs.io" class="btn-secondary">Work With Us</a>
       </div>
-      <div class="live-stats">
-        <div class="stat">
-          <div class="stat-value" id="projectCount">35,469</div>
-          <div class="stat-label">Projects Tracked</div>
-        </div>
-        <div class="stat">
-          <div class="stat-value">6.3 TW</div>
-          <div class="stat-label">Queue Capacity</div>
-        </div>
-        <div class="stat">
-          <div class="stat-value">9</div>
-          <div class="stat-label">US ISOs</div>
-        </div>
-        <div class="stat">
-          <div class="stat-value">12</div>
-          <div class="stat-label">Critical Minerals</div>
-        </div>
-      </div>
     </div>
+  </section>
 
-    <div class="data-viz-preview">
-      <div class="viz-header">
-        <span>queue_capacity_by_region.tsx</span>
-        <div class="viz-dots"><span></span><span></span><span></span></div>
+  <section class="stats-section">
+    <div class="stats-grid">
+      <div class="stat">
+        <div class="stat-value">35<span class="accent">,</span>469</div>
+        <div class="stat-label">Projects Tracked</div>
       </div>
-      <div class="viz-content">
-        <div class="viz-bar">
-          <span class="viz-bar-label">West</span>
-          <div class="viz-bar-track"><div class="viz-bar-fill" style="width: 90%; background: var(--accent);"></div></div>
-        </div>
-        <div class="viz-bar">
-          <span class="viz-bar-label">MISO</span>
-          <div class="viz-bar-track"><div class="viz-bar-fill" style="width: 80%; background: var(--blue);"></div></div>
-        </div>
-        <div class="viz-bar">
-          <span class="viz-bar-label">PJM</span>
-          <div class="viz-bar-track"><div class="viz-bar-fill" style="width: 70%; background: var(--purple);"></div></div>
-        </div>
-        <div class="viz-bar">
-          <span class="viz-bar-label">ERCOT</span>
-          <div class="viz-bar-track"><div class="viz-bar-fill" style="width: 65%; background: #ff6b6b;"></div></div>
-        </div>
-        <div class="viz-bar">
-          <span class="viz-bar-label">CAISO</span>
-          <div class="viz-bar-track"><div class="viz-bar-fill" style="width: 55%; background: #ffd93d;"></div></div>
-        </div>
-        <div class="viz-bar">
-          <span class="viz-bar-label">Southeast</span>
-          <div class="viz-bar-track"><div class="viz-bar-fill" style="width: 50%; background: #4ecdc4;"></div></div>
-        </div>
-        <div class="viz-bar">
-          <span class="viz-bar-label">SPP</span>
-          <div class="viz-bar-track"><div class="viz-bar-fill" style="width: 45%; background: #a8e6cf;"></div></div>
-        </div>
-        <div class="viz-bar">
-          <span class="viz-bar-label">NYISO</span>
-          <div class="viz-bar-track"><div class="viz-bar-fill" style="width: 30%; background: #dda0dd;"></div></div>
-        </div>
+      <div class="stat">
+        <div class="stat-value">6.3<span class="accent">TW</span></div>
+        <div class="stat-label">Queue Capacity</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value"><span class="accent">9</span></div>
+        <div class="stat-label">US ISOs</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">12</div>
+        <div class="stat-label">Critical Minerals</div>
       </div>
     </div>
   </section>
 
-  <section class="projects-section" id="projects">
-    <div class="section-header">
-      <div class="section-label">Live Projects</div>
-      <h2 class="section-title">Intelligence tools, shipped</h2>
-      <p class="section-desc">Each tool solves a real problem for energy investors, developers, and analysts.</p>
+  <section class="trust-section">
+    <div class="trust-label">Trusted by Energy Professionals</div>
+    <div class="trust-logos">
+      <span class="trust-logo">PE FIRMS</span>
+      <span class="trust-logo">DEVELOPERS</span>
+      <span class="trust-logo">UTILITIES</span>
+      <span class="trust-logo">ANALYSTS</span>
     </div>
-    <div class="projects-grid">
-      <a href="https://owencoonahan.github.io/prospector-data-tools/queue-lookup/" class="project-card">
-        <div class="project-icon">🔍</div>
-        <h3 class="project-title">Queue Lookup</h3>
-        <p class="project-desc">Search 35,000+ interconnection projects across all US ISOs with instant filtering.</p>
-        <div class="project-stats">
-          <span><strong>35,469</strong> projects</span>
-          <span><strong>6.3 TW</strong> capacity</span>
-        </div>
+  </section>
+
+  <section class="tools-section" id="tools">
+    <div class="section-header">
+      <div class="section-eyebrow">Live Tools</div>
+      <h2 class="section-title">Intelligence Products</h2>
+    </div>
+    
+    <div class="tools-grid">
+      <a href="https://owencoonahan.github.io/prospector-data-tools/queue-lookup/" class="tool-card">
+        <div class="tool-number">01</div>
+        <h3 class="tool-title"><span class="icon">🔍</span> Queue Lookup</h3>
+        <p class="tool-desc">Search 35,000+ interconnection projects across all US ISOs. Instant filtering, complete data.</p>
+        <div class="tool-arrow">→</div>
       </a>
-      <a href="https://owencoonahan.github.io/prospector-data-tools/developer-scorecard/" class="project-card">
-        <div class="project-icon">📊</div>
-        <h3 class="project-title">Developer Scorecard</h3>
-        <p class="project-desc">Track records for energy developers — success rates, timelines, and portfolios.</p>
-        <div class="project-stats">
-          <span><strong>6,271</strong> developers</span>
-          <span><strong>5.9 TW</strong> tracked</span>
-        </div>
+      
+      <a href="https://owencoonahan.github.io/prospector-data-tools/developer-scorecard/" class="tool-card">
+        <div class="tool-number">02</div>
+        <h3 class="tool-title"><span class="icon">📊</span> Developer Scorecard</h3>
+        <p class="tool-desc">Track records for 6,000+ energy developers. Success rates, timelines, portfolios.</p>
+        <div class="tool-arrow">→</div>
       </a>
-      <a href="https://owencoonahan.github.io/prospector-data-tools/iso-comparison/" class="project-card">
-        <div class="project-icon">📈</div>
-        <h3 class="project-title">ISO Comparison</h3>
-        <p class="project-desc">Side-by-side metrics across all 9 US regions with Sankey flow visualization.</p>
-        <div class="project-stats">
-          <span><strong>9</strong> ISOs</span>
-          <span><strong>70%</strong> avg withdrawal</span>
-        </div>
+      
+      <a href="https://owencoonahan.github.io/prospector-data-tools/iso-comparison/" class="tool-card">
+        <div class="tool-number">03</div>
+        <h3 class="tool-title"><span class="icon">📈</span> ISO Comparison</h3>
+        <p class="tool-desc">Side-by-side metrics across all 9 US interconnection regions with Sankey flows.</p>
+        <div class="tool-arrow">→</div>
       </a>
-      <a href="https://owencoonahan.github.io/prospector-data-tools/critical-minerals-v2/" class="project-card">
-        <div class="project-icon">🪨</div>
-        <h3 class="project-title">Critical Minerals</h3>
-        <p class="project-desc">Supply chain intelligence for energy transition minerals with concentration risk.</p>
-        <div class="project-stats">
-          <span><strong>12</strong> minerals</span>
-          <span><strong>78%</strong> China processing</span>
-        </div>
+      
+      <a href="https://owencoonahan.github.io/prospector-data-tools/critical-minerals-v2/" class="tool-card">
+        <div class="tool-number">04</div>
+        <h3 class="tool-title"><span class="icon">🪨</span> Critical Minerals</h3>
+        <p class="tool-desc">Supply chain intelligence for energy transition minerals. Concentration risk analysis.</p>
+        <div class="tool-arrow">→</div>
       </a>
-      <a href="https://owencoonahan.github.io/prospector-data-tools/transformer-tracker/" class="project-card">
-        <div class="project-icon">⚡</div>
-        <h3 class="project-title">Grid Supply Chain</h3>
-        <p class="project-desc">Power equipment intelligence — transformers, switchgear, materials, and lead times.</p>
-        <div class="project-stats">
-          <span><strong>36 mo</strong> LPT lead time</span>
-          <span><strong>70%</strong> GOES imports</span>
-        </div>
+      
+      <a href="https://owencoonahan.github.io/prospector-data-tools/transformer-tracker/" class="tool-card">
+        <div class="tool-number">05</div>
+        <h3 class="tool-title"><span class="icon">⚡</span> Grid Supply Chain</h3>
+        <p class="tool-desc">Power equipment intelligence. Transformers, switchgear, lead times, materials.</p>
+        <div class="tool-arrow">→</div>
       </a>
     </div>
   </section>
 
-  <section class="capabilities-section" id="capabilities">
-    <div class="section-header">
-      <div class="section-label">Capabilities</div>
-      <h2 class="section-title">What we build</h2>
-      <p class="section-desc">Complex data, simple interfaces. We turn messy datasets into actionable intelligence.</p>
-    </div>
-    <div class="capabilities-grid">
-      <div class="capability">
-        <div class="capability-icon">🗄️</div>
-        <h3>Data Aggregation</h3>
-        <p>Pull from hundreds of sources — ISO filings, regulatory databases, APIs — and normalize it all.</p>
-      </div>
-      <div class="capability">
-        <div class="capability-icon">🧹</div>
-        <h3>Data Cleaning</h3>
-        <p>Deduplication, standardization, validation. Turn messy government data into analysis-ready datasets.</p>
-      </div>
-      <div class="capability">
-        <div class="capability-icon">📐</div>
-        <h3>Visual Intelligence</h3>
-        <p>Sankey diagrams, treemaps, interactive dashboards. Make complex data instantly understandable.</p>
-      </div>
-      <div class="capability">
-        <div class="capability-icon">🔗</div>
-        <h3>API Development</h3>
-        <p>Programmatic access to our datasets. Integrate directly into your workflows and models.</p>
-      </div>
-      <div class="capability">
-        <div class="capability-icon">📡</div>
-        <h3>Real-time Monitoring</h3>
-        <p>Live data feeds, alerts, change tracking. Know when something important happens.</p>
-      </div>
-      <div class="capability">
-        <div class="capability-icon">🎯</div>
-        <h3>Custom Research</h3>
-        <p>PE due diligence, market research, competitive intel. We build what you need.</p>
-      </div>
+  <section class="mission-section">
+    <div class="mission-content">
+      <h2>Energy data is fragmented.<br>We fix that.</h2>
+      <p>
+        ISO filings, regulatory databases, supply chain records — scattered across hundreds of sources. 
+        We aggregate, clean, and visualize it so you can make decisions, not chase data.
+      </p>
     </div>
   </section>
 
   <section class="cta-section">
-    <h2>Ready to build something?</h2>
-    <p>Tell us what data problem you're solving. We ship fast.</p>
+    <h2>Let's build<br>something</h2>
+    <p>Custom tools. Research. Due diligence. We ship fast.</p>
     <a href="mailto:owen@prospectorlabs.io" class="btn-primary">
       Start a Conversation
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </a>
   </section>
 
@@ -768,24 +672,5 @@
     </ul>
     <span class="footer-copy">© 2026 Prospector Labs</span>
   </footer>
-
-  <script>
-    // Animate stats on load
-    function animateValue(id, start, end, duration) {
-      const obj = document.getElementById(id);
-      if (!obj) return;
-      let startTimestamp = null;
-      const step = (timestamp) => {
-        if (!startTimestamp) startTimestamp = timestamp;
-        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-        obj.textContent = Math.floor(progress * (end - start) + start).toLocaleString();
-        if (progress < 1) window.requestAnimationFrame(step);
-      };
-      window.requestAnimationFrame(step);
-    }
-
-    // Run on load
-    setTimeout(() => animateValue('projectCount', 0, 35469, 2000), 500);
-  </script>
 </body>
 </html>
