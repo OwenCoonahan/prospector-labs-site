@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Grid Intelligence | Interconnection Due Diligence for Energy Investors</title>
-  <meta name="description" content="Risk analysis and due diligence for interconnection queue projects. Built for PE firms and infrastructure investors.">
+  <title>Grid Intelligence | Interconnection DD for Energy Infrastructure PE</title>
+  <meta name="description" content="Accelerate your interconnection queue due diligence. Risk scoring, timeline analysis, and developer benchmarking for PE firms and infrastructure funds.">
   <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -44,7 +44,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: var(--white);
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--gray-100);
     }
 
@@ -53,19 +54,6 @@
       font-weight: 600;
       letter-spacing: -0.02em;
     }
-
-    .nav-links {
-      display: flex;
-      gap: 32px;
-    }
-
-    .nav-links a {
-      font-size: 14px;
-      color: var(--gray-500);
-      transition: color 0.2s;
-    }
-
-    .nav-links a:hover { color: var(--black); }
 
     .nav-cta {
       font-size: 14px;
@@ -81,27 +69,24 @@
 
     /* HERO */
     .hero {
-      min-height: 80vh;
+      min-height: 85vh;
       position: relative;
-      overflow: hidden;
-      margin-top: 57px;
       display: flex;
       align-items: center;
+      margin-top: 57px;
     }
 
     .hero-bg {
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      background: url('https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1600&q=80') center/cover;
     }
 
-    .hero-grid-overlay {
+    .hero-bg::after {
+      content: '';
       position: absolute;
       inset: 0;
-      background-image: 
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 80px 80px;
+      background: linear-gradient(135deg, rgba(15,23,42,0.92) 0%, rgba(30,41,59,0.88) 100%);
     }
 
     .hero-content {
@@ -123,17 +108,17 @@
     }
 
     .hero h1 {
-      font-size: clamp(40px, 6vw, 64px);
+      font-size: clamp(36px, 5vw, 56px);
       font-weight: 500;
       letter-spacing: -0.03em;
       line-height: 1.1;
-      max-width: 900px;
+      max-width: 800px;
       margin-bottom: 24px;
     }
 
     .hero-subtitle {
       font-size: 18px;
-      color: rgba(255,255,255,0.6);
+      color: rgba(255,255,255,0.7);
       max-width: 600px;
       margin-bottom: 40px;
       line-height: 1.6;
@@ -157,8 +142,8 @@
       box-shadow: 0 8px 24px rgba(255,255,255,0.2);
     }
 
-    /* STATS BAND */
-    .stats-band {
+    /* STATS */
+    .stats {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       border-bottom: 1px solid var(--gray-200);
@@ -173,161 +158,183 @@
     .stat:last-child { border-right: none; }
 
     .stat-value {
-      font-size: 48px;
+      font-size: 40px;
       font-weight: 500;
       letter-spacing: -0.03em;
       margin-bottom: 8px;
       font-family: 'JetBrains Mono', monospace;
     }
 
-    .stat-value.danger {
-      color: #dc2626;
-    }
+    .stat-value.negative { color: #dc2626; }
 
     .stat-label {
       font-size: 13px;
       color: var(--gray-500);
-      letter-spacing: 0.05em;
     }
 
-    /* PRODUCTS */
-    .products {
+    /* PROBLEM */
+    .problem {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
     }
 
-    .product-card {
-      position: relative;
-      height: 380px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 32px;
-      color: var(--white);
-      transition: all 0.4s;
-      border-right: 1px solid rgba(255,255,255,0.1);
+    .problem-card {
+      padding: 48px 32px;
+      border-right: 1px solid var(--gray-200);
+      border-bottom: 1px solid var(--gray-200);
     }
 
-    .product-card:last-child {
-      border-right: none;
+    .problem-card:last-child { border-right: none; }
+
+    .problem-number {
+      font-size: 48px;
+      font-weight: 600;
+      color: var(--gray-200);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 16px;
     }
 
-    .product-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(transparent 30%, rgba(0,0,0,0.9));
-      z-index: 1;
-    }
-
-    .product-bg {
-      position: absolute;
-      inset: 0;
-      transition: transform 0.6s;
-    }
-
-    .product-card:hover .product-bg {
-      transform: scale(1.05);
-    }
-
-    .product-card:nth-child(1) .product-bg {
-      background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
-    }
-
-    .product-card:nth-child(2) .product-bg {
-      background: linear-gradient(135deg, #14532d 0%, #052e16 100%);
-    }
-
-    .product-card:nth-child(3) .product-bg {
-      background: linear-gradient(135deg, #581c87 0%, #2e1065 100%);
-    }
-
-    .product-content {
-      position: relative;
-      z-index: 2;
-    }
-
-    .product-label {
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.5);
+    .problem-card h3 {
+      font-size: 18px;
+      font-weight: 600;
       margin-bottom: 12px;
     }
 
-    .product-title {
-      font-size: 24px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      letter-spacing: -0.02em;
-    }
-
-    .product-desc {
-      font-size: 14px;
-      opacity: 0.7;
+    .problem-card p {
+      font-size: 15px;
+      color: var(--gray-600);
       line-height: 1.6;
     }
 
-    /* PROCESS */
-    .process {
-      padding: 100px 64px;
+    /* SHOWCASE */
+    .showcase {
       display: grid;
-      grid-template-columns: 350px 1fr;
-      gap: 80px;
-      max-width: 1400px;
-      margin: 0 auto;
+      grid-template-columns: 1fr 1fr;
     }
 
-    .process-header h2 {
-      font-size: 14px;
+    .showcase-image {
+      min-height: 500px;
+      background: url('https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=1000&q=80') center/cover;
+    }
+
+    .showcase-content {
+      padding: 80px 64px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .showcase-label {
+      font-size: 12px;
       font-weight: 500;
-      color: var(--gray-400);
+      letter-spacing: 0.15em;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
+      color: var(--gray-400);
       margin-bottom: 16px;
     }
 
-    .process-header p {
+    .showcase-content h2 {
+      font-size: 32px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    .showcase-content p {
+      font-size: 17px;
+      color: var(--gray-600);
+      margin-bottom: 32px;
+      line-height: 1.7;
+    }
+
+    .showcase-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .showcase-metric {
+      padding: 20px;
+      background: var(--gray-50);
+      border-radius: 8px;
+    }
+
+    .showcase-metric-value {
+      font-size: 28px;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 4px;
+    }
+
+    .showcase-metric-label {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+
+    /* DELIVERABLES */
+    .deliverables {
+      background: var(--gray-900);
+      color: var(--white);
+      padding: 80px 64px;
+    }
+
+    .deliverables-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .deliverables-header h2 {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gray-400);
+      margin-bottom: 12px;
+    }
+
+    .deliverables-header p {
       font-size: 28px;
       font-weight: 500;
       letter-spacing: -0.02em;
-      line-height: 1.4;
     }
 
-    .process-steps {
+    .deliverables-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 48px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
-    .step-number {
-      font-size: 64px;
+    .deliverable {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 28px;
+    }
+
+    .deliverable h3 {
+      font-size: 17px;
       font-weight: 600;
-      color: var(--gray-200);
-      line-height: 1;
-      margin-bottom: 16px;
-      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 10px;
     }
 
-    .step-title {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-
-    .step-desc {
+    .deliverable p {
       font-size: 14px;
-      color: var(--gray-500);
+      color: var(--gray-400);
       line-height: 1.6;
     }
 
     /* SAMPLE */
     .sample {
-      background: var(--gray-900);
-      color: var(--white);
       padding: 80px 64px;
+      background: var(--gray-50);
+    }
+
+    .sample-container {
+      max-width: 900px;
+      margin: 0 auto;
     }
 
     .sample-header {
@@ -336,11 +343,11 @@
     }
 
     .sample-header h2 {
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 500;
-      color: var(--gray-400);
+      letter-spacing: 0.15em;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
+      color: var(--gray-400);
       margin-bottom: 12px;
     }
 
@@ -351,17 +358,15 @@
     }
 
     .sample-card {
-      max-width: 800px;
-      margin: 0 auto;
       background: var(--white);
+      border: 1px solid var(--gray-200);
       border-radius: 12px;
       overflow: hidden;
-      color: var(--black);
     }
 
     .sample-card-header {
       background: var(--gray-100);
-      padding: 20px 24px;
+      padding: 20px 28px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -374,9 +379,9 @@
     }
 
     .sample-badge {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 600;
-      padding: 6px 14px;
+      padding: 6px 16px;
       background: #dcfce7;
       color: #166534;
       border-radius: 20px;
@@ -384,13 +389,13 @@
     }
 
     .sample-card-body {
-      padding: 24px;
+      padding: 28px;
     }
 
-    .sample-grid {
+    .sample-metrics {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
       margin-bottom: 24px;
     }
 
@@ -398,17 +403,18 @@
       padding: 16px;
       background: var(--gray-50);
       border-radius: 8px;
+      text-align: center;
     }
 
     .sample-metric-value {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 600;
       font-family: 'JetBrains Mono', monospace;
       margin-bottom: 4px;
     }
 
     .sample-metric-label {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--gray-500);
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -422,17 +428,10 @@
       font-size: 14px;
     }
 
-    .sample-row:last-child {
-      border-bottom: none;
-    }
+    .sample-row:last-child { border-bottom: none; }
 
-    .sample-row-label {
-      color: var(--gray-500);
-    }
-
-    .sample-row-value {
-      font-weight: 500;
-    }
+    .sample-row-label { color: var(--gray-500); }
+    .sample-row-value { font-weight: 500; }
 
     /* CTA */
     .cta {
@@ -443,9 +442,9 @@
     }
 
     .cta h2 {
-      font-size: clamp(32px, 5vw, 48px);
+      font-size: clamp(28px, 4vw, 40px);
       font-weight: 500;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.02em;
       margin-bottom: 16px;
     }
 
@@ -499,20 +498,27 @@
 
     /* RESPONSIVE */
     @media (max-width: 1024px) {
-      .stats-band { grid-template-columns: repeat(2, 1fr); }
+      .stats { grid-template-columns: repeat(2, 1fr); }
       .stat { border-bottom: 1px solid var(--gray-200); }
-      .products { grid-template-columns: 1fr; }
-      .product-card { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
-      .process { grid-template-columns: 1fr; gap: 48px; padding: 64px 32px; }
-      .process-steps { grid-template-columns: 1fr; }
-      .sample { padding: 64px 32px; }
-      .sample-grid { grid-template-columns: 1fr; }
+      .problem { grid-template-columns: 1fr; }
+      .problem-card { border-right: none; }
+      .showcase { grid-template-columns: 1fr; }
+      .showcase-image { min-height: 300px; }
+      .showcase-content { padding: 60px 32px; }
+      .deliverables { padding: 60px 32px; }
+      .deliverables-grid { grid-template-columns: repeat(2, 1fr); }
+      .sample { padding: 60px 32px; }
+      .sample-metrics { grid-template-columns: repeat(2, 1fr); }
     }
 
     @media (max-width: 768px) {
       nav { padding: 12px 24px; }
-      .nav-links { display: none; }
       .hero-content { padding: 60px 24px; }
+      .hero h1 { font-size: 32px; }
+      .showcase-content { padding: 48px 24px; }
+      .showcase-metrics { grid-template-columns: 1fr; }
+      .deliverables-grid { grid-template-columns: 1fr; }
+      .sample-metrics { grid-template-columns: 1fr; }
       .cta { padding: 64px 24px; }
       footer { flex-direction: column; gap: 16px; padding: 24px; }
     }
@@ -521,272 +527,171 @@
 <body>
 
   <nav>
-    <a href="/" class="nav-logo">Grid Intelligence</a>
-    <div class="nav-links">
-      <a href="#analysis">Analysis</a>
-      <a href="#process">Process</a>
-      <a href="#sample">Sample</a>
-    </div>
-    <a href="mailto:owen@prospectorlabs.io" class="nav-cta">Request Report</a>
+    <a href="/" class="nav-logo">Prospector Labs</a>
+    <a href="mailto:owen@prospectorlabs.io" class="nav-cta">Request Analysis</a>
   </nav>
 
   <!-- Hero -->
   <section class="hero">
     <div class="hero-bg"></div>
-    <div class="hero-grid-overlay"></div>
     <div class="hero-content">
-      <div class="hero-label">Interconnection Due Diligence</div>
-      <h1>The queue intelligence PE firms actually need</h1>
+      <div class="hero-label">For Energy Infrastructure PE</div>
+      <h1>Interconnection DD that's ready for your IC memo</h1>
       <p class="hero-subtitle">
-        2,600 GW sits in US interconnection queues. Most of it will never get built. We help you identify which projects are real—and which are noise.
+        We help infrastructure funds underwrite queue projects faster. Get the timeline analysis, developer benchmarks, and risk scoring your committee actually needs—delivered in days, not weeks.
       </p>
-      <a href="mailto:owen@prospectorlabs.io?subject=Interconnection DD Inquiry" class="hero-cta">
-        Request a Sample Report →
+      <a href="mailto:owen@prospectorlabs.io?subject=DD Inquiry" class="hero-cta">
+        Get a Sample Analysis →
       </a>
     </div>
   </section>
 
   <!-- Stats -->
-  <section class="stats-band">
+  <section class="stats">
     <div class="stat">
-      <div class="stat-value">2,600</div>
-      <div class="stat-label">Gigawatts in Queue</div>
+      <div class="stat-value">2-3 days</div>
+      <div class="stat-label">Typical Turnaround</div>
     </div>
     <div class="stat">
-      <div class="stat-value danger">~70%</div>
-      <div class="stat-label">Withdrawal Rate</div>
+      <div class="stat-value negative">~70%</div>
+      <div class="stat-label">Queue Withdrawal Rate</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">200-400 bps</div>
+      <div class="stat-label">IRR Impact per Year of Delay</div>
     </div>
     <div class="stat">
       <div class="stat-value">35K+</div>
-      <div class="stat-label">Projects Tracked</div>
-    </div>
-    <div class="stat">
-      <div class="stat-value">9</div>
-      <div class="stat-label">ISO Regions</div>
+      <div class="stat-label">Projects in Database</div>
     </div>
   </section>
 
-  <!-- Grid Visual -->
-  <section style="background: var(--gray-50); padding: 60px 64px; border-bottom: 1px solid var(--gray-200);">
-    <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(9, 1fr); gap: 12px; text-align: center;">
-      <div style="padding: 20px 12px; background: white; border: 1px solid var(--gray-200); border-radius: 8px;">
-        <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">PJM</div>
-        <div style="font-size: 12px; color: var(--gray-500); font-family: 'JetBrains Mono', monospace;">876 GW</div>
-      </div>
-      <div style="padding: 20px 12px; background: white; border: 1px solid var(--gray-200); border-radius: 8px;">
-        <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">MISO</div>
-        <div style="font-size: 12px; color: var(--gray-500); font-family: 'JetBrains Mono', monospace;">1,001 GW</div>
-      </div>
-      <div style="padding: 20px 12px; background: white; border: 1px solid var(--gray-200); border-radius: 8px;">
-        <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">ERCOT</div>
-        <div style="font-size: 12px; color: var(--gray-500); font-family: 'JetBrains Mono', monospace;">798 GW</div>
-      </div>
-      <div style="padding: 20px 12px; background: white; border: 1px solid var(--gray-200); border-radius: 8px;">
-        <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">CAISO</div>
-        <div style="font-size: 12px; color: var(--gray-500); font-family: 'JetBrains Mono', monospace;">708 GW</div>
-      </div>
-      <div style="padding: 20px 12px; background: white; border: 1px solid var(--gray-200); border-radius: 8px;">
-        <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">SPP</div>
-        <div style="font-size: 12px; color: var(--gray-500); font-family: 'JetBrains Mono', monospace;">581 GW</div>
-      </div>
-      <div style="padding: 20px 12px; background: white; border: 1px solid var(--gray-200); border-radius: 8px;">
-        <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">West</div>
-        <div style="font-size: 12px; color: var(--gray-500); font-family: 'JetBrains Mono', monospace;">1,133 GW</div>
-      </div>
-      <div style="padding: 20px 12px; background: white; border: 1px solid var(--gray-200); border-radius: 8px;">
-        <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">NYISO</div>
-        <div style="font-size: 12px; color: var(--gray-500); font-family: 'JetBrains Mono', monospace;">385 GW</div>
-      </div>
-      <div style="padding: 20px 12px; background: white; border: 1px solid var(--gray-200); border-radius: 8px;">
-        <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">ISO-NE</div>
-        <div style="font-size: 12px; color: var(--gray-500); font-family: 'JetBrains Mono', monospace;">206 GW</div>
-      </div>
-      <div style="padding: 20px 12px; background: white; border: 1px solid var(--gray-200); border-radius: 8px;">
-        <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">Southeast</div>
-        <div style="font-size: 12px; color: var(--gray-500); font-family: 'JetBrains Mono', monospace;">636 GW</div>
-      </div>
+  <!-- Problem -->
+  <section class="problem">
+    <div class="problem-card">
+      <div class="problem-number">01</div>
+      <h3>Timeline Risk is Mispriced</h3>
+      <p>Average queue timelines have doubled since 2020. Most IRR models don't stress-test for 3-4 year delays—but that's now the median case in congested regions.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-number">02</div>
+      <h3>IC Costs are Blowing Up</h3>
+      <p>Interconnection costs running 2-3x over initial estimates. Projects with IC above 15% of total dev cost have materially higher withdrawal rates.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-number">03</div>
+      <h3>Developer Quality Varies 5x</h3>
+      <p>Top-quartile developers complete 70%+ of projects. Bottom-quartile are below 20%. The sponsor matters more than the project economics.</p>
     </div>
   </section>
 
-  <!-- Products -->
-  <section class="products" id="analysis">
-    <div class="product-card">
-      <div class="product-bg"></div>
-      <div class="product-content">
-        <div class="product-label">Risk Analysis</div>
-        <h3 class="product-title">Project Scoring</h3>
-        <p class="product-desc">100-point risk model covering timeline probability, developer track record, POI congestion, and market factors.</p>
-      </div>
-    </div>
-    <div class="product-card">
-      <div class="product-bg"></div>
-      <div class="product-content">
-        <div class="product-label">Developer Intelligence</div>
-        <h3 class="product-title">Track Record Analysis</h3>
-        <p class="product-desc">Completion rates, portfolio size, regional experience, and historical performance benchmarking.</p>
-      </div>
-    </div>
-    <div class="product-card">
-      <div class="product-bg"></div>
-      <div class="product-content">
-        <div class="product-label">Market Context</div>
-        <h3 class="product-title">ISO Deep Dives</h3>
-        <p class="product-desc">Queue dynamics, policy impacts, interconnection cost trends, and competitive landscape by region.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Why Us -->
-  <section style="padding: 100px 64px; background: white;">
-    <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;">
-      <div>
-        <div style="font-size: 14px; font-weight: 500; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px;">Our Edge</div>
-        <h2 style="font-size: 36px; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 24px; line-height: 1.2;">We've already done the hard work</h2>
-        <p style="font-size: 17px; color: var(--gray-600); margin-bottom: 20px; line-height: 1.7;">
-          Most firms start from scratch on every project. We've built the infrastructure—data pipelines from all 9 ISOs, developer track records going back 10+ years, and probabilistic models trained on actual outcomes.
-        </p>
-        <p style="font-size: 17px; color: var(--gray-600); line-height: 1.7;">
-          That means we deliver institutional-quality analysis in days, not weeks. And because we're constantly updating our database, you get the most current view of the market.
-        </p>
-      </div>
-      <div style="background: var(--gray-900); border-radius: 12px; padding: 32px; color: white;">
-        <div style="font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-400); margin-bottom: 24px;">Data Infrastructure</div>
-        <div style="display: flex; flex-direction: column; gap: 16px;">
-          <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: rgba(255,255,255,0.05); border-radius: 8px;">
-            <div style="width: 44px; height: 44px; background: rgba(59,130,246,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center;">⚡</div>
-            <div>
-              <div style="font-weight: 500; margin-bottom: 2px;">Real-Time Queue Feeds</div>
-              <div style="font-size: 13px; color: var(--gray-400);">Daily updates from all major ISOs</div>
-            </div>
-          </div>
-          <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: rgba(255,255,255,0.05); border-radius: 8px;">
-            <div style="width: 44px; height: 44px; background: rgba(16,185,129,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center;">📊</div>
-            <div>
-              <div style="font-weight: 500; margin-bottom: 2px;">10+ Years Historical Data</div>
-              <div style="font-size: 13px; color: var(--gray-400);">Project outcomes for cohort analysis</div>
-            </div>
-          </div>
-          <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: rgba(255,255,255,0.05); border-radius: 8px;">
-            <div style="width: 44px; height: 44px; background: rgba(245,158,11,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center;">🏗️</div>
-            <div>
-              <div style="font-weight: 500; margin-bottom: 2px;">500+ Developer Profiles</div>
-              <div style="font-size: 13px; color: var(--gray-400);">Track records and completion rates</div>
-            </div>
-          </div>
-          <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: rgba(255,255,255,0.05); border-radius: 8px;">
-            <div style="width: 44px; height: 44px; background: rgba(139,92,246,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center;">🔌</div>
-            <div>
-              <div style="font-weight: 500; margin-bottom: 2px;">POI Congestion Mapping</div>
-              <div style="font-size: 13px; color: var(--gray-400);">Every substation analyzed</div>
-            </div>
-          </div>
+  <!-- Showcase -->
+  <section class="showcase">
+    <div class="showcase-image"></div>
+    <div class="showcase-content">
+      <div class="showcase-label">Your ROI</div>
+      <h2>Institutional-quality analysis without the overhead</h2>
+      <p>
+        Building this capability in-house means hiring analysts, acquiring data feeds, and months of ramp time. We've already done it—you get the output on demand.
+      </p>
+      <div class="showcase-metrics">
+        <div class="showcase-metric">
+          <div class="showcase-metric-value">80%</div>
+          <div class="showcase-metric-label">Faster than internal DD</div>
+        </div>
+        <div class="showcase-metric">
+          <div class="showcase-metric-value">$5-10K</div>
+          <div class="showcase-metric-label">Per project analysis</div>
+        </div>
+        <div class="showcase-metric">
+          <div class="showcase-metric-value">10+ yrs</div>
+          <div class="showcase-metric-label">Historical data</div>
+        </div>
+        <div class="showcase-metric">
+          <div class="showcase-metric-value">9 ISOs</div>
+          <div class="showcase-metric-label">Full US coverage</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Deep Dive Analysis -->
-  <section style="padding: 100px 64px; background: var(--gray-50); border-top: 1px solid var(--gray-200); border-bottom: 1px solid var(--gray-200);">
-    <div style="max-width: 1200px; margin: 0 auto;">
-      <div style="text-align: center; margin-bottom: 60px;">
-        <div style="font-size: 14px; font-weight: 500; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">What We Analyze</div>
-        <h2 style="font-size: 32px; font-weight: 500; letter-spacing: -0.02em;">Every factor that determines project success</h2>
-      </div>
-      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;">
-        <div style="background: white; border: 1px solid var(--gray-200); border-radius: 12px; padding: 28px;">
-          <div style="font-size: 28px; margin-bottom: 16px;">📈</div>
-          <h3 style="font-size: 17px; font-weight: 600; margin-bottom: 8px;">Timeline Modeling</h3>
-          <p style="font-size: 14px; color: var(--gray-500); line-height: 1.6;">P10-P90 probability distributions based on historical cohort performance. Stress-test your IRR.</p>
-        </div>
-        <div style="background: white; border: 1px solid var(--gray-200); border-radius: 12px; padding: 28px;">
-          <div style="font-size: 28px; margin-bottom: 16px;">🏢</div>
-          <h3 style="font-size: 17px; font-weight: 600; margin-bottom: 8px;">Developer Scoring</h3>
-          <p style="font-size: 14px; color: var(--gray-500); line-height: 1.6;">Completion rates, regional experience, portfolio analysis. Know who you're backing.</p>
-        </div>
-        <div style="background: white; border: 1px solid var(--gray-200); border-radius: 12px; padding: 28px;">
-          <div style="font-size: 28px; margin-bottom: 16px;">🔌</div>
-          <h3 style="font-size: 17px; font-weight: 600; margin-bottom: 8px;">POI Analysis</h3>
-          <p style="font-size: 14px; color: var(--gray-500); line-height: 1.6;">Substation congestion, competing projects, upgrade requirements, historical success.</p>
-        </div>
-        <div style="background: white; border: 1px solid var(--gray-200); border-radius: 12px; padding: 28px;">
-          <div style="font-size: 28px; margin-bottom: 16px;">💰</div>
-          <h3 style="font-size: 17px; font-weight: 600; margin-bottom: 8px;">Cost Benchmarking</h3>
-          <p style="font-size: 14px; color: var(--gray-500); line-height: 1.6;">IC as % of dev cost, upgrade risk flags, comparable project analysis.</p>
-        </div>
-      </div>
+  <!-- Deliverables -->
+  <section class="deliverables">
+    <div class="deliverables-header">
+      <h2>What You Get</h2>
+      <p>Everything your IC needs to assess interconnection risk</p>
     </div>
-  </section>
-
-  <!-- Process -->
-  <section class="process" id="process">
-    <div class="process-header">
-      <h2>How It Works</h2>
-      <p>From project ID to investment memo in days</p>
-    </div>
-    <div class="process-steps">
-      <div class="step">
-        <div class="step-number">01</div>
-        <h3 class="step-title">Send Project Details</h3>
-        <p class="step-desc">Queue ID, project name, or basic parameters. We'll locate it in our database.</p>
+    <div class="deliverables-grid">
+      <div class="deliverable">
+        <h3>Risk Score (0-100)</h3>
+        <p>Weighted scoring across timeline, developer, POI congestion, and market factors. Benchmarked against historical outcomes.</p>
       </div>
-      <div class="step">
-        <div class="step-number">02</div>
-        <h3 class="step-title">We Run Analysis</h3>
-        <p class="step-desc">Full risk assessment, timeline modeling, developer benchmarking, POI analysis.</p>
+      <div class="deliverable">
+        <h3>Timeline Scenarios</h3>
+        <p>P10/P25/P50/P75/P90 distributions for your IRR sensitivity analysis. Based on real cohort completion data.</p>
       </div>
-      <div class="step">
-        <div class="step-number">03</div>
-        <h3 class="step-title">Receive Report</h3>
-        <p class="step-desc">Institutional-quality deliverable ready for IC. HTML, PDF, or data feed.</p>
+      <div class="deliverable">
+        <h3>Developer Analysis</h3>
+        <p>Completion rates, average timelines, regional experience, current portfolio stress for every sponsor.</p>
+      </div>
+      <div class="deliverable">
+        <h3>POI & Market</h3>
+        <p>Competing projects at the substation, upgrade requirements, congestion pricing, policy impacts.</p>
       </div>
     </div>
   </section>
 
   <!-- Sample -->
-  <section class="sample" id="sample">
-    <div class="sample-header">
-      <h2>Sample Output</h2>
-      <p>What you get in every analysis</p>
-    </div>
-    <div class="sample-card">
-      <div class="sample-card-header">
-        <h3>Project J4075 — MISO Battery 300MW</h3>
-        <span class="sample-badge">Score: 68/100</span>
+  <section class="sample">
+    <div class="sample-container">
+      <div class="sample-header">
+        <h2>Sample Output</h2>
+        <p>What the deliverable looks like</p>
       </div>
-      <div class="sample-card-body">
-        <div class="sample-grid">
-          <div class="sample-metric">
-            <div class="sample-metric-value">3.4 yrs</div>
-            <div class="sample-metric-label">P50 Timeline</div>
+      <div class="sample-card">
+        <div class="sample-card-header">
+          <h3>ERCOT Solar — 250 MW</h3>
+          <span class="sample-badge">Score: 68/100</span>
+        </div>
+        <div class="sample-card-body">
+          <div class="sample-metrics">
+            <div class="sample-metric">
+              <div class="sample-metric-value">3.8 yrs</div>
+              <div class="sample-metric-label">P50 Timeline</div>
+            </div>
+            <div class="sample-metric">
+              <div class="sample-metric-value">74%</div>
+              <div class="sample-metric-label">Dev Completion</div>
+            </div>
+            <div class="sample-metric">
+              <div class="sample-metric-value">6.4%</div>
+              <div class="sample-metric-label">IC / Dev Cost</div>
+            </div>
+            <div class="sample-metric">
+              <div class="sample-metric-value">12</div>
+              <div class="sample-metric-label">POI Competitors</div>
+            </div>
           </div>
-          <div class="sample-metric">
-            <div class="sample-metric-value">72%</div>
-            <div class="sample-metric-label">Dev Completion Rate</div>
+          <div class="sample-row">
+            <span class="sample-row-label">Developer</span>
+            <span class="sample-row-value">7X Energy</span>
           </div>
-          <div class="sample-metric">
-            <div class="sample-metric-value">8</div>
-            <div class="sample-metric-label">Competing Projects at POI</div>
+          <div class="sample-row">
+            <span class="sample-row-label">Queue Position</span>
+            <span class="sample-row-value">#189 of 1,258 active</span>
           </div>
-        </div>
-        <div class="sample-row">
-          <span class="sample-row-label">Developer</span>
-          <span class="sample-row-value">Invenergy</span>
-        </div>
-        <div class="sample-row">
-          <span class="sample-row-label">Queue Position</span>
-          <span class="sample-row-value">#234 of 1,107 active</span>
-        </div>
-        <div class="sample-row">
-          <span class="sample-row-label">IC as % of Dev Cost</span>
-          <span class="sample-row-value">8.2%</span>
-        </div>
-        <div class="sample-row">
-          <span class="sample-row-label">Historical COD Hit Rate (Region)</span>
-          <span class="sample-row-value">34%</span>
-        </div>
-        <div class="sample-row">
-          <span class="sample-row-label">Recommendation</span>
-          <span class="sample-row-value" style="color: #16a34a; font-weight: 600;">Proceed — monitor IC costs</span>
+          <div class="sample-row">
+            <span class="sample-row-label">P10 Timeline (Upside)</span>
+            <span class="sample-row-value">2.4 years</span>
+          </div>
+          <div class="sample-row">
+            <span class="sample-row-label">P90 Timeline (Downside)</span>
+            <span class="sample-row-value">5.8 years</span>
+          </div>
+          <div class="sample-row">
+            <span class="sample-row-label">Recommendation</span>
+            <span class="sample-row-value" style="color: #16a34a; font-weight: 600;">Proceed with standard terms</span>
+          </div>
         </div>
       </div>
     </div>
@@ -794,14 +699,14 @@
 
   <!-- CTA -->
   <section class="cta">
-    <h2>Get started in 24 hours</h2>
-    <p>Send us a project. We'll send you a sample analysis.</p>
-    <a href="mailto:owen@prospectorlabs.io?subject=Sample Report Request" class="cta-btn">Request Sample Report</a>
+    <h2>Try it on a live deal</h2>
+    <p>Send us a queue ID or project name. We'll show you what we can deliver.</p>
+    <a href="mailto:owen@prospectorlabs.io?subject=Sample Analysis Request" class="cta-btn">Request Sample Analysis</a>
   </section>
 
   <!-- Footer -->
   <footer>
-    <span>© 2026 Prospector Labs / Grid Intelligence</span>
+    <span>© 2026 Prospector Labs</span>
     <div class="footer-links">
       <a href="https://prospectorlabs.io">Prospector Labs</a>
       <a href="https://owencoonahan.github.io/prospector-data-tools/">Data Tools</a>

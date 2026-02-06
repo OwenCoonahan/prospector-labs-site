@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interconnection Due Diligence | Grid Intelligence for Energy Investors</title>
-  <meta name="description" content="Due diligence and risk analysis for interconnection queue projects. Built for PE firms and infrastructure investors.">
+  <title>Interconnection Due Diligence | For Energy Infrastructure Investors</title>
+  <meta name="description" content="Accelerate your interconnection queue due diligence. Risk scoring, timeline analysis, and developer benchmarking for PE firms and infrastructure funds.">
   <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
@@ -22,7 +22,6 @@
       --gray-800: #262626;
       --gray-900: #171717;
       --accent: #2563eb;
-      --accent-dark: #1d4ed8;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -59,14 +58,6 @@
       font-size: 15px;
       font-weight: 600;
       letter-spacing: -0.02em;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .nav-logo span {
-      color: var(--gray-400);
-      font-weight: 400;
     }
 
     .nav-cta {
@@ -83,14 +74,13 @@
 
     /* HERO */
     .hero {
-      padding: 100px 0 80px;
-      border-bottom: 1px solid var(--gray-200);
+      padding: 80px 0 60px;
     }
 
     .hero-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 80px;
+      gap: 60px;
       align-items: center;
     }
 
@@ -104,18 +94,18 @@
     }
 
     .hero h1 {
-      font-size: 48px;
+      font-size: 44px;
       font-weight: 600;
       letter-spacing: -0.03em;
       line-height: 1.1;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .hero-subtitle {
       font-size: 18px;
       color: var(--gray-600);
-      margin-bottom: 32px;
-      max-width: 500px;
+      margin-bottom: 28px;
+      line-height: 1.6;
     }
 
     .hero-cta {
@@ -133,58 +123,51 @@
 
     .hero-cta:hover {
       background: var(--gray-800);
-      transform: translateY(-1px);
     }
 
-    .hero-visual {
-      background: var(--gray-900);
+    .hero-image {
       border-radius: 12px;
-      padding: 32px;
-      color: var(--white);
+      overflow: hidden;
+      aspect-ratio: 4/3;
+      background: url('https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=800&q=80') center/cover;
     }
 
-    .hero-stat-grid {
+    /* STATS */
+    .stats {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--gray-200);
+      border-bottom: 1px solid var(--gray-200);
     }
 
-    .hero-stat {
-      padding: 20px;
-      background: rgba(255,255,255,0.05);
-      border-radius: 8px;
+    .stat {
+      padding: 40px 24px;
+      text-align: center;
+      border-right: 1px solid var(--gray-200);
     }
 
-    .hero-stat-value {
+    .stat:last-child { border-right: none; }
+
+    .stat-value {
       font-size: 36px;
       font-weight: 600;
-      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: -0.02em;
       margin-bottom: 4px;
+      font-family: 'JetBrains Mono', monospace;
     }
 
-    .hero-stat-label {
+    .stat-value.negative { color: #dc2626; }
+    .stat-value.positive { color: #16a34a; }
+
+    .stat-label {
       font-size: 13px;
-      color: var(--gray-400);
-    }
-
-    .hero-stat.highlight {
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-    }
-
-    .hero-stat.highlight .hero-stat-value {
-      color: #fca5a5;
+      color: var(--gray-500);
     }
 
     /* PROBLEM */
     .problem {
       padding: 80px 0;
       background: var(--gray-50);
-    }
-
-    .problem-header {
-      text-align: center;
-      margin-bottom: 60px;
     }
 
     .section-label {
@@ -197,48 +180,36 @@
     }
 
     .section-title {
-      font-size: 36px;
+      font-size: 32px;
       font-weight: 600;
       letter-spacing: -0.02em;
       margin-bottom: 16px;
     }
 
     .section-subtitle {
-      font-size: 18px;
+      font-size: 17px;
       color: var(--gray-600);
       max-width: 600px;
-      margin: 0 auto;
     }
 
     .problem-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 32px;
+      gap: 24px;
+      margin-top: 48px;
     }
 
     .problem-card {
       background: var(--white);
       border: 1px solid var(--gray-200);
       border-radius: 12px;
-      padding: 32px;
-    }
-
-    .problem-icon {
-      width: 48px;
-      height: 48px;
-      background: var(--gray-100);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      margin-bottom: 20px;
+      padding: 28px;
     }
 
     .problem-card h3 {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 600;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .problem-card p {
@@ -247,234 +218,231 @@
       line-height: 1.6;
     }
 
-    /* SOLUTION */
-    .solution {
+    /* ROI */
+    .roi {
       padding: 80px 0;
     }
 
-    .solution-grid {
+    .roi-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 60px;
       align-items: center;
     }
 
-    .solution-content h2 {
-      font-size: 36px;
+    .roi-image {
+      border-radius: 12px;
+      overflow: hidden;
+      aspect-ratio: 4/3;
+      background: url('https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&q=80') center/cover;
+    }
+
+    .roi-content h2 {
+      font-size: 32px;
       font-weight: 600;
       letter-spacing: -0.02em;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
-    .solution-content p {
+    .roi-content p {
       font-size: 17px;
       color: var(--gray-600);
-      margin-bottom: 32px;
+      margin-bottom: 28px;
+      line-height: 1.7;
     }
 
-    .solution-list {
-      list-style: none;
+    .roi-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
     }
 
-    .solution-list li {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--gray-100);
-    }
-
-    .solution-list li:last-child {
-      border-bottom: none;
-    }
-
-    .check-icon {
-      width: 20px;
-      height: 20px;
-      background: var(--accent);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 12px;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-
-    .solution-visual {
-      background: var(--gray-900);
-      border-radius: 12px;
-      padding: 24px;
-      color: var(--white);
-    }
-
-    .report-preview {
-      background: var(--white);
-      border-radius: 8px;
-      overflow: hidden;
-    }
-
-    .report-header {
-      background: var(--gray-100);
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--gray-200);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .report-header h4 {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--black);
-    }
-
-    .report-badge {
-      font-size: 11px;
-      font-weight: 600;
-      padding: 4px 10px;
-      background: #dcfce7;
-      color: #166534;
-      border-radius: 20px;
-    }
-
-    .report-badge.warning {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .report-body {
+    .roi-metric {
       padding: 20px;
-      color: var(--black);
+      background: var(--gray-50);
+      border-radius: 8px;
     }
 
-    .report-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--gray-100);
+    .roi-metric-value {
+      font-size: 28px;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 4px;
+    }
+
+    .roi-metric-label {
       font-size: 13px;
-    }
-
-    .report-row:last-child {
-      border-bottom: none;
-    }
-
-    .report-label {
       color: var(--gray-500);
     }
 
-    .report-value {
-      font-weight: 500;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    /* DELIVERABLES */
-    .deliverables {
+    /* SOLUTION */
+    .solution {
       padding: 80px 0;
       background: var(--gray-900);
       color: var(--white);
     }
 
-    .deliverables .section-label {
-      color: var(--gray-400);
-    }
+    .solution .section-label { color: var(--gray-400); }
+    .solution .section-title { color: var(--white); }
+    .solution .section-subtitle { color: var(--gray-400); }
 
-    .deliverables .section-title {
-      color: var(--white);
-    }
-
-    .deliverables .section-subtitle {
-      color: var(--gray-400);
-    }
-
-    .deliverables-grid {
+    .solution-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 24px;
-      margin-top: 60px;
+      margin-top: 48px;
     }
 
-    .deliverable-card {
+    .solution-card {
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 12px;
       padding: 28px;
     }
 
-    .deliverable-card h3 {
-      font-size: 18px;
+    .solution-card h3 {
+      font-size: 17px;
       font-weight: 600;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
-    .deliverable-card p {
+    .solution-card p {
       font-size: 14px;
       color: var(--gray-400);
       line-height: 1.6;
     }
 
-    /* CLIENTS */
-    .clients {
+    /* SAMPLE */
+    .sample {
       padding: 80px 0;
+    }
+
+    .sample-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      margin-top: 48px;
+    }
+
+    .sample-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .sample-header {
+      background: var(--gray-100);
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       border-bottom: 1px solid var(--gray-200);
     }
 
-    .clients-header {
-      text-align: center;
-      margin-bottom: 48px;
-    }
-
-    .clients-header p {
-      font-size: 14px;
-      color: var(--gray-500);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-
-    .client-types {
-      display: flex;
-      justify-content: center;
-      gap: 48px;
-      flex-wrap: wrap;
-    }
-
-    .client-type {
-      text-align: center;
-    }
-
-    .client-type-icon {
-      width: 64px;
-      height: 64px;
-      background: var(--gray-100);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      margin: 0 auto 12px;
-    }
-
-    .client-type h4 {
+    .sample-header h3 {
       font-size: 15px;
       font-weight: 600;
+    }
+
+    .sample-badge {
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 14px;
+      background: #dcfce7;
+      color: #166534;
+      border-radius: 20px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .sample-body {
+      padding: 24px;
+    }
+
+    .sample-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .sample-metric {
+      padding: 16px;
+      background: var(--gray-50);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .sample-metric-value {
+      font-size: 20px;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
       margin-bottom: 4px;
     }
 
-    .client-type p {
-      font-size: 13px;
+    .sample-metric-label {
+      font-size: 11px;
       color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .sample-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--gray-100);
+      font-size: 14px;
+    }
+
+    .sample-row:last-child { border-bottom: none; }
+
+    .sample-row-label { color: var(--gray-500); }
+    .sample-row-value { font-weight: 500; }
+
+    .sample-content h2 {
+      font-size: 32px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+
+    .sample-content p {
+      font-size: 17px;
+      color: var(--gray-600);
+      margin-bottom: 24px;
+      line-height: 1.7;
+    }
+
+    .sample-list {
+      list-style: none;
+    }
+
+    .sample-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 0;
+      font-size: 15px;
+      color: var(--gray-700);
+    }
+
+    .sample-list li::before {
+      content: '→';
+      color: var(--accent);
+      font-weight: 600;
     }
 
     /* CTA */
     .cta {
       padding: 100px 0;
+      background: var(--gray-50);
       text-align: center;
     }
 
     .cta h2 {
-      font-size: 42px;
+      font-size: 36px;
       font-weight: 600;
       letter-spacing: -0.02em;
       margin-bottom: 16px;
@@ -505,10 +473,7 @@
       transition: all 0.2s;
     }
 
-    .cta-primary:hover {
-      background: var(--gray-800);
-      transform: translateY(-1px);
-    }
+    .cta-primary:hover { background: var(--gray-800); }
 
     .cta-secondary {
       font-size: 15px;
@@ -521,10 +486,7 @@
       transition: all 0.2s;
     }
 
-    .cta-secondary:hover {
-      border-color: var(--gray-400);
-      background: var(--gray-50);
-    }
+    .cta-secondary:hover { border-color: var(--gray-400); }
 
     /* FOOTER */
     footer {
@@ -554,27 +516,25 @@
       transition: color 0.2s;
     }
 
-    .footer-links a:hover {
-      color: var(--black);
-    }
+    .footer-links a:hover { color: var(--black); }
 
     /* RESPONSIVE */
     @media (max-width: 1024px) {
-      .hero-grid { grid-template-columns: 1fr; gap: 48px; }
+      .hero-grid, .roi-grid, .sample-grid { grid-template-columns: 1fr; gap: 40px; }
       .problem-grid { grid-template-columns: 1fr; }
-      .solution-grid { grid-template-columns: 1fr; }
-      .deliverables-grid { grid-template-columns: repeat(2, 1fr); }
+      .solution-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .stat { border-bottom: 1px solid var(--gray-200); }
     }
 
     @media (max-width: 768px) {
-      .hero { padding: 60px 0; }
-      .hero h1 { font-size: 36px; }
-      .hero-stat-grid { grid-template-columns: 1fr; }
-      .section-title { font-size: 28px; }
-      .deliverables-grid { grid-template-columns: 1fr; }
-      .client-types { gap: 32px; }
-      .cta h2 { font-size: 32px; }
-      .cta-buttons { flex-direction: column; }
+      .hero { padding: 60px 0 40px; }
+      .hero h1 { font-size: 32px; }
+      .section-title { font-size: 26px; }
+      .solution-grid { grid-template-columns: 1fr; }
+      .sample-metrics { grid-template-columns: 1fr; }
+      .cta h2 { font-size: 28px; }
+      .cta-buttons { flex-direction: column; align-items: center; }
       footer .container { flex-direction: column; gap: 16px; text-align: center; }
     }
   </style>
@@ -583,10 +543,8 @@
 
   <nav>
     <div class="container">
-      <a href="/" class="nav-logo">
-        Prospector Labs <span>/ Grid Intelligence</span>
-      </a>
-      <a href="mailto:owen@prospectorlabs.io" class="nav-cta">Get in Touch</a>
+      <a href="/" class="nav-logo">Prospector Labs</a>
+      <a href="mailto:owen@prospectorlabs.io" class="nav-cta">Request Analysis</a>
     </div>
   </nav>
 
@@ -594,81 +552,95 @@
   <section class="hero">
     <div class="container">
       <div class="hero-grid">
-        <div class="hero-content">
+        <div>
           <div class="hero-label">Interconnection Due Diligence</div>
-          <h1>Know which projects will actually get built</h1>
+          <h1>Cut your DD timeline from weeks to days</h1>
           <p class="hero-subtitle">
-            We analyze interconnection queue projects for PE firms and infrastructure investors. Risk scoring, timeline analysis, and developer benchmarking—so you can invest with confidence.
+            We help energy infrastructure investors underwrite interconnection queue projects faster—with the data and analysis you'd build internally, delivered on demand.
           </p>
-          <a href="mailto:owen@prospectorlabs.io?subject=Interconnection DD Inquiry" class="hero-cta">
-            Request a Sample Report →
+          <a href="mailto:owen@prospectorlabs.io?subject=DD Inquiry" class="hero-cta">
+            Get a Sample Analysis →
           </a>
         </div>
-        <div class="hero-visual">
-          <div style="margin-bottom: 20px; padding: 16px; background: rgba(255,255,255,0.05); border-radius: 8px; border-left: 3px solid #3b82f6;">
-            <div style="font-size: 12px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px;">Live Queue Status</div>
-            <div style="font-size: 14px; color: rgba(255,255,255,0.8);">Tracking all 9 US ISOs in real-time</div>
-          </div>
-          <div class="hero-stat-grid">
-            <div class="hero-stat">
-              <div class="hero-stat-value">2,600 GW</div>
-              <div class="hero-stat-label">In US Interconnection Queues</div>
-            </div>
-            <div class="hero-stat highlight">
-              <div class="hero-stat-value">~70%</div>
-              <div class="hero-stat-label">Will Never Get Built</div>
-            </div>
-            <div class="hero-stat">
-              <div class="hero-stat-value">35,000+</div>
-              <div class="hero-stat-label">Projects We Track</div>
-            </div>
-            <div class="hero-stat">
-              <div class="hero-stat-value">9 ISOs</div>
-              <div class="hero-stat-label">Full Coverage</div>
-            </div>
-          </div>
-          <!-- Mini grid visualization -->
-          <div style="margin-top: 20px; display: flex; gap: 4px; flex-wrap: wrap;">
-            <span style="padding: 6px 10px; background: rgba(59,130,246,0.3); border-radius: 4px; font-size: 11px; font-family: 'JetBrains Mono', monospace;">PJM</span>
-            <span style="padding: 6px 10px; background: rgba(59,130,246,0.25); border-radius: 4px; font-size: 11px; font-family: 'JetBrains Mono', monospace;">MISO</span>
-            <span style="padding: 6px 10px; background: rgba(59,130,246,0.2); border-radius: 4px; font-size: 11px; font-family: 'JetBrains Mono', monospace;">ERCOT</span>
-            <span style="padding: 6px 10px; background: rgba(59,130,246,0.15); border-radius: 4px; font-size: 11px; font-family: 'JetBrains Mono', monospace;">CAISO</span>
-            <span style="padding: 6px 10px; background: rgba(59,130,246,0.15); border-radius: 4px; font-size: 11px; font-family: 'JetBrains Mono', monospace;">SPP</span>
-            <span style="padding: 6px 10px; background: rgba(59,130,246,0.1); border-radius: 4px; font-size: 11px; font-family: 'JetBrains Mono', monospace;">NYISO</span>
-            <span style="padding: 6px 10px; background: rgba(59,130,246,0.1); border-radius: 4px; font-size: 11px; font-family: 'JetBrains Mono', monospace;">ISO-NE</span>
-            <span style="padding: 6px 10px; background: rgba(59,130,246,0.1); border-radius: 4px; font-size: 11px; font-family: 'JetBrains Mono', monospace;">West</span>
-            <span style="padding: 6px 10px; background: rgba(59,130,246,0.1); border-radius: 4px; font-size: 11px; font-family: 'JetBrains Mono', monospace;">Southeast</span>
-          </div>
-        </div>
+        <div class="hero-image"></div>
       </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="stats">
+    <div class="stat">
+      <div class="stat-value">2-3 days</div>
+      <div class="stat-label">Typical Turnaround</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value negative">~70%</div>
+      <div class="stat-label">Queue Withdrawal Rate</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">35K+</div>
+      <div class="stat-label">Projects in Database</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">9</div>
+      <div class="stat-label">ISOs Covered</div>
     </div>
   </section>
 
   <!-- Problem -->
   <section class="problem">
     <div class="container">
-      <div class="problem-header">
-        <div class="section-label">The Challenge</div>
-        <h2 class="section-title">Energy deals are getting harder to underwrite</h2>
-        <p class="section-subtitle">
-          Interconnection queues are congested, timelines are slipping, and most projects fail. You need better intel.
-        </p>
-      </div>
+      <div class="section-label">The Challenge</div>
+      <h2 class="section-title">Queue risk is the #1 deal killer in energy</h2>
+      <p class="section-subtitle">
+        You've seen the headlines—interconnection backlogs, developer defaults, IC cost blowouts. The projects that look good on paper often never reach COD.
+      </p>
       <div class="problem-grid">
         <div class="problem-card">
-          <div class="problem-icon">📊</div>
-          <h3>Opaque Queue Data</h3>
-          <p>ISO queue data is scattered, inconsistent, and hard to analyze. Getting a clear picture requires weeks of manual work.</p>
+          <h3>Timeline Slippage = IRR Erosion</h3>
+          <p>Average queue timelines have doubled since 2020. Every year of delay costs 200-400 bps on your IRR. Your base case needs stress testing.</p>
         </div>
         <div class="problem-card">
-          <div class="problem-icon">⏱️</div>
-          <h3>Timeline Risk</h3>
-          <p>Average interconnection timelines have doubled. Projects routinely miss COD by 2-4 years. Your IRR models are wrong.</p>
+          <h3>IC Cost Surprises</h3>
+          <p>Interconnection costs are running 2-3x over initial estimates. Projects with IC above 15% of total dev cost have materially higher failure rates.</p>
         </div>
         <div class="problem-card">
-          <div class="problem-icon">🎯</div>
-          <h3>Developer Quality</h3>
-          <p>Not all developers are equal. Some have 80% completion rates, others have 5%. You need to know which is which.</p>
+          <h3>Developer Track Records Vary Wildly</h3>
+          <p>Top-quartile developers complete 70%+ of projects. Bottom-quartile developers are below 20%. The name on the deal matters.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROI -->
+  <section class="roi">
+    <div class="container">
+      <div class="roi-grid">
+        <div class="roi-image"></div>
+        <div class="roi-content">
+          <div class="section-label">Your ROI</div>
+          <h2>Better intel = better allocation</h2>
+          <p>
+            Every queue project your team analyzes takes 2-4 weeks and pulls resources from higher-value work. We've already built the data infrastructure—you get institutional-quality analysis without the overhead.
+          </p>
+          <div class="roi-metrics">
+            <div class="roi-metric">
+              <div class="roi-metric-value">80%</div>
+              <div class="roi-metric-label">Faster than internal DD</div>
+            </div>
+            <div class="roi-metric">
+              <div class="roi-metric-value">$5-10K</div>
+              <div class="roi-metric-label">Per project analysis</div>
+            </div>
+            <div class="roi-metric">
+              <div class="roi-metric-value">10+ yrs</div>
+              <div class="roi-metric-label">Historical completion data</div>
+            </div>
+            <div class="roi-metric">
+              <div class="roi-metric-value">500+</div>
+              <div class="roi-metric-label">Developer track records</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -677,361 +649,93 @@
   <!-- Solution -->
   <section class="solution">
     <div class="container">
+      <div class="section-label">What You Get</div>
+      <h2 class="section-title">IC-memo-ready analysis</h2>
+      <p class="section-subtitle">
+        Everything your investment committee needs to assess interconnection risk—formatted for the deal process.
+      </p>
       <div class="solution-grid">
-        <div class="solution-content">
-          <h2>Institutional-grade analysis for every project</h2>
+        <div class="solution-card">
+          <h3>Risk Score (0-100)</h3>
+          <p>Weighted scoring across timeline, developer, POI, and market factors. Benchmarked against similar projects.</p>
+        </div>
+        <div class="solution-card">
+          <h3>Timeline Scenarios</h3>
+          <p>P10/P25/P50/P75/P90 distributions based on historical cohorts. Ready for your IRR sensitivity tables.</p>
+        </div>
+        <div class="solution-card">
+          <h3>Developer Deep Dive</h3>
+          <p>Completion rates, average timelines, regional experience, current portfolio stress.</p>
+        </div>
+        <div class="solution-card">
+          <h3>POI & Congestion</h3>
+          <p>Competing projects at the substation, upgrade requirements, historical success rate at that POI.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sample -->
+  <section class="sample">
+    <div class="container">
+      <div class="section-label">Sample Output</div>
+      <h2 class="section-title">What the deliverable looks like</h2>
+      <div class="sample-grid">
+        <div class="sample-card">
+          <div class="sample-header">
+            <h3>MISO Battery — 300 MW</h3>
+            <span class="sample-badge">Score: 72/100</span>
+          </div>
+          <div class="sample-body">
+            <div class="sample-metrics">
+              <div class="sample-metric">
+                <div class="sample-metric-value">3.4 yrs</div>
+                <div class="sample-metric-label">P50 Timeline</div>
+              </div>
+              <div class="sample-metric">
+                <div class="sample-metric-value">78%</div>
+                <div class="sample-metric-label">Dev Completion</div>
+              </div>
+              <div class="sample-metric">
+                <div class="sample-metric-value">8.2%</div>
+                <div class="sample-metric-label">IC / Dev Cost</div>
+              </div>
+            </div>
+            <div class="sample-row">
+              <span class="sample-row-label">Developer</span>
+              <span class="sample-row-value">Invenergy</span>
+            </div>
+            <div class="sample-row">
+              <span class="sample-row-label">Queue Position</span>
+              <span class="sample-row-value">#234 of 1,107 active</span>
+            </div>
+            <div class="sample-row">
+              <span class="sample-row-label">Competing Projects at POI</span>
+              <span class="sample-row-value">8 projects (1.2 GW)</span>
+            </div>
+            <div class="sample-row">
+              <span class="sample-row-label">Region COD Hit Rate</span>
+              <span class="sample-row-value">34%</span>
+            </div>
+            <div class="sample-row">
+              <span class="sample-row-label">Recommendation</span>
+              <span class="sample-row-value" style="color: #16a34a; font-weight: 600;">Proceed — monitor IC costs</span>
+            </div>
+          </div>
+        </div>
+        <div class="sample-content">
+          <h2>Analysis built for IC memos</h2>
           <p>
-            We've built the infrastructure to analyze any interconnection queue project in the US. You get a comprehensive risk assessment in days, not weeks.
+            Every deliverable includes the metrics your committee will ask about—timeline distributions, developer benchmarks, comparable projects, and clear risk flags.
           </p>
-          <ul class="solution-list">
-            <li>
-              <span class="check-icon">✓</span>
-              <div>
-                <strong>Risk Scoring</strong> — 100-point model covering timeline, developer, location, and market factors
-              </div>
-            </li>
-            <li>
-              <span class="check-icon">✓</span>
-              <div>
-                <strong>Timeline Probability</strong> — P10/P25/P50/P75/P90 scenarios based on historical cohort data
-              </div>
-            </li>
-            <li>
-              <span class="check-icon">✓</span>
-              <div>
-                <strong>Developer Benchmarking</strong> — Track record, portfolio analysis, regional experience
-              </div>
-            </li>
-            <li>
-              <span class="check-icon">✓</span>
-              <div>
-                <strong>POI Analysis</strong> — Substation congestion, competing projects, upgrade requirements
-              </div>
-            </li>
-            <li>
-              <span class="check-icon">✓</span>
-              <div>
-                <strong>Comparable Projects</strong> — Similar projects in the region and their outcomes
-              </div>
-            </li>
+          <ul class="sample-list">
+            <li>Timeline P10-P90 scenarios for IRR sensitivity</li>
+            <li>Developer track record vs regional peers</li>
+            <li>IC cost as % of total development</li>
+            <li>POI congestion and upgrade risk</li>
+            <li>Historical outcomes for comparable projects</li>
+            <li>Go/No-Go recommendation with rationale</li>
           </ul>
-        </div>
-        <div class="solution-visual">
-          <div class="report-preview">
-            <div class="report-header">
-              <h4>Project AH2-113 — PJM Solar 250MW</h4>
-              <span class="report-badge">Score: 72/100</span>
-            </div>
-            <div class="report-body">
-              <div class="report-row">
-                <span class="report-label">Developer</span>
-                <span class="report-value">NextEra Energy</span>
-              </div>
-              <div class="report-row">
-                <span class="report-label">Queue Position</span>
-                <span class="report-value">#847 of 1,942 active</span>
-              </div>
-              <div class="report-row">
-                <span class="report-label">P50 Timeline</span>
-                <span class="report-value">3.8 years</span>
-              </div>
-              <div class="report-row">
-                <span class="report-label">Developer Track Record</span>
-                <span class="report-value">78% completion rate</span>
-              </div>
-              <div class="report-row">
-                <span class="report-label">POI Congestion</span>
-                <span class="report-value">12 competing projects</span>
-              </div>
-              <div class="report-row">
-                <span class="report-label">Recommendation</span>
-                <span class="report-value" style="color: #16a34a;">Proceed with monitoring</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Why Us -->
-  <section style="padding: 80px 0; border-bottom: 1px solid var(--gray-200);">
-    <div class="container">
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;">
-        <div>
-          <div class="section-label">Why Work With Us</div>
-          <h2 style="font-size: 36px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 24px;">We've already built the infrastructure</h2>
-          <p style="font-size: 17px; color: var(--gray-600); margin-bottom: 24px; line-height: 1.7;">
-            Most consultants start from scratch on every engagement. We've spent months building the data pipelines, scoring models, and analysis frameworks that let us deliver institutional-quality DD in days instead of weeks.
-          </p>
-          <p style="font-size: 17px; color: var(--gray-600); line-height: 1.7;">
-            Our database tracks every project across all 9 US ISOs. We've mapped developer track records, analyzed historical completion rates by cohort, and built probabilistic timeline models based on real outcomes—not assumptions.
-          </p>
-        </div>
-        <div style="background: var(--gray-50); border-radius: 12px; padding: 32px;">
-          <div style="font-size: 14px; font-weight: 600; margin-bottom: 20px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.05em;">Our Data Advantage</div>
-          <div style="display: flex; flex-direction: column; gap: 16px;">
-            <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: white; border-radius: 8px; border: 1px solid var(--gray-200);">
-              <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #dbeafe, #bfdbfe); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px;">⚡</div>
-              <div>
-                <div style="font-weight: 600; margin-bottom: 2px;">Real-Time Queue Data</div>
-                <div style="font-size: 13px; color: var(--gray-500);">Daily updates from all major ISOs</div>
-              </div>
-            </div>
-            <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: white; border-radius: 8px; border: 1px solid var(--gray-200);">
-              <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #dcfce7, #bbf7d0); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px;">📊</div>
-              <div>
-                <div style="font-weight: 600; margin-bottom: 2px;">Historical Completion Data</div>
-                <div style="font-size: 13px; color: var(--gray-500);">10+ years of project outcomes</div>
-              </div>
-            </div>
-            <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: white; border-radius: 8px; border: 1px solid var(--gray-200);">
-              <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px;">🏗️</div>
-              <div>
-                <div style="font-weight: 600; margin-bottom: 2px;">Developer Profiles</div>
-                <div style="font-size: 13px; color: var(--gray-500);">Track records for 500+ developers</div>
-              </div>
-            </div>
-            <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: white; border-radius: 8px; border: 1px solid var(--gray-200);">
-              <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #f3e8ff, #e9d5ff); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px;">🔌</div>
-              <div>
-                <div style="font-weight: 600; margin-bottom: 2px;">POI & Substation Mapping</div>
-                <div style="font-size: 13px; color: var(--gray-500);">Congestion analysis at every point</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ISO Coverage -->
-  <section style="padding: 80px 0; background: var(--gray-50);">
-    <div class="container">
-      <div style="text-align: center; margin-bottom: 48px;">
-        <div class="section-label">Full US Coverage</div>
-        <h2 class="section-title">Every major interconnection region</h2>
-        <p class="section-subtitle">We track the complete US grid—from ERCOT's energy-only market to PJM's capacity construct.</p>
-      </div>
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-        <div style="background: white; border: 1px solid var(--gray-200); border-radius: 12px; padding: 24px;">
-          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
-            <div>
-              <div style="font-size: 20px; font-weight: 600;">PJM</div>
-              <div style="font-size: 13px; color: var(--gray-500);">Mid-Atlantic & Midwest</div>
-            </div>
-            <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; padding: 4px 10px; background: var(--gray-100); border-radius: 4px;">8.1K projects</div>
-          </div>
-          <div style="display: flex; gap: 12px;">
-            <div style="flex: 1; padding: 12px; background: var(--gray-50); border-radius: 6px; text-align: center;">
-              <div style="font-size: 18px; font-weight: 600; font-family: 'JetBrains Mono', monospace;">876 GW</div>
-              <div style="font-size: 11px; color: var(--gray-500);">Queue Capacity</div>
-            </div>
-            <div style="flex: 1; padding: 12px; background: var(--gray-50); border-radius: 6px; text-align: center;">
-              <div style="font-size: 18px; font-weight: 600; font-family: 'JetBrains Mono', monospace; color: #dc2626;">60%</div>
-              <div style="font-size: 11px; color: var(--gray-500);">Withdrawal</div>
-            </div>
-          </div>
-        </div>
-        <div style="background: white; border: 1px solid var(--gray-200); border-radius: 12px; padding: 24px;">
-          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
-            <div>
-              <div style="font-size: 20px; font-weight: 600;">MISO</div>
-              <div style="font-size: 13px; color: var(--gray-500);">Central US</div>
-            </div>
-            <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; padding: 4px 10px; background: var(--gray-100); border-radius: 4px;">5.4K projects</div>
-          </div>
-          <div style="display: flex; gap: 12px;">
-            <div style="flex: 1; padding: 12px; background: var(--gray-50); border-radius: 6px; text-align: center;">
-              <div style="font-size: 18px; font-weight: 600; font-family: 'JetBrains Mono', monospace;">1,001 GW</div>
-              <div style="font-size: 11px; color: var(--gray-500);">Queue Capacity</div>
-            </div>
-            <div style="flex: 1; padding: 12px; background: var(--gray-50); border-radius: 6px; text-align: center;">
-              <div style="font-size: 18px; font-weight: 600; font-family: 'JetBrains Mono', monospace; color: #dc2626;">62%</div>
-              <div style="font-size: 11px; color: var(--gray-500);">Withdrawal</div>
-            </div>
-          </div>
-        </div>
-        <div style="background: white; border: 1px solid var(--gray-200); border-radius: 12px; padding: 24px;">
-          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
-            <div>
-              <div style="font-size: 20px; font-weight: 600;">ERCOT</div>
-              <div style="font-size: 13px; color: var(--gray-500);">Texas</div>
-            </div>
-            <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; padding: 4px 10px; background: var(--gray-100); border-radius: 4px;">3.8K projects</div>
-          </div>
-          <div style="display: flex; gap: 12px;">
-            <div style="flex: 1; padding: 12px; background: var(--gray-50); border-radius: 6px; text-align: center;">
-              <div style="font-size: 18px; font-weight: 600; font-family: 'JetBrains Mono', monospace;">798 GW</div>
-              <div style="font-size: 11px; color: var(--gray-500);">Queue Capacity</div>
-            </div>
-            <div style="flex: 1; padding: 12px; background: var(--gray-50); border-radius: 6px; text-align: center;">
-              <div style="font-size: 18px; font-weight: 600; font-family: 'JetBrains Mono', monospace; color: #dc2626;">54%</div>
-              <div style="font-size: 11px; color: var(--gray-500);">Withdrawal</div>
-            </div>
-          </div>
-        </div>
-        <div style="background: white; border: 1px solid var(--gray-200); border-radius: 12px; padding: 24px;">
-          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
-            <div>
-              <div style="font-size: 20px; font-weight: 600;">CAISO</div>
-              <div style="font-size: 13px; color: var(--gray-500);">California</div>
-            </div>
-            <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; padding: 4px 10px; background: var(--gray-100); border-radius: 4px;">2.8K projects</div>
-          </div>
-          <div style="display: flex; gap: 12px;">
-            <div style="flex: 1; padding: 12px; background: var(--gray-50); border-radius: 6px; text-align: center;">
-              <div style="font-size: 18px; font-weight: 600; font-family: 'JetBrains Mono', monospace;">708 GW</div>
-              <div style="font-size: 11px; color: var(--gray-500);">Queue Capacity</div>
-            </div>
-            <div style="flex: 1; padding: 12px; background: var(--gray-50); border-radius: 6px; text-align: center;">
-              <div style="font-size: 18px; font-weight: 600; font-family: 'JetBrains Mono', monospace; color: #dc2626;">81%</div>
-              <div style="font-size: 11px; color: var(--gray-500);">Withdrawal</div>
-            </div>
-          </div>
-        </div>
-        <div style="background: white; border: 1px solid var(--gray-200); border-radius: 12px; padding: 24px;">
-          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
-            <div>
-              <div style="font-size: 20px; font-weight: 600;">SPP</div>
-              <div style="font-size: 13px; color: var(--gray-500);">Southwest Power Pool</div>
-            </div>
-            <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; padding: 4px 10px; background: var(--gray-100); border-radius: 4px;">2.8K projects</div>
-          </div>
-          <div style="display: flex; gap: 12px;">
-            <div style="flex: 1; padding: 12px; background: var(--gray-50); border-radius: 6px; text-align: center;">
-              <div style="font-size: 18px; font-weight: 600; font-family: 'JetBrains Mono', monospace;">581 GW</div>
-              <div style="font-size: 11px; color: var(--gray-500);">Queue Capacity</div>
-            </div>
-            <div style="flex: 1; padding: 12px; background: var(--gray-50); border-radius: 6px; text-align: center;">
-              <div style="font-size: 18px; font-weight: 600; font-family: 'JetBrains Mono', monospace; color: #dc2626;">89%</div>
-              <div style="font-size: 11px; color: var(--gray-500);">Withdrawal</div>
-            </div>
-          </div>
-        </div>
-        <div style="background: white; border: 1px solid var(--gray-200); border-radius: 12px; padding: 24px;">
-          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
-            <div>
-              <div style="font-size: 20px; font-weight: 600;">+ 4 More</div>
-              <div style="font-size: 13px; color: var(--gray-500);">NYISO, ISO-NE, West, Southeast</div>
-            </div>
-          </div>
-          <div style="padding: 20px; background: var(--gray-50); border-radius: 6px; text-align: center;">
-            <div style="font-size: 14px; color: var(--gray-600);">Complete coverage of all US interconnection regions</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Analysis Deep Dive -->
-  <section style="padding: 80px 0;">
-    <div class="container">
-      <div style="text-align: center; margin-bottom: 60px;">
-        <div class="section-label">What We Analyze</div>
-        <h2 class="section-title">Every factor that impacts project success</h2>
-      </div>
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px;">
-        <div style="padding: 32px; border: 1px solid var(--gray-200); border-radius: 12px;">
-          <div style="font-size: 32px; margin-bottom: 16px;">📈</div>
-          <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 12px;">Timeline Probability Modeling</h3>
-          <p style="color: var(--gray-600); margin-bottom: 16px; line-height: 1.6;">We don't give you a single COD estimate—we give you a probability distribution. Based on historical cohort analysis, you'll see P10 through P90 scenarios so you can stress-test your IRR models.</p>
-          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            <span style="padding: 4px 10px; background: var(--gray-100); border-radius: 4px; font-size: 12px;">Cohort Analysis</span>
-            <span style="padding: 4px 10px; background: var(--gray-100); border-radius: 4px; font-size: 12px;">Queue Position Impact</span>
-            <span style="padding: 4px 10px; background: var(--gray-100); border-radius: 4px; font-size: 12px;">ISO-Specific Timelines</span>
-          </div>
-        </div>
-        <div style="padding: 32px; border: 1px solid var(--gray-200); border-radius: 12px;">
-          <div style="font-size: 32px; margin-bottom: 16px;">🏢</div>
-          <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 12px;">Developer Track Record Analysis</h3>
-          <p style="color: var(--gray-600); margin-bottom: 16px; line-height: 1.6;">Not all developers are equal. We've mapped completion rates, average timelines, and regional experience for every major developer. Know if you're backing a proven operator or a first-timer.</p>
-          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            <span style="padding: 4px 10px; background: var(--gray-100); border-radius: 4px; font-size: 12px;">Completion Rates</span>
-            <span style="padding: 4px 10px; background: var(--gray-100); border-radius: 4px; font-size: 12px;">Portfolio Analysis</span>
-            <span style="padding: 4px 10px; background: var(--gray-100); border-radius: 4px; font-size: 12px;">Regional Experience</span>
-          </div>
-        </div>
-        <div style="padding: 32px; border: 1px solid var(--gray-200); border-radius: 12px;">
-          <div style="font-size: 32px; margin-bottom: 16px;">🔌</div>
-          <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 12px;">Point of Interconnection Analysis</h3>
-          <p style="color: var(--gray-600); margin-bottom: 16px; line-height: 1.6;">Substation congestion kills projects. We analyze every POI—how many projects are competing, what upgrades are required, and historical success rates at that location.</p>
-          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            <span style="padding: 4px 10px; background: var(--gray-100); border-radius: 4px; font-size: 12px;">Congestion Mapping</span>
-            <span style="padding: 4px 10px; background: var(--gray-100); border-radius: 4px; font-size: 12px;">Upgrade Requirements</span>
-            <span style="padding: 4px 10px; background: var(--gray-100); border-radius: 4px; font-size: 12px;">Competing Projects</span>
-          </div>
-        </div>
-        <div style="padding: 32px; border: 1px solid var(--gray-200); border-radius: 12px;">
-          <div style="font-size: 32px; margin-bottom: 16px;">💰</div>
-          <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 12px;">Interconnection Cost Benchmarking</h3>
-          <p style="color: var(--gray-600); margin-bottom: 16px; line-height: 1.6;">IC costs as a percentage of total development cost is a key risk factor. We benchmark against similar projects and flag outliers that could indicate upgrade risk.</p>
-          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            <span style="padding: 4px 10px; background: var(--gray-100); border-radius: 4px; font-size: 12px;">Cost Benchmarking</span>
-            <span style="padding: 4px 10px; background: var(--gray-100); border-radius: 4px; font-size: 12px;">Upgrade Risk Flags</span>
-            <span style="padding: 4px 10px; background: var(--gray-100); border-radius: 4px; font-size: 12px;">IC as % of Dev Cost</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Deliverables -->
-    <div class="container">
-      <div class="problem-header">
-        <div class="section-label">What You Get</div>
-        <h2 class="section-title">Comprehensive due diligence packages</h2>
-        <p class="section-subtitle">
-          Everything you need to make informed investment decisions on interconnection projects.
-        </p>
-      </div>
-      <div class="deliverables-grid">
-        <div class="deliverable-card">
-          <h3>Risk Assessment</h3>
-          <p>100-point scoring model with breakdown across timeline, developer, location, and market risk factors.</p>
-        </div>
-        <div class="deliverable-card">
-          <h3>Timeline Analysis</h3>
-          <p>Probability-weighted scenarios (P10-P90) based on historical completion data for similar projects.</p>
-        </div>
-        <div class="deliverable-card">
-          <h3>Developer Profile</h3>
-          <p>Full track record analysis including completion rates, portfolio size, and regional experience.</p>
-        </div>
-        <div class="deliverable-card">
-          <h3>Market Context</h3>
-          <p>ISO-specific dynamics, queue trends, policy impacts, and competitive landscape analysis.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Clients -->
-  <section class="clients">
-    <div class="container">
-      <div class="clients-header">
-        <p>Built for energy infrastructure investors</p>
-      </div>
-      <div class="client-types">
-        <div class="client-type">
-          <div class="client-type-icon">🏦</div>
-          <h4>PE Firms</h4>
-          <p>Infrastructure & energy funds</p>
-        </div>
-        <div class="client-type">
-          <div class="client-type-icon">📈</div>
-          <h4>Hedge Funds</h4>
-          <p>Energy-focused strategies</p>
-        </div>
-        <div class="client-type">
-          <div class="client-type-icon">🏗️</div>
-          <h4>Developers</h4>
-          <p>Market intel & benchmarking</p>
-        </div>
-        <div class="client-type">
-          <div class="client-type-icon">💼</div>
-          <h4>Investment Banks</h4>
-          <p>M&A transaction support</p>
         </div>
       </div>
     </div>
@@ -1040,13 +744,13 @@
   <!-- CTA -->
   <section class="cta">
     <div class="container">
-      <h2>Ready to see what we can do?</h2>
+      <h2>See it on a real project</h2>
       <p>
-        Get a sample report on any project in our database, or tell us what you're working on.
+        Send us a queue ID or project name. We'll send back a sample analysis so you can evaluate the fit.
       </p>
       <div class="cta-buttons">
-        <a href="mailto:owen@prospectorlabs.io?subject=Sample Report Request" class="cta-primary">Request Sample Report</a>
-        <a href="https://owencoonahan.github.io/prospector-data-tools/iso-comparison/" class="cta-secondary">Explore Our Data</a>
+        <a href="mailto:owen@prospectorlabs.io?subject=Sample Analysis Request" class="cta-primary">Request Sample Analysis</a>
+        <a href="https://owencoonahan.github.io/prospector-data-tools/iso-comparison/" class="cta-secondary">Explore Queue Data</a>
       </div>
     </div>
   </section>
@@ -1056,8 +760,7 @@
     <div class="container">
       <p>© 2026 Prospector Labs</p>
       <div class="footer-links">
-        <a href="https://prospectorlabs.io">Main Site</a>
-        <a href="https://owencoonahan.github.io/prospector-data-tools/">Data Tools</a>
+        <a href="https://prospectorlabs.io">Prospector Labs</a>
         <a href="https://linkedin.com/in/owencoonahan">LinkedIn</a>
       </div>
     </div>
