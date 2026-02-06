@@ -208,10 +208,17 @@
       gap: 32px;
     }
 
-    .cap-number {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      color: var(--gray-400);
+    .cap-icon {
+      width: 48px;
+      height: 48px;
+    }
+
+    .cap-icon svg {
+      width: 100%;
+      height: 100%;
+      stroke: var(--gray-800);
+      stroke-width: 1;
+      fill: none;
     }
 
     .cap-content h3 {
@@ -328,13 +335,15 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      opacity: 0;
-      transform: scale(1.05);
+      opacity: 0.85;
+      filter: grayscale(100%);
+      transform: scale(1.02);
       transition: all 0.5s ease;
     }
 
     .project:hover .project-visual img {
       opacity: 1;
+      filter: grayscale(0%);
       transform: scale(1);
     }
 
@@ -536,28 +545,72 @@
     </div>
     <div class="cap-list">
       <div class="cap-item">
-        <div class="cap-number">01</div>
+        <div class="cap-icon">
+          <!-- Web/Network pattern -->
+          <svg viewBox="0 0 48 48">
+            <circle cx="24" cy="24" r="20"/>
+            <circle cx="24" cy="24" r="12"/>
+            <circle cx="24" cy="24" r="4"/>
+            <line x1="24" y1="4" x2="24" y2="44"/>
+            <line x1="4" y1="24" x2="44" y2="24"/>
+            <line x1="8" y1="8" x2="40" y2="40"/>
+            <line x1="40" y1="8" x2="8" y2="40"/>
+          </svg>
+        </div>
         <div class="cap-content">
           <h3>Web Scraping</h3>
           <p>Production scrapers for any target. We handle anti-bot systems, CAPTCHAs, dynamic content, authentication, and scale. If it's on the web, we can get it.</p>
         </div>
       </div>
       <div class="cap-item">
-        <div class="cap-number">02</div>
+        <div class="cap-icon">
+          <!-- Flow/Pipeline pattern -->
+          <svg viewBox="0 0 48 48">
+            <path d="M4 12 L16 12 L20 24 L16 36 L4 36"/>
+            <path d="M16 12 L28 12 L32 24 L28 36 L16 36"/>
+            <path d="M28 12 L44 12 L44 36 L28 36"/>
+            <circle cx="10" cy="24" r="3"/>
+            <circle cx="22" cy="24" r="3"/>
+            <circle cx="36" cy="24" r="3"/>
+          </svg>
+        </div>
         <div class="cap-content">
           <h3>Data Pipelines</h3>
           <p>ETL that runs without babysitting. We build pipelines that clean, transform, dedupe, and deliver your data — on schedule, every time.</p>
         </div>
       </div>
       <div class="cap-item">
-        <div class="cap-number">03</div>
+        <div class="cap-icon">
+          <!-- Grid/Dashboard pattern -->
+          <svg viewBox="0 0 48 48">
+            <rect x="4" y="4" width="18" height="18"/>
+            <rect x="26" y="4" width="18" height="18"/>
+            <rect x="4" y="26" width="18" height="18"/>
+            <rect x="26" y="26" width="18" height="18"/>
+            <line x1="4" y1="13" x2="22" y2="13"/>
+            <line x1="13" y1="4" x2="13" y2="22"/>
+            <line x1="26" y1="13" x2="44" y2="13"/>
+            <line x1="35" y1="4" x2="35" y2="22"/>
+          </svg>
+        </div>
         <div class="cap-content">
           <h3>Custom Dashboards</h3>
           <p>Interactive tools your team will actually use. From internal analytics to customer-facing products — designed for clarity, built for speed.</p>
         </div>
       </div>
       <div class="cap-item">
-        <div class="cap-number">04</div>
+        <div class="cap-icon">
+          <!-- Diamond/Layers pattern -->
+          <svg viewBox="0 0 48 48">
+            <polygon points="24,4 44,24 24,44 4,24"/>
+            <polygon points="24,12 36,24 24,36 12,24"/>
+            <polygon points="24,18 30,24 24,30 18,24"/>
+            <line x1="24" y1="4" x2="24" y2="18"/>
+            <line x1="24" y1="30" x2="24" y2="44"/>
+            <line x1="4" y1="24" x2="18" y2="24"/>
+            <line x1="30" y1="24" x2="44" y2="24"/>
+          </svg>
+        </div>
         <div class="cap-content">
           <h3>Intelligence Products</h3>
           <p>Turn raw data into decision-ready insights. Market research, competitive intel, due diligence reports — packaged for action.</p>
@@ -570,7 +623,6 @@
   <section class="projects" id="projects">
     <div class="projects-header">
       <h2>Selected Work</h2>
-      <span class="projects-count">6 Projects</span>
     </div>
     <div class="project-list">
       <a href="https://owencoonahan.github.io/prospector-data-tools/queue-lookup/" class="project">
