@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prospector Labs</title>
+  <title>Prospector Labs — Custom Data Infrastructure</title>
   <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
@@ -33,9 +33,7 @@
 
     a { color: inherit; }
 
-    /* ═══════════════════════════════════════════
-       NAV — Ultra minimal
-    ═══════════════════════════════════════════ */
+    /* NAV */
     nav {
       position: fixed;
       top: 0;
@@ -72,9 +70,7 @@
 
     .nav-links a:hover { opacity: 1; }
 
-    /* ═══════════════════════════════════════════
-       HERO — Full bleed image with overlay text
-    ═══════════════════════════════════════════ */
+    /* HERO */
     .hero {
       height: 100vh;
       min-height: 700px;
@@ -125,9 +121,7 @@
       opacity: 0.6;
     }
 
-    /* ═══════════════════════════════════════════
-       INTRO — Split text
-    ═══════════════════════════════════════════ */
+    /* INTRO */
     .intro {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -162,9 +156,7 @@
       color: var(--gray-800);
     }
 
-    /* ═══════════════════════════════════════════
-       CAPABILITIES — Numbered list
-    ═══════════════════════════════════════════ */
+    /* CAPABILITIES */
     .capabilities {
       padding: 100px 64px;
       border-bottom: 1px solid var(--gray-200);
@@ -226,9 +218,7 @@
       line-height: 1.6;
     }
 
-    /* ═══════════════════════════════════════════
-       PROJECTS — Case studies
-    ═══════════════════════════════════════════ */
+    /* PROJECTS */
     .projects {
       background: var(--gray-50);
     }
@@ -342,9 +332,7 @@
       color: var(--gray-300);
     }
 
-    /* ═══════════════════════════════════════════
-       STATS — Horizontal band
-    ═══════════════════════════════════════════ */
+    /* STATS */
     .stats {
       background: var(--black);
       color: var(--white);
@@ -373,9 +361,7 @@
       letter-spacing: 0.1em;
     }
 
-    /* ═══════════════════════════════════════════
-       CLIENTS — Simple list
-    ═══════════════════════════════════════════ */
+    /* CLIENTS */
     .clients {
       padding: 80px 64px;
       border-bottom: 1px solid var(--gray-200);
@@ -404,9 +390,7 @@
       color: var(--gray-600);
     }
 
-    /* ═══════════════════════════════════════════
-       CONTACT — Full width CTA
-    ═══════════════════════════════════════════ */
+    /* CONTACT */
     .contact {
       padding: 120px 64px;
       text-align: center;
@@ -440,9 +424,7 @@
       border-color: var(--gray-500);
     }
 
-    /* ═══════════════════════════════════════════
-       FOOTER
-    ═══════════════════════════════════════════ */
+    /* FOOTER */
     footer {
       padding: 32px 64px;
       display: flex;
@@ -466,9 +448,7 @@
 
     .footer-links a:hover { color: var(--black); }
 
-    /* ═══════════════════════════════════════════
-       RESPONSIVE
-    ═══════════════════════════════════════════ */
+    /* RESPONSIVE */
     @media (max-width: 1024px) {
       .intro { grid-template-columns: 1fr; }
       .intro-left { border-right: none; border-bottom: 1px solid var(--gray-200); padding: 48px; }
@@ -587,10 +567,38 @@
           <p class="project-desc">Aggregated 35,000+ energy projects from 9 ISO queues into a searchable database with developer analytics and regional benchmarks.</p>
         </div>
         <div class="project-visual">
-          <div class="project-visual-placeholder">⚡</div>
+          <img src="https://owencoonahan.github.io/prospector-data-tools/queue-lookup/screenshots/light-loaded.png" alt="Queue Lookup Tool">
         </div>
       </a>
       
+      <a href="https://owencoonahan.github.io/prospector-data-tools/iso-comparison/" class="project">
+        <div class="project-info">
+          <div class="project-meta">
+            <span>Energy</span>
+            <span>Analytics</span>
+          </div>
+          <h3 class="project-title">ISO Queue Comparison <span class="project-arrow">→</span></h3>
+          <p class="project-desc">Side-by-side comparison of all 9 US interconnection queues. Capacity trends, approval rates, technology mix, timeline benchmarks.</p>
+        </div>
+        <div class="project-visual">
+          <img src="https://owencoonahan.github.io/prospector-data-tools/iso-comparison/screenshots/light.jpg" alt="ISO Comparison Tool">
+        </div>
+      </a>
+
+      <a href="https://owencoonahan.github.io/prospector-data-tools/developer-scorecard/" class="project">
+        <div class="project-info">
+          <div class="project-meta">
+            <span>Energy</span>
+            <span>Intelligence</span>
+          </div>
+          <h3 class="project-title">Developer Scorecard <span class="project-arrow">→</span></h3>
+          <p class="project-desc">Track record analysis for 500+ energy developers. Completion rates, timeline performance, regional experience — benchmarked against peers.</p>
+        </div>
+        <div class="project-visual">
+          <img src="https://owencoonahan.github.io/prospector-data-tools/developer-scorecard/screenshots/light-mode.png" alt="Developer Scorecard">
+        </div>
+      </a>
+
       <a href="https://owencoonahan.github.io/prospector-data-tools/critical-minerals-v2/" class="project">
         <div class="project-info">
           <div class="project-meta">
@@ -601,65 +609,37 @@
           <p class="project-desc">Global supply chain analysis for 12 energy transition minerals. Production data, processing concentration, company profiles.</p>
         </div>
         <div class="project-visual">
-          <div class="project-visual-placeholder">🪨</div>
+          <img src="https://owencoonahan.github.io/prospector-data-tools/critical-minerals-v2/screenshots/dark.png" alt="Critical Minerals Tracker">
         </div>
       </a>
 
-      <div class="project" style="cursor: default;">
+      <a href="https://owencoonahan.github.io/prospector-data-tools/transformer-tracker/" class="project">
         <div class="project-info">
           <div class="project-meta">
-            <span>Consumer</span>
-            <span>Scraping</span>
+            <span>Energy</span>
+            <span>Market Intel</span>
           </div>
-          <h3 class="project-title">E-commerce Price Tracker</h3>
-          <p class="project-desc">Real-time price monitoring across 50+ retailers for a consumer app. 2M+ SKUs tracked daily with automated alerts.</p>
+          <h3 class="project-title">Transformer Market Tracker <span class="project-arrow">→</span></h3>
+          <p class="project-desc">Supply chain intelligence for power transformers. Lead times, manufacturer capacity, demand drivers, constraint analysis.</p>
         </div>
         <div class="project-visual">
-          <div class="project-visual-placeholder">🛒</div>
+          <img src="https://owencoonahan.github.io/prospector-data-tools/transformer-tracker/screenshots/overview.png" alt="Transformer Tracker">
         </div>
-      </div>
+      </a>
 
-      <div class="project" style="cursor: default;">
+      <a href="https://owencoonahan.github.io/prospector-data-tools/congress-trades/" class="project">
         <div class="project-info">
           <div class="project-meta">
             <span>Finance</span>
-            <span>Due Diligence</span>
+            <span>Dashboard</span>
           </div>
-          <h3 class="project-title">PE Deal Intelligence</h3>
-          <p class="project-desc">Automated due diligence pipeline for a mid-market PE firm. Scrapes regulatory filings, news, and financials for target companies.</p>
+          <h3 class="project-title">Congress Stock Tracker <span class="project-arrow">→</span></h3>
+          <p class="project-desc">Real-time tracking of congressional stock trades. STOCK Act filings parsed and analyzed. Timing analysis, sector exposure, performance vs S&P.</p>
         </div>
         <div class="project-visual">
-          <div class="project-visual-placeholder">📊</div>
+          <img src="https://owencoonahan.github.io/prospector-data-tools/congress-trades/screenshot.png" alt="Congress Stock Tracker">
         </div>
-      </div>
-
-      <div class="project" style="cursor: default;">
-        <div class="project-info">
-          <div class="project-meta">
-            <span>Real Estate</span>
-            <span>Data Pipeline</span>
-          </div>
-          <h3 class="project-title">Property Data Aggregator</h3>
-          <p class="project-desc">Unified 15 data sources into a single property intelligence platform. Permit data, zoning, ownership, transactions.</p>
-        </div>
-        <div class="project-visual">
-          <div class="project-visual-placeholder">🏢</div>
-        </div>
-      </div>
-
-      <div class="project" style="cursor: default;">
-        <div class="project-info">
-          <div class="project-meta">
-            <span>Healthcare</span>
-            <span>Research</span>
-          </div>
-          <h3 class="project-title">Clinical Trial Monitor</h3>
-          <p class="project-desc">Competitive intelligence tool tracking 10,000+ active clinical trials. Automated updates, pipeline analysis, company benchmarking.</p>
-        </div>
-        <div class="project-visual">
-          <div class="project-visual-placeholder">🔬</div>
-        </div>
-      </div>
+      </a>
     </div>
   </section>
 
