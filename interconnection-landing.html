@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Interconnection Due Diligence | For Energy Infrastructure Investors</title>
-  <meta name="description" content="Accelerate your interconnection queue due diligence. Risk scoring, timeline analysis, and developer benchmarking for PE firms and infrastructure funds.">
+  <meta name="description" content="Interconnection queue risk analysis for PE firms and infrastructure funds. Timeline scenarios, developer benchmarks, POI analysis—delivered in days.">
   <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
@@ -21,7 +21,7 @@
       --gray-700: #404040;
       --gray-800: #262626;
       --gray-900: #171717;
-      --accent: #2563eb;
+      --accent: #16a34a;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -121,15 +121,13 @@
       transition: all 0.2s;
     }
 
-    .hero-cta:hover {
-      background: var(--gray-800);
-    }
+    .hero-cta:hover { background: var(--gray-800); }
 
     .hero-image {
       border-radius: 12px;
       overflow: hidden;
       aspect-ratio: 4/3;
-      background: url('https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=800&q=80') center/cover;
+      background: url('https://images.unsplash.com/photo-1509391366360-2e959784a276?w=800&q=80') center/cover;
     }
 
     /* STATS */
@@ -157,17 +155,24 @@
     }
 
     .stat-value.negative { color: #dc2626; }
-    .stat-value.positive { color: #16a34a; }
 
     .stat-label {
       font-size: 13px;
       color: var(--gray-500);
     }
 
-    /* PROBLEM */
-    .problem {
+    /* SECTIONS */
+    .section {
       padding: 80px 0;
+    }
+
+    .section.alt {
       background: var(--gray-50);
+    }
+
+    .section.dark {
+      background: var(--gray-900);
+      color: var(--white);
     }
 
     .section-label {
@@ -178,6 +183,8 @@
       letter-spacing: 0.1em;
       margin-bottom: 12px;
     }
+
+    .section.dark .section-label { color: var(--gray-400); }
 
     .section-title {
       font-size: 32px;
@@ -192,6 +199,9 @@
       max-width: 600px;
     }
 
+    .section.dark .section-subtitle { color: var(--gray-400); }
+
+    /* PROBLEM GRID */
     .problem-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -218,105 +228,175 @@
       line-height: 1.6;
     }
 
-    /* ROI */
-    .roi {
-      padding: 80px 0;
+    /* USE CASES */
+    .use-cases-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 48px;
     }
 
-    .roi-grid {
+    .use-case {
+      padding: 28px;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+    }
+
+    .use-case-icon {
+      font-size: 28px;
+      margin-bottom: 16px;
+    }
+
+    .use-case h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .use-case p {
+      font-size: 14px;
+      color: var(--gray-600);
+      line-height: 1.6;
+    }
+
+    /* SCOPE */
+    .scope-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 48px;
+    }
+
+    .scope-box {
+      padding: 32px;
+      border-radius: 12px;
+    }
+
+    .scope-box.do {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+    }
+
+    .scope-box.dont {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+    }
+
+    .scope-box h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .scope-list {
+      list-style: none;
+    }
+
+    .scope-list li {
+      padding: 8px 0;
+      font-size: 15px;
+      color: var(--gray-700);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .scope-list li::before {
+      content: '→';
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .scope-box.dont .scope-list li::before {
+      content: '—';
+      color: var(--gray-400);
+    }
+
+    /* WHY FAST */
+    .why-fast-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 60px;
       align-items: center;
+      margin-top: 48px;
     }
 
-    .roi-image {
+    .why-fast-image {
       border-radius: 12px;
       overflow: hidden;
       aspect-ratio: 4/3;
       background: url('https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&q=80') center/cover;
     }
 
-    .roi-content h2 {
-      font-size: 32px;
+    .why-fast-content h3 {
+      font-size: 24px;
       font-weight: 600;
-      letter-spacing: -0.02em;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
-    .roi-content p {
-      font-size: 17px;
+    .why-fast-content p {
+      font-size: 16px;
       color: var(--gray-600);
-      margin-bottom: 28px;
+      margin-bottom: 24px;
       line-height: 1.7;
     }
 
-    .roi-metrics {
+    .why-fast-stats {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(2, 1fr);
       gap: 16px;
     }
 
-    .roi-metric {
+    .why-fast-stat {
       padding: 20px;
       background: var(--gray-50);
       border-radius: 8px;
     }
 
-    .roi-metric-value {
+    .why-fast-stat-value {
       font-size: 28px;
       font-weight: 600;
       font-family: 'JetBrains Mono', monospace;
       margin-bottom: 4px;
     }
 
-    .roi-metric-label {
+    .why-fast-stat-label {
       font-size: 13px;
       color: var(--gray-500);
     }
 
-    /* SOLUTION */
-    .solution {
-      padding: 80px 0;
-      background: var(--gray-900);
-      color: var(--white);
-    }
-
-    .solution .section-label { color: var(--gray-400); }
-    .solution .section-title { color: var(--white); }
-    .solution .section-subtitle { color: var(--gray-400); }
-
-    .solution-grid {
+    /* DELIVERABLES */
+    .deliverables-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 24px;
       margin-top: 48px;
     }
 
-    .solution-card {
+    .deliverable {
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 12px;
       padding: 28px;
     }
 
-    .solution-card h3 {
+    .deliverable h3 {
       font-size: 17px;
       font-weight: 600;
       margin-bottom: 10px;
     }
 
-    .solution-card p {
+    .deliverable p {
       font-size: 14px;
       color: var(--gray-400);
       line-height: 1.6;
     }
 
     /* SAMPLE */
-    .sample {
-      padding: 80px 0;
-    }
-
     .sample-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -397,21 +477,19 @@
     }
 
     .sample-row:last-child { border-bottom: none; }
-
     .sample-row-label { color: var(--gray-500); }
     .sample-row-value { font-weight: 500; }
 
-    .sample-content h2 {
-      font-size: 32px;
+    .sample-content h3 {
+      font-size: 24px;
       font-weight: 600;
-      letter-spacing: -0.02em;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     .sample-content p {
-      font-size: 17px;
+      font-size: 16px;
       color: var(--gray-600);
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       line-height: 1.7;
     }
 
@@ -420,18 +498,64 @@
     }
 
     .sample-list li {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 10px 0;
+      padding: 8px 0;
       font-size: 15px;
       color: var(--gray-700);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
     }
 
     .sample-list li::before {
-      content: '→';
+      content: '✓';
       color: var(--accent);
       font-weight: 600;
+    }
+
+    /* ABOUT */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .about-content h2 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .about-content p {
+      font-size: 16px;
+      color: var(--gray-600);
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+
+    .about-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .about-stat {
+      padding: 20px;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+    }
+
+    .about-stat-value {
+      font-size: 24px;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 4px;
+    }
+
+    .about-stat-label {
+      font-size: 13px;
+      color: var(--gray-500);
     }
 
     /* CTA */
@@ -520,9 +644,9 @@
 
     /* RESPONSIVE */
     @media (max-width: 1024px) {
-      .hero-grid, .roi-grid, .sample-grid { grid-template-columns: 1fr; gap: 40px; }
-      .problem-grid { grid-template-columns: 1fr; }
-      .solution-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero-grid, .scope-grid, .why-fast-grid, .sample-grid, .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .problem-grid, .use-cases-grid { grid-template-columns: 1fr; }
+      .deliverables-grid { grid-template-columns: repeat(2, 1fr); }
       .stats { grid-template-columns: repeat(2, 1fr); }
       .stat { border-bottom: 1px solid var(--gray-200); }
     }
@@ -530,9 +654,11 @@
     @media (max-width: 768px) {
       .hero { padding: 60px 0 40px; }
       .hero h1 { font-size: 32px; }
+      .section { padding: 60px 0; }
       .section-title { font-size: 26px; }
-      .solution-grid { grid-template-columns: 1fr; }
+      .deliverables-grid { grid-template-columns: 1fr; }
       .sample-metrics { grid-template-columns: 1fr; }
+      .why-fast-stats { grid-template-columns: 1fr; }
       .cta h2 { font-size: 28px; }
       .cta-buttons { flex-direction: column; align-items: center; }
       footer .container { flex-direction: column; gap: 16px; text-align: center; }
@@ -556,7 +682,7 @@
           <div class="hero-label">Interconnection Due Diligence</div>
           <h1>Cut your DD timeline from weeks to days</h1>
           <p class="hero-subtitle">
-            We help energy infrastructure investors underwrite interconnection queue projects faster—with the data and analysis you'd build internally, delivered on demand.
+            We do one thing: interconnection queue risk analysis for energy infrastructure investors. Timeline scenarios, developer benchmarks, POI congestion—delivered fast.
           </p>
           <a href="mailto:owen@prospectorlabs.io?subject=DD Inquiry" class="hero-cta">
             Get a Sample Analysis →
@@ -588,12 +714,12 @@
   </section>
 
   <!-- Problem -->
-  <section class="problem">
+  <section class="section alt">
     <div class="container">
       <div class="section-label">The Challenge</div>
       <h2 class="section-title">Queue risk is the #1 deal killer in energy</h2>
       <p class="section-subtitle">
-        You've seen the headlines—interconnection backlogs, developer defaults, IC cost blowouts. The projects that look good on paper often never reach COD.
+        Interconnection backlogs, developer defaults, IC cost blowouts. The projects that look good on paper often never reach COD.
       </p>
       <div class="problem-grid">
         <div class="problem-card">
@@ -602,43 +728,108 @@
         </div>
         <div class="problem-card">
           <h3>IC Cost Surprises</h3>
-          <p>Interconnection costs are running 2-3x over initial estimates. Projects with IC above 15% of total dev cost have materially higher failure rates.</p>
+          <p>Interconnection costs running 2-3x over initial estimates. Projects with IC above 15% of total dev cost have materially higher failure rates.</p>
         </div>
         <div class="problem-card">
-          <h3>Developer Track Records Vary Wildly</h3>
-          <p>Top-quartile developers complete 70%+ of projects. Bottom-quartile developers are below 20%. The name on the deal matters.</p>
+          <h3>Developer Track Records Vary 5x</h3>
+          <p>Top-quartile developers complete 70%+ of projects. Bottom-quartile are below 20%. The name on the deal matters more than the economics.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ROI -->
-  <section class="roi">
+  <!-- When to Use Us -->
+  <section class="section">
     <div class="container">
-      <div class="roi-grid">
-        <div class="roi-image"></div>
-        <div class="roi-content">
-          <div class="section-label">Your ROI</div>
-          <h2>Better intel = better allocation</h2>
+      <div class="section-label">When to Use Us</div>
+      <h2 class="section-title">Three scenarios where we add value</h2>
+      <div class="use-cases-grid">
+        <div class="use-case">
+          <div class="use-case-icon">🔍</div>
+          <h3>Pre-LOI Screening</h3>
+          <p>Quick risk assessment before you invest significant time. Get a go/no-go read in 48 hours so you can prioritize the right deals.</p>
+        </div>
+        <div class="use-case">
+          <div class="use-case-icon">📋</div>
+          <h3>IC Memo Prep</h3>
+          <p>Full analysis package for your investment committee. Timeline scenarios, developer benchmarks, comparable projects—formatted for the deal process.</p>
+        </div>
+        <div class="use-case">
+          <div class="use-case-icon">📊</div>
+          <h3>Portfolio Monitoring</h3>
+          <p>Ongoing tracking for projects you've already backed. Early warning on timeline slippage, POI congestion changes, or developer stress signals.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scope -->
+  <section class="section alt">
+    <div class="container">
+      <div class="section-label">Our Scope</div>
+      <h2 class="section-title">Interconnection risk analysis. That's it.</h2>
+      <p class="section-subtitle">
+        We're specialists, not generalists. Here's exactly what we do and don't do.
+      </p>
+      <div class="scope-grid">
+        <div class="scope-box do">
+          <h3>✓ What We Do</h3>
+          <ul class="scope-list">
+            <li>Timeline probability analysis (P10-P90)</li>
+            <li>Developer track record benchmarking</li>
+            <li>POI congestion and competing project analysis</li>
+            <li>Interconnection cost benchmarking</li>
+            <li>Queue position and study stage assessment</li>
+            <li>Historical cohort completion rates</li>
+            <li>Go/No-Go recommendations with rationale</li>
+          </ul>
+        </div>
+        <div class="scope-box dont">
+          <h3>What We Don't Do</h3>
+          <ul class="scope-list">
+            <li>Permitting or environmental DD</li>
+            <li>Offtake/PPA analysis</li>
+            <li>Financial modeling or valuation</li>
+            <li>Site visits or technical inspections</li>
+            <li>Legal or regulatory review</li>
+            <li>Full-service consulting engagements</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why We're Fast -->
+  <section class="section">
+    <div class="container">
+      <div class="section-label">Why We're Fast</div>
+      <h2 class="section-title">Speed from infrastructure, not shortcuts</h2>
+      <div class="why-fast-grid">
+        <div class="why-fast-image"></div>
+        <div class="why-fast-content">
+          <h3>We've already built the data layer</h3>
           <p>
-            Every queue project your team analyzes takes 2-4 weeks and pulls resources from higher-value work. We've already built the data infrastructure—you get institutional-quality analysis without the overhead.
+            Most firms start from scratch on every engagement—pulling ISO data, cleaning it, building models. We've spent months building the pipelines and frameworks that let us analyze any project in the US in hours.
           </p>
-          <div class="roi-metrics">
-            <div class="roi-metric">
-              <div class="roi-metric-value">80%</div>
-              <div class="roi-metric-label">Faster than internal DD</div>
+          <p>
+            Fast turnaround doesn't mean shallow work. It means we're not reinventing the wheel every time.
+          </p>
+          <div class="why-fast-stats">
+            <div class="why-fast-stat">
+              <div class="why-fast-stat-value">10+ yrs</div>
+              <div class="why-fast-stat-label">Historical completion data</div>
             </div>
-            <div class="roi-metric">
-              <div class="roi-metric-value">$5-10K</div>
-              <div class="roi-metric-label">Per project analysis</div>
+            <div class="why-fast-stat">
+              <div class="why-fast-stat-value">500+</div>
+              <div class="why-fast-stat-label">Developer track records</div>
             </div>
-            <div class="roi-metric">
-              <div class="roi-metric-value">10+ yrs</div>
-              <div class="roi-metric-label">Historical completion data</div>
+            <div class="why-fast-stat">
+              <div class="why-fast-stat-value">Daily</div>
+              <div class="why-fast-stat-label">Queue data updates</div>
             </div>
-            <div class="roi-metric">
-              <div class="roi-metric-value">500+</div>
-              <div class="roi-metric-label">Developer track records</div>
+            <div class="why-fast-stat">
+              <div class="why-fast-stat-value">9 ISOs</div>
+              <div class="why-fast-stat-label">Full US coverage</div>
             </div>
           </div>
         </div>
@@ -646,28 +837,28 @@
     </div>
   </section>
 
-  <!-- Solution -->
-  <section class="solution">
+  <!-- Deliverables -->
+  <section class="section dark">
     <div class="container">
       <div class="section-label">What You Get</div>
       <h2 class="section-title">IC-memo-ready analysis</h2>
       <p class="section-subtitle">
         Everything your investment committee needs to assess interconnection risk—formatted for the deal process.
       </p>
-      <div class="solution-grid">
-        <div class="solution-card">
+      <div class="deliverables-grid">
+        <div class="deliverable">
           <h3>Risk Score (0-100)</h3>
           <p>Weighted scoring across timeline, developer, POI, and market factors. Benchmarked against similar projects.</p>
         </div>
-        <div class="solution-card">
+        <div class="deliverable">
           <h3>Timeline Scenarios</h3>
           <p>P10/P25/P50/P75/P90 distributions based on historical cohorts. Ready for your IRR sensitivity tables.</p>
         </div>
-        <div class="solution-card">
+        <div class="deliverable">
           <h3>Developer Deep Dive</h3>
           <p>Completion rates, average timelines, regional experience, current portfolio stress.</p>
         </div>
-        <div class="solution-card">
+        <div class="deliverable">
           <h3>POI & Congestion</h3>
           <p>Competing projects at the substation, upgrade requirements, historical success rate at that POI.</p>
         </div>
@@ -676,7 +867,7 @@
   </section>
 
   <!-- Sample -->
-  <section class="sample">
+  <section class="section">
     <div class="container">
       <div class="section-label">Sample Output</div>
       <h2 class="section-title">What the deliverable looks like</h2>
@@ -724,7 +915,7 @@
           </div>
         </div>
         <div class="sample-content">
-          <h2>Analysis built for IC memos</h2>
+          <h3>Analysis built for IC memos</h3>
           <p>
             Every deliverable includes the metrics your committee will ask about—timeline distributions, developer benchmarks, comparable projects, and clear risk flags.
           </p>
@@ -736,6 +927,38 @@
             <li>Historical outcomes for comparable projects</li>
             <li>Go/No-Go recommendation with rationale</li>
           </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="section alt">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-content">
+          <div class="section-label">Who We Are</div>
+          <h2>Data infrastructure built for energy DD</h2>
+          <p>
+            We're not a traditional consulting firm. We've built the data pipelines, scoring models, and analysis frameworks that let us deliver institutional-quality interconnection DD on demand.
+          </p>
+          <p>
+            Our database tracks every project across all 9 US ISOs, with daily updates and 10+ years of historical completion data. When you send us a project, we're not starting from scratch—we're running it through infrastructure we've already built.
+          </p>
+        </div>
+        <div class="about-stats">
+          <div class="about-stat">
+            <div class="about-stat-value">35,000+</div>
+            <div class="about-stat-label">Projects tracked</div>
+          </div>
+          <div class="about-stat">
+            <div class="about-stat-value">$5-10K</div>
+            <div class="about-stat-label">Per project analysis</div>
+          </div>
+          <div class="about-stat">
+            <div class="about-stat-value">2-3 days</div>
+            <div class="about-stat-label">Typical turnaround</div>
+          </div>
         </div>
       </div>
     </div>
