@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Prospector Labs</title>
   <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
       --white: #ffffff;
@@ -17,7 +16,6 @@
       --gray-400: #a3a3a3;
       --gray-500: #737373;
       --gray-600: #525252;
-      --gray-700: #404040;
       --gray-800: #262626;
       --gray-900: #171717;
     }
@@ -31,10 +29,10 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    a { color: inherit; }
+    a { color: inherit; text-decoration: none; }
 
     /* ═══════════════════════════════════════════
-       NAV — Ultra minimal
+       NAV
     ═══════════════════════════════════════════ */
     nav {
       position: fixed;
@@ -42,321 +40,301 @@
       left: 0;
       right: 0;
       z-index: 100;
-      padding: 20px 32px;
+      padding: 16px 32px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      mix-blend-mode: difference;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-100);
     }
 
     .nav-logo {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 600;
-      color: var(--white);
-      text-decoration: none;
-      letter-spacing: -0.01em;
+      letter-spacing: -0.02em;
     }
 
-    .nav-links {
+    .nav-center {
       display: flex;
       gap: 32px;
     }
 
-    .nav-links a {
-      font-size: 13px;
-      color: var(--white);
-      text-decoration: none;
-      opacity: 0.7;
-      transition: opacity 0.2s;
+    .nav-center a {
+      font-size: 14px;
+      color: var(--gray-500);
+      transition: color 0.2s;
     }
 
-    .nav-links a:hover { opacity: 1; }
+    .nav-center a:hover { color: var(--black); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-cta {
+      font-size: 14px;
+      font-weight: 500;
+      padding: 10px 20px;
+      background: var(--black);
+      color: var(--white);
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .nav-cta:hover { background: var(--gray-800); }
 
     /* ═══════════════════════════════════════════
-       HERO — Full bleed image with overlay text
+       HERO — Video style with animated gradient
     ═══════════════════════════════════════════ */
     .hero {
-      height: 100vh;
-      min-height: 700px;
+      height: 70vh;
+      min-height: 500px;
       position: relative;
-      display: flex;
-      align-items: flex-end;
-      padding: 64px;
-      background: var(--black);
+      overflow: hidden;
+      margin-top: 57px;
+    }
+
+    .hero-video {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      animation: gradientShift 10s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .hero-video::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+      background-size: 30px 30px;
+      opacity: 0.5;
+    }
+
+    /* Floating data particles */
+    .particles {
+      position: absolute;
+      inset: 0;
       overflow: hidden;
     }
 
-    .hero-bg {
+    .particle {
       position: absolute;
-      inset: 0;
-      background: url('https://images.unsplash.com/photo-1639322537228-f710d846310a?w=1800&q=80') center/cover;
-      opacity: 0.4;
+      width: 4px;
+      height: 4px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 50%;
+      animation: float 8s infinite;
+    }
+
+    .particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+    .particle:nth-child(2) { left: 25%; animation-delay: 1s; }
+    .particle:nth-child(3) { left: 40%; animation-delay: 2s; }
+    .particle:nth-child(4) { left: 55%; animation-delay: 3s; }
+    .particle:nth-child(5) { left: 70%; animation-delay: 4s; }
+    .particle:nth-child(6) { left: 85%; animation-delay: 5s; }
+
+    @keyframes float {
+      0% { transform: translateY(100vh) scale(0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-100px) scale(1); opacity: 0; }
     }
 
     .hero-content {
-      position: relative;
-      z-index: 1;
+      position: absolute;
+      bottom: 64px;
+      left: 64px;
+      right: 64px;
       color: var(--white);
-      max-width: 800px;
-    }
-
-    .hero-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.2em;
-      opacity: 0.6;
-      margin-bottom: 24px;
     }
 
     .hero h1 {
-      font-size: clamp(36px, 6vw, 64px);
+      font-size: clamp(32px, 5vw, 48px);
       font-weight: 500;
       letter-spacing: -0.03em;
-      line-height: 1.1;
-      margin-bottom: 32px;
-    }
-
-    .hero-meta {
-      display: flex;
-      gap: 48px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      opacity: 0.6;
+      max-width: 700px;
+      line-height: 1.2;
     }
 
     /* ═══════════════════════════════════════════
-       INTRO — Split text
+       PRODUCTS — Card grid like Anduril
     ═══════════════════════════════════════════ */
-    .intro {
+    .products {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      border-bottom: 1px solid var(--gray-200);
+      grid-template-columns: repeat(3, 1fr);
     }
 
-    .intro-left {
-      padding: 80px 64px;
-      border-right: 1px solid var(--gray-200);
-    }
-
-    .intro-left h2 {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--gray-400);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-
-    .intro-right {
-      padding: 80px 64px;
+    .product-card {
+      position: relative;
+      height: 400px;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-end;
+      padding: 32px;
+      color: var(--white);
+      transition: all 0.4s;
     }
 
-    .intro-right p {
+    .product-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent 40%, rgba(0,0,0,0.8));
+      z-index: 1;
+    }
+
+    .product-card:hover {
+      transform: scale(1.02);
+    }
+
+    .product-card:hover .product-bg {
+      transform: scale(1.05);
+    }
+
+    .product-bg {
+      position: absolute;
+      inset: 0;
+      transition: transform 0.6s;
+    }
+
+    .product-card:nth-child(1) .product-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .product-card:nth-child(2) .product-bg {
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    }
+
+    .product-card:nth-child(3) .product-bg {
+      background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);
+    }
+
+    .product-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .product-title {
       font-size: 28px;
-      font-weight: 400;
-      line-height: 1.5;
+      font-weight: 600;
+      margin-bottom: 8px;
       letter-spacing: -0.02em;
-      color: var(--gray-800);
+    }
+
+    .product-desc {
+      font-size: 15px;
+      opacity: 0.8;
+      max-width: 280px;
+    }
+
+    .product-arrow {
+      position: absolute;
+      top: 32px;
+      right: 32px;
+      font-size: 20px;
+      z-index: 2;
+      opacity: 0;
+      transform: translateX(-10px);
+      transition: all 0.3s;
+    }
+
+    .product-card:hover .product-arrow {
+      opacity: 1;
+      transform: translateX(0);
     }
 
     /* ═══════════════════════════════════════════
-       CAPABILITIES — Numbered list
+       SHOWCASE — Full width image
     ═══════════════════════════════════════════ */
-    .capabilities {
-      padding: 100px 64px;
-      border-bottom: 1px solid var(--gray-200);
+    .showcase {
+      background: var(--gray-900);
+      color: var(--white);
     }
 
-    .cap-header {
+    .showcase-header {
+      padding: 48px 64px 24px;
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 80px;
+      align-items: center;
     }
 
-    .cap-header h2 {
+    .showcase-title {
       font-size: 14px;
       font-weight: 500;
-      color: var(--gray-400);
-      text-transform: uppercase;
       letter-spacing: 0.1em;
-    }
-
-    .cap-header p {
-      max-width: 400px;
-      font-size: 16px;
-      color: var(--gray-500);
-      line-height: 1.6;
-    }
-
-    .cap-list {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1px;
-      background: var(--gray-200);
-    }
-
-    .cap-item {
-      background: var(--white);
-      padding: 48px;
-      display: grid;
-      grid-template-columns: 60px 1fr;
-      gap: 32px;
-    }
-
-    .cap-number {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
+      text-transform: uppercase;
       color: var(--gray-400);
     }
 
-    .cap-content h3 {
-      font-size: 20px;
-      font-weight: 500;
-      margin-bottom: 12px;
-      letter-spacing: -0.01em;
+    .showcase-link {
+      font-size: 14px;
+      color: var(--gray-400);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s;
     }
 
-    .cap-content p {
-      font-size: 15px;
-      color: var(--gray-500);
-      line-height: 1.6;
+    .showcase-link:hover { color: var(--white); }
+
+    .showcase-image {
+      width: 100%;
+      height: 500px;
+      background: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1600&q=80') center/cover;
+      position: relative;
     }
 
-    /* ═══════════════════════════════════════════
-       PROJECTS — Case studies
-    ═══════════════════════════════════════════ */
-    .projects {
-      background: var(--gray-50);
+    .showcase-image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent 60%, var(--gray-900));
     }
 
-    .projects-header {
-      padding: 80px 64px 48px;
+    .showcase-caption {
+      padding: 24px 64px 48px;
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
     }
 
-    .projects-header h2 {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--gray-400);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-
-    .projects-count {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      color: var(--gray-400);
-    }
-
-    .project-list {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .project {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      border-top: 1px solid var(--gray-200);
-      text-decoration: none;
-      color: inherit;
-      transition: background 0.3s;
-    }
-
-    .project:hover {
-      background: var(--white);
-    }
-
-    .project:hover .project-arrow {
-      transform: translateX(8px);
-      opacity: 1;
-    }
-
-    .project-info {
-      padding: 48px 64px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .project-meta {
-      display: flex;
-      gap: 24px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      color: var(--gray-400);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 16px;
-    }
-
-    .project-title {
-      font-size: 28px;
+    .showcase-caption h2 {
+      font-size: 32px;
       font-weight: 500;
       letter-spacing: -0.02em;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
     }
 
-    .project-arrow {
-      font-size: 20px;
-      opacity: 0;
-      transition: all 0.3s;
-    }
-
-    .project-desc {
+    .showcase-caption p {
       font-size: 15px;
-      color: var(--gray-500);
-      line-height: 1.6;
+      color: var(--gray-400);
       max-width: 400px;
     }
 
-    .project-visual {
-      height: 320px;
-      background: var(--gray-200);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .project-visual img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .project-visual-placeholder {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 48px;
-      color: var(--gray-300);
-    }
-
     /* ═══════════════════════════════════════════
-       STATS — Horizontal band
+       STATS — Minimal band
     ═══════════════════════════════════════════ */
     .stats {
-      background: var(--black);
-      color: var(--white);
-      padding: 64px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--gray-200);
+      border-bottom: 1px solid var(--gray-200);
     }
 
     .stat {
+      padding: 48px 32px;
       text-align: center;
+      border-right: 1px solid var(--gray-200);
     }
+
+    .stat:last-child { border-right: none; }
 
     .stat-value {
       font-size: 48px;
@@ -366,78 +344,100 @@
     }
 
     .stat-label {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      color: var(--gray-400);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
+      font-size: 13px;
+      color: var(--gray-500);
+      letter-spacing: 0.05em;
     }
 
     /* ═══════════════════════════════════════════
-       CLIENTS — Simple list
+       PROCESS — Simple steps
     ═══════════════════════════════════════════ */
-    .clients {
-      padding: 80px 64px;
-      border-bottom: 1px solid var(--gray-200);
+    .process {
+      padding: 100px 64px;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 80px;
     }
 
-    .clients h2 {
+    .process-header h2 {
       font-size: 14px;
       font-weight: 500;
       color: var(--gray-400);
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      margin-bottom: 48px;
+      margin-bottom: 16px;
     }
 
-    .client-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
+    .process-header p {
+      font-size: 24px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      line-height: 1.4;
     }
 
-    .client-tag {
-      padding: 12px 24px;
-      background: var(--gray-100);
-      border-radius: 100px;
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 48px;
+    }
+
+    .step-number {
+      font-size: 64px;
+      font-weight: 600;
+      color: var(--gray-200);
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .step-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .step-desc {
       font-size: 14px;
-      color: var(--gray-600);
+      color: var(--gray-500);
+      line-height: 1.6;
     }
 
     /* ═══════════════════════════════════════════
-       CONTACT — Full width CTA
+       CTA — Simple footer CTA
     ═══════════════════════════════════════════ */
-    .contact {
-      padding: 120px 64px;
+    .cta {
+      background: var(--black);
+      color: var(--white);
+      padding: 100px 64px;
       text-align: center;
     }
 
-    .contact h2 {
-      font-size: clamp(32px, 5vw, 56px);
+    .cta h2 {
+      font-size: clamp(32px, 5vw, 48px);
       font-weight: 500;
       letter-spacing: -0.03em;
       margin-bottom: 24px;
     }
 
-    .contact p {
+    .cta p {
       font-size: 18px;
-      color: var(--gray-500);
-      margin-bottom: 48px;
+      color: var(--gray-400);
+      margin-bottom: 40px;
     }
 
-    .contact-email {
-      font-size: 24px;
+    .cta-btn {
+      display: inline-block;
+      font-size: 15px;
       font-weight: 500;
+      padding: 16px 40px;
+      background: var(--white);
       color: var(--black);
-      text-decoration: none;
-      padding-bottom: 4px;
-      border-bottom: 2px solid var(--black);
+      border-radius: 6px;
       transition: all 0.2s;
     }
 
-    .contact-email:hover {
-      color: var(--gray-500);
-      border-color: var(--gray-500);
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(255,255,255,0.2);
     }
 
     /* ═══════════════════════════════════════════
@@ -448,9 +448,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-top: 1px solid var(--gray-200);
       font-size: 13px;
       color: var(--gray-400);
+      border-top: 1px solid var(--gray-200);
     }
 
     .footer-links {
@@ -460,7 +460,6 @@
 
     .footer-links a {
       color: var(--gray-400);
-      text-decoration: none;
       transition: color 0.2s;
     }
 
@@ -470,31 +469,25 @@
        RESPONSIVE
     ═══════════════════════════════════════════ */
     @media (max-width: 1024px) {
-      .intro { grid-template-columns: 1fr; }
-      .intro-left { border-right: none; border-bottom: 1px solid var(--gray-200); padding: 48px; }
-      .intro-right { padding: 48px; }
-      .intro-right p { font-size: 22px; }
-      .cap-list { grid-template-columns: 1fr; }
-      .project { grid-template-columns: 1fr; }
-      .project-visual { height: 240px; }
-      .stats { flex-wrap: wrap; gap: 48px; justify-content: center; }
+      .products { grid-template-columns: 1fr; }
+      .product-card { height: 300px; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .stat { border-bottom: 1px solid var(--gray-200); }
+      .process { grid-template-columns: 1fr; gap: 48px; }
+      .process-steps { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 768px) {
-      nav { padding: 16px 24px; }
-      .nav-links { display: none; }
-      .hero { padding: 32px; min-height: 500px; }
+      nav { padding: 12px 24px; }
+      .nav-center { display: none; }
+      .hero { min-height: 400px; }
+      .hero-content { left: 24px; right: 24px; bottom: 32px; }
       .hero h1 { font-size: 28px; }
-      .intro-left, .intro-right { padding: 32px; }
-      .capabilities { padding: 48px 32px; }
-      .cap-header { flex-direction: column; gap: 24px; }
-      .cap-item { padding: 32px; grid-template-columns: 40px 1fr; gap: 16px; }
-      .projects-header { padding: 48px 32px 24px; }
-      .project-info { padding: 32px; }
-      .project-title { font-size: 22px; }
-      .clients { padding: 48px 32px; }
-      .contact { padding: 64px 32px; }
-      footer { padding: 24px 32px; flex-direction: column; gap: 16px; }
+      .showcase-header, .showcase-caption { padding-left: 24px; padding-right: 24px; }
+      .showcase-image { height: 300px; }
+      .process { padding: 64px 24px; }
+      .cta { padding: 64px 24px; }
+      footer { flex-direction: column; gap: 16px; padding: 24px; }
     }
   </style>
 </head>
@@ -502,209 +495,123 @@
 
   <nav>
     <a href="/" class="nav-logo">Prospector Labs</a>
-    <div class="nav-links">
-      <a href="#capabilities">Services</a>
-      <a href="#projects">Work</a>
-      <a href="mailto:owen@prospectorlabs.io">Contact</a>
+    <div class="nav-center">
+      <a href="#contact">Contact Data</a>
+      <a href="#web">Web Scraping</a>
+      <a href="#custom">Custom Projects</a>
+    </div>
+    <div class="nav-right">
+      <a href="mailto:owen@prospectorlabs.io" class="nav-cta">Get Started</a>
     </div>
   </nav>
 
   <!-- Hero -->
   <section class="hero">
-    <div class="hero-bg"></div>
+    <div class="hero-video"></div>
+    <div class="particles">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
     <div class="hero-content">
-      <div class="hero-tag">Data Engineering & Intelligence</div>
-      <h1>We build custom data infrastructure for companies that need to move fast</h1>
-      <div class="hero-meta">
-        <span>New York</span>
-        <span>Est. 2024</span>
-      </div>
+      <h1>The data you need, delivered fast and hassle-free</h1>
     </div>
   </section>
 
-  <!-- Intro -->
-  <section class="intro">
-    <div class="intro-left">
-      <h2>What we do</h2>
-    </div>
-    <div class="intro-right">
-      <p>Scrapers that actually work. Pipelines that don't break. Dashboards people actually use. We've built data tools for PE firms doing due diligence, startups needing competitive intel, and enterprises tired of broken vendors.</p>
-    </div>
+  <!-- Products -->
+  <section class="products">
+    <a href="#contact" class="product-card">
+      <div class="product-bg"></div>
+      <div class="product-content">
+        <h3 class="product-title">Contact Data</h3>
+        <p class="product-desc">The exact leads you need at the best ROI. Custom lists built to your specifications.</p>
+      </div>
+      <span class="product-arrow">→</span>
+    </a>
+    <a href="#web" class="product-card">
+      <div class="product-bg"></div>
+      <div class="product-content">
+        <h3 class="product-title">Web Scraping</h3>
+        <p class="product-desc">Any public data from any website. Production-grade scrapers that actually work.</p>
+      </div>
+      <span class="product-arrow">→</span>
+    </a>
+    <a href="#custom" class="product-card">
+      <div class="product-bg"></div>
+      <div class="product-content">
+        <h3 class="product-title">Custom Projects</h3>
+        <p class="product-desc">Data pipelines, dashboards, intelligence tools. Built exactly how you need them.</p>
+      </div>
+      <span class="product-arrow">→</span>
+    </a>
   </section>
 
-  <!-- Capabilities -->
-  <section class="capabilities" id="capabilities">
-    <div class="cap-header">
-      <h2>Capabilities</h2>
-      <p>From raw data collection to polished intelligence products — we handle the full stack.</p>
+  <!-- Showcase -->
+  <section class="showcase">
+    <div class="showcase-header">
+      <span class="showcase-title">Featured Tools</span>
+      <a href="https://owencoonahan.github.io/prospector-data-tools/" class="showcase-link">View All →</a>
     </div>
-    <div class="cap-list">
-      <div class="cap-item">
-        <div class="cap-number">01</div>
-        <div class="cap-content">
-          <h3>Web Scraping</h3>
-          <p>Production scrapers for any target. We handle anti-bot systems, CAPTCHAs, dynamic content, authentication, and scale. If it's on the web, we can get it.</p>
-        </div>
-      </div>
-      <div class="cap-item">
-        <div class="cap-number">02</div>
-        <div class="cap-content">
-          <h3>Data Pipelines</h3>
-          <p>ETL that runs without babysitting. We build pipelines that clean, transform, dedupe, and deliver your data — on schedule, every time.</p>
-        </div>
-      </div>
-      <div class="cap-item">
-        <div class="cap-number">03</div>
-        <div class="cap-content">
-          <h3>Custom Dashboards</h3>
-          <p>Interactive tools your team will actually use. From internal analytics to customer-facing products — designed for clarity, built for speed.</p>
-        </div>
-      </div>
-      <div class="cap-item">
-        <div class="cap-number">04</div>
-        <div class="cap-content">
-          <h3>Intelligence Products</h3>
-          <p>Turn raw data into decision-ready insights. Market research, competitive intel, due diligence reports — packaged for action.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Projects -->
-  <section class="projects" id="projects">
-    <div class="projects-header">
-      <h2>Selected Work</h2>
-      <span class="projects-count">6 Projects</span>
-    </div>
-    <div class="project-list">
-      <a href="https://owencoonahan.github.io/prospector-data-tools/queue-lookup/" class="project">
-        <div class="project-info">
-          <div class="project-meta">
-            <span>Energy</span>
-            <span>Dashboard</span>
-          </div>
-          <h3 class="project-title">US Interconnection Queue <span class="project-arrow">→</span></h3>
-          <p class="project-desc">Aggregated 35,000+ energy projects from 9 ISO queues into a searchable database with developer analytics and regional benchmarks.</p>
-        </div>
-        <div class="project-visual">
-          <div class="project-visual-placeholder">⚡</div>
-        </div>
-      </a>
-      
-      <a href="https://owencoonahan.github.io/prospector-data-tools/critical-minerals-v2/" class="project">
-        <div class="project-info">
-          <div class="project-meta">
-            <span>Supply Chain</span>
-            <span>Intelligence</span>
-          </div>
-          <h3 class="project-title">Critical Minerals Tracker <span class="project-arrow">→</span></h3>
-          <p class="project-desc">Global supply chain analysis for 12 energy transition minerals. Production data, processing concentration, company profiles.</p>
-        </div>
-        <div class="project-visual">
-          <div class="project-visual-placeholder">🪨</div>
-        </div>
-      </a>
-
-      <div class="project" style="cursor: default;">
-        <div class="project-info">
-          <div class="project-meta">
-            <span>Consumer</span>
-            <span>Scraping</span>
-          </div>
-          <h3 class="project-title">E-commerce Price Tracker</h3>
-          <p class="project-desc">Real-time price monitoring across 50+ retailers for a consumer app. 2M+ SKUs tracked daily with automated alerts.</p>
-        </div>
-        <div class="project-visual">
-          <div class="project-visual-placeholder">🛒</div>
-        </div>
-      </div>
-
-      <div class="project" style="cursor: default;">
-        <div class="project-info">
-          <div class="project-meta">
-            <span>Finance</span>
-            <span>Due Diligence</span>
-          </div>
-          <h3 class="project-title">PE Deal Intelligence</h3>
-          <p class="project-desc">Automated due diligence pipeline for a mid-market PE firm. Scrapes regulatory filings, news, and financials for target companies.</p>
-        </div>
-        <div class="project-visual">
-          <div class="project-visual-placeholder">📊</div>
-        </div>
-      </div>
-
-      <div class="project" style="cursor: default;">
-        <div class="project-info">
-          <div class="project-meta">
-            <span>Real Estate</span>
-            <span>Data Pipeline</span>
-          </div>
-          <h3 class="project-title">Property Data Aggregator</h3>
-          <p class="project-desc">Unified 15 data sources into a single property intelligence platform. Permit data, zoning, ownership, transactions.</p>
-        </div>
-        <div class="project-visual">
-          <div class="project-visual-placeholder">🏢</div>
-        </div>
-      </div>
-
-      <div class="project" style="cursor: default;">
-        <div class="project-info">
-          <div class="project-meta">
-            <span>Healthcare</span>
-            <span>Research</span>
-          </div>
-          <h3 class="project-title">Clinical Trial Monitor</h3>
-          <p class="project-desc">Competitive intelligence tool tracking 10,000+ active clinical trials. Automated updates, pipeline analysis, company benchmarking.</p>
-        </div>
-        <div class="project-visual">
-          <div class="project-visual-placeholder">🔬</div>
-        </div>
-      </div>
+    <div class="showcase-image"></div>
+    <div class="showcase-caption">
+      <h2>Energy Intelligence Suite</h2>
+      <p>35,000+ interconnection projects across 9 ISOs. Search, analyze, and benchmark with real-time data.</p>
     </div>
   </section>
 
   <!-- Stats -->
   <section class="stats">
     <div class="stat">
-      <div class="stat-value">50+</div>
-      <div class="stat-label">Projects Shipped</div>
+      <div class="stat-value">240+</div>
+      <div class="stat-label">Companies Served</div>
     </div>
     <div class="stat">
-      <div class="stat-value">12</div>
-      <div class="stat-label">Industries</div>
+      <div class="stat-value">50M+</div>
+      <div class="stat-label">Records Delivered</div>
     </div>
     <div class="stat">
-      <div class="stat-value">100M+</div>
-      <div class="stat-label">Records Processed</div>
+      <div class="stat-value">60%</div>
+      <div class="stat-label">Avg Cost Savings</div>
     </div>
     <div class="stat">
-      <div class="stat-value">24h</div>
-      <div class="stat-label">Avg Response</div>
+      <div class="stat-value">24hr</div>
+      <div class="stat-label">Response Time</div>
     </div>
   </section>
 
-  <!-- Clients -->
-  <section class="clients">
-    <h2>Industries We've Worked In</h2>
-    <div class="client-list">
-      <span class="client-tag">Energy & Utilities</span>
-      <span class="client-tag">Private Equity</span>
-      <span class="client-tag">Real Estate</span>
-      <span class="client-tag">E-commerce</span>
-      <span class="client-tag">Healthcare</span>
-      <span class="client-tag">Consumer Apps</span>
-      <span class="client-tag">Financial Services</span>
-      <span class="client-tag">Supply Chain</span>
-      <span class="client-tag">Legal Tech</span>
-      <span class="client-tag">Media & Publishing</span>
+  <!-- Process -->
+  <section class="process">
+    <div class="process-header">
+      <h2>How It Works</h2>
+      <p>From request to delivery in days, not weeks</p>
+    </div>
+    <div class="process-steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3 class="step-title">Submit Request</h3>
+        <p class="step-desc">Tell us the data you need or the problem you're solving. We'll assess feasibility.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3 class="step-title">Get a Quote</h3>
+        <p class="step-desc">We confirm scope and send a customized quote. No surprises, no hidden fees.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3 class="step-title">Receive Data</h3>
+        <p class="step-desc">We build, clean, and deliver your data exactly how you need it. Ready to use.</p>
+      </div>
     </div>
   </section>
 
-  <!-- Contact -->
-  <section class="contact">
-    <h2>Have a data problem?</h2>
-    <p>We'd love to hear about it.</p>
-    <a href="mailto:owen@prospectorlabs.io" class="contact-email">owen@prospectorlabs.io</a>
+  <!-- CTA -->
+  <section class="cta">
+    <h2>Ready to get started?</h2>
+    <p>Tell us what data you need. We'll make it happen.</p>
+    <a href="mailto:owen@prospectorlabs.io" class="cta-btn">Contact Us</a>
   </section>
 
   <!-- Footer -->
