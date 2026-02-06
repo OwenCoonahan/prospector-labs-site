@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dataworks — Custom Data Projects, Delivered</title>
+  <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --white: #ffffff;
+      --black: #000000;
+      --gray-50: #fafafa;
+      --gray-100: #f5f5f5;
+      --gray-200: #e5e5e5;
+      --gray-300: #d4d4d4;
+      --gray-400: #a3a3a3;
+      --gray-500: #737373;
+      --gray-600: #525252;
+      --gray-800: #262626;
+      --gray-900: #171717;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Geist', system-ui, sans-serif;
+      background: var(--white);
+      color: var(--black);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .nav-logo {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-center {
+      display: flex;
+      gap: 32px;
+    }
+
+    .nav-center a {
+      font-size: 14px;
+      color: var(--gray-500);
+      transition: color 0.2s;
+    }
+
+    .nav-center a:hover { color: var(--black); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-cta {
+      font-size: 14px;
+      font-weight: 500;
+      padding: 10px 20px;
+      background: var(--black);
+      color: var(--white);
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .nav-cta:hover { background: var(--gray-800); }
+
+    /* HERO */
+    .hero {
+      height: 70vh;
+      min-height: 500px;
+      position: relative;
+      overflow: hidden;
+      margin-top: 57px;
+    }
+
+    .hero-video {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 50%, #16213e 100%);
+      animation: gradientShift 12s ease infinite;
+      background-size: 200% 200%;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .hero-video::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.15) 0%, transparent 50%);
+    }
+
+    /* Grid overlay */
+    .grid-overlay {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    .hero-content {
+      position: absolute;
+      bottom: 64px;
+      left: 64px;
+      right: 64px;
+      color: var(--white);
+    }
+
+    .hero-label {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 16px;
+    }
+
+    .hero h1 {
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      max-width: 800px;
+      line-height: 1.15;
+    }
+
+    .hero h1 span {
+      color: #60a5fa;
+    }
+
+    /* PRODUCTS */
+    .products {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .product-card {
+      position: relative;
+      height: 400px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 32px;
+      color: var(--white);
+      transition: all 0.4s;
+    }
+
+    .product-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent 40%, rgba(0,0,0,0.85));
+      z-index: 1;
+    }
+
+    .product-card:hover {
+      transform: scale(1.02);
+    }
+
+    .product-card:hover .product-bg {
+      transform: scale(1.05);
+    }
+
+    .product-bg {
+      position: absolute;
+      inset: 0;
+      transition: transform 0.6s;
+    }
+
+    .product-card:nth-child(1) .product-bg {
+      background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+    }
+
+    .product-card:nth-child(2) .product-bg {
+      background: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
+    }
+
+    .product-card:nth-child(3) .product-bg {
+      background: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 100%);
+    }
+
+    .product-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .product-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 8px;
+    }
+
+    .product-title {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .product-desc {
+      font-size: 15px;
+      opacity: 0.75;
+      max-width: 300px;
+      line-height: 1.5;
+    }
+
+    .product-arrow {
+      position: absolute;
+      top: 32px;
+      right: 32px;
+      font-size: 20px;
+      z-index: 2;
+      opacity: 0;
+      transform: translateX(-10px);
+      transition: all 0.3s;
+    }
+
+    .product-card:hover .product-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* SHOWCASE */
+    .showcase {
+      background: var(--gray-900);
+      color: var(--white);
+    }
+
+    .showcase-header {
+      padding: 48px 64px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .showcase-title {
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gray-400);
+    }
+
+    .showcase-link {
+      font-size: 14px;
+      color: var(--gray-400);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s;
+    }
+
+    .showcase-link:hover { color: var(--white); }
+
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--gray-800);
+      border-top: 1px solid var(--gray-800);
+    }
+
+    .showcase-item {
+      background: var(--gray-900);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .showcase-item-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--gray-800);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .showcase-item h3 {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .showcase-item p {
+      font-size: 13px;
+      color: var(--gray-400);
+      line-height: 1.5;
+    }
+
+    /* STATS */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--gray-200);
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .stat {
+      padding: 48px 32px;
+      text-align: center;
+      border-right: 1px solid var(--gray-200);
+    }
+
+    .stat:last-child { border-right: none; }
+
+    .stat-value {
+      font-size: 48px;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--gray-500);
+      letter-spacing: 0.05em;
+    }
+
+    /* PROCESS */
+    .process {
+      padding: 100px 64px;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 80px;
+    }
+
+    .process-header h2 {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-400);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 16px;
+    }
+
+    .process-header p {
+      font-size: 24px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      line-height: 1.4;
+    }
+
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 48px;
+    }
+
+    .step-number {
+      font-size: 64px;
+      font-weight: 600;
+      color: var(--gray-200);
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .step-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .step-desc {
+      font-size: 14px;
+      color: var(--gray-500);
+      line-height: 1.6;
+    }
+
+    /* CLIENTS */
+    .clients {
+      background: var(--gray-50);
+      padding: 64px;
+      text-align: center;
+    }
+
+    .clients-label {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gray-400);
+      margin-bottom: 32px;
+    }
+
+    .clients-logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 64px;
+      flex-wrap: wrap;
+    }
+
+    .client-logo {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--gray-300);
+      letter-spacing: -0.02em;
+    }
+
+    /* CTA */
+    .cta {
+      background: var(--black);
+      color: var(--white);
+      padding: 100px 64px;
+      text-align: center;
+    }
+
+    .cta h2 {
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+
+    .cta p {
+      font-size: 18px;
+      color: var(--gray-400);
+      margin-bottom: 40px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 16px 40px;
+      background: var(--white);
+      color: var(--black);
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(255,255,255,0.2);
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 32px 64px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: var(--gray-400);
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 32px;
+    }
+
+    .footer-links a {
+      color: var(--gray-400);
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--black); }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .products { grid-template-columns: 1fr; }
+      .product-card { height: 300px; }
+      .showcase-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .stat { border-bottom: 1px solid var(--gray-200); }
+      .process { grid-template-columns: 1fr; gap: 48px; }
+      .process-steps { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 12px 24px; }
+      .nav-center { display: none; }
+      .hero { min-height: 400px; }
+      .hero-content { left: 24px; right: 24px; bottom: 32px; }
+      .hero h1 { font-size: 28px; }
+      .showcase-header { padding-left: 24px; padding-right: 24px; }
+      .showcase-grid { grid-template-columns: 1fr; }
+      .process { padding: 64px 24px; }
+      .clients { padding: 48px 24px; }
+      .clients-logos { gap: 32px; }
+      .cta { padding: 64px 24px; }
+      footer { flex-direction: column; gap: 16px; padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-logo">Dataworks</a>
+    <div class="nav-center">
+      <a href="#scrapers">Scrapers</a>
+      <a href="#pipelines">Pipelines</a>
+      <a href="#dashboards">Dashboards</a>
+      <a href="#portfolio">Portfolio</a>
+    </div>
+    <div class="nav-right">
+      <a href="mailto:hello@dataworks.dev" class="nav-cta">Start a Project</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-video"></div>
+    <div class="grid-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-label">Custom Data Infrastructure</div>
+      <h1>We build <span>data tools</span> that actually work</h1>
+    </div>
+  </section>
+
+  <!-- Products -->
+  <section class="products">
+    <a href="#scrapers" class="product-card">
+      <div class="product-bg"></div>
+      <div class="product-content">
+        <div class="product-label">Core Service</div>
+        <h3 class="product-title">Production Scrapers</h3>
+        <p class="product-desc">Reliable data extraction from any source. Built to run 24/7 without babysitting. Anti-detection, proxy rotation, automatic retries.</p>
+      </div>
+      <span class="product-arrow">→</span>
+    </a>
+    <a href="#pipelines" class="product-card">
+      <div class="product-bg"></div>
+      <div class="product-content">
+        <div class="product-label">Core Service</div>
+        <h3 class="product-title">Data Pipelines</h3>
+        <p class="product-desc">ETL that doesn't break. Ingest, transform, deliver. From raw APIs to clean databases, on your schedule.</p>
+      </div>
+      <span class="product-arrow">→</span>
+    </a>
+    <a href="#dashboards" class="product-card">
+      <div class="product-bg"></div>
+      <div class="product-content">
+        <div class="product-label">Core Service</div>
+        <h3 class="product-title">Dashboards & Tools</h3>
+        <p class="product-desc">Internal tools, customer-facing apps, analytics dashboards. Fast builds, clean UI, real functionality.</p>
+      </div>
+      <span class="product-arrow">→</span>
+    </a>
+  </section>
+
+  <!-- Showcase -->
+  <section class="showcase">
+    <div class="showcase-header">
+      <span class="showcase-title">What We've Built</span>
+      <a href="#portfolio" class="showcase-link">View Full Portfolio →</a>
+    </div>
+    <div class="showcase-grid">
+      <div class="showcase-item">
+        <div class="showcase-item-icon">⚡</div>
+        <h3>Energy Queue Tracker</h3>
+        <p>35,000+ interconnection projects across 9 ISO regions. Real-time updates, developer scoring, project comparisons.</p>
+      </div>
+      <div class="showcase-item">
+        <div class="showcase-item-icon">🏛️</div>
+        <h3>Federal Contracts DB</h3>
+        <p>Complete FPDS scraper with contractor analysis, agency breakdowns, and award trend monitoring.</p>
+      </div>
+      <div class="showcase-item">
+        <div class="showcase-item-icon">📊</div>
+        <h3>Insider Trading Monitor</h3>
+        <p>SEC Form 4 filings parsed and analyzed in real-time. Track executive transactions across 10,000+ companies.</p>
+      </div>
+      <div class="showcase-item">
+        <div class="showcase-item-icon">🔋</div>
+        <h3>Grid Stress Dashboard</h3>
+        <p>Live constraint monitoring, transformer utilization, and bottleneck analysis for energy infrastructure investors.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="stats">
+    <div class="stat">
+      <div class="stat-value">50M+</div>
+      <div class="stat-label">Records Processed</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">200+</div>
+      <div class="stat-label">Scrapers Deployed</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">99.5%</div>
+      <div class="stat-label">Uptime SLA</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">3-7d</div>
+      <div class="stat-label">Typical Delivery</div>
+    </div>
+  </section>
+
+  <!-- Process -->
+  <section class="process">
+    <div class="process-header">
+      <h2>How It Works</h2>
+      <p>Productized delivery. Fixed scope, fixed price, fast turnaround.</p>
+    </div>
+    <div class="process-steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3 class="step-title">Scope It</h3>
+        <p class="step-desc">Tell us the data source, desired output, and refresh frequency. We'll confirm feasibility in 24 hours.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3 class="step-title">Build It</h3>
+        <p class="step-desc">Our team builds the scraper, pipeline, or tool. You get updates. No black boxes.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3 class="step-title">Ship It</h3>
+        <p class="step-desc">Delivered to your specs—database, API, dashboard, or flat files. Ongoing maintenance available.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Clients -->
+  <section class="clients">
+    <div class="clients-label">Trusted By</div>
+    <div class="clients-logos">
+      <span class="client-logo">PE Funds</span>
+      <span class="client-logo">Hedge Funds</span>
+      <span class="client-logo">Startups</span>
+      <span class="client-logo">Enterprise</span>
+      <span class="client-logo">Research</span>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <h2>Got a data problem?</h2>
+    <p>We've probably solved it before. Tell us what you need—we'll tell you how fast we can build it.</p>
+    <a href="mailto:hello@dataworks.dev" class="cta-btn">Start a Project</a>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <span>© 2026 Dataworks</span>
+    <div class="footer-links">
+      <a href="#portfolio">Portfolio</a>
+      <a href="https://twitter.com/OwenCoonahan">Twitter</a>
+      <a href="https://linkedin.com/in/owencoonahan">LinkedIn</a>
+    </div>
+  </footer>
+
+</body>
+</html>
