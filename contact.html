@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Start a Project — Prospector Labs</title>
+  <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --white: #ffffff;
+      --black: #000000;
+      --gray-50: #fafafa;
+      --gray-100: #f5f5f5;
+      --gray-200: #e5e5e5;
+      --gray-300: #d4d4d4;
+      --gray-400: #a3a3a3;
+      --gray-500: #737373;
+      --gray-600: #525252;
+      --gray-700: #404040;
+      --gray-800: #262626;
+      --gray-900: #171717;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Geist', system-ui, sans-serif;
+      background: var(--gray-50);
+      color: var(--black);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    a { color: inherit; }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 20px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .nav-logo {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--black);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+    }
+
+    .nav-back {
+      font-size: 13px;
+      color: var(--gray-500);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s;
+    }
+
+    .nav-back:hover {
+      color: var(--black);
+    }
+
+    /* MAIN */
+    main {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 120px 32px 80px;
+    }
+
+    .page-header {
+      margin-bottom: 48px;
+    }
+
+    .page-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--gray-400);
+      margin-bottom: 16px;
+    }
+
+    .page-header h1 {
+      font-size: 36px;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .page-header p {
+      font-size: 18px;
+      color: var(--gray-500);
+      line-height: 1.6;
+    }
+
+    /* FORM */
+    .form-container {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 48px;
+    }
+
+    .form-group {
+      margin-bottom: 32px;
+    }
+
+    .form-group:last-of-type {
+      margin-bottom: 40px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-800);
+      margin-bottom: 8px;
+    }
+
+    label span {
+      color: var(--gray-400);
+      font-weight: 400;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 14px 16px;
+      font-family: 'Geist', system-ui, sans-serif;
+      font-size: 15px;
+      color: var(--black);
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--gray-400);
+      background: var(--white);
+    }
+
+    textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23737373' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 48px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 16px 24px;
+      font-family: 'Geist', system-ui, sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--white);
+      background: var(--black);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .submit-btn:hover {
+      background: var(--gray-800);
+    }
+
+    .submit-btn:active {
+      transform: scale(0.98);
+    }
+
+    .form-footer {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--gray-400);
+    }
+
+    .form-footer a {
+      color: var(--gray-600);
+      text-decoration: underline;
+    }
+
+    /* Success state */
+    .success-message {
+      display: none;
+      text-align: center;
+      padding: 48px;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    .success-message h2 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .success-message p {
+      color: var(--gray-500);
+      margin-bottom: 24px;
+    }
+
+    .success-message a {
+      color: var(--black);
+      font-weight: 500;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      main { padding: 100px 24px 60px; }
+      .page-header h1 { font-size: 28px; }
+      .form-container { padding: 32px 24px; }
+      .form-row { grid-template-columns: 1fr; gap: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="variant-editorial.html" class="nav-logo">Prospector Labs</a>
+    <a href="variant-editorial.html" class="nav-back">← Back</a>
+  </nav>
+
+  <main>
+    <div class="page-header">
+      <div class="page-tag">Start a Project</div>
+      <h1>Tell us about your data project</h1>
+      <p>We'll review your submission and get back to you within 24 hours.</p>
+    </div>
+
+    <div class="form-container">
+      <!-- Replace YOUR_FORM_ID with your Formspree form ID -->
+      <form id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required placeholder="Your name">
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required placeholder="you@company.com">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="company">Company <span>(optional)</span></label>
+          <input type="text" id="company" name="company" placeholder="Company name">
+        </div>
+
+        <div class="form-group">
+          <label for="project">What are you trying to build?</label>
+          <textarea id="project" name="project" required placeholder="Describe your data project, the problem you're solving, and what success looks like..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="timeline">Timeline</label>
+            <select id="timeline" name="timeline" required>
+              <option value="" disabled selected>Select timeline</option>
+              <option value="asap">ASAP (within 2 weeks)</option>
+              <option value="1-2 months">1-2 months</option>
+              <option value="3+ months">3+ months</option>
+              <option value="exploring">Just exploring</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="budget">Budget range <span>(optional)</span></label>
+            <select id="budget" name="budget">
+              <option value="" disabled selected>Select range</option>
+              <option value="<5k">Less than $5,000</option>
+              <option value="5-15k">$5,000 - $15,000</option>
+              <option value="15-50k">$15,000 - $50,000</option>
+              <option value="50k+">$50,000+</option>
+              <option value="not sure">Not sure yet</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Submit Project Request</button>
+      </form>
+
+      <div class="success-message" id="success">
+        <h2>Thanks for reaching out!</h2>
+        <p>We've received your project details and will get back to you within 24 hours.</p>
+        <a href="variant-editorial.html">← Back to home</a>
+      </div>
+
+      <div class="form-footer">
+        Or email us directly at <a href="mailto:owen@prospectorlabs.io">owen@prospectorlabs.io</a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Form submission handling
+    const form = document.getElementById('contact-form');
+    const success = document.getElementById('success');
+    
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const btn = form.querySelector('.submit-btn');
+      btn.textContent = 'Sending...';
+      btn.disabled = true;
+      
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        });
+        
+        if (response.ok) {
+          form.style.display = 'none';
+          success.classList.add('show');
+        } else {
+          throw new Error('Form submission failed');
+        }
+      } catch (error) {
+        btn.textContent = 'Submit Project Request';
+        btn.disabled = false;
+        alert('Something went wrong. Please try again or email us directly.');
+      }
+    });
+  </script>
+
+</body>
+</html>
