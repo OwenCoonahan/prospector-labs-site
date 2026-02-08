@@ -45,28 +45,6 @@
       justify-content: space-between;
       align-items: center;
       mix-blend-mode: difference;
-      transition: all 0.3s ease;
-    }
-
-    nav.scrolled {
-      mix-blend-mode: normal;
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--gray-200);
-      padding: 16px 32px;
-    }
-
-    nav.scrolled .nav-logo {
-      color: var(--black);
-    }
-
-    nav.scrolled .nav-links a {
-      color: var(--gray-600);
-    }
-
-    nav.scrolled .nav-links a:hover {
-      color: var(--black);
     }
 
     .nav-logo {
@@ -75,13 +53,11 @@
       color: var(--white);
       text-decoration: none;
       letter-spacing: -0.01em;
-      transition: color 0.3s;
     }
 
     .nav-links {
       display: flex;
       gap: 32px;
-      align-items: center;
     }
 
     .nav-links a {
@@ -89,30 +65,10 @@
       color: var(--white);
       text-decoration: none;
       opacity: 0.7;
-      transition: all 0.2s;
+      transition: opacity 0.2s;
     }
 
     .nav-links a:hover { opacity: 1; }
-
-    .nav-cta {
-      display: none;
-      padding: 10px 20px;
-      background: var(--black);
-      color: var(--white) !important;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 500;
-      opacity: 1 !important;
-      transition: all 0.2s;
-    }
-
-    .nav-cta:hover {
-      background: var(--gray-800);
-    }
-
-    nav.scrolled .nav-cta {
-      display: inline-block;
-    }
 
     /* HERO */
     .hero {
@@ -532,39 +488,9 @@
 
     @media (max-width: 768px) {
       nav { padding: 16px 24px; }
-      nav.scrolled { padding: 12px 24px; }
       .nav-links { display: none; }
-      
-      /* Mobile CTA - shows on scroll */
-      .nav-cta-mobile {
-        display: none;
-        padding: 8px 16px;
-        background: var(--black);
-        color: var(--white);
-        border-radius: 6px;
-        font-size: 12px;
-        font-weight: 500;
-        text-decoration: none;
-      }
-      nav.scrolled .nav-cta-mobile {
-        display: inline-block;
-      }
-      nav.scrolled .nav-cta-mobile:hover {
-        background: var(--gray-800);
-      }
-      
-      /* Fix hero cutoff - more bottom padding on mobile */
-      .hero { 
-        padding: 32px; 
-        padding-bottom: 80px;
-        min-height: 100vh;
-        min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
-      }
+      .hero { padding: 32px; min-height: 500px; }
       .hero h1 { font-size: 28px; }
-      .hero-content {
-        padding-bottom: 20px;
-      }
-      
       .intro-left, .intro-right { padding: 32px; }
       .capabilities { padding: 48px 32px; }
       .cap-header { flex-direction: column; gap: 24px; }
@@ -580,13 +506,12 @@
 </head>
 <body>
 
-  <nav id="nav">
+  <nav>
     <a href="/" class="nav-logo">Prospector Labs</a>
-    <a href="contact.html" class="nav-cta-mobile">Get in Touch</a>
     <div class="nav-links">
       <a href="#capabilities">Services</a>
       <a href="#projects">Work</a>
-      <a href="contact.html" class="nav-cta">Start a Project</a>
+      <a href="mailto:owen@prospectorlabs.io">Contact</a>
     </div>
   </nav>
 
@@ -819,26 +744,6 @@
       <a href="https://linkedin.com/in/owencoonahan">LinkedIn</a>
     </div>
   </footer>
-
-  <script>
-    // Nav scroll behavior
-    const nav = document.getElementById('nav');
-    const hero = document.querySelector('.hero');
-    
-    function handleScroll() {
-      const heroBottom = hero.offsetTop + hero.offsetHeight;
-      const scrollY = window.scrollY;
-      
-      if (scrollY > heroBottom - 100) {
-        nav.classList.add('scrolled');
-      } else {
-        nav.classList.remove('scrolled');
-      }
-    }
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Check on load
-  </script>
 
 </body>
 </html>
