@@ -627,24 +627,6 @@
       width: 100%;
     }
 
-    /* Capability card hover */
-    .cap-item {
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .cap-item:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
-    }
-
-    .cap-icon svg {
-      transition: stroke 0.3s ease, transform 0.3s ease;
-    }
-
-    .cap-item:hover .cap-icon svg {
-      stroke: var(--black);
-      transform: scale(1.05);
-    }
 
     /* Client tag hover */
     .client-tag {
@@ -773,8 +755,8 @@
       <h2>Capabilities</h2>
       <p>End-to-end data infrastructure. From messy sources to clean intelligence.</p>
     </div>
-    <div class="cap-list stagger-children">
-      <div class="cap-item animate-on-scroll">
+    <div class="cap-list">
+      <div class="cap-item">
         <div class="cap-icon">
           <!-- Web/Network pattern -->
           <svg viewBox="0 0 48 48">
@@ -792,7 +774,7 @@
           <p>Production scrapers for any target. We handle anti-bot systems, CAPTCHAs, dynamic content, authentication, and scale. If it's on the web, we can get it.</p>
         </div>
       </div>
-      <div class="cap-item animate-on-scroll">
+      <div class="cap-item">
         <div class="cap-icon">
           <!-- Flow/Pipeline pattern -->
           <svg viewBox="0 0 48 48">
@@ -809,7 +791,7 @@
           <p>ETL that runs without babysitting. We build pipelines that clean, transform, dedupe, and deliver your data — on schedule, every time.</p>
         </div>
       </div>
-      <div class="cap-item animate-on-scroll">
+      <div class="cap-item">
         <div class="cap-icon">
           <!-- Grid/Dashboard pattern -->
           <svg viewBox="0 0 48 48">
@@ -828,7 +810,7 @@
           <p>Interactive tools your team will actually use. From internal analytics to customer-facing products — designed for clarity, built for speed.</p>
         </div>
       </div>
-      <div class="cap-item animate-on-scroll">
+      <div class="cap-item">
         <div class="cap-icon">
           <!-- Diamond/Layers pattern -->
           <svg viewBox="0 0 48 48">
