@@ -168,18 +168,6 @@
       color: var(--gray-500);
     }
 
-    /* PROBLEM */
-    .problem {
-      padding: 60px 0;
-      background: var(--gray-50);
-    }
-
-    .problem-content {
-      max-width: 800px;
-      margin: 0 auto;
-      text-align: center;
-    }
-
     .section-label {
       font-size: 13px;
       font-weight: 600;
@@ -193,16 +181,6 @@
       font-size: 28px;
       font-weight: 600;
       letter-spacing: -0.02em;
-    }
-
-    .problem-content .section-title {
-      margin-bottom: 16px;
-    }
-
-    .problem-text {
-      font-size: 17px;
-      color: var(--gray-600);
-      line-height: 1.7;
     }
 
     /* SAMPLE */
@@ -579,6 +557,144 @@
       border-radius: 4px;
     }
 
+    /* MODAL FORM */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--white);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 440px;
+      padding: 32px;
+      position: relative;
+      animation: modalIn 0.2s ease;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: var(--gray-100);
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: var(--gray-500);
+      transition: background 0.2s;
+    }
+
+    .modal-close:hover {
+      background: var(--gray-200);
+    }
+
+    .modal h3 {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .modal > p {
+      font-size: 14px;
+      color: var(--gray-500);
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: var(--gray-700);
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      font-size: 15px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .form-group small {
+      display: block;
+      font-size: 12px;
+      color: var(--gray-400);
+      margin-top: 4px;
+    }
+
+    .form-submit {
+      width: 100%;
+      padding: 14px;
+      background: var(--black);
+      color: var(--white);
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .form-submit:hover {
+      background: var(--gray-800);
+    }
+
+    .form-success {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .form-success h4 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .form-success p {
+      font-size: 14px;
+      color: var(--gray-500);
+    }
+
     /* SCROLL ANIMATIONS */
     .animate-on-scroll {
       opacity: 0;
@@ -605,13 +721,13 @@
       .hero h1 { font-size: 32px; }
       .stats { grid-template-columns: repeat(2, 1fr); }
       .stat { border-bottom: 1px solid var(--gray-200); }
-      .problem { padding: 48px 0; }
       .how-it-works { padding: 60px 0; }
       .steps { grid-template-columns: 1fr; gap: 48px; }
       .steps::before { display: none; }
       .markets { padding: 36px 0; }
       .sample { padding: 60px 0; }
       .sample-metrics { grid-template-columns: 1fr; }
+      .sample-recommendation { flex-direction: column; gap: 8px; text-align: center; }
       .cta { padding: 60px 0; }
       .cta h2 { font-size: 24px; }
       .cta-buttons { flex-direction: column; }
@@ -624,7 +740,7 @@
   <nav>
     <div class="container">
       <a href="https://prospectorlabs.io" class="nav-logo">Prospector Labs</a>
-      <a href="mailto:owen@prospectorlabs.io" class="nav-cta">Request Analysis</a>
+      <a href="#" class="nav-cta" onclick="openModal(); return false;">Request Analysis</a>
     </div>
   </nav>
 
@@ -638,7 +754,7 @@
           <p class="hero-subtitle">
             Queue risk analysis delivered in days. Timeline scenarios, developer benchmarks, POI congestion—so you can move faster on deals.
           </p>
-          <a href="mailto:owen@prospectorlabs.io?subject=Sample Report Request" class="hero-cta">
+          <a href="#" class="hero-cta" onclick="openModal(); return false;">
             Get a Sample Report →
           </a>
         </div>
@@ -666,17 +782,6 @@
     <div class="stat">
       <div class="stat-value">35K+</div>
       <div class="stat-label">Projects Tracked</div>
-    </div>
-  </section>
-
-  <!-- Problem -->
-  <section class="problem">
-    <div class="container">
-      <div class="problem-content animate-on-scroll">
-        <div class="section-label">The Challenge</div>
-        <h2 class="section-title">Queue risk is the #1 deal killer in energy</h2>
-        <p class="problem-text">Timelines have doubled since 2020. IC costs are running 2-3x over estimates. And developer track records vary 5x. Most deal teams are flying blind on the biggest execution risk in their portfolio.</p>
-      </div>
     </div>
   </section>
 
@@ -840,7 +945,7 @@
         <p>Send us a queue ID. We'll show you what we can deliver.</p>
       </div>
       <div class="cta-buttons">
-        <a href="mailto:owen@prospectorlabs.io?subject=Sample Report Request" class="cta-primary">Request Sample</a>
+        <a href="#" class="cta-primary" onclick="openModal(); return false;">Request Sample</a>
         <a href="https://owencoonahan.github.io/prospector-data-tools/queue-lookup/" class="cta-secondary">Search Queue Data</a>
       </div>
     </div>
@@ -858,6 +963,41 @@
     </div>
   </footer>
 
+  <!-- Lead Capture Modal -->
+  <div class="modal-overlay" id="leadModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <div id="formContent">
+        <h3>Request a Sample Report</h3>
+        <p>We'll reach out within 24 hours to discuss your needs.</p>
+        <form action="https://formspree.io/f/xwpkgjvn" method="POST" id="leadForm">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Work Email</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          <div class="form-group">
+            <label for="firm">Firm</label>
+            <input type="text" id="firm" name="firm" required>
+          </div>
+          <div class="form-group">
+            <label for="queue_id">Queue ID (optional)</label>
+            <input type="text" id="queue_id" name="queue_id" placeholder="e.g., J0847">
+            <small>Have a specific project? We'll use it for your sample.</small>
+          </div>
+          <button type="submit" class="form-submit">Send Request</button>
+        </form>
+      </div>
+      <div id="formSuccess" class="form-success" style="display: none;">
+        <h4>Request Received</h4>
+        <p>We'll be in touch within 24 hours.</p>
+      </div>
+    </div>
+  </div>
+
   <!-- Scroll Animation Script -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -872,6 +1012,53 @@
       document.querySelectorAll('.animate-on-scroll').forEach(el => {
         observer.observe(el);
       });
+
+      // Form submission handling
+      const form = document.getElementById('leadForm');
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(form);
+
+        try {
+          await fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'Accept': 'application/json' }
+          });
+          document.getElementById('formContent').style.display = 'none';
+          document.getElementById('formSuccess').style.display = 'block';
+        } catch (error) {
+          // Fallback to regular form submission
+          form.submit();
+        }
+      });
+    });
+
+    // Modal functions
+    function openModal() {
+      document.getElementById('leadModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('leadModal').classList.remove('active');
+      document.body.style.overflow = '';
+      // Reset form after closing
+      setTimeout(() => {
+        document.getElementById('formContent').style.display = 'block';
+        document.getElementById('formSuccess').style.display = 'none';
+        document.getElementById('leadForm').reset();
+      }, 200);
+    }
+
+    // Close modal on overlay click
+    document.getElementById('leadModal').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) closeModal();
+    });
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
     });
   </script>
 
