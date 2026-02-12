@@ -479,6 +479,194 @@
 
     .footer-links a:hover { color: var(--white); }
 
+    /* HOW IT WORKS */
+    .how-it-works {
+      padding: 80px 0;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .how-it-works-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      position: relative;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 32px;
+      left: 15%;
+      right: 15%;
+      height: 2px;
+      background: var(--gray-200);
+      z-index: 0;
+    }
+
+    .step {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-number {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 20px;
+      background: var(--white);
+      border: 2px solid var(--gray-200);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent);
+    }
+
+    .step h3 {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .step p {
+      font-size: 14px;
+      color: var(--gray-500);
+      max-width: 240px;
+      margin: 0 auto;
+    }
+
+    /* MARKETS COVERED */
+    .markets {
+      padding: 80px 0;
+      background: var(--gray-50);
+    }
+
+    .markets-header {
+      margin-bottom: 48px;
+    }
+
+    .markets-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .market-item {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .market-name {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .market-count {
+      font-size: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--gray-500);
+    }
+
+    .markets-sources {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      padding-top: 24px;
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .source-badge {
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--gray-500);
+      padding: 6px 12px;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 4px;
+    }
+
+    /* DATA DEPTH */
+    .data-depth {
+      padding: 80px 0;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .data-depth-header {
+      margin-bottom: 48px;
+    }
+
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 24px;
+    }
+
+    .data-item {
+      text-align: center;
+      padding: 24px 16px;
+      background: var(--gray-50);
+      border-radius: 8px;
+    }
+
+    .data-item-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 16px;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .data-item-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--gray-700);
+      stroke-width: 1.5;
+      fill: none;
+    }
+
+    .data-item h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .data-item p {
+      font-size: 12px;
+      color: var(--gray-500);
+      line-height: 1.5;
+    }
+
+    /* SCROLL ANIMATIONS */
+    .animate-on-scroll {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .animate-on-scroll.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     /* RESPONSIVE */
     @media (max-width: 1024px) {
       .hero-grid { grid-template-columns: 1fr; gap: 40px; }
@@ -495,6 +683,13 @@
       .stat { border-bottom: 1px solid var(--gray-200); }
       .problem { padding: 60px 0; }
       .problem-grid { grid-template-columns: 1fr; gap: 40px; }
+      .how-it-works { padding: 60px 0; }
+      .steps { grid-template-columns: 1fr; gap: 48px; }
+      .steps::before { display: none; }
+      .markets { padding: 60px 0; }
+      .markets-grid { grid-template-columns: 1fr; }
+      .data-depth { padding: 60px 0; }
+      .data-grid { grid-template-columns: repeat(2, 1fr); }
       .sample { padding: 60px 0; }
       .sample-metrics { grid-template-columns: 1fr; }
       .cta { padding: 60px 0; }
@@ -537,16 +732,16 @@
   <!-- Stats -->
   <section class="stats">
     <div class="stat">
-      <div class="stat-value">2-3 days</div>
+      <div class="stat-value">1-2 days</div>
       <div class="stat-label">Typical Turnaround</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">47</div>
+      <div class="stat-label">Deep-Dive Analyses</div>
     </div>
     <div class="stat">
       <div class="stat-value negative">~70%</div>
       <div class="stat-label">Queue Withdrawal Rate</div>
-    </div>
-    <div class="stat">
-      <div class="stat-value">200-400 bps</div>
-      <div class="stat-label">IRR Impact / Year Delay</div>
     </div>
     <div class="stat">
       <div class="stat-value">35K+</div>
@@ -557,25 +752,52 @@
   <!-- Problem -->
   <section class="problem">
     <div class="container">
-      <div class="problem-header">
+      <div class="problem-header animate-on-scroll">
         <div class="section-label">The Challenge</div>
         <h2 class="section-title">Queue risk is the #1 deal killer in energy</h2>
       </div>
       <div class="problem-grid">
-        <div class="problem-item">
+        <div class="problem-item animate-on-scroll">
           <div class="problem-number">01</div>
           <h3>Timeline Risk is Mispriced</h3>
           <p>Queue timelines have doubled since 2020. Most models don't stress-test for 3-4 year delays—that's now the median case.</p>
         </div>
-        <div class="problem-item">
+        <div class="problem-item animate-on-scroll">
           <div class="problem-number">02</div>
           <h3>IC Costs are Blowing Up</h3>
           <p>Interconnection costs running 2-3x over estimates. Projects above 15% IC/dev cost have materially higher withdrawal rates.</p>
         </div>
-        <div class="problem-item">
+        <div class="problem-item animate-on-scroll">
           <div class="problem-number">03</div>
           <h3>Developer Quality Varies 5x</h3>
           <p>Top-quartile developers complete 70%+ of projects. Bottom-quartile below 20%. The sponsor matters more than the economics.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works">
+    <div class="container">
+      <div class="how-it-works-header">
+        <div class="section-label">How It Works</div>
+        <h2 class="section-title">From queue ID to decision in days</h2>
+      </div>
+      <div class="steps">
+        <div class="step animate-on-scroll">
+          <div class="step-number">1</div>
+          <h3>Send us the queue ID</h3>
+          <p>Share the project queue number and any context on the deal timeline</p>
+        </div>
+        <div class="step animate-on-scroll">
+          <div class="step-number">2</div>
+          <h3>We deliver in 1-2 days</h3>
+          <p>Full analysis cross-referenced against our 35K project database</p>
+        </div>
+        <div class="step animate-on-scroll">
+          <div class="step-number">3</div>
+          <h3>You close with confidence</h3>
+          <p>IC-ready report with clear risk flags and recommendations</p>
         </div>
       </div>
     </div>
@@ -681,6 +903,131 @@
     </div>
   </section>
 
+  <!-- Markets Covered -->
+  <section class="markets">
+    <div class="container">
+      <div class="markets-header animate-on-scroll">
+        <div class="section-label">Coverage</div>
+        <h2 class="section-title">9 markets. 35,469 projects.</h2>
+      </div>
+      <div class="markets-grid">
+        <div class="market-item animate-on-scroll">
+          <span class="market-name">PJM</span>
+          <span class="market-count">8,152 projects</span>
+        </div>
+        <div class="market-item animate-on-scroll">
+          <span class="market-name">West</span>
+          <span class="market-count">6,008 projects</span>
+        </div>
+        <div class="market-item animate-on-scroll">
+          <span class="market-name">MISO</span>
+          <span class="market-count">5,435 projects</span>
+        </div>
+        <div class="market-item animate-on-scroll">
+          <span class="market-name">ERCOT</span>
+          <span class="market-count">3,768 projects</span>
+        </div>
+        <div class="market-item animate-on-scroll">
+          <span class="market-name">Southeast</span>
+          <span class="market-count">2,879 projects</span>
+        </div>
+        <div class="market-item animate-on-scroll">
+          <span class="market-name">SPP</span>
+          <span class="market-count">2,841 projects</span>
+        </div>
+        <div class="market-item animate-on-scroll">
+          <span class="market-name">CAISO</span>
+          <span class="market-count">2,837 projects</span>
+        </div>
+        <div class="market-item animate-on-scroll">
+          <span class="market-name">NYISO</span>
+          <span class="market-count">1,948 projects</span>
+        </div>
+        <div class="market-item animate-on-scroll">
+          <span class="market-name">ISO-NE</span>
+          <span class="market-count">1,601 projects</span>
+        </div>
+      </div>
+      <div class="markets-sources animate-on-scroll">
+        <span class="source-badge">LBL Queued Up</span>
+        <span class="source-badge">EIA Form 860</span>
+        <span class="source-badge">FERC</span>
+        <span class="source-badge">ISO APIs</span>
+        <span class="source-badge">PUDL</span>
+        <span class="source-badge">OASIS</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Data Depth -->
+  <section class="data-depth">
+    <div class="container">
+      <div class="data-depth-header animate-on-scroll">
+        <div class="section-label">Data Depth</div>
+        <h2 class="section-title">Every report cross-references 5 data layers</h2>
+      </div>
+      <div class="data-grid">
+        <div class="data-item animate-on-scroll">
+          <div class="data-item-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+              <path d="M2 17l10 5 10-5"/>
+              <path d="M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <h4>Queue Data</h4>
+          <p>35K projects with status, timelines, MW capacity</p>
+        </div>
+        <div class="data-item animate-on-scroll">
+          <div class="data-item-icon">
+            <svg viewBox="0 0 24 24">
+              <line x1="12" y1="20" x2="12" y2="10"/>
+              <line x1="18" y1="20" x2="18" y2="4"/>
+              <line x1="6" y1="20" x2="6" y2="16"/>
+            </svg>
+          </div>
+          <h4>Market Prices</h4>
+          <p>LMP, capacity, ELCC, PPA benchmarks</p>
+        </div>
+        <div class="data-item animate-on-scroll">
+          <div class="data-item-icon">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="2" y1="12" x2="22" y2="12"/>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+          </div>
+          <h4>Transmission</h4>
+          <p>Congestion, constraints, upgrade triggers</p>
+        </div>
+        <div class="data-item animate-on-scroll">
+          <div class="data-item-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
+          </div>
+          <h4>Permitting</h4>
+          <p>State requirements, timelines, statistics</p>
+        </div>
+        <div class="data-item animate-on-scroll">
+          <div class="data-item-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <h4>Developer Intel</h4>
+          <p>5,971 developers with track records</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- CTA -->
   <section class="cta">
     <div class="container">
@@ -706,6 +1053,23 @@
       </div>
     </div>
   </footer>
+
+  <!-- Scroll Animation Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        observer.observe(el);
+      });
+    });
+  </script>
 
 </body>
 </html>
