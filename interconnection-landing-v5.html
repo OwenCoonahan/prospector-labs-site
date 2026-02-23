@@ -54,6 +54,12 @@
       align-items: center;
     }
 
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
     .nav-logo {
       font-size: 15px;
       letter-spacing: -0.02em;
@@ -66,6 +72,23 @@
     .logo-energy {
       font-weight: 400;
       color: var(--gray-500);
+    }
+
+    .nav-byline {
+      font-size: 12px;
+      color: var(--gray-400);
+      padding-left: 12px;
+      border-left: 1px solid var(--gray-200);
+    }
+
+    .nav-byline a {
+      color: var(--gray-500);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-byline a:hover {
+      color: var(--black);
     }
 
     .nav-cta {
@@ -747,7 +770,10 @@
 
   <nav>
     <div class="container">
-      <a href="https://prospectorlabs.io" class="nav-logo"><span class="logo-glass">Glass</span> <span class="logo-energy">Energy</span></a>
+      <div class="nav-brand">
+        <a href="https://owencoonahan.github.io/prospector-labs-site/interconnection-landing-v5.html" class="nav-logo"><span class="logo-glass">Glass</span> <span class="logo-energy">Energy</span></a>
+        <span class="nav-byline">by <a href="https://owencoonahan.github.io/prospector-labs-site/variant-editorial.html">Prospector Labs</a></span>
+      </div>
       <a href="#" class="nav-cta" onclick="openModal(); return false;">Request Analysis</a>
     </div>
   </nav>
@@ -962,9 +988,9 @@
   <!-- Footer -->
   <footer>
     <div class="container">
-      <p>© 2026 Glass Energy</p>
+      <p>© 2026 Glass Energy — A <a href="https://owencoonahan.github.io/prospector-labs-site/variant-editorial.html" style="color: var(--gray-400); text-decoration: underline;">Prospector Labs</a> Product</p>
       <div class="footer-links">
-        <a href="https://prospectorlabs.io">Main Site</a>
+        <a href="https://owencoonahan.github.io/prospector-labs-site/variant-editorial.html">Prospector Labs</a>
         <a href="https://owencoonahan.github.io/prospector-data-tools/">Data Tools</a>
         <a href="mailto:owen@prospectorlabs.io">Contact</a>
       </div>
