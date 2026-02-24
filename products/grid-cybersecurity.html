@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Critical Minerals Tracker — Prospector Labs</title>
-  <meta name="description" content="Track 14 critical minerals across 50+ companies and 8 trade routes. Supply chain risk scores, real-time pricing, and geopolitical exposure analysis.">
+  <title>Grid Cybersecurity Scorecard — Prospector Labs</title>
+  <meta name="description" content="Cybersecurity posture scores for 32 utilities across 6 dimensions. NERC CIP mapped, peer benchmarked, ISO-level comparison.">
   <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
@@ -93,7 +93,11 @@
     .code-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--gray-700); }
     .code-title { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--gray-400); margin-left: 8px; }
     .code-body { padding: 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.7; color: var(--gray-300); overflow-x: auto; }
-    .code-body .keyword { color: #c084fc; } .code-body .string { color: #86efac; } .code-body .number { color: #fde68a; } .code-body .comment { color: var(--gray-600); } .code-body .key { color: #93c5fd; }
+    .code-body .keyword { color: #c084fc; }
+    .code-body .string { color: #86efac; }
+    .code-body .number { color: #fde68a; }
+    .code-body .comment { color: var(--gray-600); }
+    .code-body .key { color: #93c5fd; }
     footer { padding: 32px 64px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--gray-200); font-size: 13px; color: var(--gray-400); }
     .footer-links { display: flex; gap: 32px; }
     .footer-links a { color: var(--gray-400); text-decoration: none; transition: color 0.2s; }
@@ -119,13 +123,13 @@
   <section class="hero">
     <div class="hero-badge animate-on-scroll">
       <span class="hero-badge-dot"></span>
-      Live — 14 minerals tracked
+      Live — 32 utilities scored
     </div>
-    <h1 class="animate-on-scroll">Critical Minerals Tracker</h1>
-    <p class="hero-sub animate-on-scroll">Supply chain risk intelligence for the minerals that power the energy transition. Concentration risk, trade route disruptions, pricing trends, and geopolitical exposure — all in one place.</p>
+    <h1 class="animate-on-scroll">Grid Cybersecurity Scorecard</h1>
+    <p class="hero-sub animate-on-scroll">Composite cybersecurity posture scores for major U.S. utilities. Six dimensions, NERC CIP mapped, peer benchmarked — so you know who's protected and who's exposed.</p>
     <div class="hero-actions animate-on-scroll">
-      <a href="#cta" class="btn-primary">Get Access →</a>
-      <a href="#data" class="btn-secondary">View Sample Data</a>
+      <a href="https://owencoonahan.github.io/prospector-data-tools/grid-cybersecurity/" class="btn-primary" target="_blank">Launch Dashboard →</a>
+      <a href="#cta" class="btn-secondary">Get Full Access</a>
     </div>
   </section>
 
@@ -135,7 +139,7 @@
         <span class="screenshot-dot"></span>
         <span class="screenshot-dot"></span>
         <span class="screenshot-dot"></span>
-        <span class="screenshot-url">prospectorlabs.io/tools/critical-minerals-tracker</span>
+        <span class="screenshot-url">prospectorlabs.io/tools/grid-cybersecurity</span>
       </div>
       <div class="screenshot-placeholder">
         <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
@@ -147,20 +151,20 @@
   <section class="stats-bar">
     <div class="stats-inner stagger">
       <div class="stat animate-on-scroll">
-        <div class="stat-value">14</div>
-        <div class="stat-label">Minerals Tracked</div>
+        <div class="stat-value">32</div>
+        <div class="stat-label">Utilities Scored</div>
       </div>
       <div class="stat animate-on-scroll">
-        <div class="stat-value">50+</div>
-        <div class="stat-label">Companies</div>
+        <div class="stat-value">9</div>
+        <div class="stat-label">ISOs Covered</div>
       </div>
       <div class="stat animate-on-scroll">
-        <div class="stat-value">8</div>
-        <div class="stat-label">Trade Routes</div>
+        <div class="stat-value">6</div>
+        <div class="stat-label">Scoring Dimensions</div>
       </div>
       <div class="stat animate-on-scroll">
-        <div class="stat-value">Live</div>
-        <div class="stat-label">Real-time Pricing</div>
+        <div class="stat-value">CIP</div>
+        <div class="stat-label">NERC CIP Mapped</div>
       </div>
     </div>
   </section>
@@ -168,38 +172,38 @@
   <section class="features">
     <div class="features-header animate-on-scroll">
       <h2>What's Inside</h2>
-      <p>Deep supply chain intelligence for every mineral critical to clean energy deployment.</p>
+      <p>A rigorous, data-driven framework for evaluating grid cybersecurity posture across utilities.</p>
     </div>
     <div class="feature-grid stagger">
       <div class="feature-item animate-on-scroll">
-        <div class="feature-icon">⚠️</div>
-        <h3>Supply Chain Risk Scores</h3>
-        <p>Composite risk rating (1–10) for each mineral based on geographic concentration, processing bottlenecks, geopolitical instability, and substitution difficulty.</p>
+        <div class="feature-icon">🛡️</div>
+        <h3>Composite Scoring</h3>
+        <p>100-point score across six dimensions: network security, incident response, compliance maturity, workforce readiness, supply chain risk, and OT/IT convergence.</p>
       </div>
       <div class="feature-item animate-on-scroll">
-        <div class="feature-icon">🌍</div>
-        <h3>Trade Route Mapping</h3>
-        <p>Visualize the global flow of critical minerals from mine to refinery to end product. Identify chokepoints and single-source dependencies.</p>
+        <div class="feature-icon">📊</div>
+        <h3>Peer Benchmarking</h3>
+        <p>Compare any utility against peers by size, region, or ISO. Percentile rankings and gap analysis across every scoring dimension.</p>
       </div>
       <div class="feature-item animate-on-scroll">
-        <div class="feature-icon">💰</div>
-        <h3>Real-Time Pricing</h3>
-        <p>Spot and contract pricing for all 14 minerals. Historical trends, volatility metrics, and forward curve indicators updated daily.</p>
+        <div class="feature-icon">🌐</div>
+        <h3>Threat Landscape</h3>
+        <p>Active threat intelligence mapped to grid infrastructure. Track nation-state APT groups, ransomware campaigns, and emerging attack vectors targeting utilities.</p>
       </div>
       <div class="feature-item animate-on-scroll">
-        <div class="feature-icon">🏭</div>
-        <h3>Company Profiles</h3>
-        <p>50+ companies across mining, refining, and processing. Production volumes, capacity plans, offtake agreements, and ownership structures.</p>
+        <div class="feature-icon">✅</div>
+        <h3>Compliance Tracking</h3>
+        <p>NERC CIP standards mapped to each scoring dimension. Track compliance gaps, audit findings, and remediation timelines across your portfolio.</p>
       </div>
       <div class="feature-item animate-on-scroll">
-        <div class="feature-icon">🇨🇳</div>
-        <h3>Geopolitical Exposure</h3>
-        <p>Country-level concentration analysis for mining, processing, and refining. Track policy changes, export restrictions, and trade tensions in real time.</p>
+        <div class="feature-icon">⚡</div>
+        <h3>ISO Comparison</h3>
+        <p>Regional cybersecurity posture by ISO/RTO. See which grid operators have the strongest security culture and where systemic risks concentrate.</p>
       </div>
       <div class="feature-item animate-on-scroll">
-        <div class="feature-icon">📈</div>
-        <h3>Demand Forecasting</h3>
-        <p>Bottom-up demand models tied to EV production, battery capacity expansion, and grid-scale storage deployment. See where shortages will hit first.</p>
+        <div class="feature-icon">📐</div>
+        <h3>Methodology</h3>
+        <p>Transparent scoring model built on public filings, incident data, compliance records, and workforce metrics. Fully documented and reproducible.</p>
       </div>
     </div>
   </section>
@@ -209,107 +213,107 @@
       <h2 class="animate-on-scroll">Who Uses This</h2>
       <div class="use-case-grid stagger">
         <div class="use-case animate-on-scroll">
-          <div class="use-case-persona">Energy Investors</div>
-          <h3>Supply Chain Due Diligence</h3>
-          <p>Understand mineral supply risk before investing in battery, solar, or EV companies. Know which portfolios have the most concentrated exposure to single-source suppliers.</p>
+          <div class="use-case-persona">Utility Boards</div>
+          <h3>Board-Level Risk Oversight</h3>
+          <p>Give your board a clear, benchmarked view of cybersecurity posture. Compare against peers, track improvement over time, and identify gaps before auditors do.</p>
         </div>
         <div class="use-case animate-on-scroll">
-          <div class="use-case-persona">Automakers & OEMs</div>
-          <h3>Procurement Intelligence</h3>
-          <p>Monitor raw material availability, pricing trends, and supplier concentration. De-risk procurement strategies with early warning on supply disruptions.</p>
+          <div class="use-case-persona">Regulators</div>
+          <h3>Systemic Risk Assessment</h3>
+          <p>Identify which utilities in your jurisdiction have the weakest cybersecurity posture. Prioritize audits, target enforcement, and track industry-wide trends.</p>
         </div>
         <div class="use-case animate-on-scroll">
-          <div class="use-case-persona">Policy Analysts</div>
-          <h3>Strategic Mineral Policy</h3>
-          <p>Track how IRA incentives, trade policies, and allied-nation agreements are reshaping critical mineral supply chains. Data-driven policy analysis.</p>
+          <div class="use-case-persona">Infrastructure Investors</div>
+          <h3>Cyber Due Diligence</h3>
+          <p>Before investing in a utility or grid asset, understand the cybersecurity risk. Our scorecard reveals hidden exposure that financial statements don't show.</p>
         </div>
         <div class="use-case animate-on-scroll">
-          <div class="use-case-persona">Mining Companies</div>
-          <h3>Market Positioning</h3>
-          <p>Benchmark your production against global peers. Identify where demand is growing fastest and which minerals command the highest premium for domestic sourcing.</p>
+          <div class="use-case-persona">Security Vendors</div>
+          <h3>Market Intelligence</h3>
+          <p>Identify utilities with the biggest security gaps. Target your sales efforts where the need is greatest and demonstrate ROI with benchmark data.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="data-sample" id="data">
+  <section class="data-sample">
     <h2 class="animate-on-scroll">Sample Data</h2>
     <div class="data-table-blur animate-on-scroll">
       <div class="data-table-wrapper">
         <table class="data-table">
           <thead>
             <tr>
-              <th>Mineral</th>
-              <th>Risk Score</th>
-              <th>Top Producer</th>
-              <th>Concentration</th>
-              <th>Price Trend</th>
-              <th>Use Case</th>
+              <th>Utility</th>
+              <th>Score</th>
+              <th>ISO</th>
+              <th>Network</th>
+              <th>Compliance</th>
+              <th>Incident Resp.</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><strong>Cobalt</strong></td>
-              <td><span class="score-badge score-low">8.7</span></td>
-              <td>DRC</td>
-              <td>73% mining</td>
-              <td>+12% YoY</td>
-              <td>EV Batteries</td>
+              <td><strong>Duke Energy</strong></td>
+              <td><span class="score-badge score-high">87</span></td>
+              <td>PJM / SERC</td>
+              <td>91</td>
+              <td>88</td>
+              <td>82</td>
             </tr>
             <tr>
-              <td><strong>Lithium</strong></td>
-              <td><span class="score-badge score-low">8.2</span></td>
-              <td>Australia / Chile</td>
-              <td>China 65% processing</td>
-              <td>-8% YoY</td>
-              <td>Batteries, Grid Storage</td>
+              <td><strong>Southern Company</strong></td>
+              <td><span class="score-badge score-high">82</span></td>
+              <td>SERC</td>
+              <td>85</td>
+              <td>84</td>
+              <td>78</td>
             </tr>
             <tr>
-              <td><strong>Rare Earths</strong></td>
-              <td><span class="score-badge score-low">9.1</span></td>
-              <td>China</td>
-              <td>87% processing</td>
-              <td>+5% YoY</td>
-              <td>Wind Turbines, EVs</td>
+              <td><strong>Exelon</strong></td>
+              <td><span class="score-badge score-mid">79</span></td>
+              <td>PJM</td>
+              <td>83</td>
+              <td>81</td>
+              <td>74</td>
             </tr>
             <tr>
-              <td><strong>Nickel</strong></td>
-              <td><span class="score-badge score-mid">6.4</span></td>
-              <td>Indonesia</td>
-              <td>49% mining</td>
-              <td>-3% YoY</td>
-              <td>EV Batteries</td>
+              <td><strong>NextEra Energy</strong></td>
+              <td><span class="score-badge score-mid">76</span></td>
+              <td>PJM / ERCOT</td>
+              <td>80</td>
+              <td>77</td>
+              <td>71</td>
             </tr>
             <tr>
-              <td><strong>Graphite</strong></td>
-              <td><span class="score-badge score-mid">7.3</span></td>
-              <td>China</td>
-              <td>65% mining</td>
-              <td>+2% YoY</td>
-              <td>Battery Anodes</td>
-            </tr>
-            <tr>
-              <td style="color: var(--gray-300);">██████████</td>
-              <td><span class="score-badge score-mid" style="filter: blur(3px);">5.8</span></td>
-              <td style="filter: blur(3px);">Chile</td>
-              <td style="filter: blur(3px);">38% mining</td>
-              <td style="filter: blur(3px);">+7% YoY</td>
-              <td style="filter: blur(3px);">Solar Panels</td>
+              <td><strong>Dominion Energy</strong></td>
+              <td><span class="score-badge score-mid">74</span></td>
+              <td>PJM</td>
+              <td>78</td>
+              <td>75</td>
+              <td>69</td>
             </tr>
             <tr>
               <td style="color: var(--gray-300);">██████████</td>
-              <td><span class="score-badge score-mid" style="filter: blur(3px);">4.9</span></td>
-              <td style="filter: blur(3px);">South Africa</td>
-              <td style="filter: blur(3px);">71% mining</td>
-              <td style="filter: blur(3px);">+1% YoY</td>
-              <td style="filter: blur(3px);">Hydrogen</td>
+              <td><span class="score-badge score-mid" style="filter: blur(3px);">71</span></td>
+              <td style="filter: blur(3px);">MISO</td>
+              <td style="filter: blur(3px);">74</td>
+              <td style="filter: blur(3px);">72</td>
+              <td style="filter: blur(3px);">67</td>
+            </tr>
+            <tr>
+              <td style="color: var(--gray-300);">██████████</td>
+              <td><span class="score-badge score-low" style="filter: blur(3px);">63</span></td>
+              <td style="filter: blur(3px);">SPP</td>
+              <td style="filter: blur(3px);">66</td>
+              <td style="filter: blur(3px);">61</td>
+              <td style="filter: blur(3px);">58</td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
     <div class="data-table-cta">
-      <a href="#cta" class="btn-primary">Unlock Full Data →</a>
+      <a href="#cta" class="btn-primary">Unlock Full Rankings →</a>
     </div>
   </section>
 
@@ -318,7 +322,7 @@
       <div class="api-info animate-on-scroll">
         <h2>For Developers & Agents</h2>
         <h3>Query via API or MCP</h3>
-        <p>Access mineral risk scores, pricing data, and supply chain intelligence programmatically. Perfect for portfolio risk models and automated supply chain monitoring.</p>
+        <p>Access cybersecurity scores programmatically. Filter by utility, ISO, score dimension, or NERC CIP standard. Ideal for portfolio monitoring and automated risk assessment.</p>
         <a href="https://prospector-api.fly.dev" class="btn-secondary" target="_blank">View API Docs →</a>
       </div>
       <div class="code-block animate-on-scroll">
@@ -326,21 +330,24 @@
           <span class="code-dot"></span>
           <span class="code-dot"></span>
           <span class="code-dot"></span>
-          <span class="code-title">GET /v1/minerals/risk-score</span>
+          <span class="code-title">GET /v1/grid/cybersecurity-score</span>
         </div>
         <div class="code-body">
 <span class="comment">// Response</span>
 {
-  <span class="key">"mineral"</span>: <span class="string">"Lithium"</span>,
-  <span class="key">"risk_score"</span>: <span class="number">8.2</span>,
-  <span class="key">"top_producer"</span>: <span class="string">"Australia"</span>,
-  <span class="key">"processing_concentration"</span>: {
-    <span class="key">"country"</span>: <span class="string">"China"</span>,
-    <span class="key">"share"</span>: <span class="number">0.65</span>
+  <span class="key">"utility"</span>: <span class="string">"Duke Energy"</span>,
+  <span class="key">"composite_score"</span>: <span class="number">87</span>,
+  <span class="key">"iso"</span>: <span class="string">"PJM / SERC"</span>,
+  <span class="key">"dimensions"</span>: {
+    <span class="key">"network_security"</span>: <span class="number">91</span>,
+    <span class="key">"compliance_maturity"</span>: <span class="number">88</span>,
+    <span class="key">"incident_response"</span>: <span class="number">82</span>,
+    <span class="key">"workforce_readiness"</span>: <span class="number">86</span>,
+    <span class="key">"supply_chain_risk"</span>: <span class="number">84</span>,
+    <span class="key">"ot_it_convergence"</span>: <span class="number">89</span>
   },
-  <span class="key">"spot_price_usd_ton"</span>: <span class="number">14200</span>,
-  <span class="key">"yoy_change"</span>: <span class="number">-0.08</span>,
-  <span class="key">"primary_use"</span>: <span class="string">"EV Batteries"</span>
+  <span class="key">"nerc_cip_gaps"</span>: <span class="number">2</span>,
+  <span class="key">"peer_percentile"</span>: <span class="number">94</span>
 }
         </div>
       </div>
@@ -348,8 +355,8 @@
   </section>
 
   <section class="cta-section" id="cta">
-    <h2 class="animate-on-scroll">Get critical minerals intelligence</h2>
-    <p class="animate-on-scroll">Enter your email and company for full access to mineral risk scores, pricing, and supply chain data.</p>
+    <h2 class="animate-on-scroll">Get the full cybersecurity scorecard</h2>
+    <p class="animate-on-scroll">Enter your email and company for access to all 32 utility scores and the full methodology.</p>
     <div class="email-capture animate-on-scroll">
       <input type="email" placeholder="you@company.com" id="emailInput">
       <input type="text" placeholder="Company name" id="companyInput">

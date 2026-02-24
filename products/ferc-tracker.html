@@ -3,12 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Critical Minerals Tracker — Prospector Labs</title>
-  <meta name="description" content="Track 14 critical minerals across 50+ companies and 8 trade routes. Supply chain risk scores, real-time pricing, and geopolitical exposure analysis.">
+  <title>FERC Order Tracker — Prospector Labs</title>
+  <meta name="description" content="Track 200+ FERC orders, active proceedings, compliance deadlines, and RTO impacts. Free searchable database for energy regulatory teams.">
   <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    :root { --white: #ffffff; --black: #000000; --gray-50: #fafafa; --gray-100: #f5f5f5; --gray-200: #e5e5e5; --gray-300: #d4d4d4; --gray-400: #a3a3a3; --gray-500: #737373; --gray-600: #525252; --gray-700: #404040; --gray-800: #262626; --gray-900: #171717; --accent: #2563eb; --accent-light: #dbeafe; }
+    :root {
+      --white: #ffffff;
+      --black: #000000;
+      --gray-50: #fafafa;
+      --gray-100: #f5f5f5;
+      --gray-200: #e5e5e5;
+      --gray-300: #d4d4d4;
+      --gray-400: #a3a3a3;
+      --gray-500: #737373;
+      --gray-600: #525252;
+      --gray-700: #404040;
+      --gray-800: #262626;
+      --gray-900: #171717;
+      --accent: #2563eb;
+      --accent-light: #dbeafe;
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Geist', system-ui, sans-serif; background: var(--white); color: var(--black); -webkit-font-smoothing: antialiased; }
     a { color: inherit; }
@@ -77,8 +92,8 @@
     .cta-section { padding: 100px 64px; text-align: center; border-top: 1px solid var(--gray-200); }
     .cta-section h2 { font-size: clamp(28px, 4vw, 48px); font-weight: 500; letter-spacing: -0.03em; margin-bottom: 16px; }
     .cta-section p { font-size: 18px; color: var(--gray-500); margin-bottom: 40px; }
-    .email-capture { display: flex; gap: 12px; justify-content: center; max-width: 560px; margin: 0 auto; flex-wrap: wrap; }
-    .email-capture input { flex: 1; min-width: 200px; padding: 14px 20px; border: 1px solid var(--gray-300); border-radius: 8px; font-family: 'Geist', system-ui, sans-serif; font-size: 15px; outline: none; transition: border-color 0.2s; }
+    .email-capture { display: flex; gap: 12px; justify-content: center; max-width: 480px; margin: 0 auto; }
+    .email-capture input { flex: 1; padding: 14px 20px; border: 1px solid var(--gray-300); border-radius: 8px; font-family: 'Geist', system-ui, sans-serif; font-size: 15px; outline: none; transition: border-color 0.2s; }
     .email-capture input:focus { border-color: var(--black); }
     .email-capture button { padding: 14px 28px; background: var(--black); color: var(--white); border: none; border-radius: 8px; font-family: 'Geist', system-ui, sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; transition: opacity 0.2s; white-space: nowrap; }
     .email-capture button:hover { opacity: 0.8; }
@@ -93,49 +108,61 @@
     .code-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--gray-700); }
     .code-title { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--gray-400); margin-left: 8px; }
     .code-body { padding: 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.7; color: var(--gray-300); overflow-x: auto; }
-    .code-body .keyword { color: #c084fc; } .code-body .string { color: #86efac; } .code-body .number { color: #fde68a; } .code-body .comment { color: var(--gray-600); } .code-body .key { color: #93c5fd; }
+    .code-body .keyword { color: #c084fc; }
+    .code-body .string { color: #86efac; }
+    .code-body .number { color: #fde68a; }
+    .code-body .comment { color: var(--gray-600); }
+    .code-body .key { color: #93c5fd; }
     footer { padding: 32px 64px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--gray-200); font-size: 13px; color: var(--gray-400); }
     .footer-links { display: flex; gap: 32px; }
     .footer-links a { color: var(--gray-400); text-decoration: none; transition: color 0.2s; }
     .footer-links a:hover { color: var(--black); }
     .animate-on-scroll { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
     .animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
-    .stagger > *:nth-child(1) { transition-delay: 0s; } .stagger > *:nth-child(2) { transition-delay: 0.1s; } .stagger > *:nth-child(3) { transition-delay: 0.15s; } .stagger > *:nth-child(4) { transition-delay: 0.2s; } .stagger > *:nth-child(5) { transition-delay: 0.25s; } .stagger > *:nth-child(6) { transition-delay: 0.3s; }
+    .stagger > *:nth-child(1) { transition-delay: 0s; }
+    .stagger > *:nth-child(2) { transition-delay: 0.1s; }
+    .stagger > *:nth-child(3) { transition-delay: 0.15s; }
+    .stagger > *:nth-child(4) { transition-delay: 0.2s; }
+    .stagger > *:nth-child(5) { transition-delay: 0.25s; }
+    .stagger > *:nth-child(6) { transition-delay: 0.3s; }
     @media (max-width: 1024px) { .feature-grid { grid-template-columns: repeat(2, 1fr); } .api-inner { grid-template-columns: 1fr; } .stats-inner { flex-wrap: wrap; gap: 40px; justify-content: center; } }
     @media (max-width: 768px) { nav { padding: 16px 24px; } .nav-links a:not(.nav-cta) { display: none; } .hero { padding: 120px 24px 60px; } .screenshot-section { padding: 0 24px 60px; } .features { padding: 60px 24px; } .feature-grid { grid-template-columns: 1fr; } .use-cases { padding: 60px 24px; } .use-case-grid { grid-template-columns: 1fr; } .data-sample { padding: 60px 24px; } .api-preview { padding: 60px 24px; } .cta-section { padding: 60px 24px; } .email-capture { flex-direction: column; } footer { padding: 24px; flex-direction: column; gap: 16px; } .hero-actions { flex-direction: column; align-items: flex-start; } }
   </style>
 </head>
 <body>
 
+  <!-- NAV -->
   <nav>
     <a href="../variant-editorial.html" class="nav-logo">Prospector Labs</a>
     <div class="nav-links">
       <a href="../variant-editorial.html#projects">All Tools</a>
       <a href="https://prospector-api.fly.dev" target="_blank">API Docs</a>
-      <a href="#cta" class="nav-cta">Get Access →</a>
+      <a href="https://owencoonahan.github.io/prospector-data-tools/ferc-tracker/" class="nav-cta" target="_blank">Launch Dashboard →</a>
     </div>
   </nav>
 
+  <!-- HERO -->
   <section class="hero">
     <div class="hero-badge animate-on-scroll">
       <span class="hero-badge-dot"></span>
-      Live — 14 minerals tracked
+      Live — 200+ orders tracked
     </div>
-    <h1 class="animate-on-scroll">Critical Minerals Tracker</h1>
-    <p class="hero-sub animate-on-scroll">Supply chain risk intelligence for the minerals that power the energy transition. Concentration risk, trade route disruptions, pricing trends, and geopolitical exposure — all in one place.</p>
+    <h1 class="animate-on-scroll">FERC Order Tracker</h1>
+    <p class="hero-sub animate-on-scroll">The complete database of FERC orders, active proceedings, and compliance deadlines. Searchable, filterable, and always up to date — so your regulatory team never misses a filing.</p>
     <div class="hero-actions animate-on-scroll">
-      <a href="#cta" class="btn-primary">Get Access →</a>
-      <a href="#data" class="btn-secondary">View Sample Data</a>
+      <a href="https://owencoonahan.github.io/prospector-data-tools/ferc-tracker/" class="btn-primary" target="_blank">Launch Dashboard →</a>
+      <a href="#cta" class="btn-secondary">Get API Access</a>
     </div>
   </section>
 
+  <!-- SCREENSHOT -->
   <section class="screenshot-section">
     <div class="screenshot-frame animate-on-scroll">
       <div class="screenshot-bar">
         <span class="screenshot-dot"></span>
         <span class="screenshot-dot"></span>
         <span class="screenshot-dot"></span>
-        <span class="screenshot-url">prospectorlabs.io/tools/critical-minerals-tracker</span>
+        <span class="screenshot-url">prospectorlabs.io/tools/ferc-tracker</span>
       </div>
       <div class="screenshot-placeholder">
         <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
@@ -144,181 +171,186 @@
     </div>
   </section>
 
+  <!-- STATS -->
   <section class="stats-bar">
     <div class="stats-inner stagger">
       <div class="stat animate-on-scroll">
-        <div class="stat-value">14</div>
-        <div class="stat-label">Minerals Tracked</div>
+        <div class="stat-value">200+</div>
+        <div class="stat-label">Orders Tracked</div>
+      </div>
+      <div class="stat animate-on-scroll">
+        <div class="stat-value">12</div>
+        <div class="stat-label">Active Proceedings</div>
       </div>
       <div class="stat animate-on-scroll">
         <div class="stat-value">50+</div>
-        <div class="stat-label">Companies</div>
+        <div class="stat-label">Deadlines</div>
       </div>
       <div class="stat animate-on-scroll">
-        <div class="stat-value">8</div>
-        <div class="stat-label">Trade Routes</div>
-      </div>
-      <div class="stat animate-on-scroll">
-        <div class="stat-value">Live</div>
-        <div class="stat-label">Real-time Pricing</div>
+        <div class="stat-value">All</div>
+        <div class="stat-label">RTOs Covered</div>
       </div>
     </div>
   </section>
 
+  <!-- FEATURES -->
   <section class="features">
     <div class="features-header animate-on-scroll">
       <h2>What's Inside</h2>
-      <p>Deep supply chain intelligence for every mineral critical to clean energy deployment.</p>
+      <p>Everything regulatory teams need to stay ahead of FERC actions and compliance requirements.</p>
     </div>
     <div class="feature-grid stagger">
       <div class="feature-item animate-on-scroll">
-        <div class="feature-icon">⚠️</div>
-        <h3>Supply Chain Risk Scores</h3>
-        <p>Composite risk rating (1–10) for each mineral based on geographic concentration, processing bottlenecks, geopolitical instability, and substitution difficulty.</p>
+        <div class="feature-icon">📋</div>
+        <h3>Order Database</h3>
+        <p>Comprehensive catalog of FERC orders with full-text search, topic tagging, and cross-references to related proceedings and filings.</p>
       </div>
       <div class="feature-item animate-on-scroll">
-        <div class="feature-icon">🌍</div>
-        <h3>Trade Route Mapping</h3>
-        <p>Visualize the global flow of critical minerals from mine to refinery to end product. Identify chokepoints and single-source dependencies.</p>
+        <div class="feature-icon">⏱️</div>
+        <h3>Compliance Timeline</h3>
+        <p>Visual timeline of compliance deadlines by order. Never miss a filing date — see what's due this week, this month, and beyond.</p>
       </div>
       <div class="feature-item animate-on-scroll">
-        <div class="feature-icon">💰</div>
-        <h3>Real-Time Pricing</h3>
-        <p>Spot and contract pricing for all 14 minerals. Historical trends, volatility metrics, and forward curve indicators updated daily.</p>
+        <div class="feature-icon">📂</div>
+        <h3>Proceeding Tracker</h3>
+        <p>Follow active FERC proceedings from notice of proposed rulemaking through final order. Track comments, interventions, and rehearing requests.</p>
       </div>
       <div class="feature-item animate-on-scroll">
-        <div class="feature-icon">🏭</div>
-        <h3>Company Profiles</h3>
-        <p>50+ companies across mining, refining, and processing. Production volumes, capacity plans, offtake agreements, and ownership structures.</p>
+        <div class="feature-icon">💥</div>
+        <h3>Impact Analysis</h3>
+        <p>Understand which RTOs, market segments, and asset classes are affected by each order. Mapped to your portfolio for relevance scoring.</p>
       </div>
       <div class="feature-item animate-on-scroll">
-        <div class="feature-icon">🇨🇳</div>
-        <h3>Geopolitical Exposure</h3>
-        <p>Country-level concentration analysis for mining, processing, and refining. Track policy changes, export restrictions, and trade tensions in real time.</p>
+        <div class="feature-icon">🔔</div>
+        <h3>Deadline Alerts</h3>
+        <p>Automated notifications for upcoming compliance deadlines, new orders, and proceeding milestones. Email or webhook delivery.</p>
       </div>
       <div class="feature-item animate-on-scroll">
-        <div class="feature-icon">📈</div>
-        <h3>Demand Forecasting</h3>
-        <p>Bottom-up demand models tied to EV production, battery capacity expansion, and grid-scale storage deployment. See where shortages will hit first.</p>
+        <div class="feature-icon">🔍</div>
+        <h3>Searchable Filings</h3>
+        <p>Full-text search across FERC filings, comments, and orders. Filter by docket number, date range, party name, or topic area.</p>
       </div>
     </div>
   </section>
 
+  <!-- USE CASES -->
   <section class="use-cases">
     <div class="use-cases-inner">
       <h2 class="animate-on-scroll">Who Uses This</h2>
       <div class="use-case-grid stagger">
         <div class="use-case animate-on-scroll">
-          <div class="use-case-persona">Energy Investors</div>
-          <h3>Supply Chain Due Diligence</h3>
-          <p>Understand mineral supply risk before investing in battery, solar, or EV companies. Know which portfolios have the most concentrated exposure to single-source suppliers.</p>
+          <div class="use-case-persona">Regulatory Teams</div>
+          <h3>Stay Ahead of Compliance</h3>
+          <p>Track every FERC order affecting your organization. Get automated deadline alerts, monitor active proceedings, and ensure your team never misses a filing requirement.</p>
         </div>
         <div class="use-case animate-on-scroll">
-          <div class="use-case-persona">Automakers & OEMs</div>
-          <h3>Procurement Intelligence</h3>
-          <p>Monitor raw material availability, pricing trends, and supplier concentration. De-risk procurement strategies with early warning on supply disruptions.</p>
+          <div class="use-case-persona">Utilities</div>
+          <h3>Operational Planning</h3>
+          <p>Understand how new FERC orders impact your service territory, interconnection queue, and rate structures. Plan ahead for transmission and market rule changes.</p>
         </div>
         <div class="use-case animate-on-scroll">
-          <div class="use-case-persona">Policy Analysts</div>
-          <h3>Strategic Mineral Policy</h3>
-          <p>Track how IRA incentives, trade policies, and allied-nation agreements are reshaping critical mineral supply chains. Data-driven policy analysis.</p>
+          <div class="use-case-persona">Law Firms</div>
+          <h3>Client Advisory & Filings</h3>
+          <p>Research FERC precedent, track proceedings for clients, and monitor deadlines across multiple dockets. All the context you need for regulatory counsel.</p>
         </div>
         <div class="use-case animate-on-scroll">
-          <div class="use-case-persona">Mining Companies</div>
-          <h3>Market Positioning</h3>
-          <p>Benchmark your production against global peers. Identify where demand is growing fastest and which minerals command the highest premium for domestic sourcing.</p>
+          <div class="use-case-persona">Energy Consultants</div>
+          <h3>Market Intelligence</h3>
+          <p>Brief clients on the latest FERC actions affecting their markets. Identify regulatory trends, track rulemaking progress, and deliver timely analysis.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="data-sample" id="data">
+  <!-- DATA SAMPLE -->
+  <section class="data-sample">
     <h2 class="animate-on-scroll">Sample Data</h2>
     <div class="data-table-blur animate-on-scroll">
       <div class="data-table-wrapper">
         <table class="data-table">
           <thead>
             <tr>
-              <th>Mineral</th>
-              <th>Risk Score</th>
-              <th>Top Producer</th>
-              <th>Concentration</th>
-              <th>Price Trend</th>
-              <th>Use Case</th>
+              <th>Order</th>
+              <th>Title</th>
+              <th>Status</th>
+              <th>Issued</th>
+              <th>RTOs Affected</th>
+              <th>Deadlines</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><strong>Cobalt</strong></td>
-              <td><span class="score-badge score-low">8.7</span></td>
-              <td>DRC</td>
-              <td>73% mining</td>
-              <td>+12% YoY</td>
-              <td>EV Batteries</td>
+              <td><strong>Order 2023</strong></td>
+              <td>Interconnection Reform</td>
+              <td><span class="score-badge score-high">Active</span></td>
+              <td>Jul 2023</td>
+              <td>All RTOs</td>
+              <td>3 upcoming</td>
             </tr>
             <tr>
-              <td><strong>Lithium</strong></td>
-              <td><span class="score-badge score-low">8.2</span></td>
-              <td>Australia / Chile</td>
-              <td>China 65% processing</td>
-              <td>-8% YoY</td>
-              <td>Batteries, Grid Storage</td>
+              <td><strong>Order 1920</strong></td>
+              <td>Transmission Planning</td>
+              <td><span class="score-badge score-high">Active</span></td>
+              <td>May 2024</td>
+              <td>All RTOs</td>
+              <td>5 upcoming</td>
             </tr>
             <tr>
-              <td><strong>Rare Earths</strong></td>
-              <td><span class="score-badge score-low">9.1</span></td>
-              <td>China</td>
-              <td>87% processing</td>
-              <td>+5% YoY</td>
-              <td>Wind Turbines, EVs</td>
+              <td><strong>Order 881</strong></td>
+              <td>Transmission Rates (ATC)</td>
+              <td><span class="score-badge score-mid">Compliance</span></td>
+              <td>Dec 2021</td>
+              <td>PJM, MISO, SPP</td>
+              <td>1 upcoming</td>
             </tr>
             <tr>
-              <td><strong>Nickel</strong></td>
-              <td><span class="score-badge score-mid">6.4</span></td>
-              <td>Indonesia</td>
-              <td>49% mining</td>
-              <td>-3% YoY</td>
-              <td>EV Batteries</td>
+              <td><strong>Order 2222</strong></td>
+              <td>DER Aggregation</td>
+              <td><span class="score-badge score-mid">Compliance</span></td>
+              <td>Sep 2020</td>
+              <td>All RTOs</td>
+              <td>2 upcoming</td>
             </tr>
             <tr>
-              <td><strong>Graphite</strong></td>
-              <td><span class="score-badge score-mid">7.3</span></td>
-              <td>China</td>
-              <td>65% mining</td>
-              <td>+2% YoY</td>
-              <td>Battery Anodes</td>
-            </tr>
-            <tr>
-              <td style="color: var(--gray-300);">██████████</td>
-              <td><span class="score-badge score-mid" style="filter: blur(3px);">5.8</span></td>
-              <td style="filter: blur(3px);">Chile</td>
-              <td style="filter: blur(3px);">38% mining</td>
-              <td style="filter: blur(3px);">+7% YoY</td>
-              <td style="filter: blur(3px);">Solar Panels</td>
+              <td><strong>Order 2023-A</strong></td>
+              <td>Interconnection (Rehearing)</td>
+              <td><span class="score-badge score-high">Active</span></td>
+              <td>Jan 2025</td>
+              <td>All RTOs</td>
+              <td>4 upcoming</td>
             </tr>
             <tr>
               <td style="color: var(--gray-300);">██████████</td>
-              <td><span class="score-badge score-mid" style="filter: blur(3px);">4.9</span></td>
-              <td style="filter: blur(3px);">South Africa</td>
-              <td style="filter: blur(3px);">71% mining</td>
-              <td style="filter: blur(3px);">+1% YoY</td>
-              <td style="filter: blur(3px);">Hydrogen</td>
+              <td style="filter: blur(3px);">Storage Participation</td>
+              <td><span class="score-badge score-mid" style="filter: blur(3px);">Compliance</span></td>
+              <td style="filter: blur(3px);">Mar 2024</td>
+              <td style="filter: blur(3px);">PJM, NYISO</td>
+              <td style="filter: blur(3px);">2 upcoming</td>
+            </tr>
+            <tr>
+              <td style="color: var(--gray-300);">██████████</td>
+              <td style="filter: blur(3px);">Market Reform</td>
+              <td><span class="score-badge score-low" style="filter: blur(3px);">Proposed</span></td>
+              <td style="filter: blur(3px);">Nov 2024</td>
+              <td style="filter: blur(3px);">ERCOT, SPP</td>
+              <td style="filter: blur(3px);">6 upcoming</td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
     <div class="data-table-cta">
-      <a href="#cta" class="btn-primary">Unlock Full Data →</a>
+      <a href="https://owencoonahan.github.io/prospector-data-tools/ferc-tracker/" class="btn-primary" target="_blank">View Full Database →</a>
     </div>
   </section>
 
+  <!-- API PREVIEW -->
   <section class="api-preview">
     <div class="api-inner">
       <div class="api-info animate-on-scroll">
         <h2>For Developers & Agents</h2>
         <h3>Query via API or MCP</h3>
-        <p>Access mineral risk scores, pricing data, and supply chain intelligence programmatically. Perfect for portfolio risk models and automated supply chain monitoring.</p>
+        <p>Access FERC order data programmatically. Filter by topic, RTO, date range, or status. Perfect for automated compliance monitoring and regulatory research workflows.</p>
         <a href="https://prospector-api.fly.dev" class="btn-secondary" target="_blank">View API Docs →</a>
       </div>
       <div class="code-block animate-on-scroll">
@@ -326,38 +358,40 @@
           <span class="code-dot"></span>
           <span class="code-dot"></span>
           <span class="code-dot"></span>
-          <span class="code-title">GET /v1/minerals/risk-score</span>
+          <span class="code-title">GET /v1/ferc/orders</span>
         </div>
         <div class="code-body">
 <span class="comment">// Response</span>
 {
-  <span class="key">"mineral"</span>: <span class="string">"Lithium"</span>,
-  <span class="key">"risk_score"</span>: <span class="number">8.2</span>,
-  <span class="key">"top_producer"</span>: <span class="string">"Australia"</span>,
-  <span class="key">"processing_concentration"</span>: {
-    <span class="key">"country"</span>: <span class="string">"China"</span>,
-    <span class="key">"share"</span>: <span class="number">0.65</span>
-  },
-  <span class="key">"spot_price_usd_ton"</span>: <span class="number">14200</span>,
-  <span class="key">"yoy_change"</span>: <span class="number">-0.08</span>,
-  <span class="key">"primary_use"</span>: <span class="string">"EV Batteries"</span>
+  <span class="key">"order_number"</span>: <span class="string">"2023"</span>,
+  <span class="key">"title"</span>: <span class="string">"Interconnection Reform"</span>,
+  <span class="key">"status"</span>: <span class="string">"active"</span>,
+  <span class="key">"issued_date"</span>: <span class="string">"2023-07-28"</span>,
+  <span class="key">"rtos_affected"</span>: [
+    <span class="string">"PJM"</span>, <span class="string">"MISO"</span>,
+    <span class="string">"CAISO"</span>, <span class="string">"SPP"</span>
+  ],
+  <span class="key">"upcoming_deadlines"</span>: <span class="number">3</span>,
+  <span class="key">"next_deadline"</span>: <span class="string">"2026-04-01"</span>,
+  <span class="key">"docket"</span>: <span class="string">"RM22-14-000"</span>
 }
         </div>
       </div>
     </div>
   </section>
 
+  <!-- CTA -->
   <section class="cta-section" id="cta">
-    <h2 class="animate-on-scroll">Get critical minerals intelligence</h2>
-    <p class="animate-on-scroll">Enter your email and company for full access to mineral risk scores, pricing, and supply chain data.</p>
+    <h2 class="animate-on-scroll">Stay updated on FERC orders</h2>
+    <p class="animate-on-scroll">The dashboard is free. Enter your email for weekly regulatory digests and API access.</p>
     <div class="email-capture animate-on-scroll">
       <input type="email" placeholder="you@company.com" id="emailInput">
-      <input type="text" placeholder="Company name" id="companyInput">
-      <button onclick="handleSubmit()">Get Access</button>
+      <button onclick="handleSubmit()">Subscribe</button>
     </div>
     <p class="email-note animate-on-scroll">No spam. Unsubscribe anytime.</p>
   </section>
 
+  <!-- FOOTER -->
   <footer>
     <span>© 2026 Prospector Labs</span>
     <div class="footer-links">
@@ -370,20 +404,20 @@
 
   <script>
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
     }, { threshold: 0.1 });
     document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
 
     function handleSubmit() {
       const email = document.getElementById('emailInput').value;
-      const company = document.getElementById('companyInput').value;
       if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return; }
-      if (!company) { alert('Please enter your company name.'); return; }
       const btn = document.querySelector('.email-capture button');
-      btn.textContent = '✓ Sent!';
+      btn.textContent = '✓ Subscribed!';
       btn.style.background = '#22c55e';
-      setTimeout(() => { btn.textContent = 'Get Access'; btn.style.background = 'var(--black)'; }, 2000);
-      console.log('Captured:', email, company);
+      setTimeout(() => { btn.textContent = 'Subscribe'; btn.style.background = 'var(--black)'; }, 2000);
+      console.log('Email captured:', email);
     }
     document.getElementById('emailInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') handleSubmit(); });
   </script>

@@ -3,27 +3,106 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EV Battery Supply Chain Risk — Prospector Labs</title>
-  <meta name="description" content="Supply chain risk analysis for EV battery materials. 6 minerals, 20 gigafactories, 52 companies, disruption monitoring.">
+  <title>EV Supply Chain Monitor — Prospector Labs</title>
+  <meta name="description" content="Track 52 companies across the EV battery supply chain. Gigafactory capacity, mineral sourcing, disruption alerts, and IRA compliance mapping.">
   <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    :root{--white:#fff;--black:#000;--gray-50:#fafafa;--gray-100:#f5f5f5;--gray-200:#e5e5e5;--gray-300:#d4d4d4;--gray-400:#a3a3a3;--gray-500:#737373;--gray-600:#525252;--gray-700:#404040;--gray-800:#262626;--gray-900:#171717;--accent:#2563eb;--accent-light:#dbeafe}
-    *{margin:0;padding:0;box-sizing:border-box}body{font-family:'Geist',system-ui,sans-serif;background:var(--white);color:var(--black);-webkit-font-smoothing:antialiased}a{color:inherit}
-    nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 32px;display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--gray-200)}.nav-logo{font-size:18px;font-weight:500;color:var(--black);text-decoration:none;letter-spacing:-0.02em}.nav-links{display:flex;gap:32px;align-items:center}.nav-links a{font-size:13px;color:var(--gray-500);text-decoration:none;transition:color 0.2s}.nav-links a:hover{color:var(--black)}.nav-cta{padding:8px 20px;background:var(--black);color:var(--white)!important;border-radius:6px;font-size:13px;font-weight:500;transition:opacity 0.2s}.nav-cta:hover{opacity:0.8}
-    .hero{padding:160px 64px 80px;max-width:1200px;margin:0 auto}.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:var(--gray-100);border-radius:100px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gray-600);margin-bottom:24px}.hero-badge-dot{width:6px;height:6px;background:#f59e0b;border-radius:50%}.hero h1{font-size:clamp(36px,5vw,64px);font-weight:500;letter-spacing:-0.03em;line-height:1.1;max-width:800px;margin-bottom:24px}.hero-sub{font-size:20px;color:var(--gray-500);line-height:1.6;max-width:600px;margin-bottom:40px}.hero-actions{display:flex;gap:16px;align-items:center}
-    .btn-primary{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:var(--black);color:var(--white);border-radius:8px;font-size:15px;font-weight:500;text-decoration:none;transition:all 0.2s}.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.15)}.btn-secondary{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:var(--white);color:var(--black);border:1px solid var(--gray-300);border-radius:8px;font-size:15px;font-weight:500;text-decoration:none;transition:all 0.2s}.btn-secondary:hover{border-color:var(--black)}
-    .screenshot-section{padding:0 64px 80px;max-width:1200px;margin:0 auto}.screenshot-frame{border-radius:12px;border:1px solid var(--gray-200);overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.08),0 0 0 1px rgba(0,0,0,0.04)}.screenshot-bar{display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--gray-50);border-bottom:1px solid var(--gray-200)}.screenshot-dot{width:12px;height:12px;border-radius:50%;background:var(--gray-200)}.screenshot-url{flex:1;text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gray-400)}.screenshot-placeholder{width:100%;height:500px;background:linear-gradient(135deg,var(--gray-900),var(--gray-800));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;color:var(--gray-400);font-size:14px}.screenshot-placeholder svg{width:48px;height:48px;stroke:var(--gray-500);fill:none;stroke-width:1.5}
-    .stats-bar{padding:48px 64px;border-top:1px solid var(--gray-200);border-bottom:1px solid var(--gray-200)}.stats-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between}.stat{text-align:center}.stat-value{font-size:48px;font-weight:500;letter-spacing:-0.03em;line-height:1;margin-bottom:8px}.stat-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.1em}
-    .features{padding:100px 64px;max-width:1200px;margin:0 auto}.features-header{margin-bottom:64px}.features-header h2{font-size:14px;font-weight:500;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:16px}.features-header p{font-size:clamp(24px,3vw,36px);font-weight:500;letter-spacing:-0.02em;max-width:600px}.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:48px}.feature-item{padding:32px 0;border-top:1px solid var(--gray-200)}.feature-icon{width:40px;height:40px;margin-bottom:20px;display:flex;align-items:center;justify-content:center;background:var(--gray-100);border-radius:8px;font-size:18px}.feature-item h3{font-size:17px;font-weight:500;margin-bottom:8px}.feature-item p{font-size:14px;color:var(--gray-500);line-height:1.6}
-    .use-cases{padding:100px 64px;background:var(--gray-900);color:var(--white)}.use-cases-inner{max-width:1200px;margin:0 auto}.use-cases h2{font-size:14px;font-weight:500;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:64px}.use-case-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:32px}.use-case{padding:40px;border:1px solid var(--gray-700);border-radius:12px;transition:border-color 0.2s}.use-case:hover{border-color:var(--gray-500)}.use-case-persona{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:16px}.use-case h3{font-size:22px;font-weight:500;letter-spacing:-0.02em;margin-bottom:12px}.use-case p{font-size:14px;color:var(--gray-400);line-height:1.7}
-    .data-sample{padding:100px 64px;max-width:1200px;margin:0 auto}.data-sample h2{font-size:14px;font-weight:500;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:32px}.data-table-wrapper{border:1px solid var(--gray-200);border-radius:12px;overflow:hidden}.data-table{width:100%;border-collapse:collapse;font-size:14px}.data-table thead{background:var(--gray-50)}.data-table th{padding:14px 20px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.08em;border-bottom:1px solid var(--gray-200)}.data-table td{padding:14px 20px;border-bottom:1px solid var(--gray-100)}.data-table tr:last-child td{border-bottom:none}.score-badge{display:inline-flex;align-items:center;padding:4px 10px;border-radius:100px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500}.score-high{background:#dcfce7;color:#166534}.score-mid{background:#fef9c3;color:#854d0e}.score-low{background:#fee2e2;color:#991b1b}.data-table-blur{position:relative}.data-table-blur::after{content:'';position:absolute;bottom:0;left:0;right:0;height:120px;background:linear-gradient(transparent,var(--white));pointer-events:none}.data-table-cta{text-align:center;padding:32px;margin-top:-40px;position:relative;z-index:1}
-    .cta-section{padding:100px 64px;text-align:center;border-top:1px solid var(--gray-200)}.cta-section h2{font-size:clamp(28px,4vw,48px);font-weight:500;letter-spacing:-0.03em;margin-bottom:16px}.cta-section p{font-size:18px;color:var(--gray-500);margin-bottom:40px}.email-capture{display:flex;gap:12px;justify-content:center;max-width:560px;margin:0 auto;flex-wrap:wrap}.email-capture input{flex:1;min-width:200px;padding:14px 20px;border:1px solid var(--gray-300);border-radius:8px;font-family:'Geist',system-ui,sans-serif;font-size:15px;outline:none;transition:border-color 0.2s}.email-capture input:focus{border-color:var(--black)}.email-capture button{padding:14px 28px;background:var(--black);color:var(--white);border:none;border-radius:8px;font-family:'Geist',system-ui,sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:opacity 0.2s;white-space:nowrap}.email-capture button:hover{opacity:0.8}.email-note{font-size:12px;color:var(--gray-400);margin-top:12px}
-    .api-preview{padding:100px 64px;background:var(--gray-50);border-top:1px solid var(--gray-200)}.api-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}.api-info h2{font-size:14px;font-weight:500;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:16px}.api-info h3{font-size:28px;font-weight:500;letter-spacing:-0.02em;margin-bottom:16px}.api-info p{font-size:15px;color:var(--gray-500);line-height:1.7;margin-bottom:24px}.code-block{background:var(--gray-900);border-radius:12px;overflow:hidden}.code-header{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--gray-700)}.code-dot{width:10px;height:10px;border-radius:50%;background:var(--gray-700)}.code-title{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gray-400);margin-left:8px}.code-body{padding:20px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;color:var(--gray-300);overflow-x:auto}.code-body .keyword{color:#c084fc}.code-body .string{color:#86efac}.code-body .number{color:#fde68a}.code-body .comment{color:var(--gray-600)}.code-body .key{color:#93c5fd}
-    footer{padding:32px 64px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--gray-200);font-size:13px;color:var(--gray-400)}.footer-links{display:flex;gap:32px}.footer-links a{color:var(--gray-400);text-decoration:none;transition:color 0.2s}.footer-links a:hover{color:var(--black)}
-    .animate-on-scroll{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease}.animate-on-scroll.visible{opacity:1;transform:translateY(0)}.stagger>*:nth-child(1){transition-delay:0s}.stagger>*:nth-child(2){transition-delay:0.1s}.stagger>*:nth-child(3){transition-delay:0.15s}.stagger>*:nth-child(4){transition-delay:0.2s}.stagger>*:nth-child(5){transition-delay:0.25s}.stagger>*:nth-child(6){transition-delay:0.3s}
-    @media(max-width:1024px){.feature-grid{grid-template-columns:repeat(2,1fr)}.api-inner{grid-template-columns:1fr}.stats-inner{flex-wrap:wrap;gap:40px;justify-content:center}}
-    @media(max-width:768px){nav{padding:16px 24px}.nav-links a:not(.nav-cta){display:none}.hero{padding:120px 24px 60px}.screenshot-section{padding:0 24px 60px}.features{padding:60px 24px}.feature-grid{grid-template-columns:1fr}.use-cases{padding:60px 24px}.use-case-grid{grid-template-columns:1fr}.data-sample{padding:60px 24px}.api-preview{padding:60px 24px}.cta-section{padding:60px 24px}.email-capture{flex-direction:column}footer{padding:24px;flex-direction:column;gap:16px}.hero-actions{flex-direction:column;align-items:flex-start}}
+    :root { --white: #ffffff; --black: #000000; --gray-50: #fafafa; --gray-100: #f5f5f5; --gray-200: #e5e5e5; --gray-300: #d4d4d4; --gray-400: #a3a3a3; --gray-500: #737373; --gray-600: #525252; --gray-700: #404040; --gray-800: #262626; --gray-900: #171717; --accent: #2563eb; --accent-light: #dbeafe; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Geist', system-ui, sans-serif; background: var(--white); color: var(--black); -webkit-font-smoothing: antialiased; }
+    a { color: inherit; }
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.9); backdrop-filter: blur(12px); border-bottom: 1px solid var(--gray-200); }
+    .nav-logo { font-size: 18px; font-weight: 500; color: var(--black); text-decoration: none; letter-spacing: -0.02em; }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a { font-size: 13px; color: var(--gray-500); text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--black); }
+    .nav-cta { padding: 8px 20px; background: var(--black); color: var(--white) !important; border-radius: 6px; font-size: 13px; font-weight: 500; transition: opacity 0.2s; }
+    .nav-cta:hover { opacity: 0.8; }
+    .hero { padding: 160px 64px 80px; max-width: 1200px; margin: 0 auto; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; background: var(--gray-100); border-radius: 100px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--gray-600); margin-bottom: 24px; }
+    .hero-badge-dot { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; }
+    .hero h1 { font-size: clamp(36px, 5vw, 64px); font-weight: 500; letter-spacing: -0.03em; line-height: 1.1; max-width: 800px; margin-bottom: 24px; }
+    .hero-sub { font-size: 20px; color: var(--gray-500); line-height: 1.6; max-width: 600px; margin-bottom: 40px; }
+    .hero-actions { display: flex; gap: 16px; align-items: center; }
+    .btn-primary { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; background: var(--black); color: var(--white); border-radius: 8px; font-size: 15px; font-weight: 500; text-decoration: none; transition: all 0.2s; }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .btn-secondary { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; background: var(--white); color: var(--black); border: 1px solid var(--gray-300); border-radius: 8px; font-size: 15px; font-weight: 500; text-decoration: none; transition: all 0.2s; }
+    .btn-secondary:hover { border-color: var(--black); }
+    .screenshot-section { padding: 0 64px 80px; max-width: 1200px; margin: 0 auto; }
+    .screenshot-frame { border-radius: 12px; border: 1px solid var(--gray-200); overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04); }
+    .screenshot-bar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; background: var(--gray-50); border-bottom: 1px solid var(--gray-200); }
+    .screenshot-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--gray-200); }
+    .screenshot-url { flex: 1; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--gray-400); }
+    .screenshot-placeholder { width: 100%; height: 500px; background: linear-gradient(135deg, var(--gray-900), var(--gray-800)); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; color: var(--gray-400); font-size: 14px; }
+    .screenshot-placeholder svg { width: 48px; height: 48px; stroke: var(--gray-500); fill: none; stroke-width: 1.5; }
+    .stats-bar { padding: 48px 64px; border-top: 1px solid var(--gray-200); border-bottom: 1px solid var(--gray-200); }
+    .stats-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; }
+    .stat { text-align: center; }
+    .stat-value { font-size: 48px; font-weight: 500; letter-spacing: -0.03em; line-height: 1; margin-bottom: 8px; }
+    .stat-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.1em; }
+    .features { padding: 100px 64px; max-width: 1200px; margin: 0 auto; }
+    .features-header { margin-bottom: 64px; }
+    .features-header h2 { font-size: 14px; font-weight: 500; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px; }
+    .features-header p { font-size: clamp(24px, 3vw, 36px); font-weight: 500; letter-spacing: -0.02em; max-width: 600px; }
+    .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; }
+    .feature-item { padding: 32px 0; border-top: 1px solid var(--gray-200); }
+    .feature-icon { width: 40px; height: 40px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; background: var(--gray-100); border-radius: 8px; font-size: 18px; }
+    .feature-item h3 { font-size: 17px; font-weight: 500; margin-bottom: 8px; }
+    .feature-item p { font-size: 14px; color: var(--gray-500); line-height: 1.6; }
+    .use-cases { padding: 100px 64px; background: var(--gray-900); color: var(--white); }
+    .use-cases-inner { max-width: 1200px; margin: 0 auto; }
+    .use-cases h2 { font-size: 14px; font-weight: 500; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 64px; }
+    .use-case-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; }
+    .use-case { padding: 40px; border: 1px solid var(--gray-700); border-radius: 12px; transition: border-color 0.2s; }
+    .use-case:hover { border-color: var(--gray-500); }
+    .use-case-persona { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px; }
+    .use-case h3 { font-size: 22px; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 12px; }
+    .use-case p { font-size: 14px; color: var(--gray-400); line-height: 1.7; }
+    .data-sample { padding: 100px 64px; max-width: 1200px; margin: 0 auto; }
+    .data-sample h2 { font-size: 14px; font-weight: 500; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 32px; }
+    .data-table-wrapper { border: 1px solid var(--gray-200); border-radius: 12px; overflow: hidden; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .data-table thead { background: var(--gray-50); }
+    .data-table th { padding: 14px 20px; text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid var(--gray-200); }
+    .data-table td { padding: 14px 20px; border-bottom: 1px solid var(--gray-100); }
+    .data-table tr:last-child td { border-bottom: none; }
+    .score-badge { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 100px; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 500; }
+    .score-high { background: #dcfce7; color: #166534; }
+    .score-mid { background: #fef9c3; color: #854d0e; }
+    .score-low { background: #fee2e2; color: #991b1b; }
+    .data-table-blur { position: relative; }
+    .data-table-blur::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 120px; background: linear-gradient(transparent, var(--white)); pointer-events: none; }
+    .data-table-cta { text-align: center; padding: 32px; margin-top: -40px; position: relative; z-index: 1; }
+    .cta-section { padding: 100px 64px; text-align: center; border-top: 1px solid var(--gray-200); }
+    .cta-section h2 { font-size: clamp(28px, 4vw, 48px); font-weight: 500; letter-spacing: -0.03em; margin-bottom: 16px; }
+    .cta-section p { font-size: 18px; color: var(--gray-500); margin-bottom: 40px; }
+    .email-capture { display: flex; gap: 12px; justify-content: center; max-width: 560px; margin: 0 auto; flex-wrap: wrap; }
+    .email-capture input { flex: 1; min-width: 200px; padding: 14px 20px; border: 1px solid var(--gray-300); border-radius: 8px; font-family: 'Geist', system-ui, sans-serif; font-size: 15px; outline: none; transition: border-color 0.2s; }
+    .email-capture input:focus { border-color: var(--black); }
+    .email-capture button { padding: 14px 28px; background: var(--black); color: var(--white); border: none; border-radius: 8px; font-family: 'Geist', system-ui, sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; transition: opacity 0.2s; white-space: nowrap; }
+    .email-capture button:hover { opacity: 0.8; }
+    .email-note { font-size: 12px; color: var(--gray-400); margin-top: 12px; }
+    .api-preview { padding: 100px 64px; background: var(--gray-50); border-top: 1px solid var(--gray-200); }
+    .api-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+    .api-info h2 { font-size: 14px; font-weight: 500; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px; }
+    .api-info h3 { font-size: 28px; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 16px; }
+    .api-info p { font-size: 15px; color: var(--gray-500); line-height: 1.7; margin-bottom: 24px; }
+    .code-block { background: var(--gray-900); border-radius: 12px; overflow: hidden; }
+    .code-header { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--gray-700); }
+    .code-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--gray-700); }
+    .code-title { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--gray-400); margin-left: 8px; }
+    .code-body { padding: 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.7; color: var(--gray-300); overflow-x: auto; }
+    .code-body .keyword { color: #c084fc; } .code-body .string { color: #86efac; } .code-body .number { color: #fde68a; } .code-body .comment { color: var(--gray-600); } .code-body .key { color: #93c5fd; }
+    footer { padding: 32px 64px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--gray-200); font-size: 13px; color: var(--gray-400); }
+    .footer-links { display: flex; gap: 32px; }
+    .footer-links a { color: var(--gray-400); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--black); }
+    .animate-on-scroll { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
+    .stagger > *:nth-child(1) { transition-delay: 0s; } .stagger > *:nth-child(2) { transition-delay: 0.1s; } .stagger > *:nth-child(3) { transition-delay: 0.15s; } .stagger > *:nth-child(4) { transition-delay: 0.2s; } .stagger > *:nth-child(5) { transition-delay: 0.25s; } .stagger > *:nth-child(6) { transition-delay: 0.3s; }
+    @media (max-width: 1024px) { .feature-grid { grid-template-columns: repeat(2, 1fr); } .api-inner { grid-template-columns: 1fr; } .stats-inner { flex-wrap: wrap; gap: 40px; justify-content: center; } }
+    @media (max-width: 768px) { nav { padding: 16px 24px; } .nav-links a:not(.nav-cta) { display: none; } .hero { padding: 120px 24px 60px; } .screenshot-section { padding: 0 24px 60px; } .features { padding: 60px 24px; } .feature-grid { grid-template-columns: 1fr; } .use-cases { padding: 60px 24px; } .use-case-grid { grid-template-columns: 1fr; } .data-sample { padding: 60px 24px; } .api-preview { padding: 60px 24px; } .cta-section { padding: 60px 24px; } .email-capture { flex-direction: column; } footer { padding: 24px; flex-direction: column; gap: 16px; } .hero-actions { flex-direction: column; align-items: flex-start; } }
   </style>
 </head>
 <body>
@@ -40,24 +119,26 @@
   <section class="hero">
     <div class="hero-badge animate-on-scroll">
       <span class="hero-badge-dot"></span>
-      Monitoring — 12 active disruption events
+      Live — 52 companies tracked
     </div>
-    <h1 class="animate-on-scroll">EV Battery Supply Chain Risk</h1>
-    <p class="hero-sub animate-on-scroll">Supply chain risk analysis for EV battery materials. Track mineral flows from mine to gigafactory, monitor disruptions, and score risk across 52 companies in the value chain.</p>
+    <h1 class="animate-on-scroll">EV Supply Chain Monitor</h1>
+    <p class="hero-sub animate-on-scroll">End-to-end visibility into the EV battery supply chain. Gigafactory capacity, mineral sourcing, supplier dependencies, and disruption tracking — from mine to vehicle.</p>
     <div class="hero-actions animate-on-scroll">
-      <a href="https://owencoonahan.github.io/prospector-data-tools/ev-supply-chain/" class="btn-primary" target="_blank">Launch Dashboard →</a>
-      <a href="#cta" class="btn-secondary">Get Full Access</a>
+      <a href="#cta" class="btn-primary">Get Access →</a>
+      <a href="#data" class="btn-secondary">View Sample Data</a>
     </div>
   </section>
 
   <section class="screenshot-section">
     <div class="screenshot-frame animate-on-scroll">
       <div class="screenshot-bar">
-        <span class="screenshot-dot"></span><span class="screenshot-dot"></span><span class="screenshot-dot"></span>
+        <span class="screenshot-dot"></span>
+        <span class="screenshot-dot"></span>
+        <span class="screenshot-dot"></span>
         <span class="screenshot-url">prospectorlabs.io/tools/ev-supply-chain</span>
       </div>
       <div class="screenshot-placeholder">
-        <svg viewBox="0 0 24 24"><path d="M1 6v16h22V6H1z"/><path d="M1 6l11-4 11 4"/></svg>
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
         <span>Dashboard screenshot — coming soon</span>
       </div>
     </div>
@@ -65,48 +146,60 @@
 
   <section class="stats-bar">
     <div class="stats-inner stagger">
-      <div class="stat animate-on-scroll"><div class="stat-value">6</div><div class="stat-label">Battery Minerals</div></div>
-      <div class="stat animate-on-scroll"><div class="stat-value">20</div><div class="stat-label">Gigafactories</div></div>
-      <div class="stat animate-on-scroll"><div class="stat-value">52</div><div class="stat-label">Companies Tracked</div></div>
-      <div class="stat animate-on-scroll"><div class="stat-value">12</div><div class="stat-label">Disruption Events</div></div>
+      <div class="stat animate-on-scroll">
+        <div class="stat-value">6</div>
+        <div class="stat-label">Key Minerals</div>
+      </div>
+      <div class="stat animate-on-scroll">
+        <div class="stat-value">20</div>
+        <div class="stat-label">Gigafactories</div>
+      </div>
+      <div class="stat animate-on-scroll">
+        <div class="stat-value">52</div>
+        <div class="stat-label">Companies Tracked</div>
+      </div>
+      <div class="stat animate-on-scroll">
+        <div class="stat-value">12</div>
+        <div class="stat-label">Active Disruptions</div>
+      </div>
     </div>
   </section>
 
   <section class="features">
     <div class="features-header animate-on-scroll">
       <h2>What's Inside</h2>
-      <p>End-to-end visibility into EV battery supply chains — from mine to manufacturer.</p>
+      <p>Complete supply chain intelligence from raw minerals to finished battery packs and EV assembly.</p>
     </div>
     <div class="feature-grid stagger">
       <div class="feature-item animate-on-scroll">
-        <div class="feature-icon">🔗</div>
-        <h3>Supply Chain Flow</h3>
-        <p>Sankey-style visualization of material flows from mining through processing to cell manufacturing. See where bottlenecks and concentration risks emerge.</p>
+        <div class="feature-icon">🏭</div>
+        <h3>Gigafactory Tracker</h3>
+        <p>Capacity, timeline, and production status for 20 battery gigafactories in North America. Planned vs. actual output, workforce data, and IRA eligibility.</p>
+      </div>
+      <div class="feature-item animate-on-scroll">
+        <div class="feature-icon">⛏️</div>
+        <h3>Mineral Sourcing Map</h3>
+        <p>Trace lithium, cobalt, nickel, graphite, manganese, and rare earths from mine to cathode. Country-level concentration and supplier dependency analysis.</p>
       </div>
       <div class="feature-item animate-on-scroll">
         <div class="feature-icon">⚠️</div>
-        <h3>Mineral Risk Scores</h3>
-        <p>Composite risk scores for each battery mineral — factoring in geographic concentration, geopolitical risk, substitutability, and demand growth projections.</p>
+        <h3>Disruption Alerts</h3>
+        <p>Real-time monitoring of supply chain disruptions — export bans, port closures, factory shutdowns, trade policy changes. Impact scoring for downstream effects.</p>
       </div>
       <div class="feature-item animate-on-scroll">
-        <div class="feature-icon">🏭</div>
-        <h3>Gigafactory Map</h3>
-        <p>20 gigafactories mapped with capacity, ownership, chemistry, supply agreements, and construction status. Filter by region or manufacturer.</p>
+        <div class="feature-icon">🏛️</div>
+        <h3>IRA Compliance Mapping</h3>
+        <p>Track which battery components qualify for IRA tax credits. Domestic content requirements, FEOC entity screening, and critical mineral sourcing compliance.</p>
       </div>
       <div class="feature-item animate-on-scroll">
-        <div class="feature-icon">🏢</div>
-        <h3>Company Intelligence</h3>
-        <p>52 companies profiled across the value chain. Mining, refining, cathode/anode production, and cell manufacturing — with supply relationship mapping.</p>
+        <div class="feature-icon">🔗</div>
+        <h3>Supplier Network</h3>
+        <p>Map the relationships between OEMs, cell manufacturers, cathode/anode producers, and mineral suppliers. Identify single-source risks and alternative suppliers.</p>
       </div>
       <div class="feature-item animate-on-scroll">
-        <div class="feature-icon">🚨</div>
-        <h3>Disruption Feed</h3>
-        <p>Real-time monitoring of supply chain disruptions — export bans, mine closures, shipping delays, policy changes — with impact assessment and affected companies.</p>
-      </div>
-      <div class="feature-item animate-on-scroll">
-        <div class="feature-icon">🔌</div>
-        <h3>API Access</h3>
-        <p>Query supply chain data programmatically. Build automated risk monitoring, integrate with procurement systems, or embed in your analysis workflow.</p>
+        <div class="feature-icon">📈</div>
+        <h3>Capacity Forecasting</h3>
+        <p>Bottom-up models for battery production capacity through 2030. Compare announced vs. likely capacity, factoring in permitting delays and funding gaps.</p>
       </div>
     </div>
   </section>
@@ -116,92 +209,100 @@
       <h2 class="animate-on-scroll">Who Uses This</h2>
       <div class="use-case-grid stagger">
         <div class="use-case animate-on-scroll">
-          <div class="use-case-persona">Automakers</div>
-          <h3>Secure Your Battery Supply</h3>
-          <p>Map dependencies in your battery supply chain. Identify single points of failure, evaluate alternative suppliers, and monitor disruption risks before they hit production lines.</p>
+          <div class="use-case-persona">Automakers & OEMs</div>
+          <h3>Supply Chain Resilience</h3>
+          <p>Monitor your battery suppliers' mineral sourcing, factory timelines, and IRA compliance. Identify risks before they hit your production line and diversify supplier relationships.</p>
+        </div>
+        <div class="use-case animate-on-scroll">
+          <div class="use-case-persona">Battery Investors</div>
+          <h3>Investment Due Diligence</h3>
+          <p>Evaluate gigafactory economics, offtake agreements, and mineral supply security. Benchmark announced capacity against realistic delivery timelines and competitive dynamics.</p>
+        </div>
+        <div class="use-case animate-on-scroll">
+          <div class="use-case-persona">Policy Analysts</div>
+          <h3>IRA Impact Assessment</h3>
+          <p>Track how IRA incentives are reshaping the North American battery supply chain. Monitor domestic content compliance, FEOC screening, and reshoring progress.</p>
         </div>
         <div class="use-case animate-on-scroll">
           <div class="use-case-persona">Battery Manufacturers</div>
-          <h3>Raw Material Sourcing Strategy</h3>
-          <p>Optimize mineral sourcing across suppliers and geographies. Track pricing trends, processing capacity constraints, and new mine developments that affect your cost structure.</p>
-        </div>
-        <div class="use-case animate-on-scroll">
-          <div class="use-case-persona">Mining Companies</div>
-          <h3>Market Positioning & Offtake</h3>
-          <p>Understand where your minerals end up. Map the downstream value chain to identify offtake opportunities, track competitor supply agreements, and position for RFPs.</p>
-        </div>
-        <div class="use-case animate-on-scroll">
-          <div class="use-case-persona">PE / Infrastructure Funds</div>
-          <h3>Investment Due Diligence</h3>
-          <p>Evaluate supply chain risk for EV-adjacent investments. Score companies on supply security, concentration risk, and resilience to disruption scenarios.</p>
+          <h3>Competitive Intelligence</h3>
+          <p>Benchmark your capacity and timeline against peers. Track competitor expansion plans, offtake announcements, and mineral sourcing strategies across the industry.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="data-sample">
+  <section class="data-sample" id="data">
     <h2 class="animate-on-scroll">Sample Data</h2>
     <div class="data-table-blur animate-on-scroll">
       <div class="data-table-wrapper">
         <table class="data-table">
           <thead>
             <tr>
-              <th>Mineral</th>
-              <th>Top Source</th>
-              <th>Processing Hub</th>
-              <th>Risk Score</th>
-              <th>Demand Growth</th>
-              <th>Supply Risk</th>
+              <th>Facility</th>
+              <th>Company</th>
+              <th>Capacity</th>
+              <th>Status</th>
+              <th>Location</th>
+              <th>IRA Eligible</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><strong>Lithium</strong></td>
-              <td>Australia</td>
-              <td>China (65%)</td>
-              <td><span class="score-badge score-low">87</span></td>
-              <td>+34% YoY</td>
-              <td>High</td>
+              <td><strong>Gigafactory Nevada</strong></td>
+              <td>Tesla / Panasonic</td>
+              <td>100 GWh</td>
+              <td><span class="score-badge score-high">Operating</span></td>
+              <td>Sparks, NV</td>
+              <td>✅ Yes</td>
             </tr>
             <tr>
-              <td><strong>Cobalt</strong></td>
-              <td>DRC</td>
-              <td>China (72%)</td>
-              <td><span class="score-badge score-low">92</span></td>
-              <td>+18% YoY</td>
-              <td>Critical</td>
+              <td><strong>Kittanning Plant</strong></td>
+              <td>CATL / Ford</td>
+              <td>35 GWh</td>
+              <td><span class="score-badge score-mid">Construction</span></td>
+              <td>Kittanning, PA</td>
+              <td>⚠️ Under Review</td>
             </tr>
             <tr>
-              <td><strong>Nickel</strong></td>
-              <td>Indonesia</td>
-              <td>China (35%)</td>
-              <td><span class="score-badge score-mid">71</span></td>
-              <td>+22% YoY</td>
-              <td>Moderate</td>
+              <td><strong>Spring Hill Factory</strong></td>
+              <td>Ultium Cells (GM/LG)</td>
+              <td>50 GWh</td>
+              <td><span class="score-badge score-high">Operating</span></td>
+              <td>Spring Hill, TN</td>
+              <td>✅ Yes</td>
             </tr>
             <tr>
-              <td><strong>Graphite</strong></td>
-              <td>China</td>
-              <td>China (90%)</td>
-              <td><span class="score-badge score-low">95</span></td>
-              <td>+28% YoY</td>
-              <td>Critical</td>
+              <td><strong>BlueOval SK Plant</strong></td>
+              <td>Ford / SK On</td>
+              <td>43 GWh</td>
+              <td><span class="score-badge score-high">Operating</span></td>
+              <td>Glendale, KY</td>
+              <td>✅ Yes</td>
             </tr>
             <tr>
-              <td><strong>Manganese</strong></td>
-              <td>S. Africa</td>
-              <td>China (52%)</td>
-              <td><span class="score-badge score-mid">58</span></td>
-              <td>+15% YoY</td>
-              <td>Moderate</td>
+              <td><strong>Gigafactory Texas</strong></td>
+              <td>Tesla</td>
+              <td>80 GWh</td>
+              <td><span class="score-badge score-mid">Ramping</span></td>
+              <td>Austin, TX</td>
+              <td>✅ Yes</td>
             </tr>
             <tr>
-              <td style="color:var(--gray-300);">██████████</td>
-              <td style="filter:blur(3px);">Chile</td>
-              <td style="filter:blur(3px);">China (48%)</td>
-              <td><span class="score-badge score-mid" style="filter:blur(3px);">63</span></td>
-              <td style="filter:blur(3px);">+12% YoY</td>
-              <td style="filter:blur(3px);">Moderate</td>
+              <td style="color: var(--gray-300);">██████████</td>
+              <td style="filter: blur(3px);">Samsung SDI</td>
+              <td style="filter: blur(3px);">30 GWh</td>
+              <td><span class="score-badge score-mid" style="filter: blur(3px);">Planned</span></td>
+              <td style="filter: blur(3px);">Kokomo, IN</td>
+              <td style="filter: blur(3px);">Pending</td>
+            </tr>
+            <tr>
+              <td style="color: var(--gray-300);">██████████</td>
+              <td style="filter: blur(3px);">AESC</td>
+              <td style="filter: blur(3px);">30 GWh</td>
+              <td><span class="score-badge score-mid" style="filter: blur(3px);">Construction</span></td>
+              <td style="filter: blur(3px);">Florence, SC</td>
+              <td style="filter: blur(3px);">Yes</td>
             </tr>
           </tbody>
         </table>
@@ -210,3 +311,85 @@
     <div class="data-table-cta">
       <a href="#cta" class="btn-primary">Unlock Full Data →</a>
     </div>
+  </section>
+
+  <section class="api-preview">
+    <div class="api-inner">
+      <div class="api-info animate-on-scroll">
+        <h2>For Developers & Agents</h2>
+        <h3>Query via API or MCP</h3>
+        <p>Access gigafactory data, mineral sourcing intelligence, and disruption alerts programmatically. Filter by company, mineral, location, or IRA eligibility status.</p>
+        <a href="https://prospector-api.fly.dev" class="btn-secondary" target="_blank">View API Docs →</a>
+      </div>
+      <div class="code-block animate-on-scroll">
+        <div class="code-header">
+          <span class="code-dot"></span>
+          <span class="code-dot"></span>
+          <span class="code-dot"></span>
+          <span class="code-title">GET /v1/ev/gigafactories</span>
+        </div>
+        <div class="code-body">
+<span class="comment">// Response</span>
+{
+  <span class="key">"facility"</span>: <span class="string">"Gigafactory Nevada"</span>,
+  <span class="key">"company"</span>: <span class="string">"Tesla / Panasonic"</span>,
+  <span class="key">"capacity_gwh"</span>: <span class="number">100</span>,
+  <span class="key">"status"</span>: <span class="string">"operating"</span>,
+  <span class="key">"location"</span>: {
+    <span class="key">"city"</span>: <span class="string">"Sparks"</span>,
+    <span class="key">"state"</span>: <span class="string">"NV"</span>
+  },
+  <span class="key">"ira_eligible"</span>: <span class="keyword">true</span>,
+  <span class="key">"mineral_sources"</span>: [
+    <span class="string">"Australia (Li)"</span>,
+    <span class="string">"Canada (Ni)"</span>
+  ]
+}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section" id="cta">
+    <h2 class="animate-on-scroll">Get EV supply chain intelligence</h2>
+    <p class="animate-on-scroll">Enter your email and company for full access to gigafactory data, disruption alerts, and supply chain mapping.</p>
+    <div class="email-capture animate-on-scroll">
+      <input type="email" placeholder="you@company.com" id="emailInput">
+      <input type="text" placeholder="Company name" id="companyInput">
+      <button onclick="handleSubmit()">Get Access</button>
+    </div>
+    <p class="email-note animate-on-scroll">No spam. Unsubscribe anytime.</p>
+  </section>
+
+  <footer>
+    <span>© 2026 Prospector Labs</span>
+    <div class="footer-links">
+      <a href="../variant-editorial.html">Home</a>
+      <a href="../variant-editorial.html#projects">All Tools</a>
+      <a href="https://twitter.com/OwenCoonahan">Twitter</a>
+      <a href="https://linkedin.com/in/owencoonahan">LinkedIn</a>
+    </div>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+
+    function handleSubmit() {
+      const email = document.getElementById('emailInput').value;
+      const company = document.getElementById('companyInput').value;
+      if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return; }
+      if (!company) { alert('Please enter your company name.'); return; }
+      const btn = document.querySelector('.email-capture button');
+      btn.textContent = '✓ Sent!';
+      btn.style.background = '#22c55e';
+      setTimeout(() => { btn.textContent = 'Get Access'; btn.style.background = 'var(--black)'; }, 2000);
+      console.log('Captured:', email, company);
+    }
+    document.getElementById('emailInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') handleSubmit(); });
+  </script>
+
+</body>
+</html>
