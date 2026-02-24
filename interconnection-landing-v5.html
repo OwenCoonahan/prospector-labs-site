@@ -154,6 +154,14 @@
 
     .hero-cta:hover { background: var(--gray-800); }
 
+    .hero-pricing {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-500);
+      margin-bottom: 20px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
     .hero-image {
       border-radius: 12px;
       overflow: hidden;
@@ -380,6 +388,33 @@
       font-size: 14px;
       font-weight: 600;
       color: #166534;
+    }
+
+    .sample-download {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+      padding: 14px 20px;
+      background: var(--gray-100);
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-700);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .sample-download:hover {
+      background: var(--gray-200);
+      border-color: var(--gray-300);
+    }
+
+    .sample-download svg {
+      width: 18px;
+      height: 18px;
     }
 
     /* CTA */
@@ -788,6 +823,7 @@
           <p class="hero-subtitle">
             Queue risk analysis delivered in days. Timeline scenarios, developer benchmarks, POI congestion—so you can move faster on deals.
           </p>
+          <p class="hero-pricing">Reports start at $5,000</p>
           <a href="#" class="hero-cta" onclick="openModal(); return false;">
             Get a Sample Report →
           </a>
@@ -806,16 +842,16 @@
       <div class="stat-label">Typical Turnaround</div>
     </div>
     <div class="stat">
-      <div class="stat-value">47</div>
-      <div class="stat-label">Deep-Dive Analyses</div>
-    </div>
-    <div class="stat">
-      <div class="stat-value negative">~70%</div>
-      <div class="stat-label">Queue Withdrawal Rate</div>
-    </div>
-    <div class="stat">
       <div class="stat-value">35K+</div>
-      <div class="stat-label">Projects Tracked</div>
+      <div class="stat-label">Projects in Database</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">9</div>
+      <div class="stat-label">ISO Markets Covered</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">500+</div>
+      <div class="stat-label">Developers Tracked</div>
     </div>
   </section>
 
@@ -940,6 +976,14 @@
               <span class="sample-recommendation-label">Recommendation</span>
               <span class="sample-recommendation-value">✓ Proceed — monitor IC costs</span>
             </div>
+            <a href="#" class="sample-download" onclick="openModal(); return false;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Download Sample Report (PDF)
+            </a>
           </div>
         </div>
       </div>
