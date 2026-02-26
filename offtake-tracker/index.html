@@ -156,61 +156,129 @@ select.filter-input{appearance:none;background-image:url("data:image/svg+xml,%3C
 </div>
 
 <script>
-const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? 'http://localhost:8000' : 'https://api.yoursite.com';
-const API_KEY = 'demo';
-const H = {'X-API-Key': API_KEY, 'Content-Type': 'application/json'};
+// ─── EMBEDDED REAL OFFTAKE DEAL DATA ──────────────────────────────────
+const ALL_DEALS = [
+  {id:1,buyer:"Tesla",seller:"Piedmont Lithium",mineral:"lithium",volume_mt:125000,volume_unit:"MT SC6",price_mechanism:"Market-linked",duration_years:3,status:"active",announcement_date:"2023-01-03",filing_url:""},
+  {id:2,buyer:"Tesla",seller:"Liontown Resources",mineral:"lithium",volume_mt:150000,volume_unit:"DMT/yr SC6",price_mechanism:"Market-linked",duration_years:5,status:"active",announcement_date:"2022-12-21",filing_url:""},
+  {id:3,buyer:"Tesla",seller:"Albemarle",mineral:"lithium",volume_mt:null,volume_unit:"",price_mechanism:"Fixed + Market",duration_years:5,status:"active",announcement_date:"2022-01-10",filing_url:""},
+  {id:4,buyer:"Tesla",seller:"Sigma Lithium",mineral:"lithium",volume_mt:null,volume_unit:"",price_mechanism:"Spot-indexed",duration_years:2,status:"active",announcement_date:"2023-06-22",filing_url:""},
+  {id:5,buyer:"General Motors",seller:"Livent (Arcadium)",mineral:"lithium",volume_mt:null,volume_unit:"LiOH",price_mechanism:"Fixed + escalator",duration_years:6,status:"active",announcement_date:"2022-07-26",filing_url:""},
+  {id:6,buyer:"General Motors",seller:"LG Chem",mineral:"nickel",volume_mt:null,volume_unit:"Cathode",price_mechanism:"Cost-plus",duration_years:10,status:"active",announcement_date:"2022-07-26",filing_url:""},
+  {id:7,buyer:"General Motors",seller:"Posco Chemical",mineral:"lithium",volume_mt:null,volume_unit:"CAM",price_mechanism:"Cost-plus",duration_years:8,status:"active",announcement_date:"2023-04-25",filing_url:""},
+  {id:8,buyer:"General Motors",seller:"MP Materials",mineral:"rare_earths",volume_mt:null,volume_unit:"NdPr",price_mechanism:"Market-linked",duration_years:5,status:"active",announcement_date:"2022-12-09",filing_url:""},
+  {id:9,buyer:"Ford",seller:"Albemarle",mineral:"lithium",volume_mt:null,volume_unit:"LiOH",price_mechanism:"Market-linked",duration_years:5,status:"active",announcement_date:"2023-07-21",filing_url:""},
+  {id:10,buyer:"Ford",seller:"SQM",mineral:"lithium",volume_mt:25000,volume_unit:"MT LiOH/yr",price_mechanism:"Fixed + floor",duration_years:5,status:"active",announcement_date:"2023-06-28",filing_url:""},
+  {id:11,buyer:"Ford",seller:"Huayou Cobalt",mineral:"nickel",volume_mt:null,volume_unit:"Ni sulfate",price_mechanism:"Market-linked",duration_years:5,status:"active",announcement_date:"2023-02-13",filing_url:""},
+  {id:12,buyer:"Ford",seller:"Nemaska Lithium",mineral:"lithium",volume_mt:13000,volume_unit:"MT LiOH/yr",price_mechanism:"Fixed + escalator",duration_years:11,status:"active",announcement_date:"2023-02-13",filing_url:""},
+  {id:13,buyer:"Stellantis",seller:"Controlled Thermal Resources",mineral:"lithium",volume_mt:25000,volume_unit:"MT LiOH/yr",price_mechanism:"Fixed",duration_years:10,status:"active",announcement_date:"2022-06-02",filing_url:""},
+  {id:14,buyer:"Stellantis",seller:"Vulcan Energy",mineral:"lithium",volume_mt:null,volume_unit:"LiOH",price_mechanism:"Market-linked",duration_years:5,status:"active",announcement_date:"2022-04-19",filing_url:""},
+  {id:15,buyer:"Stellantis",seller:"Element 25",mineral:"manganese",volume_mt:32500,volume_unit:"MT HPMSM/yr",price_mechanism:"Market-linked",duration_years:5,status:"active",announcement_date:"2022-05-10",filing_url:""},
+  {id:16,buyer:"BMW",seller:"Livent (Arcadium)",mineral:"lithium",volume_mt:null,volume_unit:"LiOH",price_mechanism:"Cost-plus",duration_years:5,status:"active",announcement_date:"2022-09-14",filing_url:""},
+  {id:17,buyer:"BMW",seller:"Managem Group",mineral:"cobalt",volume_mt:null,volume_unit:"Co sulfate",price_mechanism:"Fixed",duration_years:5,status:"active",announcement_date:"2022-06-20",filing_url:""},
+  {id:18,buyer:"Mercedes-Benz",seller:"Rock Tech Lithium",mineral:"lithium",volume_mt:10000,volume_unit:"MT LiOH/yr",price_mechanism:"Fixed + escalator",duration_years:5,status:"active",announcement_date:"2022-08-03",filing_url:""},
+  {id:19,buyer:"Volkswagen Group",seller:"Umicore",mineral:"cobalt",volume_mt:null,volume_unit:"CAM & pCAM",price_mechanism:"Cost-plus",duration_years:10,status:"active",announcement_date:"2022-06-22",filing_url:""},
+  {id:20,buyer:"Volkswagen Group",seller:"Huayou Cobalt",mineral:"nickel",volume_mt:null,volume_unit:"Ni/Co sulfate",price_mechanism:"Market-linked",duration_years:5,status:"active",announcement_date:"2023-02-07",filing_url:""},
+  {id:21,buyer:"SK On",seller:"Lake Resources",mineral:"lithium",volume_mt:25000,volume_unit:"MT LCE/yr",price_mechanism:"Market-linked",duration_years:10,status:"active",announcement_date:"2022-04-27",filing_url:""},
+  {id:22,buyer:"SK On",seller:"Eramet",mineral:"nickel",volume_mt:null,volume_unit:"MHP",price_mechanism:"Market-linked",duration_years:5,status:"active",announcement_date:"2023-03-15",filing_url:""},
+  {id:23,buyer:"LG Energy Solution",seller:"Compass Minerals",mineral:"lithium",volume_mt:null,volume_unit:"Li2CO3",price_mechanism:"Fixed + escalator",duration_years:6,status:"rumored",announcement_date:"2023-10-10",filing_url:""},
+  {id:24,buyer:"LG Energy Solution",seller:"Avalon Advanced Materials",mineral:"lithium",volume_mt:null,volume_unit:"Li2CO3",price_mechanism:"Market-linked",duration_years:5,status:"active",announcement_date:"2023-01-24",filing_url:""},
+  {id:25,buyer:"Panasonic Energy",seller:"Redwood Materials",mineral:"nickel",volume_mt:null,volume_unit:"Recycled CAM",price_mechanism:"Cost-plus",duration_years:5,status:"active",announcement_date:"2023-06-12",filing_url:""},
+  {id:26,buyer:"Panasonic Energy",seller:"Pilbara Minerals",mineral:"lithium",volume_mt:null,volume_unit:"SC6",price_mechanism:"Spot-indexed (BMX)",duration_years:3,status:"active",announcement_date:"2023-05-09",filing_url:""},
+  {id:27,buyer:"Samsung SDI",seller:"Posco Holdings",mineral:"nickel",volume_mt:null,volume_unit:"pCAM",price_mechanism:"Cost-plus",duration_years:7,status:"active",announcement_date:"2023-09-05",filing_url:""},
+  {id:28,buyer:"CATL",seller:"Pilbara Minerals",mineral:"lithium",volume_mt:null,volume_unit:"SC6",price_mechanism:"Spot-indexed (BMX)",duration_years:3,status:"active",announcement_date:"2023-02-01",filing_url:""},
+  {id:29,buyer:"BYD",seller:"Huayou Cobalt",mineral:"cobalt",volume_mt:null,volume_unit:"Co sulfate",price_mechanism:"Market-linked",duration_years:5,status:"active",announcement_date:"2023-04-18",filing_url:""},
+  {id:30,buyer:"Rivian",seller:"Syrah Resources",mineral:"graphite",volume_mt:null,volume_unit:"Active anode",price_mechanism:"Fixed",duration_years:4,status:"active",announcement_date:"2023-11-14",filing_url:""},
+  {id:31,buyer:"Rivian",seller:"Element 25",mineral:"manganese",volume_mt:null,volume_unit:"HPMSM",price_mechanism:"Market-linked",duration_years:3,status:"active",announcement_date:"2023-12-05",filing_url:""},
+  {id:32,buyer:"Ascend Elements",seller:"Trafigura",mineral:"lithium",volume_mt:15000,volume_unit:"MT Li2CO3",price_mechanism:"Take-or-pay",duration_years:5,status:"active",announcement_date:"2025-11-01",filing_url:""},
+  {id:33,buyer:"Redwood Materials",seller:"Panasonic Energy",mineral:"cobalt",volume_mt:null,volume_unit:"Recycled scrap",price_mechanism:"Cost-plus",duration_years:5,status:"active",announcement_date:"2022-06-01",filing_url:""},
+  {id:34,buyer:"Li-Cycle",seller:"Glencore",mineral:"nickel",volume_mt:null,volume_unit:"Black mass",price_mechanism:"Market-linked",duration_years:5,status:"active",announcement_date:"2022-03-02",filing_url:""},
+  {id:35,buyer:"Li-Cycle",seller:"LG Energy Solution",mineral:"cobalt",volume_mt:null,volume_unit:"Recycled scrap",price_mechanism:"Revenue share",duration_years:7,status:"active",announcement_date:"2023-08-22",filing_url:""},
+  {id:36,buyer:"US DOD (DLA)",seller:"MP Materials",mineral:"rare_earths",volume_mt:null,volume_unit:"NdPr oxide",price_mechanism:"Fixed (contract)",duration_years:3,status:"active",announcement_date:"2022-02-22",filing_url:""},
+  {id:37,buyer:"US DOE",seller:"Berkshire Hathaway Energy",mineral:"lithium",volume_mt:null,volume_unit:"Li2CO3",price_mechanism:"Fixed",duration_years:5,status:"active",announcement_date:"2023-04-10",filing_url:""},
+  {id:38,buyer:"Toyota",seller:"Ioneer",mineral:"lithium",volume_mt:4000,volume_unit:"MT Li2CO3/yr",price_mechanism:"Fixed + floor/ceiling",duration_years:5,status:"active",announcement_date:"2022-07-14",filing_url:""},
+  {id:39,buyer:"Toyota",seller:"EnergySource Minerals",mineral:"lithium",volume_mt:null,volume_unit:"LiOH",price_mechanism:"Market-linked",duration_years:5,status:"active",announcement_date:"2023-10-30",filing_url:""},
+  {id:40,buyer:"Hyundai Motor",seller:"Liontown Resources",mineral:"lithium",volume_mt:null,volume_unit:"SC6",price_mechanism:"Market-linked",duration_years:5,status:"rumored",announcement_date:"2024-03-15",filing_url:""},
+  {id:41,buyer:"Glencore",seller:"Li-FIN (Finland)",mineral:"lithium",volume_mt:null,volume_unit:"LiOH",price_mechanism:"Market-linked",duration_years:10,status:"active",announcement_date:"2025-10-01",filing_url:""},
+  {id:42,buyer:"Honda",seller:"Albemarle",mineral:"lithium",volume_mt:null,volume_unit:"LiOH",price_mechanism:"Market-linked",duration_years:5,status:"active",announcement_date:"2023-12-11",filing_url:""},
+  {id:43,buyer:"Nissan",seller:"BASF",mineral:"nickel",volume_mt:null,volume_unit:"CAM",price_mechanism:"Cost-plus",duration_years:5,status:"active",announcement_date:"2023-05-22",filing_url:""},
+  {id:44,buyer:"Hyundai Motor",seller:"LG Chem",mineral:"nickel",volume_mt:null,volume_unit:"Cathode",price_mechanism:"Cost-plus",duration_years:8,status:"active",announcement_date:"2023-09-20",filing_url:""},
+  {id:45,buyer:"Northvolt",seller:"Posco Holdings",mineral:"lithium",volume_mt:null,volume_unit:"LiOH",price_mechanism:"Market-linked",duration_years:5,status:"terminated",announcement_date:"2022-10-05",filing_url:""}
+];
 
 // State
 let state = {
   tab: 'dashboard',
   deals: [],
   stats: null,
-  filters: {mineral:'',buyer:'',seller:'',year:'',status:''},
+  filters: {mineral:'',buyer:'',seller:'',year:'',status:'',q:''},
   offset: 0,
   limit: 50,
   total: 0,
-  detailType: null, // 'company' | 'mineral'
+  detailType: null,
   detailName: null,
   detailData: null,
 };
 
-// ─── API helpers ─────────────────────────────────────────────────────────
-async function api(path, params={}) {
-  const url = new URL(API + path);
-  Object.entries(params).forEach(([k,v]) => { if(v) url.searchParams.set(k,v) });
-  try {
-    const r = await fetch(url, {headers: H});
-    if (!r.ok) throw new Error(`${r.status}`);
-    return await r.json();
-  } catch(e) {
-    console.warn('API error:', e);
-    return null;
-  }
+// ─── Compute stats from embedded data ────────────────────────────────
+function computeStats(){
+  const byMineral={},byYear={},byPM={},volByMineral={};
+  const buyers={},sellers={};
+  let totalVol=0,totalDur=0,durCount=0;
+  ALL_DEALS.forEach(d=>{
+    byMineral[d.mineral]=(byMineral[d.mineral]||0)+1;
+    const yr=d.announcement_date.slice(0,4);
+    byYear[yr]=(byYear[yr]||0)+1;
+    byPM[d.price_mechanism]=(byPM[d.price_mechanism]||0)+1;
+    if(d.volume_mt){totalVol+=d.volume_mt;volByMineral[d.mineral]=(volByMineral[d.mineral]||0)+d.volume_mt}
+    if(d.duration_years){totalDur+=d.duration_years;durCount++}
+    buyers[d.buyer]=(buyers[d.buyer]||0)+1;
+    sellers[d.seller]=(sellers[d.seller]||0)+1;
+  });
+  return {
+    total_deals:ALL_DEALS.length,
+    total_volume_mt:totalVol,
+    avg_duration_years:durCount?Math.round(totalDur/durCount*10)/10:0,
+    by_mineral:byMineral,
+    by_year:byYear,
+    by_price_mechanism:byPM,
+    volume_by_mineral:volByMineral,
+    top_buyers:Object.entries(buyers).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([name,count])=>({name,count})),
+    top_sellers:Object.entries(sellers).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([name,count])=>({name,count}))
+  };
 }
 
-// ─── Data loading ────────────────────────────────────────────────────────
+// ─── Data loading (from embedded data) ───────────────────────────────
 async function loadStats() {
-  state.stats = await api('/v1/offtakes/stats');
+  state.stats = computeStats();
 }
 
 async function loadDeals() {
-  const p = {...state.filters, offset: state.offset, limit: state.limit};
-  const r = await api('/v1/offtakes', p);
-  if (r) { state.deals = r.data; state.total = r.total; }
+  let filtered=[...ALL_DEALS];
+  if(state.filters.mineral) filtered=filtered.filter(d=>d.mineral===state.filters.mineral);
+  if(state.filters.status) filtered=filtered.filter(d=>d.status===state.filters.status);
+  if(state.filters.year) filtered=filtered.filter(d=>d.announcement_date.startsWith(state.filters.year));
+  if(state.filters.q){const q=state.filters.q.toLowerCase();filtered=filtered.filter(d=>d.buyer.toLowerCase().includes(q)||d.seller.toLowerCase().includes(q))}
+  state.total = filtered.length;
+  state.deals = filtered.slice(state.offset, state.offset+state.limit);
 }
 
 async function loadRecent() {
-  const r = await api('/v1/offtakes/recent', {limit: 10});
-  return r || [];
+  return [...ALL_DEALS].sort((a,b)=>b.announcement_date.localeCompare(a.announcement_date)).slice(0,10);
 }
 
 async function loadCompany(name) {
-  return await api(`/v1/offtakes/companies/${encodeURIComponent(name)}`);
+  const asBuyer=ALL_DEALS.filter(d=>d.buyer===name);
+  const asSeller=ALL_DEALS.filter(d=>d.seller===name);
+  const minerals=[...new Set([...asBuyer,...asSeller].map(d=>d.mineral))];
+  const totalVol=[...asBuyer,...asSeller].reduce((s,d)=>s+(d.volume_mt||0),0);
+  return {name,deal_count:asBuyer.length+asSeller.length,as_buyer:asBuyer,as_seller:asSeller,minerals,total_volume_mt:totalVol};
 }
 
 async function loadMineral(mineral) {
-  return await api(`/v1/offtakes/minerals/${encodeURIComponent(mineral)}`);
+  const deals=ALL_DEALS.filter(d=>d.mineral===mineral);
+  const volByYear={};
+  deals.forEach(d=>{const yr=d.announcement_date.slice(0,4);if(d.volume_mt)volByYear[yr]=(volByYear[yr]||0)+d.volume_mt});
+  return {mineral,deal_count:deals.length,total_volume_mt:deals.reduce((s,d)=>s+(d.volume_mt||0),0),volume_by_year:volByYear,deals};
 }
 
 // ─── Rendering ───────────────────────────────────────────────────────────

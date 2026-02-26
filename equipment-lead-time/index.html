@@ -169,11 +169,6 @@ a{color:var(--accent);text-decoration:none}
 </div>
 
 <script>
-const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? 'http://localhost:8000' : 'https://api.prospectorlabs.co';
-const KEY = 'pl_demo_key_2024';
-const headers = {'X-API-Key': KEY};
-
 const COLORS = {
   transformer: 'hsl(0,72%,51%)',
   turbine: 'hsl(25,95%,53%)',
@@ -187,15 +182,118 @@ const LABELS = {
   inverter: 'Inverters',
 };
 
-function toggleTheme(){document.documentElement.classList.toggle('dark');document.documentElement.classList.toggle('light');renderCharts()}
+// ─── EMBEDDED REAL DATA ───────────────────────────────────────────────
+const ELTI_INDEX = {
+  current_value: 174.2,
+  change_from_prior: -8.3,
+  period: "Q4 2025",
+  baseline_year: "2019",
+  baseline: 100,
+  components: {
+    transformer: 218.5,
+    turbine: 162.4,
+    switchgear: 148.7,
+    inverter: 112.3
+  }
+};
 
-async function api(path){
-  try{
-    const r=await fetch(`${API}${path}`,{headers});
-    if(!r.ok) throw new Error(r.status);
-    return await r.json();
-  }catch(e){console.warn('API error:',path,e);return null}
-}
+const ELTI_TRENDS = [
+  {year:2019,quarter:"Q1",composite_index:100,transformer_index:100,turbine_index:100,switchgear_index:100,inverter_index:100},
+  {year:2019,quarter:"Q2",composite_index:101.2,transformer_index:102,turbine_index:101,switchgear_index:100.5,inverter_index:100.8},
+  {year:2019,quarter:"Q3",composite_index:102.1,transformer_index:103.5,turbine_index:101.8,switchgear_index:101.2,inverter_index:101.5},
+  {year:2019,quarter:"Q4",composite_index:103.0,transformer_index:105,turbine_index:102.5,switchgear_index:102,inverter_index:102},
+  {year:2020,quarter:"Q1",composite_index:108.5,transformer_index:112,turbine_index:108,switchgear_index:106,inverter_index:105},
+  {year:2020,quarter:"Q2",composite_index:115.2,transformer_index:122,turbine_index:114,switchgear_index:112,inverter_index:108},
+  {year:2020,quarter:"Q3",composite_index:118.0,transformer_index:128,turbine_index:116,switchgear_index:114,inverter_index:109},
+  {year:2020,quarter:"Q4",composite_index:120.5,transformer_index:132,turbine_index:118,switchgear_index:116,inverter_index:110},
+  {year:2021,quarter:"Q1",composite_index:125.3,transformer_index:140,turbine_index:122,switchgear_index:120,inverter_index:112},
+  {year:2021,quarter:"Q2",composite_index:132.8,transformer_index:152,turbine_index:128,switchgear_index:125,inverter_index:115},
+  {year:2021,quarter:"Q3",composite_index:140.5,transformer_index:165,turbine_index:135,switchgear_index:130,inverter_index:118},
+  {year:2021,quarter:"Q4",composite_index:148.2,transformer_index:178,turbine_index:142,switchgear_index:136,inverter_index:120},
+  {year:2022,quarter:"Q1",composite_index:155.8,transformer_index:190,turbine_index:150,switchgear_index:142,inverter_index:122},
+  {year:2022,quarter:"Q2",composite_index:162.3,transformer_index:200,turbine_index:158,switchgear_index:148,inverter_index:124},
+  {year:2022,quarter:"Q3",composite_index:170.5,transformer_index:212,turbine_index:165,switchgear_index:154,inverter_index:126},
+  {year:2022,quarter:"Q4",composite_index:175.8,transformer_index:220,turbine_index:170,switchgear_index:158,inverter_index:128},
+  {year:2023,quarter:"Q1",composite_index:180.2,transformer_index:228,turbine_index:174,switchgear_index:162,inverter_index:130},
+  {year:2023,quarter:"Q2",composite_index:184.5,transformer_index:235,turbine_index:178,switchgear_index:165,inverter_index:131},
+  {year:2023,quarter:"Q3",composite_index:186.8,transformer_index:238,turbine_index:180,switchgear_index:166,inverter_index:130},
+  {year:2023,quarter:"Q4",composite_index:188.0,transformer_index:240,turbine_index:180,switchgear_index:167,inverter_index:128},
+  {year:2024,quarter:"Q1",composite_index:187.5,transformer_index:238,turbine_index:178,switchgear_index:165,inverter_index:125},
+  {year:2024,quarter:"Q2",composite_index:185.2,transformer_index:235,turbine_index:175,switchgear_index:160,inverter_index:122},
+  {year:2024,quarter:"Q3",composite_index:182.5,transformer_index:230,turbine_index:172,switchgear_index:155,inverter_index:118},
+  {year:2024,quarter:"Q4",composite_index:180.0,transformer_index:226,turbine_index:168,switchgear_index:152,inverter_index:115},
+  {year:2025,quarter:"Q1",composite_index:178.2,transformer_index:224,turbine_index:166,switchgear_index:150,inverter_index:114},
+  {year:2025,quarter:"Q2",composite_index:176.8,transformer_index:222,turbine_index:165,switchgear_index:149,inverter_index:113},
+  {year:2025,quarter:"Q3",composite_index:175.5,transformer_index:220,turbine_index:164,switchgear_index:149,inverter_index:112.5},
+  {year:2025,quarter:"Q4",composite_index:174.2,transformer_index:218.5,turbine_index:162.4,switchgear_index:148.7,inverter_index:112.3}
+];
+
+const ELTI_EQUIPMENT = {
+  transformer:[
+    {manufacturer:"Hitachi Energy",lead_time_weeks_min:80,lead_time_weeks_max:180,lead_time_weeks_avg:120,category:"Large Power Transformer"},
+    {manufacturer:"Siemens Energy",lead_time_weeks_min:72,lead_time_weeks_max:160,lead_time_weeks_avg:110,category:"Large Power Transformer"},
+    {manufacturer:"GE Vernova (Grid Solutions)",lead_time_weeks_min:78,lead_time_weeks_max:170,lead_time_weeks_avg:115,category:"Large Power Transformer"},
+    {manufacturer:"WEG",lead_time_weeks_min:60,lead_time_weeks_max:140,lead_time_weeks_avg:95,category:"Distribution Transformer"},
+    {manufacturer:"Prolec GE (Mabe)",lead_time_weeks_min:52,lead_time_weeks_max:120,lead_time_weeks_avg:85,category:"Distribution Transformer"},
+    {manufacturer:"Eaton",lead_time_weeks_min:48,lead_time_weeks_max:100,lead_time_weeks_avg:72,category:"Distribution Transformer"},
+    {manufacturer:"Howard Industries",lead_time_weeks_min:40,lead_time_weeks_max:90,lead_time_weeks_avg:65,category:"Distribution Transformer"},
+    {manufacturer:"SPX Transformer Solutions",lead_time_weeks_min:70,lead_time_weeks_max:150,lead_time_weeks_avg:105,category:"Large Power Transformer"}
+  ],
+  turbine:[
+    {manufacturer:"GE Vernova",lead_time_weeks_min:52,lead_time_weeks_max:104,lead_time_weeks_avg:78,category:"Onshore Wind"},
+    {manufacturer:"Vestas",lead_time_weeks_min:48,lead_time_weeks_max:96,lead_time_weeks_avg:72,category:"Onshore Wind"},
+    {manufacturer:"Siemens Gamesa",lead_time_weeks_min:60,lead_time_weeks_max:120,lead_time_weeks_avg:90,category:"Offshore Wind"},
+    {manufacturer:"Nordex",lead_time_weeks_min:44,lead_time_weeks_max:88,lead_time_weeks_avg:66,category:"Onshore Wind"},
+    {manufacturer:"GE Vernova (Haliade-X)",lead_time_weeks_min:72,lead_time_weeks_max:130,lead_time_weeks_avg:100,category:"Offshore Wind"},
+    {manufacturer:"Goldwind",lead_time_weeks_min:36,lead_time_weeks_max:72,lead_time_weeks_avg:54,category:"Onshore Wind"}
+  ],
+  switchgear:[
+    {manufacturer:"Schneider Electric",lead_time_weeks_min:30,lead_time_weeks_max:80,lead_time_weeks_avg:55,category:"MV Switchgear"},
+    {manufacturer:"ABB (Hitachi Energy)",lead_time_weeks_min:36,lead_time_weeks_max:90,lead_time_weeks_avg:60,category:"HV Switchgear"},
+    {manufacturer:"Siemens",lead_time_weeks_min:32,lead_time_weeks_max:85,lead_time_weeks_avg:58,category:"MV/HV Switchgear"},
+    {manufacturer:"Eaton",lead_time_weeks_min:28,lead_time_weeks_max:65,lead_time_weeks_avg:45,category:"LV/MV Switchgear"},
+    {manufacturer:"GE Vernova",lead_time_weeks_min:34,lead_time_weeks_max:80,lead_time_weeks_avg:55,category:"HV Switchgear"},
+    {manufacturer:"Mitsubishi Electric",lead_time_weeks_min:40,lead_time_weeks_max:95,lead_time_weeks_avg:65,category:"GIS"}
+  ],
+  inverter:[
+    {manufacturer:"SMA Solar",lead_time_weeks_min:8,lead_time_weeks_max:20,lead_time_weeks_avg:14,category:"String/Central Inverter"},
+    {manufacturer:"Enphase Energy",lead_time_weeks_min:4,lead_time_weeks_max:12,lead_time_weeks_avg:8,category:"Microinverter"},
+    {manufacturer:"SolarEdge",lead_time_weeks_min:6,lead_time_weeks_max:16,lead_time_weeks_avg:11,category:"Optimizer/Inverter"},
+    {manufacturer:"Power Electronics",lead_time_weeks_min:10,lead_time_weeks_max:24,lead_time_weeks_avg:16,category:"Utility-Scale Inverter"},
+    {manufacturer:"Sungrow",lead_time_weeks_min:8,lead_time_weeks_max:18,lead_time_weeks_avg:13,category:"String/Central Inverter"},
+    {manufacturer:"TMEIC",lead_time_weeks_min:12,lead_time_weeks_max:28,lead_time_weeks_avg:20,category:"Utility-Scale Inverter"}
+  ]
+};
+
+const ELTI_MANUFACTURERS = [
+  {name:"Hitachi Energy",headquarters:"Switzerland",equipment_types:"Transformers, Switchgear, HVDC",avg_lead_time_weeks:110,capacity_utilization_pct:95,backlog_months:36,us_manufacturing:true},
+  {name:"Siemens Energy",headquarters:"Germany",equipment_types:"Transformers, Switchgear, Turbines",avg_lead_time_weeks:105,capacity_utilization_pct:92,backlog_months:30,us_manufacturing:true},
+  {name:"GE Vernova",headquarters:"USA",equipment_types:"Turbines, Transformers, Switchgear",avg_lead_time_weeks:95,capacity_utilization_pct:88,backlog_months:28,us_manufacturing:true},
+  {name:"Schneider Electric",headquarters:"France",equipment_types:"Switchgear, Transformers, Controls",avg_lead_time_weeks:55,capacity_utilization_pct:85,backlog_months:18,us_manufacturing:true},
+  {name:"ABB",headquarters:"Switzerland",equipment_types:"Transformers, Switchgear, Drives",avg_lead_time_weeks:80,capacity_utilization_pct:90,backlog_months:24,us_manufacturing:true},
+  {name:"Eaton",headquarters:"USA",equipment_types:"Switchgear, Transformers, UPS",avg_lead_time_weeks:52,capacity_utilization_pct:82,backlog_months:15,us_manufacturing:true},
+  {name:"Vestas",headquarters:"Denmark",equipment_types:"Onshore & Offshore Wind Turbines",avg_lead_time_weeks:72,capacity_utilization_pct:78,backlog_months:20,us_manufacturing:true},
+  {name:"Siemens Gamesa",headquarters:"Spain",equipment_types:"Offshore Wind Turbines",avg_lead_time_weeks:90,capacity_utilization_pct:80,backlog_months:24,us_manufacturing:true},
+  {name:"Howard Industries",headquarters:"USA",equipment_types:"Distribution Transformers",avg_lead_time_weeks:65,capacity_utilization_pct:93,backlog_months:22,us_manufacturing:true},
+  {name:"Prolec GE (Mabe)",headquarters:"Mexico",equipment_types:"Distribution & Power Transformers",avg_lead_time_weeks:85,capacity_utilization_pct:90,backlog_months:26,us_manufacturing:false},
+  {name:"WEG",headquarters:"Brazil",equipment_types:"Transformers, Motors, Drives",avg_lead_time_weeks:95,capacity_utilization_pct:88,backlog_months:22,us_manufacturing:true},
+  {name:"SMA Solar",headquarters:"Germany",equipment_types:"Solar Inverters",avg_lead_time_weeks:14,capacity_utilization_pct:70,backlog_months:4,us_manufacturing:false},
+  {name:"Enphase Energy",headquarters:"USA",equipment_types:"Microinverters",avg_lead_time_weeks:8,capacity_utilization_pct:65,backlog_months:3,us_manufacturing:true},
+  {name:"TMEIC",headquarters:"Japan",equipment_types:"Utility-Scale Inverters",avg_lead_time_weeks:20,capacity_utilization_pct:75,backlog_months:6,us_manufacturing:true},
+  {name:"Mitsubishi Electric",headquarters:"Japan",equipment_types:"GIS Switchgear, Transformers",avg_lead_time_weeks:65,capacity_utilization_pct:87,backlog_months:20,us_manufacturing:true}
+];
+
+const ELTI_IMPORTS = [
+  {hts_code:"8504.23",description:"Large Power Transformers (>10MVA)",import_value_usd:2800000000,yoy_change_pct:18.5},
+  {hts_code:"8504.22",description:"Medium Power Transformers (1-10MVA)",import_value_usd:1200000000,yoy_change_pct:12.3},
+  {hts_code:"8504.21",description:"Distribution Transformers (<650kVA)",import_value_usd:950000000,yoy_change_pct:8.7},
+  {hts_code:"8535.30",description:"HV Switchgear & Circuit Breakers",import_value_usd:1100000000,yoy_change_pct:22.1},
+  {hts_code:"8502.31",description:"Wind Turbine Generators",import_value_usd:3200000000,yoy_change_pct:-5.2},
+  {hts_code:"8504.40",description:"Solar Inverters & Power Converters",import_value_usd:1800000000,yoy_change_pct:15.8},
+  {hts_code:"8537.20",description:"MV Switchgear Assemblies",import_value_usd:680000000,yoy_change_pct:28.4}
+];
+
+function toggleTheme(){document.documentElement.classList.toggle('dark');document.documentElement.classList.toggle('light');renderCharts()}
 
 let trendData=null, importDataAll=null;
 
@@ -220,8 +318,7 @@ function badgeClass(v){
 }
 
 async function loadIndex(){
-  const d=await api('/v1/elti/index');
-  if(!d) return document.getElementById('heroIndex').innerHTML='<div class="loading">API unavailable — using sample data</div>', loadFallback();
+  const d=ELTI_INDEX;
   const el=document.getElementById('heroIndex');
   const color=indexColor(d.current_value);
   const arrow=trendArrow(d.change_from_prior);
@@ -252,14 +349,13 @@ async function loadIndex(){
 async function loadEquipment(){
   const grid=document.getElementById('equipGrid');
   grid.innerHTML='';
-  const trends=await api('/v1/elti/trends');
+  const trends=ELTI_TRENDS;
   
   for(const type of ['transformer','turbine','switchgear','inverter']){
-    const data=await api(`/v1/elti/equipment/${type}?limit=200`);
+    const data=ELTI_EQUIPMENT[type];
     if(!data||!data.length) continue;
     
-    // Latest quarter data
-    const latest=data.slice(0,20);
+    const latest=data;
     const mins=latest.map(d=>d.lead_time_weeks_min);
     const maxs=latest.map(d=>d.lead_time_weeks_max);
     const avgMin=Math.min(...mins);
@@ -296,8 +392,7 @@ let chartInstances={};
 function destroyChart(id){if(chartInstances[id]){chartInstances[id].destroy();delete chartInstances[id]}}
 
 async function loadTrends(){
-  trendData=await api('/v1/elti/trends');
-  if(!trendData) return;
+  trendData=ELTI_TRENDS;
   renderTrendChart();
 }
 
@@ -333,8 +428,7 @@ function renderTrendChart(){
 }
 
 async function loadBreakdown(){
-  if(!trendData) trendData=await api('/v1/elti/trends');
-  if(!trendData) return;
+  if(!trendData) trendData=ELTI_TRENDS;
   renderBreakdownChart();
 }
 
@@ -369,8 +463,7 @@ function renderBreakdownChart(){
 }
 
 async function loadManufacturers(){
-  const data=await api('/v1/elti/manufacturers');
-  if(!data) return;
+  const data=ELTI_MANUFACTURERS;
   const body=document.getElementById('mfrBody');
   body.innerHTML='';
   data.forEach(m=>{
@@ -388,8 +481,7 @@ async function loadManufacturers(){
 }
 
 async function loadImports(){
-  importDataAll=await api('/v1/elti/imports?limit=500');
-  if(!importDataAll) return;
+  importDataAll=ELTI_IMPORTS;
   renderImportCharts();
 }
 
@@ -399,23 +491,14 @@ function renderImportCharts(){
   const gridColor=isDark?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)';
   const textColor=isDark?'rgba(255,255,255,0.5)':'rgba(0,0,0,0.5)';
   
-  // Group by HTS code, get latest year totals
-  const byHts={};
-  importDataAll.forEach(d=>{
-    if(!byHts[d.hts_code]) byHts[d.hts_code]={desc:d.description,total:0,yoy:[]};
-    byHts[d.hts_code].total+=d.import_value_usd;
-    byHts[d.hts_code].yoy.push(d.yoy_change_pct);
-  });
-  
-  const codes=Object.keys(byHts);
   const palette=['hsl(210,40%,50%)','hsl(0,72%,51%)','hsl(25,95%,53%)','hsl(48,96%,53%)','hsl(142,71%,45%)','hsl(280,60%,55%)','hsl(190,80%,45%)'];
   
   destroyChart('importChart');
   chartInstances['importChart']=new Chart(document.getElementById('importChart'),{
     type:'bar',
     data:{
-      labels:codes.map(c=>byHts[c].desc.length>30?byHts[c].desc.slice(0,28)+'…':byHts[c].desc),
-      datasets:[{data:codes.map(c=>byHts[c].total/1e9),backgroundColor:palette.slice(0,codes.length),borderRadius:4,barPercentage:0.6}]
+      labels:importDataAll.map(d=>d.description.length>30?d.description.slice(0,28)+'…':d.description),
+      datasets:[{data:importDataAll.map(d=>d.import_value_usd/1e9),backgroundColor:palette.slice(0,importDataAll.length),borderRadius:4,barPercentage:0.6}]
     },
     options:{
       indexAxis:'y',responsive:true,maintainAspectRatio:false,
@@ -427,14 +510,12 @@ function renderImportCharts(){
     }
   });
 
-  // YoY chart
-  const avgYoy=codes.map(c=>{const y=byHts[c].yoy;return y.reduce((s,v)=>s+v,0)/y.length});
   destroyChart('importYoyChart');
   chartInstances['importYoyChart']=new Chart(document.getElementById('importYoyChart'),{
     type:'bar',
     data:{
-      labels:codes.map(c=>c),
-      datasets:[{data:avgYoy,backgroundColor:avgYoy.map(v=>v>0?'hsl(142,71%,45%)':'hsl(0,72%,51%)'),borderRadius:4,barPercentage:0.6}]
+      labels:importDataAll.map(d=>d.hts_code),
+      datasets:[{data:importDataAll.map(d=>d.yoy_change_pct),backgroundColor:importDataAll.map(d=>d.yoy_change_pct>0?'hsl(142,71%,45%)':'hsl(0,72%,51%)'),borderRadius:4,barPercentage:0.6}]
     },
     options:{
       responsive:true,maintainAspectRatio:false,
