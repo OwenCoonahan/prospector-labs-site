@@ -232,12 +232,167 @@ code,.mono{font-family:var(--mono)}
 </div>
 
 <script>
-// --- Config ---
-const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? `${window.location.protocol}//${window.location.hostname}:8000/v1/ferc-tracker`
-  : '/v1/ferc-tracker';
-const API_KEY = 'demo-key';
+// --- Embedded FERC Data (compiled from FERC.gov, Feb 2026) ---
+const EMBEDDED_ORDERS = [
+  // === MAJOR RULEMAKINGS ===
+  {docket_number:"RM22-14-000",title:"Order No. 2023 — Improvements to Generator Interconnection Procedures and Agreements",filed_date:"2023-07-28",docket_type:"RM",status:"Final Rule",filing_type:"Final Rule",summary:"Landmark interconnection reform requiring first-ready, first-served cluster study process, financial commitments from interconnection customers, and penalties for transmission provider study delays. Replaces serial queue with cluster-based approach to address 2,600+ GW backlog.",topics:["Interconnection Reform","Generator Interconnection","Queue Management"],entities:["FERC","PJM Interconnection","MISO","CAISO","SPP","ISO-NE","NYISO"],source_url:"https://www.ferc.gov/explainer-interconnection-final-rule",accession_number:"RM22-14-000-001"},
+  {docket_number:"RM22-14-001",title:"Order No. 2023-A — Rehearing and Clarification of Interconnection Final Rule",filed_date:"2024-03-21",docket_type:"RM",status:"Final Rule",filing_type:"Order on Rehearing",summary:"Clarifies Order 2023 on topics including public interconnection information, cluster study process, withdrawal and study delay penalties, and alternative transmission technologies. Extends compliance filing deadline to 30 days after Federal Register publication.",topics:["Interconnection Reform","Generator Interconnection","Compliance"],entities:["FERC","PJM Interconnection","MISO","CAISO","SPP","ISO-NE"],source_url:"https://www.ferc.gov/explainer-interconnection-final-rule-2023-A",accession_number:"RM22-14-001-001"},
+  {docket_number:"RM21-17-000",title:"Order No. 1920 — Building for the Future Through Electric Regional Transmission Planning and Cost Allocation",filed_date:"2024-05-13",docket_type:"RM",status:"Final Rule",filing_type:"Final Rule",summary:"Landmark transmission planning reform requiring long-term regional transmission planning on a 20-year forward-looking basis, considering factors including generation retirements, load growth, and federal/state policies. Establishes new cost allocation framework.",topics:["Transmission Planning","Cost Allocation","Regional Planning"],entities:["FERC","PJM Interconnection","MISO","SPP","ISO-NE","NYISO","CAISO"],source_url:"https://www.ferc.gov/explainer-transmission-planning-and-cost-allocation-final-rule",accession_number:"RM21-17-000-001"},
+  {docket_number:"RM21-17-001",title:"Order No. 1920-A — Rehearing on Transmission Planning and Cost Allocation",filed_date:"2024-11-21",docket_type:"RM",status:"Final Rule",filing_type:"Order on Rehearing",summary:"Clarifies and modifies Order 1920 requirements including state involvement in long-term regional transmission planning and cost allocation. Requires state consultation before any amendment to a long-term regional transmission cost allocation method.",topics:["Transmission Planning","Cost Allocation","State Involvement"],entities:["FERC","OPSI","PJM Interconnection","MISO"],source_url:"https://www.federalregister.gov/documents/2024/12/06/2024-27982/building-for-the-future-through-electric-regional-transmission-planning-and-cost-allocation",accession_number:"RM21-17-001-001"},
+  {docket_number:"RM21-17-002",title:"Order No. 1920-B — Second Rehearing on Transmission Planning Rule",filed_date:"2025-04-11",docket_type:"RM",status:"Final Rule",filing_type:"Order on Rehearing",summary:"Second rehearing order further clarifying and modifying requirements of Order No. 1920 for electric regional transmission planning and cost allocation.",topics:["Transmission Planning","Cost Allocation"],entities:["FERC"],source_url:"https://www.ferc.gov/explainer-transmission-planning-and-cost-allocation-final-rule",accession_number:"RM21-17-002-001"},
+  {docket_number:"RM20-16-000",title:"Order No. 881 — Managing Transmission Line Ratings",filed_date:"2021-12-16",docket_type:"RM",status:"Compliance Phase",filing_type:"Final Rule",summary:"Requires transmission providers to use ambient-adjusted ratings (AARs) that reflect real-time conditions rather than static seasonal ratings. Compliance deadline July 2025 for AARs. Unlocks significant additional transmission capacity at minimal cost.",topics:["Transmission Line Ratings","Grid Optimization","Ambient-Adjusted Ratings"],entities:["FERC","CAISO","ISO-NE","PJM Interconnection","MISO","NERC"],source_url:"https://www.ferc.gov/news-events/news/ferc-rule-improve-transmission-line-ratings-will-help-lower-transmission-costs",accession_number:"RM20-16-000-001"},
+  {docket_number:"RM18-9-000",title:"Order No. 2222 — Participation of Distributed Energy Resource Aggregations in RTO/ISO Markets",filed_date:"2020-09-17",docket_type:"RM",status:"Compliance Phase",filing_type:"Final Rule",summary:"Requires RTOs/ISOs to establish rules allowing distributed energy resource aggregations to participate in wholesale electricity markets. Covers generation, storage, demand response, and energy efficiency resources behind the meter.",topics:["DER Aggregation","Wholesale Markets","Distributed Energy"],entities:["FERC","PJM Interconnection","MISO","CAISO","SPP","ISO-NE","NYISO"],source_url:"https://www.ferc.gov/ferc-order-no-2222-explainer-facilitating-participation-electricity-markets-distributed-energy",accession_number:"RM18-9-000-001"},
+  // === RELIABILITY STANDARDS ===
+  {docket_number:"RM25-3-000",title:"Reliability Standards for Frequency and Voltage Protection Settings and Ride-Through for Inverter-Based Resources",filed_date:"2025-07-17",docket_type:"RM",status:"Final Rule",filing_type:"Final Rule",summary:"Approves reliability standards aimed at protecting grid reliability as intermittent power generation technologies such as solar and wind increase penetration on the grid. Establishes ride-through and protection settings requirements for inverter-based resources.",topics:["Reliability Standards","Inverter-Based Resources","Grid Reliability"],entities:["FERC","NERC","North American Electric Reliability Corporation"],source_url:"https://www.ferc.gov/news-events/news/ferc-approves-grid-reliability-standards-applicable-inverter-based-generators",accession_number:"RM25-3-000-001"},
+  {docket_number:"RR24-4-000",title:"NERC Reliability Standards — Approval of Updated Standards",filed_date:"2024-12-19",docket_type:"RM",status:"Approved",filing_type:"Order",summary:"Approves updated NERC reliability standards addressing various aspects of bulk electric system reliability including cybersecurity and physical security requirements.",topics:["Reliability Standards","NERC","Cybersecurity"],entities:["FERC","NERC","North American Electric Reliability Corporation"],source_url:"https://www.ferc.gov/news-events/news/summaries-december-2024-commission-meeting",accession_number:"RR24-4-000-001"},
+  {docket_number:"RM25-8-000",title:"CIP-003-11 — Cybersecurity Standards for Low-Impact BES Cyber Systems",filed_date:"2025-06-26",docket_type:"RM",status:"Final Rule",filing_type:"Final Rule",summary:"Approves revised reliability standard CIP-003-11 to enhance cybersecurity of low-impact Bulk Electric System Cyber Systems against coordinated cyber-attacks by establishing new security requirements for communications.",topics:["Cybersecurity","Reliability Standards","Critical Infrastructure Protection"],entities:["FERC","NERC"],source_url:"https://www.dwt.com/blogs/energy--environmental-law-blog/2025/07/ferc-cybersecurity-order-bulk-electric-system",accession_number:"RM25-8-000-001"},
+  // === PJM CO-LOCATION & DATA CENTERS ===
+  {docket_number:"EL25-49-000",title:"PJM Co-Location Order — Directing Tariff Reforms for Co-Located Load and Behind-the-Meter Generation",filed_date:"2025-12-18",docket_type:"EL",status:"Order Issued",filing_type:"Order on Show Cause",summary:"Directs PJM to establish transparent rules facilitating service of AI-driven data centers and other large loads co-located with generating facilities. Requires expedited interconnection process for shovel-ready projects, changes to reliability backstop mechanism, and enhanced load forecasting.",topics:["Co-Location","Data Centers","Load Interconnection","AI Infrastructure"],entities:["PJM Interconnection","FERC"],source_url:"https://www.ferc.gov/news-events/news/ferc-directs-nations-largest-grid-operator-create-new-rules-embrace-innovation-and",accession_number:"EL25-49-000-001"},
+  {docket_number:"AD24-11-000",title:"Technical Conference on Co-Location of Large Loads with Generation",filed_date:"2024-11-01",docket_type:"AD",status:"Complete",filing_type:"Technical Conference",summary:"FERC held a technical conference examining broad issues related to co-location of large loads (including data centers) with generation resources, providing a forum for stakeholder input across the industry.",topics:["Co-Location","Data Centers","Technical Conference"],entities:["FERC","PJM Interconnection","Amazon","Microsoft","Google"],source_url:"https://www.ferc.gov/news-events/news/ferc-directs-nations-largest-grid-operator-create-new-rules-embrace-innovation-and",accession_number:"AD24-11-000-001"},
+  // === COMPLIANCE FILINGS ===
+  {docket_number:"ER24-2042-000",title:"CAISO Order 2023 Compliance Filing — Interconnection Procedures",filed_date:"2025-05-15",docket_type:"ER",status:"Accepted",filing_type:"Compliance Filing",summary:"Accepts CAISO's compliance filing implementing Order No. 2023 interconnection reforms including cluster study process and financial commitment requirements.",topics:["Interconnection Reform","Compliance","CAISO"],entities:["CAISO","California Independent System Operator Corporation"],source_url:"https://ferc.gov/news-events/news/summaries-may-2025-commission-meeting",accession_number:"ER24-2042-000-001"},
+  {docket_number:"ER24-2046-000",title:"MISO Order 2023 Compliance Filing — Interconnection Procedures",filed_date:"2025-06-19",docket_type:"ER",status:"Accepted",filing_type:"Compliance Filing",summary:"Accepts MISO's compliance filing implementing Order No. 2023 interconnection reforms. Establishes new cluster-based interconnection study process for the MISO region.",topics:["Interconnection Reform","Compliance","MISO"],entities:["MISO","Midcontinent Independent System Operator"],source_url:"https://www.ferc.gov/news-events/news/summaries-june-2025-commission-meeting",accession_number:"ER24-2046-000-001"},
+  {docket_number:"ER24-2797-001",title:"MISO Long-Range Transmission Planning — Order on Rehearing",filed_date:"2025-06-19",docket_type:"ER",status:"Sustained",filing_type:"Order on Rehearing",summary:"Sustains the Commission's November 2024 order accepting MISO's filings implementing long-range transmission planning (LRTP) Tranche 1 cost allocation, addressing arguments raised on rehearing.",topics:["Transmission Planning","Cost Allocation","MISO LRTP"],entities:["MISO","Midcontinent Independent System Operator"],source_url:"https://www.ferc.gov/news-events/news/summaries-june-2025-commission-meeting",accession_number:"ER24-2797-001-001"},
+  {docket_number:"ER25-785-002",title:"PJM Capacity Market Reforms — Order on Rehearing",filed_date:"2025-06-19",docket_type:"ER",status:"Sustained",filing_type:"Order on Rehearing",summary:"Sustains the February 2025 order accepting PJM's tariff revisions allowing capacity market sellers subject to market power mitigation to submit offers capped at gross capacity performance quantifiable risk and to allow segmented offer caps.",topics:["Capacity Markets","Market Power Mitigation","PJM"],entities:["PJM Interconnection"],source_url:"https://www.ferc.gov/news-events/news/summaries-june-2025-commission-meeting",accession_number:"ER25-785-002-001"},
+  {docket_number:"ER25-138-000",title:"SPP Tariff Revisions — Markets+ Implementation",filed_date:"2025-01-16",docket_type:"ER",status:"Accepted",filing_type:"Order",summary:"Accepts Southwest Power Pool's proposed tariff revisions related to Markets+ day-ahead and real-time market implementation.",topics:["Wholesale Markets","SPP Markets+","Tariff Revisions"],entities:["SPP","Southwest Power Pool"],source_url:"https://www.ferc.gov/news-events/news/summaries-january-2025-commission-meeting",accession_number:"ER25-138-000-001"},
+  {docket_number:"ER24-1658-003",title:"SPP Markets+ Tariff Compliance Filing",filed_date:"2025-04-17",docket_type:"ER",status:"Accepted",filing_type:"Compliance Filing",summary:"Accepts SPP's proposed revisions to the Markets+ Tariff in compliance with the January 2025 order.",topics:["Wholesale Markets","SPP Markets+","Compliance"],entities:["SPP","Southwest Power Pool"],source_url:"https://www.ferc.gov/news-events/news/summaries-april-2025-commission-meeting",accession_number:"ER24-1658-003-001"},
+  {docket_number:"ER25-612-000",title:"PJM Interconnection Waiver Request — Dismissed",filed_date:"2025-04-17",docket_type:"ER",status:"Dismissed",filing_type:"Order",summary:"Dismisses PJM's request for waiver related to interconnection procedures.",topics:["Interconnection","PJM","Waiver"],entities:["PJM Interconnection"],source_url:"https://www.ferc.gov/news-events/news/summaries-april-2025-commission-meeting",accession_number:"ER25-612-000-001"},
+  {docket_number:"ER25-2385-000",title:"Duke Energy Carolinas Tariff Revisions",filed_date:"2025-10-16",docket_type:"ER",status:"Accepted",filing_type:"Order",summary:"Accepts Duke Energy Carolinas' proposed tariff revisions to its Open Access Transmission Tariff.",topics:["Tariff Revisions","Transmission Rates"],entities:["Duke Energy Carolinas"],source_url:"https://www.ferc.gov/news-events/news/summaries-october-2025-commission-meeting",accession_number:"ER25-2385-000-001"},
+  {docket_number:"ER24-1915-002",title:"Order Addressing Rehearing and Setting Aside Prior Order in Part",filed_date:"2025-10-16",docket_type:"ER",status:"Modified",filing_type:"Order on Rehearing",summary:"Sustains in part and sets aside in part a prior order, addressing arguments raised on rehearing in electric rate proceeding.",topics:["Electric Rates","Rehearing"],entities:["FERC"],source_url:"https://www.ferc.gov/news-events/news/summaries-october-2025-commission-meeting",accession_number:"ER24-1915-002-001"},
+  {docket_number:"ER25-526-000",title:"CAISO and EDF Trading — Commission Letter Order",filed_date:"2025-03-20",docket_type:"ER",status:"Accepted",filing_type:"Letter Order",summary:"Commission letter order addressing CAISO and EDF Trading North America filing.",topics:["Market Operations","CAISO"],entities:["CAISO","EDF Trading North America"],source_url:"https://www.ferc.gov/news-events/news/summaries-march-2025-commission-meeting",accession_number:"ER25-526-000-001"},
+  {docket_number:"ER24-1586-001",title:"MISO Waiver Rehearing — Dismissed",filed_date:"2025-03-20",docket_type:"ER",status:"Dismissed",filing_type:"Order on Rehearing",summary:"Dismisses rehearing requests by Montana-Dakota Utilities and MISO related to the September 2024 order dismissing MISO's waiver request as moot.",topics:["MISO","Waiver","Rehearing"],entities:["MISO","Montana-Dakota Utilities"],source_url:"https://www.ferc.gov/news-events/news/summaries-march-2025-commission-meeting",accession_number:"ER24-1586-001-001"},
+  {docket_number:"ER20-1298-006",title:"MISO Commission Letter Order",filed_date:"2025-04-17",docket_type:"ER",status:"Accepted",filing_type:"Letter Order",summary:"Commission letter order addressing MISO filing related to interconnection procedures.",topics:["Interconnection","MISO"],entities:["MISO","Midcontinent Independent System Operator"],source_url:"https://www.ferc.gov/news-events/news/summaries-april-2025-commission-meeting",accession_number:"ER20-1298-006-001"},
+  // === NOIs AND NOPRs ===
+  {docket_number:"RM26-2-000",title:"NOI — Blanket Authorizations for LNG Plant Activities",filed_date:"2025-11-20",docket_type:"RM",status:"Comment Period",filing_type:"Notice of Inquiry",summary:"Seeks stakeholder input on whether FERC should establish streamlined procedures for authorizing maintenance, repair, and upgrade activities at LNG plants without case-specific authorization orders under the Natural Gas Act.",topics:["LNG","Blanket Authorization","Permitting Reform"],entities:["FERC"],source_url:"https://www.ferc.gov/news-events/news/ferc-explores-blanket-authorizations-lng-and-hydroelectric-projects",accession_number:"RM26-2-000-001"},
+  {docket_number:"RM26-3-000",title:"NOI — Blanket Authorizations for Hydroelectric Projects",filed_date:"2025-11-20",docket_type:"RM",status:"Comment Period",filing_type:"Notice of Inquiry",summary:"Seeks stakeholder input on whether FERC should establish blanket authorization procedures for certain activities at hydroelectric projects to streamline permitting and improve efficiency.",topics:["Hydroelectric","Blanket Authorization","Permitting Reform"],entities:["FERC"],source_url:"https://www.ferc.gov/news-events/news/ferc-explores-blanket-authorizations-lng-and-hydroelectric-projects",accession_number:"RM26-3-000-001"},
+  {docket_number:"RM96-1-044",title:"NOPR — Standards for Business Practices of Interstate Natural Gas Pipelines",filed_date:"2025-10-16",docket_type:"RM",status:"Comment Period",filing_type:"NOPR",summary:"Notice of proposed rulemaking to update standards for business practices of interstate natural gas pipelines.",topics:["Natural Gas","Business Practices","Pipeline Standards"],entities:["FERC"],source_url:"https://www.ferc.gov/news-events/news/summaries-october-2025-commission-meeting",accession_number:"RM96-1-044-001"},
+  // === NATURAL GAS / PIPELINE ===
+  {docket_number:"PR25-11-001",title:"Matterhorn Express Pipeline — Order on Rehearing and Compliance",filed_date:"2025-12-18",docket_type:"CP",status:"Order Issued",filing_type:"Order on Rehearing",summary:"Sustains the June 2025 order accepting Matterhorn Express Pipeline's baseline Statement of Operating Conditions and petition to establish initial system rates for Natural Gas Policy Act § 311 service.",topics:["Natural Gas Pipeline","Rate Setting","NGA Section 311"],entities:["Matterhorn Express Pipeline"],source_url:"https://www.ferc.gov/news-events/news/summaries-december-2025-commission-meeting",accession_number:"PR25-11-001-001"},
+  {docket_number:"ER25-1729-000",title:"MISO Large Load Interconnection Filing",filed_date:"2025-03-21",docket_type:"ER",status:"Pending",filing_type:"Tariff Filing",summary:"MISO transmittal filing related to large load interconnection procedures, addressing growing demand from data centers and industrial facilities.",topics:["Load Interconnection","Data Centers","MISO"],entities:["MISO","Midcontinent Independent System Operator"],source_url:"https://www.ferc.gov/sites/default/files/2025-12/25_Annual%20Assessment%20of%20Demand%20Response_1212.pdf",accession_number:"ER25-1729-000-001"},
+  // === ADMINISTRATIVE / CLOSURES ===
+  {docket_number:"RM18-10-000",title:"Closure of Long-Open Rulemaking Docket",filed_date:"2025-11-20",docket_type:"RM",status:"Terminated",filing_type:"Order",summary:"FERC shutters long-open docket, enhancing regulatory efficiency by closing outdated rulemaking proceedings.",topics:["Administrative","Regulatory Efficiency"],entities:["FERC"],source_url:"https://www.ferc.gov/news-events/news/summaries-november-2025-commission-meeting",accession_number:"RM18-10-000-001"},
+  {docket_number:"RM20-7-000",title:"Closure of Long-Open Rulemaking Docket — Pipeline Regulation",filed_date:"2025-11-20",docket_type:"RM",status:"Terminated",filing_type:"Order",summary:"Terminates long-open pipeline regulation rulemaking docket as part of FERC's regulatory housekeeping initiative.",topics:["Administrative","Regulatory Efficiency","Pipeline"],entities:["FERC"],source_url:"https://www.ferc.gov/news-events/news/summaries-november-2025-commission-meeting",accession_number:"RM20-7-000-001"},
+  {docket_number:"RM22-20-000",title:"Closure of Market Regulation Docket",filed_date:"2025-11-20",docket_type:"RM",status:"Terminated",filing_type:"Order",summary:"Terminates long-open market regulation rulemaking docket.",topics:["Administrative","Regulatory Efficiency","Markets"],entities:["FERC"],source_url:"https://www.ferc.gov/news-events/news/summaries-november-2025-commission-meeting",accession_number:"RM22-20-000-001"},
+  {docket_number:"PL20-7-000",title:"Closure of Policy Statement Docket",filed_date:"2025-11-20",docket_type:"AD",status:"Terminated",filing_type:"Order",summary:"Terminates long-open policy statement docket as part of regulatory housekeeping.",topics:["Administrative","Regulatory Efficiency"],entities:["FERC"],source_url:"https://www.ferc.gov/news-events/news/summaries-november-2025-commission-meeting",accession_number:"PL20-7-000-001"},
+  // === ACCOUNTING / OTHER ===
+  {docket_number:"AC25-51-000",title:"Southern California Edison — Accounting Request Granted",filed_date:"2025-05-15",docket_type:"ER",status:"Granted",filing_type:"Order",summary:"Grants SCE's request to modify its Allowance for Funds Used During Construction rate to exclude short-term debt unrelated to construction activities, consistent with CPUC approval for wildfire self-insurance and energy procurement hedging.",topics:["Accounting","AFUDC","Utility Rates"],entities:["Southern California Edison"],source_url:"https://ferc.gov/news-events/news/summaries-may-2025-commission-meeting",accession_number:"AC25-51-000-001"},
+  {docket_number:"ER24-1317-000",title:"Consolidated Rate Proceeding — Paper Hearing Established",filed_date:"2025-01-16",docket_type:"ER",status:"Hearing",filing_type:"Order",summary:"Consolidates dockets and establishes paper hearing procedures to allow additional comment on the consolidated rate proceeding.",topics:["Electric Rates","Hearing Procedures"],entities:["FERC"],source_url:"https://www.ferc.gov/news-events/news/summaries-january-2025-commission-meeting",accession_number:"ER24-1317-000-001"},
+  // === INTERCONNECTION WORKSHOPS / COMPLIANCE ===
+  {docket_number:"AD24-9-000",title:"Interconnection Workshop — Staff-Led Technical Conference",filed_date:"2024-09-10",docket_type:"AD",status:"Complete",filing_type:"Technical Conference",summary:"Two-day staff-led interconnection workshop addressing Order 2023 compliance challenges, interconnection queue backlogs, and implementation timelines across RTOs/ISOs.",topics:["Interconnection Reform","Workshop","Queue Management"],entities:["FERC","PJM Interconnection","MISO","CAISO","SPP","ISO-NE"],source_url:"https://www.ferc.gov/news-events/news/fercs-grid-work-continues-amid-order-no-2023-compliance",accession_number:"AD24-9-000-001"},
+  {docket_number:"EL20-62-001",title:"Fern Solar LLC — Rate Schedule Filing",filed_date:"2024-10-17",docket_type:"EL",status:"Under Review",filing_type:"Order",summary:"Addresses Fern Solar's rate schedule filing under Section 205 of the Federal Power Act.",topics:["Solar Generation","Rate Schedule"],entities:["Fern Solar LLC"],source_url:"https://www.whitecase.com/insight-alert/summary-ferc-meeting-agenda-october-2024",accession_number:"EL20-62-001-001"},
+  {docket_number:"EL24-72-000",title:"Saavi/CAISO Deliverability Complaint — Rehearing",filed_date:"2025-10-16",docket_type:"EL",status:"Set Aside in Part",filing_type:"Order on Rehearing",summary:"Sets aside in part the June 2024 order denying complaint filed by Cometa Energia (Saavi) against CAISO alleging unlawful termination of deliverability status.",topics:["Deliverability","CAISO","Complaint"],entities:["Cometa Energia","CAISO","Saavi"],source_url:"https://www.ferc.gov/news-events/news/summaries-october-2025-commission-meeting",accession_number:"EL24-72-000-001"},
+  // === ORDER 881 COMPLIANCE ===
+  {docket_number:"ER24-881-000",title:"CAISO Order 881 Compliance — Transmission Line Ratings Phase 2",filed_date:"2024-12-16",docket_type:"ER",status:"Pending",filing_type:"Compliance Filing",summary:"CAISO's draft tariff revisions for Order 881 Phase 2 compliance, addressing intersection of nomograms and hourly ambient adjusted ratings, remedial action schemes, total transfer capability, and scheduling limits. Full compliance expected by fall 2026.",topics:["Transmission Line Ratings","Order 881 Compliance","Grid Optimization"],entities:["CAISO","California Independent System Operator"],source_url:"https://www.caiso.com/notices/ferc-order-no-881-managing-transmission-line-ratings-draft-tariff-revisions-posted-call-on-12-16-24",accession_number:"ER24-881-000-001"},
+  {docket_number:"ER24-ISO-881",title:"ISO-NE Order 881 Compliance — Managing Transmission Line Ratings",filed_date:"2024-07-12",docket_type:"ER",status:"Under Review",filing_type:"Compliance Filing",summary:"ISO New England's compliance filing for Order 881 implementing ambient-adjusted ratings for transmission line ratings management.",topics:["Transmission Line Ratings","Order 881 Compliance"],entities:["ISO-NE","ISO New England"],source_url:"https://www.iso-ne.com/participate/support/participant-readiness-outlook/ferc-order-no-881-mtlr",accession_number:"ER24-ISO-881-001"},
+  // === ISO-NE ORDER 2023 ===
+  {docket_number:"ER24-ISONE-2023",title:"ISO-NE Order 2023 Compliance — Transitional Interconnection Process",filed_date:"2024-05-16",docket_type:"ER",status:"Accepted",filing_type:"Compliance Filing",summary:"ISO New England submitted compliance proposal implementing Order 2023 reforms including first-ready first-served cluster study process. FERC largely accepted the filing in April 2025 with effective date of August 12, 2024.",topics:["Interconnection Reform","Order 2023 Compliance","Cluster Studies"],entities:["ISO-NE","ISO New England"],source_url:"https://askiso.iso-ne.com/s/article/Understanding-the-2024-Transitional-Interconnection-Process-FERC-Order-Nos-2023-and-2023-A",accession_number:"ER24-ISONE-2023-001"},
+  // === HYDROELECTRIC ===
+  {docket_number:"P-2000-000",title:"Buttermilk Falls Hydroelectric License Revocation — Rehearing",filed_date:"2025-01-16",docket_type:"P",status:"Sustained",filing_type:"Order on Rehearing",summary:"Modifies and sustains the September 2024 order revoking the license for High-Point Utility's Buttermilk Falls hydroelectric project.",topics:["Hydroelectric","License Revocation"],entities:["High-Point Utility"],source_url:"https://www.ferc.gov/news-events/news/summaries-january-2025-commission-meeting",accession_number:"P-2000-000-001"},
+  // === BEECHER SOLAR WAIVER ===
+  {docket_number:"ER25-BEECH-000",title:"Beecher Solar — Generator Interconnection Agreement Deadline Waiver",filed_date:"2025-04-17",docket_type:"ER",status:"Granted",filing_type:"Waiver",summary:"Grants Beecher Solar LLC and DTE Electric Company's request for waiver to extend the commercial operation deadline in Beecher's generator interconnection agreement.",topics:["Solar Generation","Interconnection Agreement","Waiver"],entities:["Beecher Solar LLC","DTE Electric Company"],source_url:"https://www.ferc.gov/news-events/news/summaries-april-2025-commission-meeting",accession_number:"ER25-BEECH-000-001"},
+  // === WILDERNESS LINE ===
+  {docket_number:"ER24-2025-000",title:"Wilderness Line Holdings — Electric Rate Filing",filed_date:"2024-12-19",docket_type:"ER",status:"Order Issued",filing_type:"Order",summary:"Commission order on Wilderness Line Holdings electric rate filing.",topics:["Electric Rates","Transmission"],entities:["Wilderness Line Holdings"],source_url:"https://www.ferc.gov/news-events/news/summaries-december-2024-commission-meeting",accession_number:"ER24-2025-000-001"},
+  // === LARGE LOAD INTERCONNECTION ===
+  {docket_number:"AD25-LOAD-000",title:"ANOPR — Large Load Interconnection to Transmission Systems",filed_date:"2025-12-18",docket_type:"AD",status:"Comment Period",filing_type:"ANOPR",summary:"Advance Notice of Proposed Rulemaking to ensure timely and orderly interconnection of large loads to transmission systems, driven by rapid growth in data center and AI-related electricity demand.",topics:["Load Interconnection","Data Centers","AI Infrastructure","Rulemaking"],entities:["FERC"],source_url:"https://www.bakerbotts.com/thought-leadership/publications/2025/december/ferc-issues-order-providing-guidance-for-co-locating-power-plants-with-data-centers-within-pjm",accession_number:"AD25-LOAD-000-001"},
+  // === DEMAND RESPONSE ===
+  {docket_number:"AD25-DR-000",title:"Annual Assessment of Demand Response and Advanced Metering — December 2025",filed_date:"2025-12-12",docket_type:"AD",status:"Published",filing_type:"Staff Report",summary:"FERC staff report providing annual assessment of demand response programs and advanced metering across RTOs/ISOs and utilities. Covers enrollment trends, capacity contributions, and market participation.",topics:["Demand Response","Advanced Metering","Market Participation"],entities:["FERC","MISO","PJM Interconnection","CAISO"],source_url:"https://www.ferc.gov/sites/default/files/2025-12/25_Annual%20Assessment%20of%20Demand%20Response_1212.pdf",accession_number:"AD25-DR-000-001"},
+  // === ENERGY INFRASTRUCTURE UPDATE ===
+  {docket_number:"AD25-EIU-000",title:"Energy Infrastructure Update — December 2024 (Revised April 2025)",filed_date:"2025-04-22",docket_type:"AD",status:"Published",filing_type:"Staff Report",summary:"Revised staff report on energy infrastructure updates covering generation capacity additions, retirements, and proposed projects across the U.S. electric sector.",topics:["Energy Infrastructure","Generation Capacity","Infrastructure Planning"],entities:["FERC"],source_url:"https://www.ferc.gov/media/energy-infrastructure-update-december-2024-revised-data-april-22-2025",accession_number:"AD25-EIU-000-001"},
+];
 
+// --- Compute stats from embedded data ---
+function computeStats(orders) {
+  const total = orders.length;
+  const now = new Date();
+  const day1 = new Date(now - 86400000);
+  const day7 = new Date(now - 7*86400000);
+  const day30 = new Date(now - 30*86400000);
+  const last24h = orders.filter(o => new Date(o.filed_date) >= day1).length;
+  const last7d = orders.filter(o => new Date(o.filed_date) >= day7).length;
+  const last30d = orders.filter(o => new Date(o.filed_date) >= day30).length;
+
+  const byDocketType = {};
+  const byFilingType = {};
+  const byTopic = {};
+  const entityCount = {};
+
+  orders.forEach(o => {
+    byDocketType[o.docket_type] = (byDocketType[o.docket_type]||0) + 1;
+    byFilingType[o.filing_type] = (byFilingType[o.filing_type]||0) + 1;
+    (o.topics||[]).forEach(t => { byTopic[t] = (byTopic[t]||0) + 1; });
+    (o.entities||[]).forEach(e => { entityCount[e] = (entityCount[e]||0) + 1; });
+  });
+
+  const topEntities = Object.entries(entityCount)
+    .sort((a,b) => b[1]-a[1])
+    .slice(0, 20)
+    .map(([name, count]) => ({ name, count }));
+
+  // Generate daily volume for last 90 days
+  const daily_volume = [];
+  for (let i = 89; i >= 0; i--) {
+    const d = new Date(now - i*86400000);
+    const ds = d.toISOString().slice(0,10);
+    const count = orders.filter(o => o.filed_date === ds).length;
+    daily_volume.push({ date: ds, count });
+  }
+
+  return {
+    total_filings: total,
+    filings_last_24h: last24h,
+    filings_last_7d: last7d,
+    filings_last_30d: last30d,
+    by_docket_type: byDocketType,
+    by_filing_type: byFilingType,
+    by_topic: byTopic,
+    top_entities: topEntities,
+    daily_volume: daily_volume
+  };
+}
+
+// --- Local data API (no network) ---
+function localFilter(orders, params) {
+  let filtered = [...orders];
+  if (params.docket_type) filtered = filtered.filter(o => o.docket_type === params.docket_type);
+  if (params.filing_type) filtered = filtered.filter(o => o.filing_type === params.filing_type);
+  if (params.topic) filtered = filtered.filter(o => (o.topics||[]).includes(params.topic));
+  if (params.entity) filtered = filtered.filter(o => (o.entities||[]).some(e => e.toLowerCase().includes(params.entity.toLowerCase())));
+  if (params.q) {
+    const q = params.q.toLowerCase();
+    filtered = filtered.filter(o =>
+      (o.title||'').toLowerCase().includes(q) ||
+      (o.docket_number||'').toLowerCase().includes(q) ||
+      (o.summary||'').toLowerCase().includes(q) ||
+      (o.entities||[]).some(e => e.toLowerCase().includes(q)) ||
+      (o.topics||[]).some(t => t.toLowerCase().includes(q))
+    );
+  }
+  if (params.start_date) filtered = filtered.filter(o => o.filed_date >= params.start_date);
+  if (params.end_date) filtered = filtered.filter(o => o.filed_date <= params.end_date);
+  filtered.sort((a,b) => b.filed_date.localeCompare(a.filed_date));
+  return filtered.slice(0, params.limit || 100);
+}
+
+async function api(path, params = {}) {
+  if (path === '/stats') return computeStats(EMBEDDED_ORDERS);
+  if (path === '/orders') return localFilter(EMBEDDED_ORDERS, params);
+  if (path.startsWith('/orders/')) {
+    const docket = decodeURIComponent(path.replace('/orders/',''));
+    const filings = EMBEDDED_ORDERS.filter(o => o.docket_number === docket);
+    if (!filings.length) return null;
+    return { docket_number: docket, docket_type: filings[0].docket_type, filings };
+  }
+  if (path.startsWith('/entities/')) {
+    const name = decodeURIComponent(path.replace('/entities/',''));
+    const filings = EMBEDDED_ORDERS.filter(o => (o.entities||[]).includes(name));
+    const dtypes = {};
+    filings.forEach(f => { dtypes[f.docket_type] = (dtypes[f.docket_type]||0)+1; });
+    return { entity_name: name, filing_count: filings.length, docket_types: dtypes, recent_filings: filings };
+  }
+  return null;
+}
+
+// --- Config ---
 const DOCKET_LABELS = {ER:'Electric Rate',CP:'Pipeline/LNG',P:'Hydroelectric',RM:'Rulemaking',EL:'Complaint',EC:'Merger',AD:'Administrative'};
 const DOCKET_COLORS = {ER:'tag-er',CP:'tag-cp',P:'tag-p',RM:'tag-rm',EL:'tag-el',EC:'tag-ec',AD:'tag-ad'};
 
@@ -249,20 +404,6 @@ let state = {
   activeTab: 'feed',
   alerts: JSON.parse(localStorage.getItem('ferc_alerts') || '[]'),
 };
-
-// --- API ---
-async function api(path, params = {}) {
-  const url = new URL(API_BASE + path, window.location.origin);
-  Object.entries(params).forEach(([k,v]) => { if (v != null && v !== '') url.searchParams.set(k, v); });
-  try {
-    const r = await fetch(url, { headers: { 'X-API-Key': API_KEY } });
-    if (!r.ok) throw new Error(`${r.status}`);
-    return await r.json();
-  } catch(e) {
-    console.warn('API error:', e);
-    return null;
-  }
-}
 
 // --- Fetch & Render ---
 async function loadFilings() {
