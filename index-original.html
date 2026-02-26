@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prospector Labs — Data Infrastructure for the Physical World</title>
+  <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --white: #ffffff;
+      --black: #000000;
+      --gray-50: #fafafa;
+      --gray-100: #f5f5f5;
+      --gray-200: #e5e5e5;
+      --gray-300: #d4d4d4;
+      --gray-400: #a3a3a3;
+      --gray-500: #737373;
+      --gray-600: #525252;
+      --gray-800: #262626;
+      --gray-900: #171717;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Geist', system-ui, sans-serif;
+      background: var(--white);
+      color: var(--black);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ═══════════════════════════════════════════
+       NAV
+    ═══════════════════════════════════════════ */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .nav-logo {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-center {
+      display: flex;
+      gap: 32px;
+    }
+
+    .nav-center a {
+      font-size: 14px;
+      color: var(--gray-500);
+      transition: color 0.2s;
+    }
+
+    .nav-center a:hover { color: var(--black); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-cta {
+      font-size: 14px;
+      font-weight: 500;
+      padding: 10px 20px;
+      background: var(--black);
+      color: var(--white);
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .nav-cta:hover { background: var(--gray-800); }
+
+    /* ═══════════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════════ */
+    .hero {
+      height: 70vh;
+      min-height: 500px;
+      position: relative;
+      overflow: hidden;
+      margin-top: 57px;
+    }
+
+    .hero-video {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      animation: gradientShift 10s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .hero-video::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+      background-size: 30px 30px;
+      opacity: 0.5;
+    }
+
+    .particles {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 50%;
+      animation: float 8s infinite;
+    }
+
+    .particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+    .particle:nth-child(2) { left: 25%; animation-delay: 1s; }
+    .particle:nth-child(3) { left: 40%; animation-delay: 2s; }
+    .particle:nth-child(4) { left: 55%; animation-delay: 3s; }
+    .particle:nth-child(5) { left: 70%; animation-delay: 4s; }
+    .particle:nth-child(6) { left: 85%; animation-delay: 5s; }
+
+    @keyframes float {
+      0% { transform: translateY(100vh) scale(0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-100px) scale(1); opacity: 0; }
+    }
+
+    .hero-content {
+      position: absolute;
+      bottom: 64px;
+      left: 64px;
+      right: 64px;
+      color: var(--white);
+    }
+
+    .hero h1 {
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      max-width: 700px;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      color: rgba(255,255,255,0.7);
+      max-width: 500px;
+      line-height: 1.5;
+    }
+
+    /* ═══════════════════════════════════════════
+       SERVICES — What We Do
+    ═══════════════════════════════════════════ */
+    .services {
+      padding: 100px 64px;
+    }
+
+    .section-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-400);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      margin-bottom: 64px;
+      max-width: 600px;
+      line-height: 1.3;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--gray-200);
+      border: 1px solid var(--gray-200);
+    }
+
+    .service-card {
+      background: var(--white);
+      padding: 40px 32px;
+      transition: background 0.2s;
+    }
+
+    .service-card:hover {
+      background: var(--gray-50);
+    }
+
+    .service-icon {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .service-card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .service-card p {
+      font-size: 14px;
+      color: var(--gray-500);
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════════════════════════════
+       PRODUCTS — Card grid
+    ═══════════════════════════════════════════ */
+    .products {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .product-card {
+      position: relative;
+      height: 400px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 32px;
+      color: var(--white);
+      transition: all 0.4s;
+    }
+
+    .product-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent 40%, rgba(0,0,0,0.8));
+      z-index: 1;
+    }
+
+    .product-card:hover { transform: scale(1.02); }
+    .product-card:hover .product-bg { transform: scale(1.05); }
+
+    .product-bg {
+      position: absolute;
+      inset: 0;
+      transition: transform 0.6s;
+    }
+
+    .product-card:nth-child(1) .product-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .product-card:nth-child(2) .product-bg { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+    .product-card:nth-child(3) .product-bg { background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%); }
+
+    .product-content { position: relative; z-index: 2; }
+
+    .product-title {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .product-desc {
+      font-size: 15px;
+      opacity: 0.8;
+      max-width: 280px;
+    }
+
+    .product-arrow {
+      position: absolute;
+      top: 32px;
+      right: 32px;
+      font-size: 20px;
+      z-index: 2;
+      opacity: 0;
+      transform: translateX(-10px);
+      transition: all 0.3s;
+    }
+
+    .product-card:hover .product-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* ═══════════════════════════════════════════
+       SHOWCASE
+    ═══════════════════════════════════════════ */
+    .showcase {
+      background: var(--gray-900);
+      color: var(--white);
+    }
+
+    .showcase-header {
+      padding: 48px 64px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .showcase-title {
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gray-400);
+    }
+
+    .showcase-link {
+      font-size: 14px;
+      color: var(--gray-400);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s;
+    }
+
+    .showcase-link:hover { color: var(--white); }
+
+    .showcase-image {
+      width: 100%;
+      height: 500px;
+      background: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1600&q=80') center/cover;
+      position: relative;
+    }
+
+    .showcase-image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent 60%, var(--gray-900));
+    }
+
+    .showcase-caption {
+      padding: 24px 64px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .showcase-caption h2 {
+      font-size: 32px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+    }
+
+    .showcase-caption p {
+      font-size: 15px;
+      color: var(--gray-400);
+      max-width: 400px;
+    }
+
+    /* ═══════════════════════════════════════════
+       PAST PROJECTS
+    ═══════════════════════════════════════════ */
+    .past-projects {
+      padding: 100px 64px;
+      background: var(--gray-50);
+    }
+
+    .projects-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--gray-200);
+      border: 1px solid var(--gray-200);
+      margin-top: 0;
+    }
+
+    .project-item {
+      background: var(--white);
+      padding: 40px 32px;
+      transition: background 0.2s;
+    }
+
+    .project-item:hover { background: var(--gray-50); }
+
+    .project-stat {
+      font-size: 36px;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+
+    .project-industry {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--gray-400);
+      margin-bottom: 12px;
+    }
+
+    .project-item h3 {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+
+    .project-item p {
+      font-size: 14px;
+      color: var(--gray-500);
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════════════════════════════
+       STATS
+    ═══════════════════════════════════════════ */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--gray-200);
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .stat {
+      padding: 48px 32px;
+      text-align: center;
+      border-right: 1px solid var(--gray-200);
+    }
+
+    .stat:last-child { border-right: none; }
+
+    .stat-value {
+      font-size: 48px;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--gray-500);
+      letter-spacing: 0.05em;
+    }
+
+    /* ═══════════════════════════════════════════
+       PROCESS
+    ═══════════════════════════════════════════ */
+    .process {
+      padding: 100px 64px;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 80px;
+    }
+
+    .process-header h2 {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-400);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 16px;
+    }
+
+    .process-header p {
+      font-size: 24px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      line-height: 1.4;
+    }
+
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 48px;
+    }
+
+    .step-number {
+      font-size: 64px;
+      font-weight: 600;
+      color: var(--gray-200);
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .step-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .step-desc {
+      font-size: 14px;
+      color: var(--gray-500);
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════════════════════════════
+       CTA
+    ═══════════════════════════════════════════ */
+    .cta {
+      background: var(--black);
+      color: var(--white);
+      padding: 100px 64px;
+      text-align: center;
+    }
+
+    .cta h2 {
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+    }
+
+    .cta p {
+      font-size: 18px;
+      color: var(--gray-400);
+      margin-bottom: 40px;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 16px 40px;
+      background: var(--white);
+      color: var(--black);
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(255,255,255,0.2);
+    }
+
+    /* ═══════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════ */
+    footer {
+      padding: 32px 64px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: var(--gray-400);
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 32px;
+    }
+
+    .footer-links a {
+      color: var(--gray-400);
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--black); }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════ */
+    @media (max-width: 1024px) {
+      .products { grid-template-columns: 1fr; }
+      .product-card { height: 300px; }
+      .services-grid { grid-template-columns: 1fr; }
+      .projects-list { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .stat { border-bottom: 1px solid var(--gray-200); }
+      .process { grid-template-columns: 1fr; gap: 48px; }
+      .process-steps { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 12px 24px; }
+      .nav-center { display: none; }
+      .hero { min-height: 400px; }
+      .hero-content { left: 24px; right: 24px; bottom: 32px; }
+      .hero h1 { font-size: 28px; }
+      .services { padding: 64px 24px; }
+      .showcase-header, .showcase-caption { padding-left: 24px; padding-right: 24px; }
+      .showcase-image { height: 300px; }
+      .past-projects { padding: 64px 24px; }
+      .process { padding: 64px 24px; }
+      .cta { padding: 64px 24px; }
+      footer { flex-direction: column; gap: 16px; padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-logo">Prospector Labs</a>
+    <div class="nav-center">
+      <a href="#services">Services</a>
+      <a href="#work">Work</a>
+      <a href="#tools">Tools</a>
+      <a href="#process">Process</a>
+    </div>
+    <div class="nav-right">
+      <a href="mailto:owen@prospectorlabs.io" class="nav-cta">Get Started</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-video"></div>
+    <div class="particles">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+    <div class="hero-content">
+      <h1>Data infrastructure for the physical world</h1>
+      <p class="hero-sub">We build databases, scrapers, APIs, and intelligence tools for companies operating in energy, infrastructure, and critical industries.</p>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="services" id="services">
+    <p class="section-label">What We Do</p>
+    <h2 class="section-title">From raw data to competitive advantage</h2>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">⚡</div>
+        <h3>Energy & Grid Intelligence</h3>
+        <p>Interconnection queue analysis, ISO monitoring, grid infrastructure data across MISO, PJM, ERCOT, CAISO, and more.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🔗</div>
+        <h3>Custom Databases</h3>
+        <p>Purpose-built databases from any source — public records, APIs, web scraping. Cleaned, structured, and kept fresh.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🌐</div>
+        <h3>Web Scraping at Scale</h3>
+        <p>Production-grade scrapers for any public data. Millions of records, anti-detection, automated refresh cycles.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📊</div>
+        <h3>Data APIs</h3>
+        <p>Structured data delivered via API. Real-time feeds, historical datasets, and custom endpoints for your workflows.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📋</div>
+        <h3>Lead Lists & Contact Data</h3>
+        <p>Custom-built prospect lists with the exact targeting you need. Better ROI than generic data providers.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🛠️</div>
+        <h3>Dashboards & Tools</h3>
+        <p>Interactive dashboards, analysis tools, and intelligence platforms. Built fast, designed to ship.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products -->
+  <section class="products">
+    <a href="#" class="product-card">
+      <div class="product-bg"></div>
+      <div class="product-content">
+        <h3 class="product-title">Energy Intelligence</h3>
+        <p class="product-desc">35,000+ interconnection projects across 9 ISOs. Real-time queue tracking and analysis.</p>
+      </div>
+      <span class="product-arrow">→</span>
+    </a>
+    <a href="#" class="product-card">
+      <div class="product-bg"></div>
+      <div class="product-content">
+        <h3 class="product-title">Critical Minerals</h3>
+        <p class="product-desc">Global supply chain tracking, trade flows, pricing, and producer intelligence.</p>
+      </div>
+      <span class="product-arrow">→</span>
+    </a>
+    <a href="#" class="product-card">
+      <div class="product-bg"></div>
+      <div class="product-content">
+        <h3 class="product-title">Custom Projects</h3>
+        <p class="product-desc">Data pipelines, databases, intelligence tools. Built exactly how you need them.</p>
+      </div>
+      <span class="product-arrow">→</span>
+    </a>
+  </section>
+
+  <!-- Showcase -->
+  <section class="showcase" id="tools">
+    <div class="showcase-header">
+      <span class="showcase-title">Featured Tools</span>
+      <a href="https://owencoonahan.github.io/prospector-data-tools/" class="showcase-link">View All 12 Tools →</a>
+    </div>
+    <div class="showcase-image"></div>
+    <div class="showcase-caption">
+      <h2>Energy Intelligence Suite</h2>
+      <p>35,000+ interconnection projects across 9 ISOs. Search, analyze, and benchmark with real-time data.</p>
+    </div>
+  </section>
+
+  <!-- Past Projects -->
+  <section class="past-projects" id="work">
+    <p class="section-label">Past Work</p>
+    <h2 class="section-title">We've built data moats across industries</h2>
+    <div class="projects-list">
+      <div class="project-item">
+        <div class="project-industry">Restaurant & Consumer</div>
+        <div class="project-stat">Every US Restaurant</div>
+        <h3>National restaurant database</h3>
+        <p>Scraped and maintained a comprehensive, always-fresh database of every restaurant in the United States for a consumer application.</p>
+      </div>
+      <div class="project-item">
+        <div class="project-industry">Logistics & Trucking</div>
+        <div class="project-stat">CDL Driver Database</div>
+        <h3>Competitive moat for a trucking company</h3>
+        <p>Built a proprietary database of CDL-licensed drivers, creating a defensible data advantage for recruitment and operations.</p>
+      </div>
+      <div class="project-item">
+        <div class="project-industry">E-Commerce</div>
+        <div class="project-stat">$1M+/mo Sites</div>
+        <h3>High-revenue e-commerce intelligence</h3>
+        <p>Built and maintained a database of e-commerce sites doing over $1M/month in estimated revenue for a major marketplace platform.</p>
+      </div>
+      <div class="project-item">
+        <div class="project-industry">Real Estate</div>
+        <div class="project-stat">850,000+</div>
+        <h3>Realtor & broker database</h3>
+        <p>Comprehensive database of realtors and brokers across the US, structured for targeting and outreach.</p>
+      </div>
+      <div class="project-item">
+        <div class="project-industry">Social & SMB</div>
+        <div class="project-stat">500,000+</div>
+        <h3>Instagram business scraping</h3>
+        <p>Scraped 500,000+ businesses on Instagram with structured contact and business data for lead generation.</p>
+      </div>
+      <div class="project-item">
+        <div class="project-industry">SaaS & E-Commerce</div>
+        <div class="project-stat">Multiple Clients</div>
+        <h3>E-commerce databases for SaaS</h3>
+        <p>Built targeted e-commerce databases for multiple SaaS companies selling into the e-commerce vertical.</p>
+      </div>
+      <div class="project-item">
+        <div class="project-industry">Consumer App</div>
+        <div class="project-stat">All NYC Restaurants</div>
+        <h3>NYC restaurant data pipeline</h3>
+        <p>Scraped every restaurant in NYC and maintained an up-to-date, live database for a consumer application.</p>
+      </div>
+      <div class="project-item">
+        <div class="project-industry">Various</div>
+        <div class="project-stat">Dozens More</div>
+        <h3>Custom lead lists & data projects</h3>
+        <p>Custom-built lead lists, prospect databases, and data pipelines across industries from startups to enterprises.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="stats">
+    <div class="stat">
+      <div class="stat-value">2M+</div>
+      <div class="stat-label">Records Collected</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">9</div>
+      <div class="stat-label">ISOs Tracked</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">12</div>
+      <div class="stat-label">Data Tools Built</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">Days</div>
+      <div class="stat-label">Not Weeks</div>
+    </div>
+  </section>
+
+  <!-- Process -->
+  <section class="process" id="process">
+    <div class="process-header">
+      <h2>How It Works</h2>
+      <p>From request to delivery in days, not weeks</p>
+    </div>
+    <div class="process-steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3 class="step-title">Tell Us What You Need</h3>
+        <p class="step-desc">Describe the data, the source, or the problem. We'll assess feasibility and scope it fast.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3 class="step-title">We Build It</h3>
+        <p class="step-desc">Custom scrapers, databases, APIs, or dashboards — built to your exact specs. No templates.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3 class="step-title">Data Delivered</h3>
+        <p class="step-desc">Clean, structured data exactly how you need it. CSV, API, dashboard — your choice. Ongoing refresh available.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <h2>What data do you need?</h2>
+    <p>Tell us the problem. We'll build the solution.</p>
+    <a href="mailto:owen@prospectorlabs.io" class="cta-btn">owen@prospectorlabs.io</a>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <span>© 2026 Prospector Labs</span>
+    <div class="footer-links">
+      <a href="https://owencoonahan.github.io/prospector-data-tools/">Tools</a>
+      <a href="https://twitter.com/OwenCoonahan">Twitter</a>
+      <a href="https://linkedin.com/in/owencoonahan">LinkedIn</a>
+    </div>
+  </footer>
+
+</body>
+</html>
