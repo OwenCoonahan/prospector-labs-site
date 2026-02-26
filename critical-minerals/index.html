@@ -1,0 +1,2128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Critical Minerals Intelligence — Global Supply Chain Analysis</title>
+    <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-dark: #0a0a0b;
+            --bg-card: #111113;
+            --bg-elevated: #18181b;
+            --border: #27272a;
+            --border-subtle: #1f1f22;
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-tertiary: #71717a;
+            --text-muted: #52525b;
+            
+            --concentration-high: #f59e0b;
+            --concentration-glow: rgba(245, 158, 11, 0.3);
+            --level-critical: #ef4444;
+            --level-high: #f59e0b;
+            --level-moderate: #3b82f6;
+            --level-low: #10b981;
+            
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-purple: #8b5cf6;
+            --accent-green: #10b981;
+            --accent-orange: #f59e0b;
+            --accent-pink: #ec4899;
+        }
+        
+        body {
+            font-family: 'Geist', -apple-system, system-ui, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+        
+        /* Typography */
+        .display { 
+            font-size: 42px; 
+            font-weight: 600; 
+            line-height: 1.1; 
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #fff 0%, #a1a1aa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .h1 { font-size: 28px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; }
+        .h2 { font-size: 20px; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; }
+        .h3 { font-size: 16px; font-weight: 600; line-height: 1.4; }
+        .body { font-size: 14px; font-weight: 400; line-height: 1.6; }
+        .small { font-size: 13px; font-weight: 400; line-height: 1.5; color: var(--text-secondary); }
+        .micro { 
+            font-size: 10px; 
+            font-weight: 600; 
+            line-height: 1.4; 
+            text-transform: uppercase; 
+            letter-spacing: 0.1em;
+            color: var(--text-tertiary);
+        }
+        .mono { 
+            font-family: 'JetBrains Mono', monospace; 
+            font-feature-settings: "tnum";
+        }
+        
+        /* Header */
+        header {
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+        
+        .classification {
+            background: var(--accent-blue);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 2px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+        }
+        
+        .subtitle {
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin-top: 12px;
+        }
+        
+        .update-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 16px;
+        }
+        
+        .update-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Navigation */
+        .mineral-nav {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+        
+        .mineral-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .mineral-btn:hover {
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            border-color: var(--border);
+        }
+        
+        .mineral-btn.active {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: white;
+        }
+        
+        .mineral-btn .symbol {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            opacity: 0.7;
+            background: rgba(255,255,255,0.1);
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        
+        .mineral-btn.active .symbol {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        
+        .card-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        
+        /* Grid */
+        .grid {
+            display: grid;
+            gap: 16px;
+        }
+        
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-4 { grid-template-columns: repeat(4, 1fr); }
+        .grid-5 { grid-template-columns: repeat(5, 1fr); }
+        
+        @media (max-width: 1200px) {
+            .grid-5 { grid-template-columns: repeat(3, 1fr); }
+            .grid-4 { grid-template-columns: repeat(2, 1fr); }
+        }
+        
+        @media (max-width: 768px) {
+            .grid-5, .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+        }
+        
+        /* Stats */
+        .stat-value {
+            font-size: 32px;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1.1;
+        }
+        
+        .stat-unit {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            font-weight: 400;
+        }
+        
+        .stat-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 6px;
+        }
+        
+        .stat-change.positive { color: var(--accent-green); }
+        .stat-change.negative { color: var(--risk-critical); }
+        
+        /* Market Concentration Indicator */
+        .concentration-card {
+            position: relative;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            overflow: hidden;
+        }
+        
+        .concentration-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent-blue);
+        }
+        
+        .country-flag {
+            font-size: 16px;
+            margin-right: 8px;
+        }
+        
+        .concentration-value {
+            font-size: 48px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-blue);
+            line-height: 1;
+        }
+        
+        .concentration-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        
+        /* Concentration Bars */
+        .conc-bar {
+            margin-bottom: 12px;
+        }
+        
+        .conc-bar-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+        
+        .conc-bar-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .conc-bar-value {
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-primary);
+        }
+        
+        .conc-bar-track {
+            height: 8px;
+            background: var(--bg-elevated);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .conc-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .conc-bar-fill.high { background: linear-gradient(90deg, var(--level-high) 0%, #fbbf24 100%); }
+        .conc-bar-fill.moderate { background: linear-gradient(90deg, var(--level-moderate) 0%, #60a5fa 100%); }
+        .conc-bar-fill.indonesia { background: linear-gradient(90deg, var(--accent-orange) 0%, #fb923c 100%); }
+        .conc-bar-fill.other { background: linear-gradient(90deg, var(--accent-blue) 0%, #60a5fa 100%); }
+        
+        /* Sankey Diagram */
+        .sankey-container {
+            width: 100%;
+            min-height: 500px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            margin-top: 24px;
+        }
+        
+        .sankey-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .sankey-subtitle {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            margin-bottom: 20px;
+        }
+        
+        .sankey svg {
+            width: 100%;
+            height: 450px;
+        }
+        
+        .sankey .node rect {
+            fill-opacity: 0.9;
+            stroke: none;
+        }
+        
+        .sankey .node.concentrated rect {
+            fill: var(--concentration-high) !important;
+            filter: drop-shadow(0 0 10px var(--concentration-glow));
+        }
+        
+        .sankey .node text {
+            font-family: 'Geist', sans-serif;
+            font-size: 11px;
+            fill: var(--text-secondary);
+        }
+        
+        .sankey .link {
+            fill: none;
+            stroke-opacity: 0.4;
+        }
+        
+        .sankey .link:hover {
+            stroke-opacity: 0.7;
+        }
+        
+        .sankey .link.china-flow {
+            stroke: var(--china-red);
+            stroke-opacity: 0.5;
+        }
+        
+        /* Sankey Legend */
+        .sankey-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+        }
+        
+        .legend-color.concentrated { background: var(--concentration-high); }
+        .legend-color.mining { background: var(--accent-cyan); }
+        .legend-color.processing { background: var(--accent-purple); }
+        .legend-color.manufacturing { background: var(--accent-blue); }
+        .legend-color.end-use { background: var(--accent-green); }
+        
+        /* Treemap */
+        .treemap-container {
+            width: 100%;
+            height: 300px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .treemap-cell {
+            stroke: var(--bg-dark);
+            stroke-width: 2px;
+        }
+        
+        .treemap-label {
+            font-family: 'Geist', sans-serif;
+            font-size: 11px;
+            fill: white;
+            pointer-events: none;
+        }
+        
+        .treemap-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            fill: white;
+            pointer-events: none;
+        }
+        
+        /* Risk Badges */
+        .risk-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .risk-critical { 
+            background: rgba(239, 68, 68, 0.2); 
+            color: var(--risk-critical);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .risk-high { 
+            background: rgba(245, 158, 11, 0.2); 
+            color: var(--risk-high);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        .risk-moderate { 
+            background: rgba(59, 130, 246, 0.2); 
+            color: var(--accent-blue);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        .risk-low { 
+            background: rgba(16, 185, 129, 0.2); 
+            color: var(--accent-green);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        /* Company Bars */
+        .company-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .company-rank {
+            width: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            text-align: center;
+        }
+        
+        .company-name {
+            width: 140px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .company-bar-track {
+            flex: 1;
+            height: 20px;
+            background: var(--bg-elevated);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .company-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8px;
+            transition: width 0.5s ease;
+        }
+        
+        .company-bar-value {
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .company-flag {
+            font-size: 14px;
+            margin-left: 6px;
+        }
+        
+        /* Flow Diagram */
+        .flow-diagram {
+            display: flex;
+            align-items: stretch;
+            gap: 8px;
+            padding: 20px 0;
+            overflow-x: auto;
+        }
+        
+        .flow-stage {
+            flex: 1;
+            min-width: 180px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            position: relative;
+        }
+        
+        .flow-stage.bottleneck {
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.15) 0%, rgba(220, 38, 38, 0.05) 100%);
+            border-color: rgba(220, 38, 38, 0.4);
+        }
+        
+        .flow-stage.bottleneck::before {
+            content: '⚠️ BOTTLENECK';
+            position: absolute;
+            top: -10px;
+            left: 12px;
+            background: var(--concentration-high);
+            color: white;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 3px;
+            letter-spacing: 0.05em;
+        }
+        
+        .flow-stage-header {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
+        }
+        
+        .flow-stage-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+        
+        .flow-country {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        
+        .flow-country:last-child {
+            border-bottom: none;
+        }
+        
+        .flow-country-name {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .flow-country-share {
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+        }
+        
+        .flow-country-share.concentrated {
+            color: var(--concentration-high);
+        }
+        
+        .flow-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 20px;
+        }
+        
+        /* Section */
+        .section {
+            margin-bottom: 32px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .mineral-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-blue);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        /* View Toggle */
+        .view-toggle {
+            display: flex;
+            background: var(--bg-elevated);
+            border-radius: 6px;
+            padding: 3px;
+        }
+        
+        .view-toggle-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-tertiary);
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        
+        .view-toggle-btn:hover {
+            color: var(--text-secondary);
+        }
+        
+        .view-toggle-btn.active {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+        
+        /* Overview Grid */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        
+        .mineral-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .mineral-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+        
+        .mineral-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        
+        .mineral-card-name {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .mineral-card-symbol {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            background: var(--bg-elevated);
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: var(--text-secondary);
+        }
+        
+        .mineral-card-risk {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .risk-meter {
+            height: 6px;
+            background: var(--bg-elevated);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        
+        .risk-meter-fill {
+            height: 100%;
+            border-radius: 3px;
+        }
+        
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        
+        .data-table th {
+            text-align: left;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-tertiary);
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-elevated);
+        }
+        
+        .data-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+        }
+        
+        .data-table tr:hover td {
+            background: var(--bg-elevated);
+        }
+        
+        .data-table .mono {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+        }
+        
+        /* Footer */
+        footer {
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-left {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .footer-sources {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        
+        /* Hidden */
+        .hidden { display: none !important; }
+        
+        /* Tooltip */
+        .tooltip {
+            position: absolute;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-size: 12px;
+            color: var(--text-primary);
+            pointer-events: none;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .tooltip-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .tooltip-value {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-top">
+                <div>
+                    <span class="classification">SUPPLY CHAIN INTELLIGENCE</span>
+                </div>
+            </div>
+            <h1 class="display">Critical Minerals Supply Chains</h1>
+            <p class="subtitle body">Mapping global supply chain flows across battery metals, semiconductors, and strategic minerals. Understanding market concentration and production geography.</p>
+            <div class="update-badge">
+                <span class="dot"></span>
+                <span>Data updated: February 6, 2026</span>
+            </div>
+        </header>
+        
+        <!-- Mineral Navigation -->
+        <nav class="mineral-nav" id="mineralNav">
+            <button class="mineral-btn active" data-mineral="overview">
+                Executive Summary
+            </button>
+            <button class="mineral-btn" data-mineral="cobalt">
+                Cobalt <span class="symbol">Co</span>
+            </button>
+            <button class="mineral-btn" data-mineral="lithium">
+                Lithium <span class="symbol">Li</span>
+            </button>
+            <button class="mineral-btn" data-mineral="nickel">
+                Nickel <span class="symbol">Ni</span>
+            </button>
+            <button class="mineral-btn" data-mineral="rareEarths">
+                Rare Earths <span class="symbol">REE</span>
+            </button>
+            <button class="mineral-btn" data-mineral="graphite">
+                Graphite <span class="symbol">C</span>
+            </button>
+            <button class="mineral-btn" data-mineral="copper">
+                Copper <span class="symbol">Cu</span>
+            </button>
+            <button class="mineral-btn" data-mineral="gallium">
+                Gallium <span class="symbol">Ga</span>
+            </button>
+        </nav>
+        
+        <!-- Main Content -->
+        <main id="mainContent">
+            <!-- Overview Section -->
+            <section id="overviewSection">
+                <!-- Key Risk Summary -->
+                <div class="section">
+                    <div class="grid grid-5" style="margin-bottom: 24px;">
+                        <div class="concentration-card">
+                            <p class="card-title" style="color: rgba(255,255,255,0.7);">Top Producer Share</p>
+                            <p class="concentration-value">78%</p>
+                            <p class="concentration-label">Average processing concentration</p>
+                        </div>
+                        <div class="card">
+                            <p class="card-title">Critical Bottlenecks</p>
+                            <p class="stat-value">7</p>
+                            <p class="small" style="margin-top: 6px;">Supply chain stages with >70% single-country share</p>
+                        </div>
+                        <div class="card">
+                            <p class="card-title">Minerals Tracked</p>
+                            <p class="stat-value">12</p>
+                            <p class="small" style="margin-top: 6px;">Across EV, solar, semiconductors</p>
+                        </div>
+                        <div class="card">
+                            <p class="card-title">Export Restrictions</p>
+                            <p class="stat-value">4</p>
+                            <p class="small" style="margin-top: 6px;">China (Ga, Ge), Indonesia (ore)</p>
+                        </div>
+                        <div class="card">
+                            <p class="card-title">US Import Dependency</p>
+                            <p class="stat-value">100%</p>
+                            <p class="small" style="margin-top: 6px;">Net importer for 7 critical minerals</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Concentration Bars -->
+                <div class="section">
+                    <h2 class="h2" style="margin-bottom: 16px;">Market Concentration by Stage</h2>
+                    <p class="small" style="margin-bottom: 20px;">Percentage of global supply controlled by dominant producer — higher values indicate more concentrated markets</p>
+                    
+                    <div class="card">
+                        <div id="concentrationBars"></div>
+                    </div>
+                </div>
+                
+                <!-- Overview Treemap -->
+                <div class="section">
+                    <h2 class="h2" style="margin-bottom: 16px;">Global Processing Market Share</h2>
+                    <div id="overviewTreemap" class="treemap-container"></div>
+                </div>
+                
+                <!-- Mineral Cards Grid -->
+                <div class="section">
+                    <h2 class="h2" style="margin-bottom: 16px;">Minerals by Concentration Level</h2>
+                    <div class="overview-grid" id="mineralCardsGrid"></div>
+                </div>
+            </section>
+            
+            <!-- Mineral Detail Section -->
+            <section id="mineralDetail" class="hidden">
+                <div class="section-header">
+                    <div class="section-title">
+                        <div class="mineral-icon" id="detailIcon">Co</div>
+                        <div>
+                            <h2 class="h1" id="detailName">Cobalt</h2>
+                            <p class="small" id="detailUses">EV Batteries, Superalloys</p>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="risk-badge risk-critical" id="detailRisk">HIGH CONCENTRATION</span>
+                    </div>
+                </div>
+                
+                <!-- Key Stats -->
+                <div class="grid grid-4" style="margin-bottom: 24px;">
+                    <div class="card">
+                        <p class="card-title">Current Price</p>
+                        <p class="stat-value" id="statPrice">—</p>
+                        <p class="stat-change" id="statPriceChange">—</p>
+                    </div>
+                    <div class="card">
+                        <p class="card-title">World Production</p>
+                        <p class="stat-value" id="statProduction">—</p>
+                        <p class="small" id="statProductionUnit">tonnes</p>
+                    </div>
+                    <div class="card">
+                        <p class="card-title">World Reserves</p>
+                        <p class="stat-value" id="statReserves">—</p>
+                        <p class="small" id="statReservesUnit">tonnes</p>
+                    </div>
+                    <div class="concentration-card" id="topProducerCard">
+                        <p class="card-title" style="color: rgba(255,255,255,0.7);">Top Producer</p>
+                        <p class="concentration-value" id="statTopShare">72%</p>
+                        <p class="concentration-label" id="statTopProducer">of global refining capacity</p>
+                    </div>
+                </div>
+                
+                <!-- Supply Chain Flow -->
+                <div class="section">
+                    <h3 class="h2" style="margin-bottom: 16px;">Supply Chain Flow</h3>
+                    <p class="small" style="margin-bottom: 16px;">From mine to end product — highlighted stages indicate high market concentration</p>
+                    <div class="flow-diagram" id="flowDiagram"></div>
+                </div>
+                
+                <!-- Sankey Diagram -->
+                <div class="sankey-container">
+                    <p class="sankey-title" id="sankeyTitle">Global Supply Chain Flow</p>
+                    <p class="sankey-subtitle">Mining → Processing → Manufacturing → End Use. Width indicates volume flow.</p>
+                    <div class="sankey" id="sankeyDiagram"></div>
+                    <div class="sankey-legend">
+                        <div class="legend-item">
+                            <div class="legend-color mining"></div>
+                            <span>Mining</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color processing"></div>
+                            <span>Processing</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color manufacturing"></div>
+                            <span>Manufacturing</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color end-use"></div>
+                            <span>End Use</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Production Breakdown -->
+                <div class="grid grid-2" style="margin-top: 24px;">
+                    <div class="card">
+                        <p class="card-title">Mining Production by Country</p>
+                        <div id="productionTreemap" class="treemap-container" style="height: 250px; margin-top: 16px;"></div>
+                    </div>
+                    <div class="card">
+                        <p class="card-title">Top Companies</p>
+                        <div id="companyBars" style="margin-top: 16px;"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <footer>
+            <div class="footer-left">
+                <p class="small">Critical Minerals Intelligence Dashboard</p>
+                <p class="footer-sources">Data: USGS Mineral Commodity Summaries 2024, Trading Economics, Company Reports, IEA</p>
+            </div>
+            <p class="small">prospectorlabs.io</p>
+        </footer>
+    </div>
+    
+    <script>
+        // ═══════════════════════════════════════════════════════════════════════════
+        // DATA
+        // ═══════════════════════════════════════════════════════════════════════════
+        
+        const MINERALS_DATA = {
+            cobalt: {
+                name: "Cobalt",
+                symbol: "Co",
+                uses: "EV Batteries, Superalloys, Catalysts",
+                price: { value: 56290, unit: "USD/t", change: 161.2 },
+                production: { value: 190000, unit: "tonnes" },
+                reserves: { value: 8300000, unit: "tonnes" },
+                chinaProcessing: 72,
+                riskLevel: "critical",
+                productionByCountry: [
+                    { country: "DR Congo", share: 68, flag: "🇨🇩" },
+                    { country: "Indonesia", share: 9, flag: "🇮🇩" },
+                    { country: "Russia", share: 5, flag: "🇷🇺" },
+                    { country: "Australia", share: 3, flag: "🇦🇺" },
+                    { country: "Philippines", share: 3, flag: "🇵🇭" },
+                    { country: "Other", share: 12, flag: "🌍" }
+                ],
+                processingByCountry: [
+                    { country: "China", share: 72, flag: "🇨🇳", isChina: true },
+                    { country: "Finland", share: 10, flag: "🇫🇮" },
+                    { country: "Belgium", share: 5, flag: "🇧🇪" },
+                    { country: "Other", share: 13, flag: "🌍" }
+                ],
+                companies: [
+                    { name: "Glencore", country: "🇨🇭", share: 20 },
+                    { name: "CMOC", country: "🇨🇳", share: 15 },
+                    { name: "ERG", country: "🇱🇺", share: 6 },
+                    { name: "Umicore", country: "🇧🇪", share: 5 },
+                    { name: "Huayou Cobalt", country: "🇨🇳", share: 4 }
+                ],
+                supplyChain: [
+                    { stage: "Mining", location: "DR Congo 68%", isBottleneck: false, countries: [
+                        { name: "DR Congo", share: 68 },
+                        { name: "Indonesia", share: 9 },
+                        { name: "Russia", share: 5 },
+                        { name: "Other", share: 18 }
+                    ]},
+                    { stage: "Concentration", location: "DR Congo, Indonesia", isBottleneck: false, countries: [
+                        { name: "DR Congo", share: 60 },
+                        { name: "Indonesia", share: 15 },
+                        { name: "Other", share: 25 }
+                    ]},
+                    { stage: "Refining", location: "China 72%", isBottleneck: true, countries: [
+                        { name: "China", share: 72, isChina: true },
+                        { name: "Finland", share: 10 },
+                        { name: "Belgium", share: 5 },
+                        { name: "Other", share: 13 }
+                    ]},
+                    { stage: "Precursor", location: "China 80%", isBottleneck: true, countries: [
+                        { name: "China", share: 80, isChina: true },
+                        { name: "Korea", share: 10 },
+                        { name: "Japan", share: 7 },
+                        { name: "Other", share: 3 }
+                    ]},
+                    { stage: "Battery Cell", location: "China 77%", isBottleneck: true, countries: [
+                        { name: "China", share: 77, isChina: true },
+                        { name: "Korea", share: 12 },
+                        { name: "Japan", share: 6 },
+                        { name: "Other", share: 5 }
+                    ]},
+                    { stage: "End Products", location: "Global", isBottleneck: false, countries: [
+                        { name: "China", share: 60, isChina: true },
+                        { name: "Europe", share: 22 },
+                        { name: "USA", share: 10 },
+                        { name: "Other", share: 8 }
+                    ]}
+                ],
+                sankeyData: {
+                    nodes: [
+                        // Mining
+                        { name: "DR Congo Mining", category: "mining" },
+                        { name: "Indonesia Mining", category: "mining" },
+                        { name: "Russia Mining", category: "mining" },
+                        { name: "Other Mining", category: "mining" },
+                        // Processing
+                        { name: "China Refining", category: "processing", isChina: true },
+                        { name: "Finland Refining", category: "processing" },
+                        { name: "Belgium Refining", category: "processing" },
+                        // Manufacturing
+                        { name: "China Battery Mfg", category: "manufacturing", isChina: true },
+                        { name: "Korea Battery Mfg", category: "manufacturing" },
+                        { name: "Japan Battery Mfg", category: "manufacturing" },
+                        // End Use
+                        { name: "EV Batteries (60%)", category: "enduse" },
+                        { name: "Superalloys (15%)", category: "enduse" },
+                        { name: "Other Uses (25%)", category: "enduse" }
+                    ],
+                    links: [
+                        // Mining to Refining
+                        { source: 0, target: 4, value: 55 },  // DRC to China
+                        { source: 0, target: 5, value: 8 },   // DRC to Finland
+                        { source: 0, target: 6, value: 5 },   // DRC to Belgium
+                        { source: 1, target: 4, value: 9 },   // Indonesia to China
+                        { source: 2, target: 4, value: 5 },   // Russia to China
+                        { source: 3, target: 4, value: 3 },   // Other to China
+                        { source: 3, target: 5, value: 2 },   // Other to Finland
+                        // Refining to Battery Mfg
+                        { source: 4, target: 7, value: 55 },  // China refining to China mfg
+                        { source: 4, target: 8, value: 10 },  // China refining to Korea mfg
+                        { source: 4, target: 9, value: 7 },   // China refining to Japan mfg
+                        { source: 5, target: 8, value: 5 },   // Finland to Korea
+                        { source: 5, target: 9, value: 5 },   // Finland to Japan
+                        { source: 6, target: 8, value: 3 },   // Belgium to Korea
+                        { source: 6, target: 7, value: 2 },   // Belgium to China
+                        // Battery Mfg to End Use
+                        { source: 7, target: 10, value: 40 }, // China mfg to EV
+                        { source: 7, target: 11, value: 10 }, // China mfg to Superalloys
+                        { source: 7, target: 12, value: 7 },  // China mfg to Other
+                        { source: 8, target: 10, value: 15 }, // Korea mfg to EV
+                        { source: 8, target: 12, value: 3 },  // Korea mfg to Other
+                        { source: 9, target: 10, value: 7 },  // Japan mfg to EV
+                        { source: 9, target: 11, value: 3 },  // Japan mfg to Superalloys
+                        { source: 9, target: 12, value: 2 }   // Japan mfg to Other
+                    ]
+                }
+            },
+            lithium: {
+                name: "Lithium",
+                symbol: "Li",
+                uses: "EV Batteries, Energy Storage, Consumer Electronics",
+                price: { value: 134500, unit: "CNY/t", change: 74.0 },
+                production: { value: 240000, unit: "tonnes" },
+                reserves: { value: 30000000, unit: "tonnes" },
+                chinaProcessing: 65,
+                riskLevel: "high",
+                productionByCountry: [
+                    { country: "Australia", share: 37, flag: "🇦🇺" },
+                    { country: "Chile", share: 20, flag: "🇨🇱" },
+                    { country: "China", share: 17, flag: "🇨🇳" },
+                    { country: "Zimbabwe", share: 9, flag: "🇿🇼" },
+                    { country: "Argentina", share: 8, flag: "🇦🇷" },
+                    { country: "Other", share: 9, flag: "🌍" }
+                ],
+                processingByCountry: [
+                    { country: "China", share: 65, flag: "🇨🇳", isChina: true },
+                    { country: "Chile", share: 20, flag: "🇨🇱" },
+                    { country: "Argentina", share: 8, flag: "🇦🇷" },
+                    { country: "Other", share: 7, flag: "🌍" }
+                ],
+                companies: [
+                    { name: "Albemarle", country: "🇺🇸", share: 18 },
+                    { name: "SQM", country: "🇨🇱", share: 16 },
+                    { name: "Ganfeng", country: "🇨🇳", share: 15 },
+                    { name: "Tianqi", country: "🇨🇳", share: 12 },
+                    { name: "Pilbara", country: "🇦🇺", share: 8 }
+                ],
+                supplyChain: [
+                    { stage: "Mining", location: "Australia 37%", isBottleneck: false, countries: [
+                        { name: "Australia", share: 37 },
+                        { name: "Chile", share: 20 },
+                        { name: "China", share: 17 },
+                        { name: "Other", share: 26 }
+                    ]},
+                    { stage: "Refining", location: "China 65%", isBottleneck: true, countries: [
+                        { name: "China", share: 65, isChina: true },
+                        { name: "Chile", share: 20 },
+                        { name: "Argentina", share: 8 },
+                        { name: "Other", share: 7 }
+                    ]},
+                    { stage: "Cathode (CAM)", location: "China 77%", isBottleneck: true, countries: [
+                        { name: "China", share: 77, isChina: true },
+                        { name: "Korea", share: 10 },
+                        { name: "Japan", share: 8 },
+                        { name: "Other", share: 5 }
+                    ]},
+                    { stage: "Battery Cell", location: "China 77%", isBottleneck: true, countries: [
+                        { name: "China", share: 77, isChina: true },
+                        { name: "Korea", share: 12 },
+                        { name: "Japan", share: 6 },
+                        { name: "Other", share: 5 }
+                    ]},
+                    { stage: "EV Assembly", location: "Global", isBottleneck: false, countries: [
+                        { name: "China", share: 60, isChina: true },
+                        { name: "Europe", share: 22 },
+                        { name: "USA", share: 10 },
+                        { name: "Other", share: 8 }
+                    ]}
+                ],
+                sankeyData: {
+                    nodes: [
+                        { name: "Australia Mining", category: "mining" },
+                        { name: "Chile Mining", category: "mining" },
+                        { name: "China Mining", category: "mining" },
+                        { name: "Other Mining", category: "mining" },
+                        { name: "China Processing", category: "processing", isChina: true },
+                        { name: "Chile Processing", category: "processing" },
+                        { name: "Other Processing", category: "processing" },
+                        { name: "China Battery Mfg", category: "manufacturing", isChina: true },
+                        { name: "Korea Battery Mfg", category: "manufacturing" },
+                        { name: "Japan Battery Mfg", category: "manufacturing" },
+                        { name: "EV Batteries (75%)", category: "enduse" },
+                        { name: "Energy Storage (15%)", category: "enduse" },
+                        { name: "Electronics (10%)", category: "enduse" }
+                    ],
+                    links: [
+                        { source: 0, target: 4, value: 30 },
+                        { source: 0, target: 6, value: 7 },
+                        { source: 1, target: 5, value: 18 },
+                        { source: 1, target: 4, value: 2 },
+                        { source: 2, target: 4, value: 17 },
+                        { source: 3, target: 4, value: 16 },
+                        { source: 3, target: 6, value: 10 },
+                        { source: 4, target: 7, value: 50 },
+                        { source: 4, target: 8, value: 10 },
+                        { source: 4, target: 9, value: 5 },
+                        { source: 5, target: 7, value: 8 },
+                        { source: 5, target: 8, value: 7 },
+                        { source: 5, target: 9, value: 3 },
+                        { source: 6, target: 8, value: 7 },
+                        { source: 6, target: 9, value: 7 },
+                        { source: 6, target: 7, value: 3 },
+                        { source: 7, target: 10, value: 48 },
+                        { source: 7, target: 11, value: 10 },
+                        { source: 7, target: 12, value: 3 },
+                        { source: 8, target: 10, value: 20 },
+                        { source: 8, target: 11, value: 3 },
+                        { source: 8, target: 12, value: 1 },
+                        { source: 9, target: 10, value: 10 },
+                        { source: 9, target: 11, value: 2 },
+                        { source: 9, target: 12, value: 3 }
+                    ]
+                }
+            },
+            nickel: {
+                name: "Nickel",
+                symbol: "Ni",
+                uses: "Stainless Steel, EV Batteries, Alloys",
+                price: { value: 17033, unit: "USD/t", change: 8.2 },
+                production: { value: 3600000, unit: "tonnes" },
+                reserves: { value: 100000000, unit: "tonnes" },
+                chinaProcessing: 35,
+                riskLevel: "high",
+                productionByCountry: [
+                    { country: "Indonesia", share: 50, flag: "🇮🇩" },
+                    { country: "Philippines", share: 11, flag: "🇵🇭" },
+                    { country: "Russia", share: 6, flag: "🇷🇺" },
+                    { country: "New Caledonia", share: 5, flag: "🇳🇨" },
+                    { country: "Australia", share: 4, flag: "🇦🇺" },
+                    { country: "Other", share: 24, flag: "🌍" }
+                ],
+                processingByCountry: [
+                    { country: "China", share: 35, flag: "🇨🇳", isChina: true },
+                    { country: "Indonesia", share: 30, flag: "🇮🇩" },
+                    { country: "Japan", share: 10, flag: "🇯🇵" },
+                    { country: "Other", share: 25, flag: "🌍" }
+                ],
+                companies: [
+                    { name: "Tsingshan", country: "🇨🇳", share: 18 },
+                    { name: "Nornickel", country: "🇷🇺", share: 9 },
+                    { name: "Vale", country: "🇧🇷", share: 7 },
+                    { name: "BHP", country: "🇦🇺", share: 5 },
+                    { name: "Glencore", country: "🇨🇭", share: 4 }
+                ],
+                supplyChain: [
+                    { stage: "Mining", location: "Indonesia 50%", isBottleneck: false, countries: [
+                        { name: "Indonesia", share: 50 },
+                        { name: "Philippines", share: 11 },
+                        { name: "Russia", share: 6 },
+                        { name: "Other", share: 33 }
+                    ]},
+                    { stage: "Processing", location: "China 35%", isBottleneck: false, countries: [
+                        { name: "China", share: 35, isChina: true },
+                        { name: "Indonesia", share: 30 },
+                        { name: "Japan", share: 10 },
+                        { name: "Other", share: 25 }
+                    ]},
+                    { stage: "Battery Grade", location: "China 65%", isBottleneck: true, countries: [
+                        { name: "China", share: 65, isChina: true },
+                        { name: "Indonesia", share: 20 },
+                        { name: "Other", share: 15 }
+                    ]},
+                    { stage: "Battery Cell", location: "China 77%", isBottleneck: true, countries: [
+                        { name: "China", share: 77, isChina: true },
+                        { name: "Korea", share: 12 },
+                        { name: "Japan", share: 6 },
+                        { name: "Other", share: 5 }
+                    ]},
+                    { stage: "End Products", location: "Global", isBottleneck: false, countries: [
+                        { name: "Stainless Steel", share: 70 },
+                        { name: "Batteries", share: 15 },
+                        { name: "Alloys", share: 15 }
+                    ]}
+                ],
+                sankeyData: {
+                    nodes: [
+                        { name: "Indonesia Mining", category: "mining" },
+                        { name: "Philippines Mining", category: "mining" },
+                        { name: "Russia Mining", category: "mining" },
+                        { name: "Other Mining", category: "mining" },
+                        { name: "China Processing", category: "processing", isChina: true },
+                        { name: "Indonesia Processing", category: "processing" },
+                        { name: "Japan Processing", category: "processing" },
+                        { name: "Stainless Steel", category: "enduse" },
+                        { name: "EV Batteries", category: "enduse" },
+                        { name: "Other Alloys", category: "enduse" }
+                    ],
+                    links: [
+                        { source: 0, target: 4, value: 25 },
+                        { source: 0, target: 5, value: 25 },
+                        { source: 1, target: 4, value: 8 },
+                        { source: 1, target: 6, value: 3 },
+                        { source: 2, target: 4, value: 4 },
+                        { source: 2, target: 6, value: 2 },
+                        { source: 3, target: 4, value: 8 },
+                        { source: 3, target: 6, value: 10 },
+                        { source: 3, target: 5, value: 6 },
+                        { source: 4, target: 7, value: 30 },
+                        { source: 4, target: 8, value: 10 },
+                        { source: 4, target: 9, value: 5 },
+                        { source: 5, target: 7, value: 20 },
+                        { source: 5, target: 8, value: 8 },
+                        { source: 5, target: 9, value: 3 },
+                        { source: 6, target: 7, value: 10 },
+                        { source: 6, target: 8, value: 3 },
+                        { source: 6, target: 9, value: 2 }
+                    ]
+                }
+            },
+            rareEarths: {
+                name: "Rare Earth Elements",
+                symbol: "REE",
+                uses: "Permanent Magnets, EV Motors, Wind Turbines",
+                price: { value: 70, unit: "USD/kg", change: -15 },
+                production: { value: 350000, unit: "tonnes REO" },
+                reserves: { value: 130000000, unit: "tonnes" },
+                chinaProcessing: 90,
+                riskLevel: "critical",
+                productionByCountry: [
+                    { country: "China", share: 69, flag: "🇨🇳" },
+                    { country: "USA", share: 12, flag: "🇺🇸" },
+                    { country: "Myanmar", share: 9, flag: "🇲🇲" },
+                    { country: "Australia", share: 5, flag: "🇦🇺" },
+                    { country: "Other", share: 5, flag: "🌍" }
+                ],
+                processingByCountry: [
+                    { country: "China", share: 90, flag: "🇨🇳", isChina: true },
+                    { country: "Estonia", share: 3, flag: "🇪🇪" },
+                    { country: "USA", share: 2, flag: "🇺🇸" },
+                    { country: "Other", share: 5, flag: "🌍" }
+                ],
+                companies: [
+                    { name: "Northern RE", country: "🇨🇳", share: 30 },
+                    { name: "China Minmetals", country: "🇨🇳", share: 15 },
+                    { name: "MP Materials", country: "🇺🇸", share: 12 },
+                    { name: "Lynas", country: "🇦🇺", share: 5 },
+                    { name: "Iluka", country: "🇦🇺", share: 3 }
+                ],
+                supplyChain: [
+                    { stage: "Mining", location: "China 69%", isBottleneck: true, countries: [
+                        { name: "China", share: 69, isChina: true },
+                        { name: "USA", share: 12 },
+                        { name: "Myanmar", share: 9 },
+                        { name: "Other", share: 10 }
+                    ]},
+                    { stage: "Separation", location: "China 90%", isBottleneck: true, countries: [
+                        { name: "China", share: 90, isChina: true },
+                        { name: "Estonia", share: 3 },
+                        { name: "USA", share: 2 },
+                        { name: "Other", share: 5 }
+                    ]},
+                    { stage: "Metal/Alloy", location: "China 90%", isBottleneck: true, countries: [
+                        { name: "China", share: 90, isChina: true },
+                        { name: "Japan", share: 5 },
+                        { name: "Other", share: 5 }
+                    ]},
+                    { stage: "Magnets", location: "China 92%", isBottleneck: true, countries: [
+                        { name: "China", share: 92, isChina: true },
+                        { name: "Japan", share: 5 },
+                        { name: "Other", share: 3 }
+                    ]},
+                    { stage: "End Products", location: "Global", isBottleneck: false, countries: [
+                        { name: "EV Motors", share: 40 },
+                        { name: "Wind Turbines", share: 25 },
+                        { name: "Electronics", share: 20 },
+                        { name: "Other", share: 15 }
+                    ]}
+                ],
+                sankeyData: {
+                    nodes: [
+                        { name: "China Mining", category: "mining", isChina: true },
+                        { name: "USA Mining", category: "mining" },
+                        { name: "Myanmar Mining", category: "mining" },
+                        { name: "Australia Mining", category: "mining" },
+                        { name: "China Separation", category: "processing", isChina: true },
+                        { name: "Malaysia (Lynas)", category: "processing" },
+                        { name: "China Magnets", category: "manufacturing", isChina: true },
+                        { name: "Japan Magnets", category: "manufacturing" },
+                        { name: "EV Motors (40%)", category: "enduse" },
+                        { name: "Wind Turbines (25%)", category: "enduse" },
+                        { name: "Other (35%)", category: "enduse" }
+                    ],
+                    links: [
+                        { source: 0, target: 4, value: 69 },
+                        { source: 1, target: 4, value: 10 },
+                        { source: 1, target: 5, value: 2 },
+                        { source: 2, target: 4, value: 9 },
+                        { source: 3, target: 5, value: 5 },
+                        { source: 4, target: 6, value: 82 },
+                        { source: 4, target: 7, value: 6 },
+                        { source: 5, target: 7, value: 4 },
+                        { source: 5, target: 6, value: 3 },
+                        { source: 6, target: 8, value: 38 },
+                        { source: 6, target: 9, value: 23 },
+                        { source: 6, target: 10, value: 24 },
+                        { source: 7, target: 8, value: 4 },
+                        { source: 7, target: 9, value: 3 },
+                        { source: 7, target: 10, value: 3 }
+                    ]
+                }
+            },
+            graphite: {
+                name: "Graphite",
+                symbol: "C",
+                uses: "Battery Anodes, Refractories, Lubricants",
+                price: { value: 550, unit: "USD/t", change: -10 },
+                production: { value: 1600000, unit: "tonnes" },
+                reserves: { value: 330000000, unit: "tonnes" },
+                chinaProcessing: 95,
+                riskLevel: "critical",
+                productionByCountry: [
+                    { country: "China", share: 75, flag: "🇨🇳" },
+                    { country: "Madagascar", share: 6, flag: "🇲🇬" },
+                    { country: "Mozambique", share: 6, flag: "🇲🇿" },
+                    { country: "Brazil", share: 4, flag: "🇧🇷" },
+                    { country: "Other", share: 9, flag: "🌍" }
+                ],
+                processingByCountry: [
+                    { country: "China", share: 95, flag: "🇨🇳", isChina: true },
+                    { country: "Japan", share: 2, flag: "🇯🇵" },
+                    { country: "Other", share: 3, flag: "🌍" }
+                ],
+                companies: [
+                    { name: "BTR New Energy", country: "🇨🇳", share: 22 },
+                    { name: "Shanghai Putailai", country: "🇨🇳", share: 15 },
+                    { name: "Showa Denko", country: "🇯🇵", share: 5 },
+                    { name: "Syrah Resources", country: "🇦🇺", share: 4 },
+                    { name: "Northern Graphite", country: "🇨🇦", share: 2 }
+                ],
+                supplyChain: [
+                    { stage: "Mining", location: "China 75%", isBottleneck: true, countries: [
+                        { name: "China", share: 75, isChina: true },
+                        { name: "Madagascar", share: 6 },
+                        { name: "Mozambique", share: 6 },
+                        { name: "Other", share: 13 }
+                    ]},
+                    { stage: "Anode Material", location: "China 95%", isBottleneck: true, countries: [
+                        { name: "China", share: 95, isChina: true },
+                        { name: "Japan", share: 2 },
+                        { name: "Other", share: 3 }
+                    ]},
+                    { stage: "Battery Cell", location: "China 77%", isBottleneck: true, countries: [
+                        { name: "China", share: 77, isChina: true },
+                        { name: "Korea", share: 12 },
+                        { name: "Japan", share: 6 },
+                        { name: "Other", share: 5 }
+                    ]},
+                    { stage: "End Products", location: "Global", isBottleneck: false, countries: [
+                        { name: "EV Batteries", share: 55 },
+                        { name: "Refractories", share: 30 },
+                        { name: "Other", share: 15 }
+                    ]}
+                ],
+                sankeyData: {
+                    nodes: [
+                        { name: "China Mining", category: "mining", isChina: true },
+                        { name: "Africa Mining", category: "mining" },
+                        { name: "Other Mining", category: "mining" },
+                        { name: "China Anode Prod", category: "processing", isChina: true },
+                        { name: "Japan Anode Prod", category: "processing" },
+                        { name: "China Battery", category: "manufacturing", isChina: true },
+                        { name: "Korea Battery", category: "manufacturing" },
+                        { name: "EV Batteries (55%)", category: "enduse" },
+                        { name: "Refractories (30%)", category: "enduse" },
+                        { name: "Other (15%)", category: "enduse" }
+                    ],
+                    links: [
+                        { source: 0, target: 3, value: 75 },
+                        { source: 1, target: 3, value: 10 },
+                        { source: 1, target: 4, value: 2 },
+                        { source: 2, target: 3, value: 10 },
+                        { source: 2, target: 4, value: 3 },
+                        { source: 3, target: 5, value: 70 },
+                        { source: 3, target: 6, value: 15 },
+                        { source: 3, target: 8, value: 10 },
+                        { source: 4, target: 6, value: 3 },
+                        { source: 4, target: 5, value: 2 },
+                        { source: 5, target: 7, value: 45 },
+                        { source: 5, target: 8, value: 15 },
+                        { source: 5, target: 9, value: 12 },
+                        { source: 6, target: 7, value: 15 },
+                        { source: 6, target: 9, value: 3 }
+                    ]
+                }
+            },
+            copper: {
+                name: "Copper",
+                symbol: "Cu",
+                uses: "Electrical Wiring, EV Motors, Renewable Energy",
+                price: { value: 5.85, unit: "USD/lb", change: 27.6 },
+                production: { value: 22000000, unit: "tonnes" },
+                reserves: { value: 890000000, unit: "tonnes" },
+                chinaProcessing: 45,
+                riskLevel: "moderate",
+                productionByCountry: [
+                    { country: "Chile", share: 24, flag: "🇨🇱" },
+                    { country: "Peru", share: 12, flag: "🇵🇪" },
+                    { country: "DR Congo", share: 11, flag: "🇨🇩" },
+                    { country: "China", share: 9, flag: "🇨🇳" },
+                    { country: "USA", share: 5, flag: "🇺🇸" },
+                    { country: "Other", share: 39, flag: "🌍" }
+                ],
+                processingByCountry: [
+                    { country: "China", share: 45, flag: "🇨🇳", isChina: true },
+                    { country: "Chile", share: 12, flag: "🇨🇱" },
+                    { country: "Japan", share: 8, flag: "🇯🇵" },
+                    { country: "Other", share: 35, flag: "🌍" }
+                ],
+                companies: [
+                    { name: "Codelco", country: "🇨🇱", share: 8 },
+                    { name: "Freeport-McMoRan", country: "🇺🇸", share: 7 },
+                    { name: "BHP", country: "🇦🇺", share: 6 },
+                    { name: "Glencore", country: "🇨🇭", share: 5 },
+                    { name: "Southern Copper", country: "🇲🇽", share: 5 }
+                ],
+                supplyChain: [
+                    { stage: "Mining", location: "Chile 24%", isBottleneck: false, countries: [
+                        { name: "Chile", share: 24 },
+                        { name: "Peru", share: 12 },
+                        { name: "DR Congo", share: 11 },
+                        { name: "Other", share: 53 }
+                    ]},
+                    { stage: "Smelting", location: "China 45%", isBottleneck: false, countries: [
+                        { name: "China", share: 45, isChina: true },
+                        { name: "Chile", share: 12 },
+                        { name: "Japan", share: 8 },
+                        { name: "Other", share: 35 }
+                    ]},
+                    { stage: "Refining", location: "China 45%", isBottleneck: false, countries: [
+                        { name: "China", share: 45, isChina: true },
+                        { name: "Chile", share: 10 },
+                        { name: "Japan", share: 7 },
+                        { name: "Other", share: 38 }
+                    ]},
+                    { stage: "End Products", location: "Global", isBottleneck: false, countries: [
+                        { name: "Electrical", share: 65 },
+                        { name: "Construction", share: 25 },
+                        { name: "Transport", share: 10 }
+                    ]}
+                ],
+                sankeyData: {
+                    nodes: [
+                        { name: "Chile Mining", category: "mining" },
+                        { name: "Peru Mining", category: "mining" },
+                        { name: "DR Congo Mining", category: "mining" },
+                        { name: "Other Mining", category: "mining" },
+                        { name: "China Smelting", category: "processing", isChina: true },
+                        { name: "Chile Smelting", category: "processing" },
+                        { name: "Other Smelting", category: "processing" },
+                        { name: "Electrical (65%)", category: "enduse" },
+                        { name: "Construction (25%)", category: "enduse" },
+                        { name: "Transport (10%)", category: "enduse" }
+                    ],
+                    links: [
+                        { source: 0, target: 4, value: 10 },
+                        { source: 0, target: 5, value: 12 },
+                        { source: 0, target: 6, value: 2 },
+                        { source: 1, target: 4, value: 8 },
+                        { source: 1, target: 6, value: 4 },
+                        { source: 2, target: 4, value: 9 },
+                        { source: 2, target: 6, value: 2 },
+                        { source: 3, target: 4, value: 18 },
+                        { source: 3, target: 6, value: 21 },
+                        { source: 4, target: 7, value: 30 },
+                        { source: 4, target: 8, value: 10 },
+                        { source: 4, target: 9, value: 5 },
+                        { source: 5, target: 7, value: 8 },
+                        { source: 5, target: 8, value: 3 },
+                        { source: 5, target: 9, value: 1 },
+                        { source: 6, target: 7, value: 19 },
+                        { source: 6, target: 8, value: 7 },
+                        { source: 6, target: 9, value: 3 }
+                    ]
+                }
+            },
+            gallium: {
+                name: "Gallium",
+                symbol: "Ga",
+                uses: "Semiconductors, LEDs, Solar Cells",
+                price: { value: 350, unit: "USD/kg", change: 45 },
+                production: { value: 500, unit: "tonnes" },
+                reserves: { value: null, unit: "N/A" },
+                chinaProcessing: 96,
+                riskLevel: "critical",
+                productionByCountry: [
+                    { country: "China", share: 96, flag: "🇨🇳" },
+                    { country: "Japan", share: 2, flag: "🇯🇵" },
+                    { country: "South Korea", share: 1, flag: "🇰🇷" },
+                    { country: "Other", share: 1, flag: "🌍" }
+                ],
+                processingByCountry: [
+                    { country: "China", share: 96, flag: "🇨🇳", isChina: true },
+                    { country: "Japan", share: 2, flag: "🇯🇵" },
+                    { country: "Other", share: 2, flag: "🌍" }
+                ],
+                companies: [
+                    { name: "Chalco", country: "🇨🇳", share: 35 },
+                    { name: "Zhuhai Fangyuan", country: "🇨🇳", share: 20 },
+                    { name: "JX Nippon", country: "🇯🇵", share: 2 },
+                    { name: "Others", country: "🇨🇳", share: 43 }
+                ],
+                supplyChain: [
+                    { stage: "Extraction", location: "China 96%", isBottleneck: true, countries: [
+                        { name: "China", share: 96, isChina: true },
+                        { name: "Japan", share: 2 },
+                        { name: "Other", share: 2 }
+                    ]},
+                    { stage: "Refining", location: "China 96%", isBottleneck: true, countries: [
+                        { name: "China", share: 96, isChina: true },
+                        { name: "Japan", share: 2 },
+                        { name: "Other", share: 2 }
+                    ]},
+                    { stage: "GaAs/GaN Wafers", location: "Global", isBottleneck: false, countries: [
+                        { name: "Taiwan", share: 30 },
+                        { name: "Japan", share: 25 },
+                        { name: "China", share: 20, isChina: true },
+                        { name: "USA", share: 15 },
+                        { name: "Other", share: 10 }
+                    ]},
+                    { stage: "End Products", location: "Global", isBottleneck: false, countries: [
+                        { name: "Semiconductors", share: 70 },
+                        { name: "LEDs", share: 20 },
+                        { name: "Solar", share: 10 }
+                    ]}
+                ],
+                sankeyData: {
+                    nodes: [
+                        { name: "China Production", category: "mining", isChina: true },
+                        { name: "Japan Production", category: "mining" },
+                        { name: "China Refining", category: "processing", isChina: true },
+                        { name: "Other Refining", category: "processing" },
+                        { name: "Semiconductors (70%)", category: "enduse" },
+                        { name: "LEDs (20%)", category: "enduse" },
+                        { name: "Solar (10%)", category: "enduse" }
+                    ],
+                    links: [
+                        { source: 0, target: 2, value: 96 },
+                        { source: 1, target: 3, value: 2 },
+                        { source: 0, target: 3, value: 2 },
+                        { source: 2, target: 4, value: 67 },
+                        { source: 2, target: 5, value: 20 },
+                        { source: 2, target: 6, value: 9 },
+                        { source: 3, target: 4, value: 3 },
+                        { source: 3, target: 6, value: 1 }
+                    ]
+                }
+            }
+        };
+        
+        // Concentration risks for overview
+        const CONCENTRATION_RISKS = [
+            { name: "Gallium Production", country: "China", share: 96, color: "china" },
+            { name: "Graphite Anode", country: "China", share: 95, color: "china" },
+            { name: "REE Magnets", country: "China", share: 92, color: "china" },
+            { name: "REE Processing", country: "China", share: 90, color: "china" },
+            { name: "Battery Precursor", country: "China", share: 80, color: "china" },
+            { name: "Battery Cells", country: "China", share: 77, color: "china" },
+            { name: "Graphite Mining", country: "China", share: 75, color: "china" },
+            { name: "Cobalt Refining", country: "China", share: 72, color: "china" },
+            { name: "REE Mining", country: "China", share: 69, color: "china" },
+            { name: "Cobalt Mining", country: "DRC", share: 68, color: "drc" },
+            { name: "Lithium Processing", country: "China", share: 65, color: "china" },
+            { name: "Nickel Mining", country: "Indonesia", share: 50, color: "indonesia" },
+            { name: "Copper Smelting", country: "China", share: 45, color: "china" }
+        ];
+        
+        // ═══════════════════════════════════════════════════════════════════════════
+        // UTILITIES
+        // ═══════════════════════════════════════════════════════════════════════════
+        
+        function formatNumber(num) {
+            if (num === null || num === undefined) return "—";
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + "M";
+            if (num >= 1000) return (num / 1000).toFixed(0) + "K";
+            return num.toLocaleString();
+        }
+        
+        function getRiskColor(level) {
+            switch(level) {
+                case 'critical': return '#ef4444';
+                case 'high': return '#f59e0b';
+                case 'moderate': return '#3b82f6';
+                case 'low': return '#10b981';
+                default: return '#71717a';
+            }
+        }
+        
+        function getCategoryColor(category, isChina) {
+            if (isChina) return '#dc2626';
+            switch(category) {
+                case 'mining': return '#06b6d4';
+                case 'processing': return '#8b5cf6';
+                case 'manufacturing': return '#3b82f6';
+                case 'enduse': return '#10b981';
+                default: return '#71717a';
+            }
+        }
+        
+        // ═══════════════════════════════════════════════════════════════════════════
+        // SANKEY DIAGRAM
+        // ═══════════════════════════════════════════════════════════════════════════
+        
+        function renderSankey(containerId, data) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            const margin = { top: 20, right: 150, bottom: 20, left: 150 };
+            const width = container.clientWidth - margin.left - margin.right;
+            const height = 420;
+            
+            const svg = d3.select(`#${containerId}`)
+                .append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom);
+            
+            const g = svg.append('g')
+                .attr('transform', `translate(${margin.left},${margin.top})`);
+            
+            // Create sankey generator
+            const sankey = d3.sankey()
+                .nodeId(d => d.name)
+                .nodeAlign(d3.sankeyJustify)
+                .nodeWidth(20)
+                .nodePadding(15)
+                .extent([[0, 0], [width, height]]);
+            
+            // Prepare data
+            const graph = {
+                nodes: data.nodes.map(d => ({ ...d })),
+                links: data.links.map(d => ({
+                    source: data.nodes[d.source].name,
+                    target: data.nodes[d.target].name,
+                    value: d.value
+                }))
+            };
+            
+            // Generate sankey layout
+            const { nodes, links } = sankey(graph);
+            
+            // Draw links
+            const link = g.append('g')
+                .attr('class', 'links')
+                .selectAll('path')
+                .data(links)
+                .join('path')
+                .attr('d', d3.sankeyLinkHorizontal())
+                .attr('stroke-width', d => Math.max(1, d.width))
+                .attr('stroke', d => {
+                    const sourceNode = data.nodes.find(n => n.name === d.source.name);
+                    return sourceNode && sourceNode.isChina ? '#dc2626' : '#52525b';
+                })
+                .attr('class', d => {
+                    const sourceNode = data.nodes.find(n => n.name === d.source.name);
+                    return sourceNode && sourceNode.isChina ? 'link china-flow' : 'link';
+                })
+                .style('fill', 'none')
+                .style('stroke-opacity', d => {
+                    const sourceNode = data.nodes.find(n => n.name === d.source.name);
+                    return sourceNode && sourceNode.isChina ? 0.6 : 0.35;
+                });
+            
+            // Draw nodes
+            const node = g.append('g')
+                .attr('class', 'nodes')
+                .selectAll('g')
+                .data(nodes)
+                .join('g')
+                .attr('class', d => `node ${d.isChina ? 'china' : ''}`);
+            
+            node.append('rect')
+                .attr('x', d => d.x0)
+                .attr('y', d => d.y0)
+                .attr('height', d => Math.max(1, d.y1 - d.y0))
+                .attr('width', d => d.x1 - d.x0)
+                .attr('fill', d => getCategoryColor(d.category, d.isChina))
+                .attr('rx', 3)
+                .style('filter', d => d.isChina ? 'drop-shadow(0 0 8px rgba(220, 38, 38, 0.5))' : 'none');
+            
+            // Node labels
+            node.append('text')
+                .attr('x', d => d.x0 < width / 2 ? d.x0 - 8 : d.x1 + 8)
+                .attr('y', d => (d.y0 + d.y1) / 2)
+                .attr('dy', '0.35em')
+                .attr('text-anchor', d => d.x0 < width / 2 ? 'end' : 'start')
+                .attr('fill', d => d.isChina ? '#fca5a5' : '#a1a1aa')
+                .attr('font-size', '11px')
+                .attr('font-family', 'Geist, sans-serif')
+                .text(d => d.name);
+            
+            // Tooltips
+            link.on('mouseover', function(event, d) {
+                d3.select(this).style('stroke-opacity', 0.8);
+            }).on('mouseout', function(event, d) {
+                const sourceNode = data.nodes.find(n => n.name === d.source.name);
+                d3.select(this).style('stroke-opacity', sourceNode && sourceNode.isChina ? 0.6 : 0.35);
+            });
+        }
+        
+        // ═══════════════════════════════════════════════════════════════════════════
+        // TREEMAP
+        // ═══════════════════════════════════════════════════════════════════════════
+        
+        function renderTreemap(containerId, data, colorScheme = 'default') {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = '';
+            
+            const width = container.clientWidth;
+            const height = container.clientHeight || 300;
+            
+            const svg = d3.select(`#${containerId}`)
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+            
+            // Create hierarchy
+            const root = d3.hierarchy({ children: data })
+                .sum(d => d.share)
+                .sort((a, b) => b.value - a.value);
+            
+            // Treemap layout
+            d3.treemap()
+                .size([width, height])
+                .padding(2)
+                .round(true)(root);
+            
+            // Color scale
+            const getColor = (d) => {
+                if (d.data.isChina || d.data.country === 'China') return '#dc2626';
+                if (colorScheme === 'risk') {
+                    return d.data.share > 50 ? '#dc2626' : d.data.share > 30 ? '#f59e0b' : '#3b82f6';
+                }
+                const colors = ['#3b82f6', '#06b6d4', '#8b5cf6', '#10b981', '#f59e0b', '#ec4899'];
+                return colors[data.indexOf(d.data) % colors.length];
+            };
+            
+            // Draw cells
+            const cell = svg.selectAll('g')
+                .data(root.leaves())
+                .join('g')
+                .attr('transform', d => `translate(${d.x0},${d.y0})`);
+            
+            cell.append('rect')
+                .attr('class', 'treemap-cell')
+                .attr('width', d => d.x1 - d.x0)
+                .attr('height', d => d.y1 - d.y0)
+                .attr('fill', getColor)
+                .attr('rx', 4);
+            
+            // Labels (only for cells large enough)
+            cell.filter(d => (d.x1 - d.x0) > 60 && (d.y1 - d.y0) > 40)
+                .append('text')
+                .attr('class', 'treemap-label')
+                .attr('x', 8)
+                .attr('y', 20)
+                .text(d => d.data.country || d.data.name);
+            
+            cell.filter(d => (d.x1 - d.x0) > 60 && (d.y1 - d.y0) > 40)
+                .append('text')
+                .attr('class', 'treemap-value')
+                .attr('x', 8)
+                .attr('y', 40)
+                .text(d => d.data.share + '%');
+        }
+        
+        // ═══════════════════════════════════════════════════════════════════════════
+        // OVERVIEW SECTION
+        // ═══════════════════════════════════════════════════════════════════════════
+        
+        function renderConcentrationBars() {
+            const container = document.getElementById('concentrationBars');
+            
+            container.innerHTML = CONCENTRATION_RISKS.map(item => `
+                <div class="conc-bar">
+                    <div class="conc-bar-header">
+                        <span class="conc-bar-label">${item.name}</span>
+                        <span class="conc-bar-value" style="color: ${item.color === 'china' ? 'var(--china-red)' : item.color === 'drc' ? 'var(--risk-high)' : 'var(--accent-orange)'}">
+                            ${item.country} ${item.share}%
+                        </span>
+                    </div>
+                    <div class="conc-bar-track">
+                        <div class="conc-bar-fill ${item.color}" style="width: ${item.share}%"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function renderOverviewTreemap() {
+            const data = [
+                { name: "Graphite Anode", share: 95, isChina: true },
+                { name: "REE Magnets", share: 92, isChina: true },
+                { name: "REE Processing", share: 90, isChina: true },
+                { name: "Battery Precursor", share: 80, isChina: true },
+                { name: "Battery Cells", share: 77, isChina: true },
+                { name: "Cobalt Refining", share: 72, isChina: true },
+                { name: "Lithium Processing", share: 65, isChina: true },
+                { name: "Copper Smelting", share: 45, isChina: true }
+            ];
+            
+            renderTreemap('overviewTreemap', data);
+        }
+        
+        function renderMineralCards() {
+            const container = document.getElementById('mineralCardsGrid');
+            
+            const minerals = Object.entries(MINERALS_DATA).map(([key, data]) => ({
+                key,
+                ...data
+            })).sort((a, b) => b.chinaProcessing - a.chinaProcessing);
+            
+            container.innerHTML = minerals.map(m => `
+                <div class="mineral-card" onclick="showMineral('${m.key}')">
+                    <div class="mineral-card-header">
+                        <span class="mineral-card-name">${m.name}</span>
+                        <span class="mineral-card-symbol">${m.symbol}</span>
+                    </div>
+                    <div>
+                        <p class="small">${m.uses}</p>
+                    </div>
+                    <div class="mineral-card-risk">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span class="micro">China Processing Share</span>
+                            <span class="mono" style="color: ${m.chinaProcessing > 70 ? 'var(--china-red)' : m.chinaProcessing > 50 ? 'var(--risk-high)' : 'var(--accent-blue)'}; font-size: 14px;">
+                                ${m.chinaProcessing}%
+                            </span>
+                        </div>
+                        <div class="risk-meter">
+                            <div class="risk-meter-fill" style="width: ${m.chinaProcessing}%; background: ${m.chinaProcessing > 70 ? 'var(--china-red)' : m.chinaProcessing > 50 ? 'var(--risk-high)' : 'var(--accent-blue)'};"></div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // ═══════════════════════════════════════════════════════════════════════════
+        // MINERAL DETAIL
+        // ═══════════════════════════════════════════════════════════════════════════
+        
+        function showMineral(mineralKey) {
+            const mineral = MINERALS_DATA[mineralKey];
+            if (!mineral) return;
+            
+            // Update nav
+            document.querySelectorAll('.mineral-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.mineral === mineralKey);
+            });
+            
+            // Show detail section
+            document.getElementById('overviewSection').classList.add('hidden');
+            document.getElementById('mineralDetail').classList.remove('hidden');
+            
+            // Update header
+            document.getElementById('detailIcon').textContent = mineral.symbol;
+            document.getElementById('detailName').textContent = mineral.name;
+            document.getElementById('detailUses').textContent = mineral.uses;
+            
+            // Update risk badge
+            const riskBadge = document.getElementById('detailRisk');
+            riskBadge.className = `risk-badge risk-${mineral.riskLevel}`;
+            riskBadge.textContent = mineral.riskLevel.toUpperCase() + ' RISK';
+            
+            // Update stats
+            document.getElementById('statPrice').innerHTML = `${formatNumber(mineral.price.value)} <span class="stat-unit">${mineral.price.unit}</span>`;
+            const priceChange = document.getElementById('statPriceChange');
+            priceChange.className = `stat-change ${mineral.price.change >= 0 ? 'positive' : 'negative'}`;
+            priceChange.textContent = `${mineral.price.change >= 0 ? '↑' : '↓'} ${Math.abs(mineral.price.change).toFixed(1)}% YoY`;
+            
+            document.getElementById('statProduction').textContent = formatNumber(mineral.production.value);
+            document.getElementById('statProductionUnit').textContent = mineral.production.unit;
+            
+            document.getElementById('statReserves').textContent = formatNumber(mineral.reserves.value);
+            document.getElementById('statReservesUnit').textContent = mineral.reserves.unit;
+            
+            document.getElementById('statChinaShare').textContent = mineral.chinaProcessing + '%';
+            
+            // Render flow diagram
+            renderFlowDiagram(mineral.supplyChain);
+            
+            // Render sankey
+            renderSankey('sankeyDiagram', mineral.sankeyData);
+            
+            // Render production treemap
+            renderTreemap('productionTreemap', mineral.productionByCountry);
+            
+            // Render company bars
+            renderCompanyBars(mineral.companies);
+        }
+        
+        function renderFlowDiagram(stages) {
+            const container = document.getElementById('flowDiagram');
+            
+            container.innerHTML = stages.map((stage, i) => {
+                const countries = stage.countries.map(c => `
+                    <div class="flow-country">
+                        <span class="flow-country-name">${c.name}</span>
+                        <span class="flow-country-share ${c.isChina ? 'china' : ''}">${c.share}%</span>
+                    </div>
+                `).join('');
+                
+                return `
+                    ${i > 0 ? '<div class="flow-arrow">→</div>' : ''}
+                    <div class="flow-stage ${stage.isBottleneck ? 'bottleneck' : ''}">
+                        <p class="flow-stage-header">Stage ${i + 1}</p>
+                        <p class="flow-stage-title">${stage.stage}</p>
+                        ${countries}
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function renderCompanyBars(companies) {
+            const container = document.getElementById('companyBars');
+            const maxShare = Math.max(...companies.map(c => c.share));
+            
+            container.innerHTML = companies.map((company, i) => {
+                const isChina = company.country === '🇨🇳';
+                return `
+                    <div class="company-bar">
+                        <span class="company-rank">${i + 1}</span>
+                        <span class="company-name">${company.name}</span>
+                        <div class="company-bar-track">
+                            <div class="company-bar-fill" style="width: ${(company.share / maxShare) * 100}%; background: ${isChina ? 'var(--china-red)' : 'var(--accent-blue)'};">
+                                <span class="company-bar-value">${company.share}%</span>
+                            </div>
+                        </div>
+                        <span class="company-flag">${company.country}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // ═══════════════════════════════════════════════════════════════════════════
+        // NAVIGATION
+        // ═══════════════════════════════════════════════════════════════════════════
+        
+        document.querySelectorAll('.mineral-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const mineral = btn.dataset.mineral;
+                
+                if (mineral === 'overview') {
+                    document.querySelectorAll('.mineral-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    document.getElementById('overviewSection').classList.remove('hidden');
+                    document.getElementById('mineralDetail').classList.add('hidden');
+                } else {
+                    showMineral(mineral);
+                }
+            });
+        });
+        
+        // ═══════════════════════════════════════════════════════════════════════════
+        // INIT
+        // ═══════════════════════════════════════════════════════════════════════════
+        
+        function init() {
+            renderConcentrationBars();
+            renderOverviewTreemap();
+            renderMineralCards();
+        }
+        
+        // Handle resize
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                if (!document.getElementById('mineralDetail').classList.contains('hidden')) {
+                    const activeMineral = document.querySelector('.mineral-btn.active')?.dataset.mineral;
+                    if (activeMineral && activeMineral !== 'overview') {
+                        showMineral(activeMineral);
+                    }
+                } else {
+                    renderOverviewTreemap();
+                }
+            }, 250);
+        });
+        
+        // Start
+        init();
+    </script>
+</body>
+</html>

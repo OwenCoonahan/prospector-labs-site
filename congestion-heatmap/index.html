@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grid Congestion Heatmap — Prospector Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:hsl(0 0% 3.9%);--bg-card:hsl(0 0% 5.5%);--bg-hover:hsl(0 0% 8%);--border:hsl(0 0% 14.9%);--fg:hsl(0 0% 98%);--fg-muted:hsl(0 0% 63.9%);--accent:hsl(142 71% 45%);--accent2:hsl(47 96% 53%);--danger:hsl(0 84% 60%);--radius:8px;--font:'Geist',system-ui,sans-serif;--mono:'Geist Mono',monospace}
+[data-theme="light"]{--bg:hsl(0 0% 100%);--bg-card:hsl(0 0% 97%);--bg-hover:hsl(0 0% 93%);--border:hsl(0 0% 85%);--fg:hsl(0 0% 3.9%);--fg-muted:hsl(0 0% 45%)}
+html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--fg);overflow:hidden}
+#map{position:absolute;inset:0;z-index:0}
+
+/* Top bar */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;gap:12px;padding:8px 16px;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.topbar .logo{font-weight:700;font-size:14px;letter-spacing:-0.02em;white-space:nowrap}
+.topbar .logo span{color:var(--accent)}
+.topbar select,.topbar input[type="date"],.topbar button{font-family:var(--font);font-size:12px;background:var(--bg-card);color:var(--fg);border:1px solid var(--border);border-radius:var(--radius);padding:6px 10px;outline:none;cursor:pointer}
+.topbar select:hover,.topbar input:hover,.topbar button:hover{border-color:var(--fg-muted)}
+.topbar button.active{background:var(--accent);color:#000;border-color:var(--accent)}
+.hour-slider{display:flex;align-items:center;gap:6px}
+.hour-slider input[type="range"]{width:100px;accent-color:var(--accent)}
+.hour-slider .hour-label{font-family:var(--mono);font-size:11px;color:var(--fg-muted);min-width:40px}
+.spacer{flex:1}
+.theme-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:16px;padding:0!important}
+
+/* Stats bar */
+.statsbar{position:fixed;bottom:0;left:0;right:0;z-index:10;display:flex;gap:2px;padding:0;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);border-top:1px solid var(--border)}
+.stat{flex:1;padding:10px 16px;text-align:center;border-right:1px solid var(--border)}
+.stat:last-child{border-right:none}
+.stat .val{font-family:var(--mono);font-size:18px;font-weight:600;line-height:1.2}
+.stat .val.green{color:var(--accent)}.stat .val.yellow{color:var(--accent2)}.stat .val.red{color:var(--danger)}
+.stat .lbl{font-size:10px;color:var(--fg-muted);text-transform:uppercase;letter-spacing:0.05em;margin-top:2px}
+
+/* Side panel */
+.panel{position:fixed;top:48px;right:0;bottom:44px;width:360px;z-index:9;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(16px);border-left:1px solid var(--border);overflow-y:auto;transform:translateX(100%);transition:transform .3s ease}
+.panel.open{transform:translateX(0)}
+.panel-header{padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.panel-header h3{font-size:13px;font-weight:600}
+.panel-close{background:none;border:none;color:var(--fg-muted);cursor:pointer;font-size:18px;padding:4px}
+.panel-section{padding:12px 16px;border-bottom:1px solid var(--border)}
+.panel-section h4{font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:var(--fg-muted);margin-bottom:8px}
+.constraint-row{display:flex;align-items:center;gap:8px;padding:8px;border-radius:var(--radius);cursor:pointer;margin-bottom:4px}
+.constraint-row:hover{background:var(--bg-hover)}
+.constraint-rank{font-family:var(--mono);font-size:10px;color:var(--fg-muted);width:20px;text-align:right}
+.constraint-info{flex:1;min-width:0}
+.constraint-name{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.constraint-meta{font-size:10px;color:var(--fg-muted);font-family:var(--mono)}
+.constraint-cost{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--accent2)}
+.sparkline{display:inline-block;vertical-align:middle}
+.sparkline canvas{display:block}
+
+/* Toggle panel button */
+.panel-toggle{position:fixed;top:56px;right:8px;z-index:11;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:6px 10px;cursor:pointer;color:var(--fg);font-size:11px;font-family:var(--font)}
+.panel-toggle:hover{background:var(--bg-hover)}
+.panel.open~.panel-toggle{right:368px}
+
+/* Popup */
+.mapboxgl-popup-content{background:var(--bg-card)!important;color:var(--fg)!important;border:1px solid var(--border)!important;border-radius:var(--radius)!important;padding:12px!important;font-family:var(--font)!important;font-size:12px!important;max-width:280px!important;box-shadow:0 8px 32px rgba(0,0,0,.4)!important}
+.mapboxgl-popup-tip{border-top-color:var(--bg-card)!important}
+.mapboxgl-popup-close-button{color:var(--fg-muted)!important;font-size:16px!important}
+.popup-title{font-weight:600;font-size:13px;margin-bottom:6px}
+.popup-zone{color:var(--fg-muted);font-size:11px;margin-bottom:8px}
+.popup-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px}
+.popup-grid dt{font-size:10px;color:var(--fg-muted);text-transform:uppercase}
+.popup-grid dd{font-family:var(--mono);font-size:12px;font-weight:500}
+
+/* Legend */
+.legend{position:fixed;bottom:52px;left:16px;z-index:10;display:flex;align-items:center;gap:8px;padding:8px 12px;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(8px);border:1px solid var(--border);border-radius:var(--radius)}
+.legend-gradient{width:120px;height:8px;border-radius:4px;background:linear-gradient(90deg,#22c55e,#eab308,#f97316,#ef4444,#dc2626)}
+.legend span{font-size:10px;color:var(--fg-muted);font-family:var(--mono)}
+
+/* Animation controls */
+.anim-controls{display:flex;align-items:center;gap:6px}
+.anim-btn{width:28px;height:28px;display:flex;align-items:center;justify-content:center;padding:0!important;font-size:14px}
+
+/* Loading */
+.loading-overlay{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;transition:opacity .5s}
+.loading-overlay.hidden{opacity:0;pointer-events:none}
+.loading-spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:13px;color:var(--fg-muted)}
+
+/* Scrollbar */
+.panel::-webkit-scrollbar{width:4px}.panel::-webkit-scrollbar-track{background:transparent}.panel::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loading">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Loading congestion data…</div>
+</div>
+
+<div class="topbar">
+  <div class="logo">Prospector<span>Labs</span> · Congestion</div>
+  <select id="isoSelect">
+    <option value="PJM">PJM</option>
+    <option value="CAISO">CAISO</option>
+    <option value="ERCOT">ERCOT</option>
+    <option value="MISO">MISO</option>
+    <option value="SPP">SPP</option>
+    <option value="NYISO">NYISO</option>
+    <option value="ISO-NE">ISO-NE</option>
+  </select>
+  <input type="date" id="dateInput" value="2026-02-20">
+  <div class="hour-slider">
+    <input type="range" id="hourSlider" min="0" max="23" value="14">
+    <span class="hour-label" id="hourLabel">14:00</span>
+  </div>
+  <div class="anim-controls">
+    <button class="topbar anim-btn" id="playBtn" title="Animate through day">▶</button>
+    <button class="topbar anim-btn" id="stopBtn" title="Stop animation" style="display:none">⏸</button>
+  </div>
+  <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--fg-muted)">
+    <input type="checkbox" id="showLines" checked> Lines
+  </label>
+  <div class="spacer"></div>
+  <button class="topbar theme-btn" id="themeBtn" title="Toggle theme">◐</button>
+</div>
+
+<div id="map"></div>
+
+<div class="legend">
+  <span>$0</span>
+  <div class="legend-gradient"></div>
+  <span>$100+</span>
+  <span style="margin-left:8px;font-size:9px">$/MWh congestion</span>
+</div>
+
+<button class="panel-toggle" id="panelToggle">◀ Constraints</button>
+<div class="panel" id="panel">
+  <div class="panel-header">
+    <h3>Binding Constraints</h3>
+    <button class="panel-close" id="panelClose">✕</button>
+  </div>
+  <div id="constraintList"></div>
+</div>
+
+<div class="statsbar">
+  <div class="stat"><div class="val green" id="statAvg">—</div><div class="lbl">Avg Congestion</div></div>
+  <div class="stat"><div class="val red" id="statPeak">—</div><div class="lbl">Peak Congestion</div></div>
+  <div class="stat"><div class="val yellow" id="statCost">—</div><div class="lbl">24h Cost Est.</div></div>
+  <div class="stat"><div class="val" id="statNodes">—</div><div class="lbl">Active Nodes</div></div>
+  <div class="stat"><div class="val yellow" id="statConstraints">—</div><div class="lbl">Binding Constraints</div></div>
+</div>
+
+<script>
+const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:8000' : 'https://api.prospectorlabs.xyz';
+
+mapboxgl.accessToken = 'MAPBOX_TOKEN_PLACEHOLDER';
+
+const ISO_CENTERS = {
+  PJM: [-78, 39.5, 5.5], CAISO: [-119.5, 36.5, 5.5], ERCOT: [-98, 31, 5.5],
+  MISO: [-90, 40, 4.5], SPP: [-98, 36.5, 5.5], NYISO: [-74.5, 42, 6],
+  'ISO-NE': [-71.5, 42.5, 6.5]
+};
+
+const map = new mapboxgl.Map({
+  container: 'map',
+  style: 'mapbox://styles/mapbox/dark-v11',
+  center: [-78, 39.5],
+  zoom: 5.5,
+  pitch: 0,
+  attributionControl: false
+});
+map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+
+let currentPopup = null;
+let animInterval = null;
+let constraintData = [];
+
+const $ = id => document.getElementById(id);
+
+// Theme
+$('themeBtn').onclick = () => {
+  const html = document.documentElement;
+  const isDark = html.dataset.theme === 'dark';
+  html.dataset.theme = isDark ? 'light' : 'dark';
+  map.setStyle(isDark ? 'mapbox://styles/mapbox/light-v11' : 'mapbox://styles/mapbox/dark-v11');
+  map.once('style.load', () => loadData());
+};
+
+// Panel
+$('panelToggle').onclick = () => { $('panel').classList.toggle('open'); };
+$('panelClose').onclick = () => { $('panel').classList.remove('open'); };
+
+// Controls
+$('isoSelect').onchange = () => { flyToISO(); loadData(); };
+$('dateInput').onchange = () => loadData();
+$('hourSlider').oninput = e => {
+  $('hourLabel').textContent = String(e.target.value).padStart(2,'0') + ':00';
+  loadData();
+};
+$('showLines').onchange = () => {
+  if (map.getLayer('constraint-lines')) map.setLayoutProperty('constraint-lines', 'visibility', $('showLines').checked ? 'visible' : 'none');
+};
+
+// Animation
+$('playBtn').onclick = () => {
+  $('playBtn').style.display = 'none';
+  $('stopBtn').style.display = '';
+  let h = 0;
+  $('hourSlider').value = h;
+  $('hourLabel').textContent = '00:00';
+  loadData();
+  animInterval = setInterval(() => {
+    h++;
+    if (h > 23) { stopAnim(); return; }
+    $('hourSlider').value = h;
+    $('hourLabel').textContent = String(h).padStart(2,'0') + ':00';
+    loadData();
+  }, 800);
+};
+$('stopBtn').onclick = stopAnim;
+function stopAnim() {
+  clearInterval(animInterval);
+  $('playBtn').style.display = '';
+  $('stopBtn').style.display = 'none';
+}
+
+function flyToISO() {
+  const c = ISO_CENTERS[$('isoSelect').value];
+  if (c) map.flyTo({ center: [c[0], c[1]], zoom: c[2], duration: 1200 });
+}
+
+function congestionColor(v) {
+  const t = Math.min(Math.abs(v) / 100, 1);
+  if (t < 0.25) return [34, 197, 94];   // green
+  if (t < 0.5) return [234, 179, 8];    // yellow
+  if (t < 0.75) return [249, 115, 22];  // orange
+  return [239, 68, 68];                  // red
+}
+
+async function fetchJSON(url) {
+  try { const r = await fetch(url); return r.ok ? r.json() : null; } catch { return null; }
+}
+
+async function loadData() {
+  const iso = $('isoSelect').value;
+  const date = $('dateInput').value;
+  const hour = $('hourSlider').value;
+
+  const [heatmap, constraints, stats] = await Promise.all([
+    fetchJSON(`${API}/v1/congestion/heatmap?iso=${iso}&date=${date}&hour=${hour}`),
+    fetchJSON(`${API}/v1/constraints/binding?iso=${iso}`),
+    fetchJSON(`${API}/v1/congestion/stats`),
+  ]);
+
+  $('loading').classList.add('hidden');
+
+  if (heatmap) renderHeatmap(heatmap);
+  if (constraints) { constraintData = constraints.data || []; renderConstraints(); renderLines(); }
+  if (stats) renderStats(stats, heatmap);
+}
+
+function renderHeatmap(geojson) {
+  const src = map.getSource('congestion');
+  if (src) {
+    src.setData(geojson);
+  } else {
+    map.addSource('congestion', { type: 'geojson', data: geojson });
+    map.addLayer({
+      id: 'congestion-heat',
+      type: 'heatmap',
+      source: 'congestion',
+      paint: {
+        'heatmap-weight': ['interpolate', ['linear'], ['get', 'congestion'], -10, 0, 0, 0.1, 20, 0.4, 50, 0.7, 100, 1],
+        'heatmap-intensity': 1.5,
+        'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 3, 20, 7, 40, 10, 60],
+        'heatmap-opacity': 0.75,
+        'heatmap-color': [
+          'interpolate', ['linear'], ['heatmap-density'],
+          0, 'rgba(0,0,0,0)',
+          0.1, 'rgba(34,197,94,0.4)',
+          0.3, 'rgba(132,204,22,0.6)',
+          0.5, 'rgba(234,179,8,0.7)',
+          0.7, 'rgba(249,115,22,0.8)',
+          0.9, 'rgba(239,68,68,0.9)',
+          1, 'rgba(185,28,28,1)'
+        ]
+      }
+    });
+    map.addLayer({
+      id: 'congestion-points',
+      type: 'circle',
+      source: 'congestion',
+      minzoom: 7,
+      paint: {
+        'circle-radius': ['interpolate', ['linear'], ['zoom'], 7, 3, 12, 8],
+        'circle-color': [
+          'interpolate', ['linear'], ['get', 'congestion'],
+          -10, '#22c55e', 0, '#22c55e', 20, '#84cc16', 50, '#eab308', 80, '#f97316', 100, '#ef4444'
+        ],
+        'circle-stroke-width': 1,
+        'circle-stroke-color': 'rgba(255,255,255,0.3)',
+        'circle-opacity': 0.85
+      }
+    });
+
+    map.on('click', 'congestion-points', e => {
+      const p = e.features[0].properties;
+      if (currentPopup) currentPopup.remove();
+      currentPopup = new mapboxgl.Popup({ offset: 12 })
+        .setLngLat(e.lngLat)
+        .setHTML(`
+          <div class="popup-title">${p.node_id || 'Node'}</div>
+          <div class="popup-zone">${p.zone}</div>
+          <dl class="popup-grid">
+            <dt>Congestion</dt><dd style="color:${Math.abs(p.congestion)>50?'#ef4444':'#22c55e'}">$${p.congestion}/MWh</dd>
+            <dt>Energy</dt><dd>$${p.energy}/MWh</dd>
+            <dt>Loss</dt><dd>$${p.loss}/MWh</dd>
+            <dt>Total LMP</dt><dd style="font-weight:700">$${p.lmp}/MWh</dd>
+          </dl>
+        `)
+        .addTo(map);
+    });
+    map.on('mouseenter', 'congestion-points', () => { map.getCanvas().style.cursor = 'pointer'; });
+    map.on('mouseleave', 'congestion-points', () => { map.getCanvas().style.cursor = ''; });
+  }
+}
+
+function renderLines() {
+  const features = constraintData.map(c => ({
+    type: 'Feature',
+    geometry: { type: 'LineString', coordinates: [[c.from_lng, c.from_lat], [c.to_lng, c.to_lat]] },
+    properties: { name: c.constraint_name, shadow_price: c.shadow_price, limit_mw: c.limit_mw, flowgate_mw: c.flowgate_mw }
+  }));
+  const geojson = { type: 'FeatureCollection', features };
+  const src = map.getSource('constraints');
+  if (src) { src.setData(geojson); } else {
+    map.addSource('constraints', { type: 'geojson', data: geojson });
+    map.addLayer({
+      id: 'constraint-lines',
+      type: 'line',
+      source: 'constraints',
+      paint: {
+        'line-color': ['interpolate', ['linear'], ['get', 'shadow_price'], 0, '#eab308', 50, '#f97316', 150, '#ef4444'],
+        'line-width': ['interpolate', ['linear'], ['get', 'shadow_price'], 0, 1.5, 200, 5],
+        'line-opacity': 0.7,
+        'line-dasharray': [2, 2]
+      }
+    });
+    map.on('click', 'constraint-lines', e => {
+      const p = e.features[0].properties;
+      if (currentPopup) currentPopup.remove();
+      currentPopup = new mapboxgl.Popup({ offset: 12 })
+        .setLngLat(e.lngLat)
+        .setHTML(`
+          <div class="popup-title">${p.name}</div>
+          <dl class="popup-grid">
+            <dt>Shadow Price</dt><dd style="color:#eab308">$${p.shadow_price}/MWh</dd>
+            <dt>Flow</dt><dd>${p.flowgate_mw} MW</dd>
+            <dt>Limit</dt><dd>${p.limit_mw} MW</dd>
+            <dt>Utilization</dt><dd>${Math.round(p.flowgate_mw/p.limit_mw*100)}%</dd>
+          </dl>
+        `)
+        .addTo(map);
+    });
+  }
+  if (!$('showLines').checked && map.getLayer('constraint-lines')) {
+    map.setLayoutProperty('constraint-lines', 'visibility', 'none');
+  }
+}
+
+function renderConstraints() {
+  const sorted = [...constraintData].sort((a, b) => b.shadow_price - a.shadow_price);
+  const html = `<div class="panel-section"><h4>Top Binding Constraints — ${$('isoSelect').value}</h4>` +
+    sorted.map((c, i) => `
+      <div class="constraint-row" data-name="${c.constraint_name}" onclick="flyToConstraint(${i})">
+        <div class="constraint-rank">#${i+1}</div>
+        <div class="constraint-info">
+          <div class="constraint-name" title="${c.constraint_name}">${c.constraint_name}</div>
+          <div class="constraint-meta">${c.from_zone} → ${c.to_zone} · ${Math.round(c.flowgate_mw)}/${c.limit_mw} MW</div>
+        </div>
+        <div class="constraint-cost">$${c.shadow_price.toFixed(0)}</div>
+      </div>
+    `).join('') + '</div>';
+  $('constraintList').innerHTML = html;
+  // Load sparklines async
+  sorted.forEach((c, i) => loadSparkline(c.constraint_name, i));
+}
+
+async function loadSparkline(name, idx) {
+  const data = await fetchJSON(`${API}/v1/constraints/history?name=${encodeURIComponent(name)}`);
+  if (!data || !data.data || data.data.length === 0) return;
+  const rows = data.data.slice(-48); // last 48h
+  const vals = rows.map(r => r.shadow_price || 0);
+  const max = Math.max(...vals, 1);
+  const el = document.querySelectorAll('.constraint-row')[idx];
+  if (!el) return;
+  const canvas = document.createElement('canvas');
+  canvas.width = 60; canvas.height = 20;
+  canvas.style.cssText = 'margin-left:4px;vertical-align:middle;opacity:0.7';
+  const ctx = canvas.getContext('2d');
+  ctx.strokeStyle = '#eab308'; ctx.lineWidth = 1; ctx.beginPath();
+  vals.forEach((v, i) => {
+    const x = (i / (vals.length - 1)) * 60;
+    const y = 18 - (v / max) * 16;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+  el.querySelector('.constraint-cost').appendChild(canvas);
+}
+
+window.flyToConstraint = function(idx) {
+  const sorted = [...constraintData].sort((a, b) => b.shadow_price - a.shadow_price);
+  const c = sorted[idx];
+  if (!c) return;
+  map.flyTo({ center: [(c.from_lng + c.to_lng) / 2, (c.from_lat + c.to_lat) / 2], zoom: 7, duration: 800 });
+};
+
+function renderStats(stats, heatmap) {
+  const isoData = (stats.by_iso || []).find(r => r.iso === $('isoSelect').value);
+  $('statAvg').textContent = isoData ? `$${isoData.avg_congestion}` : `$${stats.overall_avg_congestion}`;
+  $('statPeak').textContent = isoData ? `$${isoData.max_congestion}` : `$${stats.peak_congestion}`;
+  $('statCost').textContent = `$${(stats.total_congestion_cost_24h / 1000).toFixed(1)}k`;
+  $('statNodes').textContent = heatmap ? heatmap.features.length : (isoData ? isoData.nodes : stats.total_nodes);
+  $('statConstraints').textContent = constraintData.length;
+}
+
+map.on('load', () => {
+  flyToISO();
+  loadData();
+});
+</script>
+</body>
+</html>

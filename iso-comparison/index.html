@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>US ISO Queue Comparison | Prospector Labs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f4f4f5;
+      --bg-card: #ffffff;
+      --text-primary: #18181b;
+      --text-secondary: #71717a;
+      --text-muted: #a1a1aa;
+      --border: #e4e4e7;
+      --accent: #3b82f6;
+      --positive: #10b981;
+      --negative: #ef4444;
+      --warning: #f59e0b;
+      --bar-context: #d4d4d8;
+      --font-sans: 'Geist', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      
+      /* ISO-specific colors */
+      --color-pjm: #3b82f6;
+      --color-west: #8b5cf6;
+      --color-miso: #10b981;
+      --color-ercot: #f59e0b;
+      --color-southeast: #ef4444;
+      --color-spp: #06b6d4;
+      --color-caiso: #ec4899;
+      --color-nyiso: #6366f1;
+      --color-isone: #14b8a6;
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #18181b;
+      --bg-secondary: #27272a;
+      --bg-card: #27272a;
+      --text-primary: #f4f4f5;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --border: #3f3f46;
+      --bar-context: #52525b;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+      font-feature-settings: "tnum";
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 48px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .title-block h1 {
+      font-size: 32px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .title-block p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      max-width: 500px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 16px;
+      cursor: pointer;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+    }
+
+    .btn:hover {
+      border-color: var(--text-muted);
+      background: var(--bg-card);
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .btn.primary:hover {
+      background: #2563eb;
+      border-color: #2563eb;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--text-muted);
+      color: var(--text-primary);
+    }
+
+    /* Summary Stats */
+    .summary-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .stat-card {
+      padding: 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    .stat-value {
+      font-size: 48px;
+      font-weight: 600;
+      line-height: 1.1;
+      margin-bottom: 4px;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Section Headers */
+    .section-header {
+      margin-bottom: 24px;
+    }
+
+    .section-header h2 {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+
+    .section-header p {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* Charts Grid */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .chart-card {
+      padding: 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    .chart-card.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .chart-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .chart-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    /* Horizontal Bar Chart */
+    .bar-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 80px 1fr 80px;
+      gap: 16px;
+      align-items: center;
+      cursor: pointer;
+      padding: 4px;
+      margin: -4px;
+      border-radius: 4px;
+      transition: background 0.15s;
+    }
+
+    .bar-row:hover {
+      background: var(--bg-secondary);
+    }
+
+    .bar-label {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .bar-track {
+      height: 28px;
+      background: var(--bg-secondary);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.5s ease;
+      position: relative;
+    }
+
+    .bar-fill::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
+    }
+
+    .bar-value {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      text-align: right;
+    }
+
+    /* Tooltip */
+    .tooltip {
+      position: fixed;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      z-index: 1000;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+      min-width: 280px;
+    }
+
+    .tooltip.visible {
+      opacity: 1;
+    }
+
+    .tooltip-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tooltip-title {
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .tooltip-badge {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: var(--bg-secondary);
+    }
+
+    .tooltip-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .tooltip-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .tooltip-item-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .tooltip-item-value {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* Stacked Bar Chart */
+    .stacked-bar-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .stacked-row {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 16px;
+      align-items: center;
+      cursor: pointer;
+      padding: 4px;
+      margin: -4px;
+      border-radius: 4px;
+      transition: background 0.15s;
+    }
+
+    .stacked-row:hover {
+      background: var(--bg-secondary);
+    }
+
+    .stacked-track {
+      height: 28px;
+      display: flex;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .stack-segment {
+      height: 100%;
+      transition: width 0.5s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .stack-segment:hover {
+      filter: brightness(1.1);
+    }
+
+    .stack-segment.solar { background: #f59e0b; }
+    .stack-segment.wind { background: #3b82f6; }
+    .stack-segment.storage { background: #8b5cf6; }
+    .stack-segment.gas { background: #71717a; }
+    .stack-segment.other { background: #d4d4d8; }
+
+    /* Legend */
+    .legend {
+      display: flex;
+      gap: 24px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+    }
+
+    .legend-dot.solar { background: #f59e0b; }
+    .legend-dot.wind { background: #3b82f6; }
+    .legend-dot.storage { background: #8b5cf6; }
+    .legend-dot.gas { background: #71717a; }
+    .legend-dot.other { background: #d4d4d8; }
+
+    /* Comparison Table */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .comparison-table thead {
+      background: var(--bg-secondary);
+    }
+
+    .comparison-table th {
+      text-align: left;
+      padding: 12px 16px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .comparison-table th:not(:first-child) {
+      text-align: right;
+    }
+
+    .comparison-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .comparison-table td:not(:first-child) {
+      text-align: right;
+      font-family: var(--font-mono);
+    }
+
+    .comparison-table tbody tr {
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .comparison-table tbody tr:hover {
+      background: var(--bg-secondary);
+    }
+
+    .iso-name {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .iso-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .metric-good { color: var(--positive); }
+    .metric-bad { color: var(--negative); }
+
+    /* Modal Overlay */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 24px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--bg-card);
+      border-radius: 12px;
+      max-width: 900px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: var(--bg-card);
+      z-index: 10;
+    }
+
+    .modal-header h2 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--text-muted);
+      padding: 8px;
+      line-height: 1;
+    }
+
+    .modal-close:hover {
+      color: var(--text-primary);
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    /* ISO Detail Panel */
+    .iso-detail-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .iso-stat {
+      padding: 16px;
+      background: var(--bg-secondary);
+      border-radius: 8px;
+    }
+
+    .iso-stat-value {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .iso-stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .iso-section {
+      margin-bottom: 32px;
+    }
+
+    .iso-section h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mini-bar-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .mini-bar-row {
+      display: grid;
+      grid-template-columns: 120px 1fr 60px;
+      gap: 12px;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .mini-bar-track {
+      height: 20px;
+      background: var(--bg-secondary);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .mini-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+    }
+
+    /* Compare Modal */
+    .compare-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .compare-option {
+      padding: 16px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .compare-option:hover {
+      border-color: var(--accent);
+    }
+
+    .compare-option.selected {
+      border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    .compare-option input {
+      display: none;
+    }
+
+    .compare-checkbox {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .compare-option.selected .compare-checkbox {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .compare-option.selected .compare-checkbox::after {
+      content: '✓';
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .compare-option-info h4 {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .compare-option-info span {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Compare View */
+    .compare-view {
+      display: none;
+    }
+
+    .compare-view.active {
+      display: block;
+    }
+
+    .compare-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      padding: 16px 24px;
+      background: var(--bg-secondary);
+      border-radius: 8px;
+    }
+
+    .compare-header h2 {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .compare-pills {
+      display: flex;
+      gap: 8px;
+    }
+
+    .compare-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .compare-card {
+      padding: 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    .compare-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .compare-card-header h3 {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .compare-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .compare-metric {
+      padding: 12px;
+      background: var(--bg-secondary);
+      border-radius: 6px;
+    }
+
+    .compare-metric-value {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .compare-metric-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .charts-grid { grid-template-columns: repeat(2, 1fr); }
+      .iso-detail-stats { grid-template-columns: repeat(2, 1fr); }
+      .compare-selector { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 900px) {
+      .summary-stats { grid-template-columns: repeat(2, 1fr); }
+      .charts-grid { grid-template-columns: 1fr; }
+      .compare-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .container { padding: 24px 16px; }
+      header { flex-direction: column; gap: 16px; }
+      .summary-stats { grid-template-columns: 1fr; }
+      .stat-value { font-size: 36px; }
+      .bar-row { grid-template-columns: 60px 1fr 60px; gap: 8px; }
+      .compare-selector { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Main View -->
+    <div id="mainView">
+      <header>
+        <div class="title-block">
+          <h1>US ISO Queue Comparison</h1>
+          <p>Side-by-side metrics across all major US interconnection regions. Click any ISO for detailed stats.</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn primary" onclick="openCompareModal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 20V10M12 20V4M6 20v-6"/>
+            </svg>
+            Compare ISOs
+          </button>
+          <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5"/>
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="summary-stats">
+        <div class="stat-card">
+          <div class="stat-value" id="totalProjects">—</div>
+          <div class="stat-label">Total Projects</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="totalGW">—</div>
+          <div class="stat-label">Total Capacity (GW)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="avgWithdrawal">—</div>
+          <div class="stat-label">Avg Withdrawal Rate</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="avgTimeline">—</div>
+          <div class="stat-label">Avg Timeline (Years)</div>
+        </div>
+      </div>
+
+      <section class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-title">Queue Size by Projects</div>
+          <div class="chart-subtitle">Number of projects in each ISO queue</div>
+          <div class="bar-chart" id="projectsChart"></div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-title">Queue Size by Capacity</div>
+          <div class="chart-subtitle">Total megawatts in queue (GW)</div>
+          <div class="bar-chart" id="capacityChart"></div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-title">Withdrawal Rate</div>
+          <div class="chart-subtitle">% of projects that withdrew</div>
+          <div class="bar-chart" id="withdrawalChart"></div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-title">Completion Rate</div>
+          <div class="chart-subtitle">% reaching operational status</div>
+          <div class="bar-chart" id="completionChart"></div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-title">Average Timeline</div>
+          <div class="chart-subtitle">Years from queue entry to COD</div>
+          <div class="bar-chart" id="timelineChart"></div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-title">Average Project Size</div>
+          <div class="chart-subtitle">Mean capacity per project (MW)</div>
+          <div class="bar-chart" id="avgSizeChart"></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-header">
+          <h2>Capacity Mix by Region</h2>
+          <p>Technology composition (MW in queue) — hover for details</p>
+        </div>
+        <div class="chart-card" style="margin-bottom: 48px;">
+          <div class="stacked-bar-chart" id="mixChart"></div>
+          <div class="legend">
+            <div class="legend-item"><div class="legend-dot solar"></div> Solar</div>
+            <div class="legend-item"><div class="legend-dot wind"></div> Wind</div>
+            <div class="legend-item"><div class="legend-dot storage"></div> Storage</div>
+            <div class="legend-item"><div class="legend-dot gas"></div> Gas</div>
+            <div class="legend-item"><div class="legend-dot other"></div> Other</div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-header">
+          <h2>All Metrics</h2>
+          <p>Click any row for detailed ISO statistics</p>
+        </div>
+        <div class="chart-card">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>ISO/Region</th>
+                <th>Projects</th>
+                <th>Capacity (GW)</th>
+                <th>Avg MW</th>
+                <th>Active</th>
+                <th>Withdrawn</th>
+                <th>Completed</th>
+                <th>Timeline</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer>
+        <span>Data sourced from public ISO interconnection queues. Feb 2026.</span>
+        <a href="https://prospectorlabs.io" target="_blank">prospectorlabs.io</a>
+      </footer>
+    </div>
+
+    <!-- Compare View -->
+    <div id="compareView" class="compare-view">
+      <header>
+        <div class="title-block">
+          <h1>ISO Comparison</h1>
+          <p>Side-by-side analysis of selected regions</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn" onclick="exitCompareView()">← Back to Overview</button>
+          <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5"/>
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="compare-header">
+        <h2>Comparing:</h2>
+        <div class="compare-pills" id="activeComparePills"></div>
+      </div>
+
+      <div class="compare-grid" id="compareGrid"></div>
+
+      <footer style="margin-top: 48px;">
+        <span>Data sourced from public ISO interconnection queues. Feb 2026.</span>
+        <a href="https://prospectorlabs.io" target="_blank">prospectorlabs.io</a>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Tooltip -->
+  <div class="tooltip" id="tooltip"></div>
+
+  <!-- Compare Modal -->
+  <div class="modal-overlay" id="compareModal">
+    <div class="modal" style="max-width: 700px;">
+      <div class="modal-header">
+        <h2>Compare ISOs</h2>
+        <button class="modal-close" onclick="closeCompareModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-bottom: 20px; color: var(--text-secondary);">Select 2 or more ISOs to compare side-by-side:</p>
+        <div class="compare-selector" id="compareSelector"></div>
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button class="btn" onclick="closeCompareModal()">Cancel</button>
+          <button class="btn primary" onclick="startComparison()">Compare Selected</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ISO Detail Modal -->
+  <div class="modal-overlay" id="isoDetailModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="isoDetailTitle">ISO Details</h2>
+        <button class="modal-close" onclick="closeIsoDetailModal()">×</button>
+      </div>
+      <div class="modal-body" id="isoDetailBody"></div>
+    </div>
+  </div>
+
+  <script>
+    // ISO Colors
+    const ISO_COLORS = {
+      'PJM': '#3b82f6',
+      'West': '#8b5cf6',
+      'MISO': '#10b981',
+      'ERCOT': '#f59e0b',
+      'Southeast': '#ef4444',
+      'SPP': '#06b6d4',
+      'CAISO': '#ec4899',
+      'NYISO': '#6366f1',
+      'ISO-NE': '#14b8a6'
+    };
+
+    // Sample developer data by ISO
+    const ISO_DEVELOPERS = {
+      'PJM': [
+        { name: 'NextEra Energy', projects: 145, mw: 18500 },
+        { name: 'Invenergy', projects: 89, mw: 12300 },
+        { name: 'EDF Renewables', projects: 67, mw: 8900 },
+        { name: 'Apex Clean Energy', projects: 54, mw: 7200 },
+        { name: 'Lightsource BP', projects: 48, mw: 5600 }
+      ],
+      'West': [
+        { name: 'NextEra Energy', projects: 98, mw: 22400 },
+        { name: 'Avangrid', projects: 76, mw: 15800 },
+        { name: 'Pattern Energy', projects: 65, mw: 14200 },
+        { name: 'Terra-Gen', projects: 52, mw: 11500 },
+        { name: 'Clearway Energy', projects: 44, mw: 9800 }
+      ],
+      'MISO': [
+        { name: 'Invenergy', projects: 112, mw: 19800 },
+        { name: 'NextEra Energy', projects: 87, mw: 16400 },
+        { name: 'EDP Renewables', projects: 63, mw: 11200 },
+        { name: 'RWE', projects: 51, mw: 9500 },
+        { name: 'Orsted', projects: 42, mw: 8100 }
+      ],
+      'ERCOT': [
+        { name: 'NextEra Energy', projects: 134, mw: 28500 },
+        { name: '7X Energy', projects: 78, mw: 15200 },
+        { name: 'Lightsource BP', projects: 65, mw: 12800 },
+        { name: 'Canadian Solar', projects: 52, mw: 10400 },
+        { name: 'Longroad Energy', projects: 41, mw: 8600 }
+      ],
+      'Southeast': [
+        { name: 'NextEra Energy', projects: 89, mw: 19200 },
+        { name: 'Southern Company', projects: 67, mw: 14500 },
+        { name: 'Duke Energy', projects: 54, mw: 11800 },
+        { name: 'Dominion Energy', projects: 43, mw: 9200 },
+        { name: 'Silicon Ranch', projects: 38, mw: 7600 }
+      ],
+      'SPP': [
+        { name: 'Invenergy', projects: 76, mw: 14800 },
+        { name: 'NextEra Energy', projects: 62, mw: 12400 },
+        { name: 'Apex Clean Energy', projects: 48, mw: 9600 },
+        { name: 'EDF Renewables', projects: 39, mw: 7800 },
+        { name: 'Enel', projects: 32, mw: 6400 }
+      ],
+      'CAISO': [
+        { name: 'NextEra Energy', projects: 98, mw: 24500 },
+        { name: 'Terra-Gen', projects: 72, mw: 18200 },
+        { name: 'Clearway Energy', projects: 58, mw: 14600 },
+        { name: 'EDF Renewables', projects: 45, mw: 11300 },
+        { name: 'Recurrent Energy', projects: 38, mw: 9500 }
+      ],
+      'NYISO': [
+        { name: 'Invenergy', projects: 45, mw: 8900 },
+        { name: 'NextEra Energy', projects: 38, mw: 7600 },
+        { name: 'EDF Renewables', projects: 32, mw: 6400 },
+        { name: 'Orsted', projects: 28, mw: 5600 },
+        { name: 'Avangrid', projects: 24, mw: 4800 }
+      ],
+      'ISO-NE': [
+        { name: 'Avangrid', projects: 42, mw: 6000 },
+        { name: 'NextEra Energy', projects: 35, mw: 5000 },
+        { name: 'Vineyard Wind', projects: 28, mw: 4000 },
+        { name: 'Mayflower Wind', projects: 22, mw: 3200 },
+        { name: 'EDF Renewables', projects: 18, mw: 2600 }
+      ]
+    };
+
+    let selectedCompareISOs = [];
+    let allData = null;
+
+    // Theme
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    }
+
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    // Tooltip
+    const tooltip = document.getElementById('tooltip');
+
+    function showTooltip(e, iso, metric, value, extra = {}) {
+      const html = `
+        <div class="tooltip-header">
+          <span class="tooltip-title">${iso.name}</span>
+          <span class="tooltip-badge" style="background: ${ISO_COLORS[iso.id]}20; color: ${ISO_COLORS[iso.id]}">${iso.id}</span>
+        </div>
+        <div class="tooltip-grid">
+          <div class="tooltip-item">
+            <span class="tooltip-item-label">${metric}</span>
+            <span class="tooltip-item-value">${value}</span>
+          </div>
+          <div class="tooltip-item">
+            <span class="tooltip-item-label">Total Projects</span>
+            <span class="tooltip-item-value">${iso.projects.toLocaleString()}</span>
+          </div>
+          <div class="tooltip-item">
+            <span class="tooltip-item-label">Total Capacity</span>
+            <span class="tooltip-item-value">${(iso.totalMW / 1000).toFixed(0)} GW</span>
+          </div>
+          <div class="tooltip-item">
+            <span class="tooltip-item-label">Active Projects</span>
+            <span class="tooltip-item-value">${iso.active.toLocaleString()}</span>
+          </div>
+          ${extra.tech ? `
+          <div class="tooltip-item" style="grid-column: span 2;">
+            <span class="tooltip-item-label">${extra.tech} Capacity</span>
+            <span class="tooltip-item-value">${extra.techValue}</span>
+          </div>
+          ` : ''}
+        </div>
+      `;
+      tooltip.innerHTML = html;
+      tooltip.classList.add('visible');
+      positionTooltip(e);
+    }
+
+    function positionTooltip(e) {
+      const rect = tooltip.getBoundingClientRect();
+      let x = e.clientX + 15;
+      let y = e.clientY + 15;
+      
+      if (x + rect.width > window.innerWidth - 20) {
+        x = e.clientX - rect.width - 15;
+      }
+      if (y + rect.height > window.innerHeight - 20) {
+        y = e.clientY - rect.height - 15;
+      }
+      
+      tooltip.style.left = x + 'px';
+      tooltip.style.top = y + 'px';
+    }
+
+    function hideTooltip() {
+      tooltip.classList.remove('visible');
+    }
+
+    document.addEventListener('mousemove', (e) => {
+      if (tooltip.classList.contains('visible')) {
+        positionTooltip(e);
+      }
+    });
+
+    // Compare Modal
+    function openCompareModal() {
+      document.getElementById('compareModal').classList.add('active');
+      renderCompareSelector();
+    }
+
+    function closeCompareModal() {
+      document.getElementById('compareModal').classList.remove('active');
+    }
+
+    function renderCompareSelector() {
+      if (!allData) return;
+      const container = document.getElementById('compareSelector');
+      container.innerHTML = allData.isos.map((iso, i) => `
+        <label class="compare-option ${selectedCompareISOs.includes(iso.id) ? 'selected' : ''}" onclick="toggleCompareSelection('${iso.id}', this)">
+          <div class="compare-checkbox"></div>
+          <div class="compare-option-info">
+            <h4 style="display: flex; align-items: center; gap: 8px;">
+              ${iso.id}
+            </h4>
+            <span>${iso.projects.toLocaleString()} projects · ${(iso.totalMW/1000).toFixed(0)} GW</span>
+          </div>
+        </label>
+      `).join('');
+    }
+
+    function toggleCompareSelection(isoId, el) {
+      if (selectedCompareISOs.includes(isoId)) {
+        selectedCompareISOs = selectedCompareISOs.filter(id => id !== isoId);
+        el.classList.remove('selected');
+      } else {
+        selectedCompareISOs.push(isoId);
+        el.classList.add('selected');
+      }
+    }
+
+    function startComparison() {
+      if (selectedCompareISOs.length < 2) {
+        alert('Please select at least 2 ISOs to compare');
+        return;
+      }
+      closeCompareModal();
+      showCompareView();
+    }
+
+    function showCompareView() {
+      document.getElementById('mainView').style.display = 'none';
+      document.getElementById('compareView').classList.add('active');
+      renderCompareView();
+    }
+
+    function exitCompareView() {
+      document.getElementById('mainView').style.display = 'block';
+      document.getElementById('compareView').classList.remove('active');
+      selectedCompareISOs = [];
+    }
+
+    function renderCompareView() {
+      const pills = document.getElementById('activeComparePills');
+      pills.innerHTML = selectedCompareISOs.map((id, i) => `
+        <div class="compare-pill">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: rgba(59, 130, 246, ${0.6 + i * 0.2})"></span>
+          ${id}
+        </div>
+      `).join('');
+
+      const grid = document.getElementById('compareGrid');
+      const isos = selectedCompareISOs.map(id => allData.isos.find(i => i.id === id));
+      
+      grid.innerHTML = isos.map((iso, idx) => `
+        <div class="compare-card">
+          <div class="compare-card-header">
+            <span style="width: 16px; height: 16px; border-radius: 50%; background: rgba(59, 130, 246, ${0.6 + idx * 0.2})"></span>
+            <h3>${iso.name}</h3>
+          </div>
+          <div class="compare-metrics">
+            <div class="compare-metric">
+              <div class="compare-metric-value">${iso.projects.toLocaleString()}</div>
+              <div class="compare-metric-label">Projects</div>
+            </div>
+            <div class="compare-metric">
+              <div class="compare-metric-value">${(iso.totalMW/1000).toFixed(0)} GW</div>
+              <div class="compare-metric-label">Capacity</div>
+            </div>
+            <div class="compare-metric">
+              <div class="compare-metric-value">${iso.active.toLocaleString()}</div>
+              <div class="compare-metric-label">Active</div>
+            </div>
+            <div class="compare-metric">
+              <div class="compare-metric-value">${iso.avgMW} MW</div>
+              <div class="compare-metric-label">Avg Size</div>
+            </div>
+            <div class="compare-metric">
+              <div class="compare-metric-value" style="color: var(--negative)">${(iso.withdrawalRate * 100).toFixed(0)}%</div>
+              <div class="compare-metric-label">Withdrawal</div>
+            </div>
+            <div class="compare-metric">
+              <div class="compare-metric-value" style="color: var(--positive)">${(iso.completionRate * 100).toFixed(1)}%</div>
+              <div class="compare-metric-label">Completion</div>
+            </div>
+            <div class="compare-metric">
+              <div class="compare-metric-value">${iso.avgTimelineYears.toFixed(1)} yrs</div>
+              <div class="compare-metric-label">Timeline</div>
+            </div>
+            <div class="compare-metric">
+              <div class="compare-metric-value">${iso.operational.toLocaleString()}</div>
+              <div class="compare-metric-label">Operational</div>
+            </div>
+          </div>
+          <div style="margin-top: 20px;">
+            <h4 style="font-size: 14px; margin-bottom: 12px; color: var(--text-secondary);">Capacity Mix</h4>
+            <div class="mini-bar-chart">
+              <div class="mini-bar-row">
+                <span>Solar</span>
+                <div class="mini-bar-track">
+                  <div class="mini-bar-fill" style="width: ${iso.capacityMix.solar / iso.totalMW * 100}%; background: #f59e0b;"></div>
+                </div>
+                <span>${(iso.capacityMix.solar/1000).toFixed(0)} GW</span>
+              </div>
+              <div class="mini-bar-row">
+                <span>Wind</span>
+                <div class="mini-bar-track">
+                  <div class="mini-bar-fill" style="width: ${iso.capacityMix.wind / iso.totalMW * 100}%; background: #3b82f6;"></div>
+                </div>
+                <span>${(iso.capacityMix.wind/1000).toFixed(0)} GW</span>
+              </div>
+              <div class="mini-bar-row">
+                <span>Storage</span>
+                <div class="mini-bar-track">
+                  <div class="mini-bar-fill" style="width: ${iso.capacityMix.storage / iso.totalMW * 100}%; background: #8b5cf6;"></div>
+                </div>
+                <span>${(iso.capacityMix.storage/1000).toFixed(0)} GW</span>
+              </div>
+              <div class="mini-bar-row">
+                <span>Gas</span>
+                <div class="mini-bar-track">
+                  <div class="mini-bar-fill" style="width: ${iso.capacityMix.gas / iso.totalMW * 100}%; background: #71717a;"></div>
+                </div>
+                <span>${(iso.capacityMix.gas/1000).toFixed(0)} GW</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ISO Detail Modal
+    function openIsoDetail(isoId) {
+      const iso = allData.isos.find(i => i.id === isoId);
+      if (!iso) return;
+
+      document.getElementById('isoDetailTitle').innerHTML = `
+        <span style="display: flex; align-items: center; gap: 12px;">
+          <span style="width: 16px; height: 16px; border-radius: 50%; background: #3b82f6"></span>
+          ${iso.name}
+        </span>
+      `;
+
+      const developers = ISO_DEVELOPERS[iso.id] || [];
+      const maxDevMW = Math.max(...developers.map(d => d.mw));
+
+      document.getElementById('isoDetailBody').innerHTML = `
+        <div class="iso-detail-stats">
+          <div class="iso-stat">
+            <div class="iso-stat-value">${iso.projects.toLocaleString()}</div>
+            <div class="iso-stat-label">Total Projects</div>
+          </div>
+          <div class="iso-stat">
+            <div class="iso-stat-value">${(iso.totalMW/1000).toFixed(0)} GW</div>
+            <div class="iso-stat-label">Total Capacity</div>
+          </div>
+          <div class="iso-stat">
+            <div class="iso-stat-value">${iso.active.toLocaleString()}</div>
+            <div class="iso-stat-label">Active Projects</div>
+          </div>
+          <div class="iso-stat">
+            <div class="iso-stat-value">${iso.avgMW} MW</div>
+            <div class="iso-stat-label">Avg Project Size</div>
+          </div>
+          <div class="iso-stat">
+            <div class="iso-stat-value" style="color: var(--negative)">${(iso.withdrawalRate * 100).toFixed(0)}%</div>
+            <div class="iso-stat-label">Withdrawal Rate</div>
+          </div>
+          <div class="iso-stat">
+            <div class="iso-stat-value" style="color: var(--positive)">${(iso.completionRate * 100).toFixed(1)}%</div>
+            <div class="iso-stat-label">Completion Rate</div>
+          </div>
+          <div class="iso-stat">
+            <div class="iso-stat-value">${iso.avgTimelineYears.toFixed(1)} yrs</div>
+            <div class="iso-stat-label">Avg Timeline</div>
+          </div>
+          <div class="iso-stat">
+            <div class="iso-stat-value">${iso.operational.toLocaleString()}</div>
+            <div class="iso-stat-label">Operational</div>
+          </div>
+        </div>
+
+        <div class="iso-section">
+          <h3>Capacity Mix</h3>
+          <div class="mini-bar-chart">
+            <div class="mini-bar-row">
+              <span>Solar</span>
+              <div class="mini-bar-track">
+                <div class="mini-bar-fill" style="width: ${iso.capacityMix.solar / Math.max(iso.capacityMix.solar, iso.capacityMix.wind, iso.capacityMix.storage, iso.capacityMix.gas, iso.capacityMix.other) * 100}%; background: #f59e0b;"></div>
+              </div>
+              <span>${(iso.capacityMix.solar/1000).toFixed(0)} GW</span>
+            </div>
+            <div class="mini-bar-row">
+              <span>Wind</span>
+              <div class="mini-bar-track">
+                <div class="mini-bar-fill" style="width: ${iso.capacityMix.wind / Math.max(iso.capacityMix.solar, iso.capacityMix.wind, iso.capacityMix.storage, iso.capacityMix.gas, iso.capacityMix.other) * 100}%; background: #3b82f6;"></div>
+              </div>
+              <span>${(iso.capacityMix.wind/1000).toFixed(0)} GW</span>
+            </div>
+            <div class="mini-bar-row">
+              <span>Storage</span>
+              <div class="mini-bar-track">
+                <div class="mini-bar-fill" style="width: ${iso.capacityMix.storage / Math.max(iso.capacityMix.solar, iso.capacityMix.wind, iso.capacityMix.storage, iso.capacityMix.gas, iso.capacityMix.other) * 100}%; background: #8b5cf6;"></div>
+              </div>
+              <span>${(iso.capacityMix.storage/1000).toFixed(0)} GW</span>
+            </div>
+            <div class="mini-bar-row">
+              <span>Gas</span>
+              <div class="mini-bar-track">
+                <div class="mini-bar-fill" style="width: ${iso.capacityMix.gas / Math.max(iso.capacityMix.solar, iso.capacityMix.wind, iso.capacityMix.storage, iso.capacityMix.gas, iso.capacityMix.other) * 100}%; background: #71717a;"></div>
+              </div>
+              <span>${(iso.capacityMix.gas/1000).toFixed(0)} GW</span>
+            </div>
+            <div class="mini-bar-row">
+              <span>Other</span>
+              <div class="mini-bar-track">
+                <div class="mini-bar-fill" style="width: ${iso.capacityMix.other / Math.max(iso.capacityMix.solar, iso.capacityMix.wind, iso.capacityMix.storage, iso.capacityMix.gas, iso.capacityMix.other) * 100}%; background: #d4d4d8;"></div>
+              </div>
+              <span>${(iso.capacityMix.other/1000).toFixed(0)} GW</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="iso-section">
+          <h3>Top Developers</h3>
+          <div class="mini-bar-chart">
+            ${developers.map((dev, i) => `
+              <div class="mini-bar-row">
+                <span style="font-size: 12px;">${dev.name}</span>
+                <div class="mini-bar-track">
+                  <div class="mini-bar-fill" style="width: ${dev.mw / maxDevMW * 100}%; background: rgba(59, 130, 246, ${0.5 + (1 - i/developers.length) * 0.5});"></div>
+                </div>
+                <span>${(dev.mw/1000).toFixed(1)} GW</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="iso-section">
+          <h3>Project Status Breakdown</h3>
+          <div class="mini-bar-chart">
+            <div class="mini-bar-row">
+              <span>Active</span>
+              <div class="mini-bar-track">
+                <div class="mini-bar-fill" style="width: ${iso.active / iso.projects * 100}%; background: var(--accent);"></div>
+              </div>
+              <span>${iso.active.toLocaleString()}</span>
+            </div>
+            <div class="mini-bar-row">
+              <span>Withdrawn</span>
+              <div class="mini-bar-track">
+                <div class="mini-bar-fill" style="width: ${iso.withdrawn / iso.projects * 100}%; background: var(--negative);"></div>
+              </div>
+              <span>${iso.withdrawn.toLocaleString()}</span>
+            </div>
+            <div class="mini-bar-row">
+              <span>Operational</span>
+              <div class="mini-bar-track">
+                <div class="mini-bar-fill" style="width: ${iso.operational / iso.projects * 100}%; background: var(--positive);"></div>
+              </div>
+              <span>${iso.operational.toLocaleString()}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="iso-section">
+          <h3>Annual Queue Growth</h3>
+          <div class="mini-bar-chart">
+            ${iso.yearlyGrowth.slice(-5).map((y, i, arr) => `
+              <div class="mini-bar-row">
+                <span>${y.year}</span>
+                <div class="mini-bar-track">
+                  <div class="mini-bar-fill" style="width: ${y.projects / Math.max(...iso.yearlyGrowth.map(g => g.projects)) * 100}%; background: rgba(59, 130, 246, ${0.5 + (i / arr.length) * 0.5});"></div>
+                </div>
+                <span>${y.projects}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+
+      document.getElementById('isoDetailModal').classList.add('active');
+    }
+
+    function closeIsoDetailModal() {
+      document.getElementById('isoDetailModal').classList.remove('active');
+    }
+
+    // Data
+    const DATA = {"generated":"2026-02-06","source":"US ISO Interconnection Queues","isos":[{"id":"PJM","name":"PJM Interconnection","projects":8152,"totalMW":876166,"avgMW":107,"withdrawn":4885,"operational":1195,"active":1942,"withdrawalRate":0.599,"completionRate":0.147,"avgTimelineYears":3.4,"capacityMix":{"solar":201384,"wind":107673,"storage":75210,"gas":317566,"other":174333},"yearlyGrowth":[{"year":2019,"projects":695,"mw":61162},{"year":2020,"projects":972,"mw":67388},{"year":2021,"projects":1304,"mw":107026},{"year":2022,"projects":517,"mw":58680},{"year":2023,"projects":466,"mw":33325}]},{"id":"West","name":"Western Interconnection","projects":6008,"totalMW":1133237,"avgMW":189,"withdrawn":3728,"operational":660,"active":1455,"withdrawalRate":0.621,"completionRate":0.110,"avgTimelineYears":3.5,"capacityMix":{"solar":147837,"wind":248394,"storage":173116,"gas":87354,"other":476536},"yearlyGrowth":[{"year":2019,"projects":280,"mw":52023},{"year":2020,"projects":243,"mw":51433},{"year":2021,"projects":505,"mw":118083},{"year":2022,"projects":753,"mw":181986},{"year":2023,"projects":791,"mw":233491},{"year":2024,"projects":367,"mw":78743}]},{"id":"MISO","name":"MISO","projects":5435,"totalMW":1001656,"avgMW":185,"withdrawn":3341,"operational":987,"active":1107,"withdrawalRate":0.615,"completionRate":0.182,"avgTimelineYears":3.3,"capacityMix":{"solar":304700,"wind":256768,"storage":102493,"gas":153239,"other":184456},"yearlyGrowth":[{"year":2019,"projects":306,"mw":45247},{"year":2020,"projects":302,"mw":43149},{"year":2021,"projects":413,"mw":61985},{"year":2022,"projects":1023,"mw":176284},{"year":2023,"projects":39,"mw":4822},{"year":2024,"projects":710,"mw":139698},{"year":2025,"projects":399,"mw":106942}]},{"id":"ERCOT","name":"ERCOT","projects":3768,"totalMW":798474,"avgMW":212,"withdrawn":2021,"operational":489,"active":1258,"withdrawalRate":0.537,"completionRate":0.130,"avgTimelineYears":4.9,"capacityMix":{"solar":257334,"wind":164908,"storage":39872,"gas":110244,"other":226116},"yearlyGrowth":[{"year":2019,"projects":223,"mw":42045},{"year":2020,"projects":222,"mw":44662},{"year":2021,"projects":311,"mw":57550},{"year":2022,"projects":354,"mw":66701},{"year":2023,"projects":460,"mw":92078},{"year":2024,"projects":439,"mw":97608}]},{"id":"Southeast","name":"Southeast","projects":2879,"totalMW":636066,"avgMW":221,"withdrawn":1881,"operational":275,"active":710,"withdrawalRate":0.653,"completionRate":0.095,"avgTimelineYears":4.1,"capacityMix":{"solar":152604,"wind":12533,"storage":24671,"gas":237083,"other":209175},"yearlyGrowth":[{"year":2019,"projects":214,"mw":43527},{"year":2020,"projects":210,"mw":34300},{"year":2021,"projects":167,"mw":27895},{"year":2022,"projects":254,"mw":36885},{"year":2023,"projects":382,"mw":57019},{"year":2024,"projects":289,"mw":58433}]},{"id":"SPP","name":"SPP","projects":2841,"totalMW":581049,"avgMW":205,"withdrawn":2517,"operational":43,"active":281,"withdrawalRate":0.886,"completionRate":0.015,"avgTimelineYears":5.4,"capacityMix":{"solar":119556,"wind":237788,"storage":62024,"gas":97907,"other":63774},"yearlyGrowth":[{"year":2019,"projects":79,"mw":9455},{"year":2020,"projects":103,"mw":19548},{"year":2021,"projects":115,"mw":22090},{"year":2022,"projects":116,"mw":24100},{"year":2023,"projects":421,"mw":86932},{"year":2024,"projects":110,"mw":25533},{"year":2025,"projects":369,"mw":98356}]},{"id":"CAISO","name":"CAISO","projects":2837,"totalMW":708171,"avgMW":250,"withdrawn":2298,"operational":228,"active":311,"withdrawalRate":0.810,"completionRate":0.080,"avgTimelineYears":5.2,"capacityMix":{"solar":122779,"wind":63929,"storage":193556,"gas":71392,"other":256515},"yearlyGrowth":[{"year":2019,"projects":139,"mw":42957},{"year":2020,"projects":153,"mw":43744},{"year":2021,"projects":361,"mw":108258},{"year":2022,"projects":3,"mw":388},{"year":2023,"projects":562,"mw":215006}]},{"id":"NYISO","name":"NYISO","projects":1948,"totalMW":385307,"avgMW":199,"withdrawn":1677,"operational":111,"active":4,"withdrawalRate":0.861,"completionRate":0.057,"avgTimelineYears":5.9,"capacityMix":{"solar":34970,"wind":37278,"storage":101450,"gas":52418,"other":159191},"yearlyGrowth":[{"year":2019,"projects":200,"mw":20577},{"year":2020,"projects":152,"mw":28198},{"year":2021,"projects":163,"mw":24768},{"year":2022,"projects":168,"mw":57277},{"year":2023,"projects":140,"mw":41666},{"year":2024,"projects":401,"mw":81545},{"year":2025,"projects":27,"mw":8397}]},{"id":"ISO-NE","name":"ISO-NE","projects":1601,"totalMW":206148,"avgMW":143,"withdrawn":1225,"operational":297,"active":79,"withdrawalRate":0.765,"completionRate":0.185,"avgTimelineYears":3.5,"capacityMix":{"solar":10247,"wind":47098,"storage":42631,"gas":20225,"other":85947},"yearlyGrowth":[{"year":2019,"projects":115,"mw":13494},{"year":2020,"projects":142,"mw":10480},{"year":2021,"projects":121,"mw":15483},{"year":2022,"projects":135,"mw":21735},{"year":2023,"projects":140,"mw":22791},{"year":2024,"projects":116,"mw":18930}]}]};
+
+    function init() {
+      allData = DATA;
+      render(DATA);
+    }
+
+    function render(data) {
+      const isos = data.isos;
+      
+      const sortedByProjects = [...isos].sort((a, b) => b.projects - a.projects);
+      const sortedByMW = [...isos].sort((a, b) => b.totalMW - a.totalMW);
+      const sortedByWithdrawal = [...isos].sort((a, b) => b.withdrawalRate - a.withdrawalRate);
+      const sortedByCompletion = [...isos].sort((a, b) => b.completionRate - a.completionRate);
+      const sortedByTimeline = [...isos].sort((a, b) => b.avgTimelineYears - a.avgTimelineYears);
+      const sortedByAvgMW = [...isos].sort((a, b) => b.avgMW - a.avgMW);
+
+      // Summary stats
+      const totalProjects = isos.reduce((sum, i) => sum + i.projects, 0);
+      const totalMW = isos.reduce((sum, i) => sum + i.totalMW, 0);
+      const avgWithdrawal = isos.reduce((sum, i) => sum + i.withdrawalRate, 0) / isos.length;
+      const avgTimeline = isos.reduce((sum, i) => sum + i.avgTimelineYears, 0) / isos.length;
+
+      document.getElementById('totalProjects').textContent = totalProjects.toLocaleString();
+      document.getElementById('totalGW').textContent = (totalMW / 1000).toFixed(0).toLocaleString();
+      document.getElementById('avgWithdrawal').textContent = (avgWithdrawal * 100).toFixed(0) + '%';
+      document.getElementById('avgTimeline').textContent = avgTimeline.toFixed(1);
+
+      // Helper for bar charts - cleaner color approach
+      function renderBarChart(containerId, sortedData, getValue, formatValue, colorMode = 'neutral') {
+        const max = Math.max(...sortedData.map(getValue));
+        document.getElementById(containerId).innerHTML = sortedData.map((iso, idx) => {
+          let barColor;
+          const pct = getValue(iso) / max;
+          
+          if (colorMode === 'neutral') {
+            // Blue gradient - top performers slightly more saturated
+            barColor = idx === 0 ? '#3b82f6' : `rgba(59, 130, 246, ${0.4 + (1 - idx/sortedData.length) * 0.4})`;
+          } else if (colorMode === 'negative') {
+            // Red for bad metrics - intensity shows severity
+            barColor = `rgba(239, 68, 68, ${0.5 + pct * 0.5})`;
+          } else if (colorMode === 'positive') {
+            // Green for good metrics - intensity shows performance
+            barColor = `rgba(16, 185, 129, ${0.5 + pct * 0.5})`;
+          } else if (colorMode === 'timeline') {
+            // Amber/neutral for timeline - longer = more amber
+            barColor = `rgba(120, 113, 108, ${0.4 + pct * 0.5})`;
+          }
+          
+          return `
+          <div class="bar-row" 
+               onclick="openIsoDetail('${iso.id}')"
+               onmouseenter="showTooltip(event, allData.isos.find(i => i.id === '${iso.id}'), '${containerId.replace('Chart', '')}', '${formatValue(getValue(iso))}')"
+               onmouseleave="hideTooltip()">
+            <div class="bar-label">${iso.id}</div>
+            <div class="bar-track">
+              <div class="bar-fill" style="width: ${(pct * 100)}%; background: ${barColor};"></div>
+            </div>
+            <div class="bar-value">${formatValue(getValue(iso))}</div>
+          </div>
+        `}).join('');
+      }
+
+      renderBarChart('projectsChart', sortedByProjects, 
+        iso => iso.projects, 
+        v => (v / 1000).toFixed(1) + 'k',
+        'neutral');
+
+      renderBarChart('capacityChart', sortedByMW,
+        iso => iso.totalMW,
+        v => (v / 1000).toFixed(0),
+        'neutral');
+
+      renderBarChart('withdrawalChart', sortedByWithdrawal,
+        iso => iso.withdrawalRate * 100,
+        v => v.toFixed(0) + '%',
+        'negative');
+
+      renderBarChart('completionChart', sortedByCompletion,
+        iso => iso.completionRate * 100,
+        v => v.toFixed(1) + '%',
+        'positive');
+
+      renderBarChart('timelineChart', sortedByTimeline,
+        iso => iso.avgTimelineYears,
+        v => v.toFixed(1),
+        'timeline');
+
+      renderBarChart('avgSizeChart', sortedByAvgMW,
+        iso => iso.avgMW,
+        v => v.toString(),
+        'neutral');
+
+      // Capacity mix stacked bars
+      document.getElementById('mixChart').innerHTML = sortedByMW.map(iso => {
+        const mix = iso.capacityMix;
+        const total = mix.solar + mix.wind + mix.storage + mix.gas + mix.other;
+        return `
+          <div class="stacked-row" onclick="openIsoDetail('${iso.id}')">
+            <div class="bar-label">${iso.id}</div>
+            <div class="stacked-track">
+              <div class="stack-segment solar" style="width: ${(mix.solar / total * 100)}%" 
+                   onmouseenter="showTooltip(event, allData.isos.find(i => i.id === '${iso.id}'), 'Solar Capacity', '${(mix.solar/1000).toFixed(0)} GW', {tech: 'Solar', techValue: '${(mix.solar/1000).toFixed(0)} GW (${(mix.solar/total*100).toFixed(0)}%)'})"
+                   onmouseleave="hideTooltip()"></div>
+              <div class="stack-segment wind" style="width: ${(mix.wind / total * 100)}%"
+                   onmouseenter="showTooltip(event, allData.isos.find(i => i.id === '${iso.id}'), 'Wind Capacity', '${(mix.wind/1000).toFixed(0)} GW', {tech: 'Wind', techValue: '${(mix.wind/1000).toFixed(0)} GW (${(mix.wind/total*100).toFixed(0)}%)'})"
+                   onmouseleave="hideTooltip()"></div>
+              <div class="stack-segment storage" style="width: ${(mix.storage / total * 100)}%"
+                   onmouseenter="showTooltip(event, allData.isos.find(i => i.id === '${iso.id}'), 'Storage Capacity', '${(mix.storage/1000).toFixed(0)} GW', {tech: 'Storage', techValue: '${(mix.storage/1000).toFixed(0)} GW (${(mix.storage/total*100).toFixed(0)}%)'})"
+                   onmouseleave="hideTooltip()"></div>
+              <div class="stack-segment gas" style="width: ${(mix.gas / total * 100)}%"
+                   onmouseenter="showTooltip(event, allData.isos.find(i => i.id === '${iso.id}'), 'Gas Capacity', '${(mix.gas/1000).toFixed(0)} GW', {tech: 'Gas', techValue: '${(mix.gas/1000).toFixed(0)} GW (${(mix.gas/total*100).toFixed(0)}%)'})"
+                   onmouseleave="hideTooltip()"></div>
+              <div class="stack-segment other" style="width: ${(mix.other / total * 100)}%"
+                   onmouseenter="showTooltip(event, allData.isos.find(i => i.id === '${iso.id}'), 'Other Capacity', '${(mix.other/1000).toFixed(0)} GW', {tech: 'Other', techValue: '${(mix.other/1000).toFixed(0)} GW (${(mix.other/total*100).toFixed(0)}%)'})"
+                   onmouseleave="hideTooltip()"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Table - cleaner look without rainbow dots
+      document.getElementById('tableBody').innerHTML = sortedByProjects.map((iso, idx) => `
+        <tr onclick="openIsoDetail('${iso.id}')">
+          <td class="iso-name">
+            <span class="iso-dot" style="background: rgba(59, 130, 246, ${0.5 + (1 - idx/sortedByProjects.length) * 0.5})"></span>
+            ${iso.name}
+          </td>
+          <td>${iso.projects.toLocaleString()}</td>
+          <td>${(iso.totalMW / 1000).toFixed(0)}</td>
+          <td>${iso.avgMW}</td>
+          <td>${iso.active.toLocaleString()}</td>
+          <td class="metric-bad">${(iso.withdrawalRate * 100).toFixed(0)}%</td>
+          <td class="metric-good">${(iso.completionRate * 100).toFixed(1)}%</td>
+          <td>${iso.avgTimelineYears.toFixed(1)}</td>
+        </tr>
+      `).join('');
+    }
+
+    init();
+  </script>
+</body>
+</html>

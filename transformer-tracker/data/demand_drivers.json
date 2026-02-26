@@ -1,0 +1,104 @@
+{
+  "metadata": {
+    "title": "Transformer Demand Drivers",
+    "description": "Factors driving increased transformer demand",
+    "last_updated": "2026-02-06",
+    "data_quality": "ESTIMATED - based on industry reports and interconnection queue data",
+    "confidence": "medium-high"
+  },
+  "demand_drivers": [
+    {
+      "driver": "Renewable Energy Interconnection",
+      "impact": "very_high",
+      "impact_score": 10,
+      "description": "Solar and wind projects require GSU and substation transformers",
+      "data": {
+        "us_queue_gw": 2600,
+        "annual_additions_gw": 35,
+        "transformers_per_gw_estimate": 8
+      },
+      "trend": "accelerating",
+      "notes": "IRA incentives driving record renewable development"
+    },
+    {
+      "driver": "Data Center Growth",
+      "impact": "very_high",
+      "impact_score": 9,
+      "description": "AI and cloud computing driving massive load growth",
+      "data": {
+        "current_us_load_gw": 25,
+        "projected_2030_gw": 50,
+        "typical_datacenter_mw": 100,
+        "transformers_per_datacenter": 4
+      },
+      "trend": "accelerating",
+      "notes": "Single hyperscale facilities now requesting 500MW+"
+    },
+    {
+      "driver": "Grid Modernization",
+      "impact": "high",
+      "impact_score": 8,
+      "description": "Aging infrastructure replacement and capacity upgrades",
+      "data": {
+        "average_transformer_age_years": 40,
+        "design_life_years": 40,
+        "pct_past_design_life": 25
+      },
+      "trend": "steady",
+      "notes": "Many transformers approaching end of life simultaneously"
+    },
+    {
+      "driver": "Electrification",
+      "impact": "high",
+      "impact_score": 7,
+      "description": "EV charging, heat pumps, industrial electrification",
+      "data": {
+        "ev_load_growth_annual_pct": 25,
+        "heat_pump_adoption_rate_pct": 8
+      },
+      "trend": "accelerating",
+      "notes": "Distribution transformers particularly impacted"
+    },
+    {
+      "driver": "BESS Deployment",
+      "impact": "medium-high",
+      "impact_score": 6,
+      "description": "Battery energy storage systems require transformers",
+      "data": {
+        "annual_bess_deployment_gw": 15,
+        "transformers_per_100mw_bess": 3
+      },
+      "trend": "accelerating",
+      "notes": "Often co-located with solar, adding incremental demand"
+    },
+    {
+      "driver": "Transmission Expansion",
+      "impact": "high",
+      "impact_score": 8,
+      "description": "New transmission lines and HVDC projects",
+      "data": {
+        "planned_transmission_miles": 25000,
+        "hvdc_projects_planned": 12
+      },
+      "trend": "increasing",
+      "notes": "FERC Order 1920 may accelerate regional transmission planning"
+    },
+    {
+      "driver": "Extreme Weather Resilience",
+      "impact": "medium",
+      "impact_score": 5,
+      "description": "Hardening grids against storms, wildfires, extreme heat",
+      "data": {
+        "utility_resilience_spending_b": 8
+      },
+      "trend": "increasing",
+      "notes": "Includes spare transformer programs"
+    }
+  ],
+  "summary": {
+    "total_annual_us_transformer_demand_units": 50000,
+    "large_power_transformer_demand_units": 200,
+    "demand_growth_annual_pct": 8,
+    "supply_constraint_duration_estimate": "2027-2028"
+  }
+}

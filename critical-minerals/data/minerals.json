@@ -1,0 +1,489 @@
+{
+  "lastUpdated": "2026-02-06",
+  "dataNote": "Compiled from USGS Mineral Commodity Summaries 2024, Trading Economics, Wikipedia, and public sources",
+  "minerals": {
+    "lithium": {
+      "symbol": "Li",
+      "name": "Lithium",
+      "category": "Battery Metal",
+      "primaryUse": "EV Batteries, Energy Storage",
+      "dataQuality": "excellent",
+      "price": {
+        "current": 134500,
+        "unit": "CNY/tonne",
+        "usdEquivalent": 18500,
+        "usdUnit": "USD/tonne",
+        "historicalHigh": 5750000,
+        "historicalHighDate": "2022-12",
+        "historicalLow": 39000,
+        "yearOverYearChange": 74.0,
+        "priceType": "Lithium Carbonate, 99.5% Li2CO3 min, battery grade",
+        "source": "Trading Economics (CFD)"
+      },
+      "production2024": {
+        "world": 240000,
+        "unit": "tonnes",
+        "byCountry": [
+          {"country": "Australia", "value": 88000, "share": 36.7},
+          {"country": "Chile", "value": 49000, "share": 20.4},
+          {"country": "China", "value": 41000, "share": 17.1},
+          {"country": "Zimbabwe", "value": 22000, "share": 9.2},
+          {"country": "Argentina", "value": 18000, "share": 7.5},
+          {"country": "Brazil", "value": 10000, "share": 4.2},
+          {"country": "Canada", "value": 4300, "share": 1.8},
+          {"country": "Namibia", "value": 2700, "share": 1.1},
+          {"country": "United States", "value": 2440, "share": 1.0},
+          {"country": "Bolivia", "value": 733, "share": 0.3}
+        ]
+      },
+      "reserves": {
+        "world": 30000000,
+        "unit": "tonnes",
+        "byCountry": [
+          {"country": "Chile", "value": 9300000, "share": 31.0},
+          {"country": "Australia", "value": 7000000, "share": 23.3},
+          {"country": "Argentina", "value": 4000000, "share": 13.3},
+          {"country": "China", "value": 3000000, "share": 10.0},
+          {"country": "United States", "value": 1800000, "share": 6.0},
+          {"country": "Canada", "value": 1200000, "share": 4.0}
+        ]
+      },
+      "supplyChain": {
+        "mining": ["Australia", "Chile", "China"],
+        "processing": ["China", "Chile", "Argentina"],
+        "batteryProduction": ["China", "South Korea", "Japan", "USA", "Europe"],
+        "endUse": ["EV Batteries", "Consumer Electronics", "Energy Storage"]
+      },
+      "majorCompanies": [
+        "Albemarle (USA)",
+        "SQM (Chile)",
+        "Tianqi Lithium (China)",
+        "Ganfeng Lithium (China)",
+        "Pilbara Minerals (Australia)",
+        "Livent (USA)"
+      ]
+    },
+    "cobalt": {
+      "symbol": "Co",
+      "name": "Cobalt",
+      "category": "Battery Metal",
+      "primaryUse": "EV Batteries, Superalloys",
+      "dataQuality": "good",
+      "price": {
+        "current": 56290,
+        "unit": "USD/tonne",
+        "historicalHigh": 95250,
+        "historicalHighDate": "2018-03",
+        "historicalLow": 21550,
+        "yearOverYearChange": 161.21,
+        "source": "Trading Economics (LME/CFD)"
+      },
+      "production2023": {
+        "world": 190000,
+        "unit": "tonnes",
+        "byCountry": [
+          {"country": "DR Congo", "value": 130000, "share": 68.4},
+          {"country": "Indonesia", "value": 17000, "share": 8.9},
+          {"country": "Russia", "value": 8900, "share": 4.7},
+          {"country": "Australia", "value": 5900, "share": 3.1},
+          {"country": "Philippines", "value": 4800, "share": 2.5},
+          {"country": "Canada", "value": 3500, "share": 1.8},
+          {"country": "Cuba", "value": 3500, "share": 1.8},
+          {"country": "Madagascar", "value": 3200, "share": 1.7}
+        ]
+      },
+      "reserves": {
+        "world": 8300000,
+        "unit": "tonnes",
+        "byCountry": [
+          {"country": "DR Congo", "value": 4000000, "share": 48.2},
+          {"country": "Australia", "value": 1500000, "share": 18.1},
+          {"country": "Indonesia", "value": 600000, "share": 7.2},
+          {"country": "Cuba", "value": 500000, "share": 6.0},
+          {"country": "Philippines", "value": 260000, "share": 3.1}
+        ]
+      },
+      "supplyChain": {
+        "mining": ["DR Congo"],
+        "processing": ["China", "Finland", "Belgium"],
+        "batteryProduction": ["China", "South Korea", "Japan"],
+        "endUse": ["EV Batteries", "Superalloys", "Catalysts", "Magnets"]
+      },
+      "majorCompanies": [
+        "Glencore (Switzerland)",
+        "CMOC (China)",
+        "Umicore (Belgium)",
+        "ERG (Luxembourg)",
+        "Gecamines (DR Congo)"
+      ],
+      "concerns": ["ESG/Child labor concerns in DRC artisanal mining", "Concentration risk"]
+    },
+    "nickel": {
+      "symbol": "Ni",
+      "name": "Nickel",
+      "category": "Battery Metal",
+      "primaryUse": "Stainless Steel, EV Batteries",
+      "dataQuality": "excellent",
+      "price": {
+        "current": 17032.88,
+        "unit": "USD/tonne",
+        "historicalHigh": 54050,
+        "historicalHighDate": "2007-05",
+        "historicalLow": 3730.50,
+        "yearOverYearChange": 8.21,
+        "source": "Trading Economics (LME/CFD)"
+      },
+      "production2023": {
+        "world": 3600000,
+        "unit": "tonnes",
+        "byCountry": [
+          {"country": "Indonesia", "value": 1800000, "share": 50.0},
+          {"country": "Philippines", "value": 400000, "share": 11.1},
+          {"country": "Russia", "value": 220000, "share": 6.1},
+          {"country": "New Caledonia", "value": 190000, "share": 5.3},
+          {"country": "Australia", "value": 150000, "share": 4.2},
+          {"country": "Canada", "value": 130000, "share": 3.6},
+          {"country": "China", "value": 120000, "share": 3.3},
+          {"country": "Brazil", "value": 83000, "share": 2.3}
+        ]
+      },
+      "reserves": {
+        "world": 100000000,
+        "unit": "tonnes",
+        "byCountry": [
+          {"country": "Indonesia", "value": 21000000, "share": 21.0},
+          {"country": "Australia", "value": 21000000, "share": 21.0},
+          {"country": "Brazil", "value": 16000000, "share": 16.0},
+          {"country": "Russia", "value": 7500000, "share": 7.5},
+          {"country": "New Caledonia", "value": 7100000, "share": 7.1}
+        ]
+      },
+      "supplyChain": {
+        "mining": ["Indonesia", "Philippines", "Russia"],
+        "processing": ["China", "Indonesia", "Japan"],
+        "batteryProduction": ["China", "South Korea", "Japan"],
+        "endUse": ["Stainless Steel (70%)", "Batteries (15%)", "Alloys (15%)"]
+      },
+      "majorCompanies": [
+        "Nornickel (Russia)",
+        "Vale (Brazil)",
+        "BHP (Australia)",
+        "Glencore (Switzerland)",
+        "PT Vale Indonesia"
+      ]
+    },
+    "copper": {
+      "symbol": "Cu",
+      "name": "Copper",
+      "category": "Base Metal",
+      "primaryUse": "Electrical Wiring, EV Motors, Renewable Energy",
+      "dataQuality": "excellent",
+      "price": {
+        "current": 5.85,
+        "unit": "USD/lb",
+        "metricTonne": 12897,
+        "historicalHigh": 6.58,
+        "historicalHighDate": "2026-01",
+        "historicalLow": 0.60,
+        "yearOverYearChange": 27.55,
+        "source": "Trading Economics (COMEX/CFD)"
+      },
+      "production2023": {
+        "world": 22000000,
+        "unit": "tonnes",
+        "byCountry": [
+          {"country": "Chile", "value": 5200000, "share": 23.6},
+          {"country": "Peru", "value": 2700000, "share": 12.3},
+          {"country": "DR Congo", "value": 2500000, "share": 11.4},
+          {"country": "China", "value": 1900000, "share": 8.6},
+          {"country": "United States", "value": 1100000, "share": 5.0},
+          {"country": "Indonesia", "value": 900000, "share": 4.1},
+          {"country": "Australia", "value": 850000, "share": 3.9},
+          {"country": "Russia", "value": 820000, "share": 3.7}
+        ]
+      },
+      "reserves": {
+        "world": 890000000,
+        "unit": "tonnes",
+        "byCountry": [
+          {"country": "Chile", "value": 190000000, "share": 21.3},
+          {"country": "Australia", "value": 97000000, "share": 10.9},
+          {"country": "Peru", "value": 81000000, "share": 9.1},
+          {"country": "Russia", "value": 62000000, "share": 7.0},
+          {"country": "Mexico", "value": 53000000, "share": 6.0}
+        ]
+      },
+      "supplyChain": {
+        "mining": ["Chile", "Peru", "DR Congo"],
+        "smelting": ["China", "Japan", "Chile"],
+        "refining": ["China", "Chile", "Japan"],
+        "endUse": ["Electrical (65%)", "Construction (25%)", "Transport (10%)"]
+      },
+      "majorCompanies": [
+        "Codelco (Chile)",
+        "Freeport-McMoRan (USA)",
+        "BHP (Australia)",
+        "Glencore (Switzerland)",
+        "Southern Copper (Mexico)"
+      ]
+    },
+    "graphite": {
+      "symbol": "C",
+      "name": "Graphite",
+      "category": "Battery Material",
+      "primaryUse": "Battery Anodes, Refractories",
+      "dataQuality": "good",
+      "price": {
+        "current": 550,
+        "unit": "USD/tonne",
+        "note": "Natural flake graphite, large flake 94-97% C",
+        "source": "Industry estimates"
+      },
+      "production2023": {
+        "world": 1600000,
+        "unit": "tonnes",
+        "byCountry": [
+          {"country": "China", "value": 1200000, "share": 75.0},
+          {"country": "Madagascar", "value": 100000, "share": 6.3},
+          {"country": "Mozambique", "value": 100000, "share": 6.3},
+          {"country": "Brazil", "value": 68000, "share": 4.3},
+          {"country": "Russia", "value": 25000, "share": 1.6}
+        ]
+      },
+      "reserves": {
+        "world": 330000000,
+        "unit": "tonnes",
+        "byCountry": [
+          {"country": "Turkey", "value": 90000000, "share": 27.3},
+          {"country": "China", "value": 78000000, "share": 23.6},
+          {"country": "Brazil", "value": 74000000, "share": 22.4},
+          {"country": "Madagascar", "value": 26000000, "share": 7.9}
+        ]
+      },
+      "concerns": ["China dominates both natural and synthetic production", "Critical for battery anodes"],
+      "majorCompanies": [
+        "BTR New Energy (China)",
+        "Showa Denko (Japan)",
+        "Syrah Resources (Australia)",
+        "Northern Graphite (Canada)"
+      ]
+    },
+    "manganese": {
+      "symbol": "Mn",
+      "name": "Manganese",
+      "category": "Battery Metal",
+      "primaryUse": "Steel Production, EV Batteries",
+      "dataQuality": "good",
+      "price": {
+        "current": 4.50,
+        "unit": "USD/dmtu",
+        "note": "Manganese ore 44% Mn",
+        "source": "Industry estimates"
+      },
+      "production2023": {
+        "world": 23000000,
+        "unit": "tonnes",
+        "byCountry": [
+          {"country": "South Africa", "value": 7200000, "share": 31.3},
+          {"country": "Gabon", "value": 4000000, "share": 17.4},
+          {"country": "Australia", "value": 3200000, "share": 13.9},
+          {"country": "China", "value": 2200000, "share": 9.6},
+          {"country": "Ghana", "value": 1700000, "share": 7.4},
+          {"country": "Brazil", "value": 1300000, "share": 5.7}
+        ]
+      },
+      "reserves": {
+        "world": 1700000000,
+        "unit": "tonnes",
+        "byCountry": [
+          {"country": "South Africa", "value": 640000000, "share": 37.6},
+          {"country": "Australia", "value": 280000000, "share": 16.5},
+          {"country": "Brazil", "value": 270000000, "share": 15.9},
+          {"country": "Ukraine", "value": 140000000, "share": 8.2}
+        ]
+      },
+      "majorCompanies": [
+        "South32 (Australia)",
+        "Eramet (France)",
+        "MOIL (India)",
+        "CITIC (China)"
+      ]
+    },
+    "rareEarths": {
+      "name": "Rare Earth Elements",
+      "category": "Strategic Minerals",
+      "primaryUse": "Permanent Magnets, EV Motors, Wind Turbines",
+      "dataQuality": "moderate",
+      "elements": {
+        "neodymium": {"symbol": "Nd", "use": "NdFeB magnets", "criticality": "high"},
+        "praseodymium": {"symbol": "Pr", "use": "NdPr magnets", "criticality": "high"},
+        "dysprosium": {"symbol": "Dy", "use": "High-temp magnet stability", "criticality": "critical"},
+        "terbium": {"symbol": "Tb", "use": "High-temp magnet stability", "criticality": "critical"}
+      },
+      "price": {
+        "neodymiumOxide": {"value": 70, "unit": "USD/kg"},
+        "praseodymiumOxide": {"value": 75, "unit": "USD/kg"},
+        "dysprosiumOxide": {"value": 350, "unit": "USD/kg"},
+        "terbiumOxide": {"value": 1200, "unit": "USD/kg"},
+        "source": "Industry estimates - requires paid sources for real-time"
+      },
+      "production2023": {
+        "world": 350000,
+        "unit": "tonnes REO",
+        "byCountry": [
+          {"country": "China", "value": 240000, "share": 68.6},
+          {"country": "United States", "value": 43000, "share": 12.3},
+          {"country": "Australia", "value": 18000, "share": 5.1},
+          {"country": "Myanmar", "value": 31000, "share": 8.9},
+          {"country": "India", "value": 2900, "share": 0.8}
+        ]
+      },
+      "processing": {
+        "note": "China processes ~90% of global REE",
+        "separation": ["China (90%)", "Estonia (Silmet)", "USA (Mountain Pass)"],
+        "magnetProduction": ["China (92%)", "Japan (5%)", "Others (3%)"]
+      },
+      "concerns": ["Extreme China dependence", "Processing bottleneck", "Export restriction risk"],
+      "majorCompanies": [
+        "Northern Rare Earths (China)",
+        "China Minmetals RE (China)",
+        "MP Materials (USA)",
+        "Lynas Rare Earths (Australia)"
+      ]
+    },
+    "silicon": {
+      "name": "Silicon (Polysilicon)",
+      "symbol": "Si",
+      "category": "Solar Material",
+      "primaryUse": "Solar Panels, Semiconductors",
+      "dataQuality": "good",
+      "price": {
+        "current": 8.50,
+        "unit": "USD/kg",
+        "note": "Solar-grade polysilicon",
+        "historicalHigh": 40,
+        "historicalHighDate": "2022",
+        "source": "Industry estimates"
+      },
+      "production2023": {
+        "world": 1200000,
+        "unit": "tonnes",
+        "byCountry": [
+          {"country": "China", "value": 1080000, "share": 90.0},
+          {"country": "United States", "value": 35000, "share": 2.9},
+          {"country": "Germany", "value": 20000, "share": 1.7},
+          {"country": "South Korea", "value": 15000, "share": 1.3},
+          {"country": "Malaysia", "value": 10000, "share": 0.8}
+        ]
+      },
+      "supplyChain": {
+        "quartzMining": ["Global"],
+        "polysiliconProduction": ["China (Xinjiang, Inner Mongolia)"],
+        "waferProduction": ["China (97%)"],
+        "solarCellProduction": ["China (85%)"]
+      },
+      "concerns": ["Extreme China concentration", "Forced labor concerns in Xinjiang"],
+      "majorCompanies": [
+        "Tongwei (China)",
+        "GCL-Poly (China)",
+        "Daqo New Energy (China)",
+        "Wacker Chemie (Germany)",
+        "REC Silicon (Norway/USA)"
+      ]
+    },
+    "gallium": {
+      "symbol": "Ga",
+      "name": "Gallium",
+      "category": "Semiconductor Metal",
+      "primaryUse": "Integrated Circuits, LEDs, Solar Cells",
+      "dataQuality": "moderate",
+      "price": {
+        "current": 350,
+        "unit": "USD/kg",
+        "note": "Low-grade gallium",
+        "source": "Industry estimates"
+      },
+      "production2023": {
+        "world": 500,
+        "unit": "tonnes",
+        "byCountry": [
+          {"country": "China", "value": 480, "share": 96.0},
+          {"country": "Japan", "value": 8, "share": 1.6},
+          {"country": "South Korea", "value": 5, "share": 1.0},
+          {"country": "Russia", "value": 5, "share": 1.0}
+        ]
+      },
+      "concerns": [
+        "China controls 96% of production",
+        "China export restrictions since Aug 2023",
+        "Byproduct of aluminum/zinc production"
+      ],
+      "majorCompanies": [
+        "Chalco (China)",
+        "Zhuhai Fangyuan (China)",
+        "JX Nippon (Japan)"
+      ]
+    },
+    "germanium": {
+      "symbol": "Ge",
+      "name": "Germanium",
+      "category": "Semiconductor Metal",
+      "primaryUse": "Fiber Optics, Infrared Optics, Solar Cells",
+      "dataQuality": "moderate",
+      "price": {
+        "current": 1900,
+        "unit": "USD/kg",
+        "source": "Industry estimates"
+      },
+      "production2023": {
+        "world": 180,
+        "unit": "tonnes",
+        "byCountry": [
+          {"country": "China", "value": 120, "share": 66.7},
+          {"country": "Belgium", "value": 20, "share": 11.1},
+          {"country": "Russia", "value": 5, "share": 2.8},
+          {"country": "United States", "value": 3, "share": 1.7}
+        ]
+      },
+      "concerns": [
+        "China controls ~67% production",
+        "China export restrictions since Aug 2023",
+        "Byproduct of zinc refining"
+      ],
+      "majorCompanies": [
+        "Yunnan Germanium (China)",
+        "Umicore (Belgium)",
+        "Teck Resources (Canada)"
+      ]
+    },
+    "tellurium": {
+      "symbol": "Te",
+      "name": "Tellurium",
+      "category": "Solar Material",
+      "primaryUse": "Thin-Film Solar (CdTe), Thermoelectrics",
+      "dataQuality": "moderate",
+      "price": {
+        "current": 85,
+        "unit": "USD/kg",
+        "source": "Industry estimates"
+      },
+      "production2023": {
+        "world": 700,
+        "unit": "tonnes",
+        "byCountry": [
+          {"country": "China", "value": 350, "share": 50.0},
+          {"country": "Japan", "value": 60, "share": 8.6},
+          {"country": "Russia", "value": 50, "share": 7.1},
+          {"country": "Sweden", "value": 40, "share": 5.7},
+          {"country": "Canada", "value": 35, "share": 5.0}
+        ]
+      },
+      "concerns": ["Byproduct of copper refining", "Limited primary production"],
+      "majorCompanies": [
+        "5N Plus (Canada)",
+        "Boliden (Sweden)",
+        "First Solar (USA - end user)"
+      ]
+    }
+  }
+}

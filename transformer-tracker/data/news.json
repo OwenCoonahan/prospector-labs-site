@@ -1,0 +1,186 @@
+{
+  "meta": {
+    "title": "Grid Supply Chain Industry News",
+    "updated": "2026-02-06",
+    "description": "Recent news and insights on grid infrastructure supply chain"
+  },
+  "news": [
+    {
+      "id": "hitachi-ludvika-2024",
+      "date": "2024-10-15",
+      "headline": "Hitachi Energy Breaks Ground on Ludvika Factory Expansion",
+      "source": "Company Press Release",
+      "category": "Capacity Expansion",
+      "summary": "Hitachi Energy begins construction on major expansion at its Ludvika, Sweden transformer facility. The expansion includes a new test hall for transformer components and increased production capacity for ultra-large power transformers and HVDC converters.",
+      "significance": "HIGH",
+      "impact": "Will add capacity for high-demand HVDC and UHV transformers by 2026-2027"
+    },
+    {
+      "id": "hyundai-alabama-2024",
+      "date": "2024-06-20",
+      "headline": "Hyundai Electric Montgomery Plant Construction Progresses",
+      "source": "Industry Publication",
+      "category": "Capacity Expansion",
+      "summary": "Hyundai Electric's first US large power transformer manufacturing facility in Montgomery, Alabama continues on schedule for 2025 opening. The $100M facility will have capacity for approximately 24 large power transformers annually.",
+      "significance": "HIGH",
+      "impact": "First Korean LPT manufacturer with US production. Will add meaningful capacity to domestic supply."
+    },
+    {
+      "id": "doe-step-2024",
+      "date": "2024-08-01",
+      "headline": "DOE Launches Transformer Security and Supply Chain Enhancement Program",
+      "source": "US DOE",
+      "category": "Policy",
+      "summary": "Department of Energy announces the STEP (Strategic Transformer Reserve and Enhancement Program) to address critical transformer shortages. Program includes funding for domestic manufacturing expansion, spare transformer reserves, and workforce development.",
+      "significance": "HIGH",
+      "impact": "Federal support accelerating domestic capacity expansion"
+    },
+    {
+      "id": "virginia-transformer-expansion-2024",
+      "date": "2024-08-15",
+      "headline": "Virginia Transformer Receives DOE Grant for Roanoke Expansion",
+      "source": "DOE Announcement",
+      "category": "Capacity Expansion",
+      "summary": "Virginia Transformer Corp. awarded federal grant to expand LPT manufacturing capacity at Roanoke facility. Expansion expected to add 10+ units annual capacity.",
+      "significance": "MEDIUM",
+      "impact": "Strengthens domestic LPT supply"
+    },
+    {
+      "id": "cleveland-cliffs-goes-2024",
+      "date": "2024-07-10",
+      "headline": "Cleveland-Cliffs Announces GOES Capacity Investment",
+      "source": "Company Press Release",
+      "category": "Materials",
+      "summary": "Cleveland-Cliffs, the only US producer of grain-oriented electrical steel (GOES), announces $500M investment to expand production capacity at Butler and Zanesville facilities. Expected to increase US GOES production by 30% by 2026.",
+      "significance": "HIGH",
+      "impact": "Critical for reducing import dependence on GOES"
+    },
+    {
+      "id": "ge-vernova-spinoff-2024",
+      "date": "2024-04-02",
+      "headline": "GE Vernova Successfully Completes Spin-Off from GE",
+      "source": "SEC Filing",
+      "category": "Corporate",
+      "summary": "GE completes spin-off of energy business as GE Vernova. New company includes Grid Solutions division with transformer and switchgear manufacturing.",
+      "significance": "MEDIUM",
+      "impact": "Pure-play energy company may increase investment focus"
+    },
+    {
+      "id": "siemens-grid-investment-2025",
+      "date": "2025-01-15",
+      "headline": "Siemens Energy Announces €1.5B Grid Equipment Investment Program",
+      "source": "Company Press Release",
+      "category": "Capacity Expansion",
+      "summary": "Siemens Energy commits €1.5 billion over 5 years to expand grid equipment manufacturing capacity globally, including transformers and switchgear production.",
+      "significance": "HIGH",
+      "impact": "Major capacity additions expected 2026-2028"
+    },
+    {
+      "id": "nerc-reliability-2024",
+      "date": "2024-11-15",
+      "headline": "NERC Warns of Grid Reliability Risks from Equipment Constraints",
+      "source": "NERC Long-Term Reliability Assessment",
+      "category": "Industry Analysis",
+      "summary": "North American Electric Reliability Corporation's 2024 assessment highlights transformer and other equipment lead times as key reliability risk. Recommends utilities extend procurement planning horizons.",
+      "significance": "HIGH",
+      "impact": "Regulatory attention increasing on supply chain"
+    },
+    {
+      "id": "data-center-demand-2025",
+      "date": "2025-01-20",
+      "headline": "Data Center Power Demand Exceeds Forecasts",
+      "source": "Industry Analysis",
+      "category": "Demand",
+      "summary": "AI-driven data center expansion pushing power demand well above utility forecasts. Major utilities reporting 2-3x higher load growth than predicted, intensifying transformer demand.",
+      "significance": "HIGH",
+      "impact": "Transformer demand outlook revised upward"
+    },
+    {
+      "id": "sf6-regulations-2025",
+      "date": "2025-01-10",
+      "headline": "EU Strengthens SF6 Phase-Out Timeline",
+      "source": "European Commission",
+      "category": "Regulations",
+      "summary": "European Union accelerates phase-out of SF6 in electrical equipment. New regulations will require SF6-free alternatives for new medium-voltage equipment by 2027, high-voltage by 2032.",
+      "significance": "MEDIUM",
+      "impact": "Driving innovation in SF6 alternatives, may affect equipment availability"
+    },
+    {
+      "id": "copper-prices-2025",
+      "date": "2025-01-25",
+      "headline": "Copper Prices Hit Record Highs on Electrification Demand",
+      "source": "Market Analysis",
+      "category": "Materials",
+      "summary": "Copper prices reach all-time highs driven by EV production, grid expansion, and data center construction. Analysts project sustained elevated prices through 2030.",
+      "significance": "MEDIUM",
+      "impact": "Increasing transformer and cable costs"
+    },
+    {
+      "id": "transmission-planning-2024",
+      "date": "2024-12-01",
+      "headline": "FERC Approves Long-Term Regional Transmission Planning Rule",
+      "source": "FERC",
+      "category": "Policy",
+      "summary": "Federal Energy Regulatory Commission finalizes Order 1920 requiring 20-year regional transmission planning. Will drive increased transformer and equipment orders for planned expansion.",
+      "significance": "HIGH",
+      "impact": "Improves visibility but increases demand for long-lead equipment"
+    },
+    {
+      "id": "chinese-restrictions-2024",
+      "date": "2024-03-15",
+      "headline": "DOE Restricts Chinese Transformers from Bulk Power System",
+      "source": "DOE Order",
+      "category": "Policy",
+      "summary": "Department of Energy issues order restricting transformers manufactured by Chinese state-owned enterprises from connection to US bulk power system, citing security concerns.",
+      "significance": "HIGH",
+      "impact": "Effectively removes TBEA, Baoding Tianwei from US LPT market"
+    },
+    {
+      "id": "goes-tariff-2024",
+      "date": "2024-09-01",
+      "headline": "Section 232 GOES Tariff Exemptions Extended",
+      "source": "Commerce Department",
+      "category": "Trade",
+      "summary": "Commerce Department extends certain exclusions from Section 232 tariffs on grain-oriented electrical steel imports, providing some relief for transformer manufacturers.",
+      "significance": "MEDIUM",
+      "impact": "Modest cost relief for manufacturers"
+    },
+    {
+      "id": "offshore-wind-delays-2024",
+      "date": "2024-10-01",
+      "headline": "Multiple Offshore Wind Projects Face Delays",
+      "source": "Industry News",
+      "category": "Demand",
+      "summary": "Several offshore wind projects on US East Coast experience delays due to cost inflation, permitting challenges, and supply chain constraints including transformer availability.",
+      "significance": "MEDIUM",
+      "impact": "May provide temporary relief to transformer demand, but projects still expected to proceed"
+    }
+  ],
+  "insights": [
+    {
+      "topic": "Lead Time Trajectory",
+      "assessment": "Lead times peaked in 2022-2023 and are gradually improving. However, normalization to pre-2020 levels is unlikely before 2028. Current LPT lead times remain 2-2.5x above historical norms.",
+      "confidence": "HIGH"
+    },
+    {
+      "topic": "Capacity Expansion",
+      "assessment": "Multiple manufacturers are adding capacity globally, including new US facilities (Hyundai), expansions (Hitachi, Virginia Transformer), and major investments (Siemens). Meaningful capacity increases expected 2025-2027.",
+      "confidence": "MEDIUM-HIGH"
+    },
+    {
+      "topic": "GOES Supply",
+      "assessment": "Grain-oriented electrical steel remains the critical bottleneck. Cleveland-Cliffs expansion and global capacity additions should improve supply by 2026, but demand continues to outpace new capacity.",
+      "confidence": "MEDIUM"
+    },
+    {
+      "topic": "Demand Drivers",
+      "assessment": "Demand outlook has been revised upward due to: (1) AI data center surge, (2) accelerating renewables, (3) grid modernization, (4) electrification. Supply-demand imbalance expected to persist.",
+      "confidence": "HIGH"
+    },
+    {
+      "topic": "Geopolitical Factors",
+      "assessment": "US policy increasingly favoring domestic/allied manufacturing. Chinese manufacturers effectively excluded from US market for security reasons. Trade policy volatility remains a concern for materials.",
+      "confidence": "MEDIUM-HIGH"
+    }
+  ]
+}

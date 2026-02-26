@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transformer Tracker | Grid Supply Chain Intelligence</title>
+<meta name="description" content="Interactive dashboard tracking U.S. power transformer supply chain, lead times, manufacturers, and demand drivers.">
+<meta property="og:title" content="Transformer Tracker">
+<meta property="og:description" content="Grid Supply Chain Intelligence — Lead times, manufacturers, trade flows, and demand analysis">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --font-sans:'Geist',-apple-system,sans-serif;
+  --font-mono:'Geist Mono',ui-monospace,monospace;
+  --radius:10px;
+  --radius-lg:14px;
+}
+[data-theme="dark"]{
+  --bg:#09090b;--bg-elevated:#0f0f12;--surface:#131316;--surface-hover:#1a1a1f;
+  --border:#27272a;--border-hover:#3f3f46;--text:#fafafa;--text-secondary:#a1a1aa;
+  --text-muted:#71717a;--accent:#3b82f6;--red:#ef4444;--red-muted:rgba(239,68,68,.12);
+  --orange:#f59e0b;--orange-muted:rgba(245,158,11,.12);--green:#22c55e;
+  --green-muted:rgba(34,197,94,.12);--chart-grid:#1e1e22;--backdrop:rgba(0,0,0,.5);
+  --purple:#a855f7;--purple-muted:rgba(168,85,247,.12);
+  --cyan:#06b6d4;--cyan-muted:rgba(6,182,212,.12);
+}
+[data-theme="light"]{
+  --bg:#ffffff;--bg-elevated:#fafafa;--surface:#ffffff;--surface-hover:#f4f4f5;
+  --border:#e4e4e7;--border-hover:#d4d4d8;--text:#09090b;--text-secondary:#52525b;
+  --text-muted:#a1a1aa;--accent:#2563eb;--red:#dc2626;--red-muted:rgba(220,38,38,.08);
+  --orange:#d97706;--orange-muted:rgba(217,119,6,.08);--green:#16a34a;
+  --green-muted:rgba(22,163,74,.08);--chart-grid:#f0f0f2;--backdrop:rgba(0,0,0,.3);
+  --purple:#7c3aed;--purple-muted:rgba(124,58,237,.08);
+  --cyan:#0891b2;--cyan-muted:rgba(8,145,178,.08);
+}
+body{font-family:var(--font-sans);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;transition:background .2s,color .2s}
+
+/* Header */
+.header{border-bottom:1px solid var(--border);padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:center;max-width:1400px;margin:0 auto}
+.header-left h1{font-size:1.25rem;font-weight:600;letter-spacing:-.02em}
+.header-left p{color:var(--text-muted);font-size:.8125rem;margin-top:.125rem}
+.header-right{display:flex;align-items:center;gap:.75rem}
+.last-updated{font-size:.6875rem;color:var(--text-muted);font-family:var(--font-mono);padding:.25rem .625rem;border:1px solid var(--border);border-radius:var(--radius);white-space:nowrap}
+.theme-toggle{width:36px;height:36px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+.theme-toggle:hover{background:var(--surface-hover);border-color:var(--border-hover);color:var(--text)}
+.theme-toggle svg{width:16px;height:16px}
+
+/* Pills / Tabs */
+.pills-wrap{padding:.75rem 2rem;display:flex;flex-wrap:wrap;gap:.375rem;border-bottom:1px solid var(--border);max-width:1400px;margin:0 auto;align-items:center}
+.pill{padding:.375rem .75rem;border-radius:999px;font-size:.8125rem;font-weight:500;cursor:pointer;border:1px solid transparent;background:transparent;color:var(--text-muted);transition:all .15s;white-space:nowrap;font-family:var(--font-sans)}
+.pill:hover{color:var(--text);background:var(--surface-hover)}
+.pill.active{background:var(--text);color:var(--bg);border-color:var(--text)}
+
+/* Container */
+.container{max-width:1400px;margin:0 auto;padding:2rem}
+.tab-view{display:none}
+.tab-view.active{display:block}
+
+/* Section Headers */
+.section-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem}
+.section-header h2{font-size:1rem;font-weight:500;color:var(--text-secondary)}
+.section-attribution{font-size:.6875rem;color:var(--text-muted);font-family:var(--font-mono)}
+
+/* Stat Cards */
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;margin-bottom:2rem}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;transition:all .15s}
+.stat-card:hover{border-color:var(--border-hover)}
+.stat-label{font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;font-weight:500;margin-bottom:.75rem}
+.stat-value{font-family:var(--font-mono);font-size:1.75rem;font-weight:700;letter-spacing:-.03em;line-height:1}
+.stat-sub{font-size:.75rem;color:var(--text-muted);margin-top:.375rem}
+.stat-change{font-family:var(--font-mono);font-size:.75rem;font-weight:600}
+.stat-change.up{color:var(--red)}
+.stat-change.down{color:var(--green)}
+
+/* Risk Cards */
+.risk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.75rem;margin-bottom:2rem}
+.risk-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;transition:all .15s}
+.risk-card:hover{border-color:var(--border-hover);background:var(--surface-hover)}
+.risk-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem}
+.risk-card-title{font-size:.875rem;font-weight:600;letter-spacing:-.01em}
+.risk-badge{font-family:var(--font-mono);font-size:.6875rem;font-weight:500;padding:.2rem .5rem;border-radius:999px}
+.risk-badge.critical{background:var(--red-muted);color:var(--red)}
+.risk-badge.high{background:var(--orange-muted);color:var(--orange)}
+.risk-badge.medium{background:var(--purple-muted);color:var(--purple)}
+.risk-card p{font-size:.8125rem;color:var(--text-secondary);line-height:1.5}
+
+/* Info Box */
+.info-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:2rem}
+.info-box h3{font-size:.875rem;font-weight:600;margin-bottom:.75rem}
+.info-box p{font-size:.8125rem;color:var(--text-secondary);line-height:1.7}
+
+/* Charts */
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem}
+.chart-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem}
+.chart-box.full{grid-column:1/-1}
+.chart-box h3{font-size:.8125rem;font-weight:500;color:var(--text-secondary);margin-bottom:1rem}
+.chart-box canvas{max-height:300px}
+
+/* Supply Chain Flow */
+.flow-container{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;margin-bottom:1.5rem;overflow-x:auto}
+.flow-stages{display:flex;align-items:stretch;gap:0;min-width:900px}
+.flow-stage{flex:1;padding:1.25rem;position:relative}
+.flow-stage+.flow-stage::before{content:'→';position:absolute;left:-12px;top:50%;transform:translateY(-50%);font-size:1.5rem;color:var(--text-muted)}
+.flow-stage-header{display:flex;align-items:center;gap:.5rem;margin-bottom:1rem}
+.flow-stage-icon{width:36px;height:36px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:1.125rem;flex-shrink:0}
+.flow-stage-icon.raw{background:var(--orange-muted);color:var(--orange)}
+.flow-stage-icon.comp{background:var(--cyan-muted);color:var(--cyan)}
+.flow-stage-icon.assy{background:var(--accent);background:rgba(59,130,246,.12);color:var(--accent)}
+.flow-stage-icon.deliv{background:var(--green-muted);color:var(--green)}
+.flow-stage-title{font-size:.8125rem;font-weight:600}
+.flow-items{list-style:none}
+.flow-items li{font-size:.75rem;color:var(--text-secondary);padding:.25rem 0;border-bottom:1px solid var(--border)}
+.flow-items li:last-child{border-bottom:none}
+.flow-items .bottleneck{color:var(--red);font-weight:500}
+
+/* Deep dive cards */
+.deep-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.5rem}
+.deep-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem}
+.deep-card h3{font-size:.875rem;font-weight:600;margin-bottom:1rem}
+
+/* Manufacturer Cards */
+.mfg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:.75rem;margin-bottom:1.5rem}
+.mfg-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;cursor:pointer;transition:all .15s}
+.mfg-card:hover{border-color:var(--border-hover);background:var(--surface-hover)}
+.mfg-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem}
+.mfg-card-name{font-size:.875rem;font-weight:600;letter-spacing:-.01em}
+.mfg-card-hq{font-size:.75rem;color:var(--text-muted);margin-top:.125rem}
+.mfg-card-badge{font-family:var(--font-mono);font-size:.6875rem;font-weight:500;padding:.2rem .5rem;border-radius:999px;background:rgba(59,130,246,.12);color:var(--accent)}
+.mfg-card-row{display:flex;justify-content:space-between;font-size:.8125rem;padding:.25rem 0}
+.mfg-card-row+.mfg-card-row{border-top:1px solid var(--border)}
+.mfg-card-label{color:var(--text-muted)}
+.mfg-card-val{font-family:var(--font-mono);font-weight:500;font-size:.8125rem}
+
+/* Side Panel */
+.side-panel-backdrop{position:fixed;inset:0;background:var(--backdrop);z-index:999;opacity:0;pointer-events:none;transition:opacity .2s}
+.side-panel-backdrop.open{opacity:1;pointer-events:auto}
+.side-panel{position:fixed;top:0;right:0;bottom:0;width:520px;max-width:92vw;background:var(--surface);border-left:1px solid var(--border);z-index:1000;transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);overflow-y:auto;display:flex;flex-direction:column}
+.side-panel.open{transform:translateX(0)}
+.sp-header{display:flex;justify-content:space-between;align-items:center;padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);flex-shrink:0}
+.sp-header h3{font-size:1rem;font-weight:600;letter-spacing:-.01em}
+.sp-close{width:32px;height:32px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all .15s;font-family:var(--font-sans)}
+.sp-close:hover{background:var(--surface-hover);color:var(--text);border-color:var(--border-hover)}
+.sp-body{padding:1.5rem;flex:1}
+.sp-row{display:flex;justify-content:space-between;align-items:center;padding:.625rem 0;font-size:.8125rem}
+.sp-row+.sp-row{border-top:1px solid var(--border)}
+.sp-row-label{color:var(--text-muted);font-weight:500}
+.sp-row-val{font-family:var(--font-mono);font-weight:500;text-align:right;max-width:60%}
+.sp-desc{font-size:.8125rem;color:var(--text-secondary);line-height:1.6;margin:1rem 0;padding:1rem;background:var(--bg-elevated);border-radius:var(--radius);border:1px solid var(--border)}
+.sp-section-title{font-size:.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin:1.25rem 0 .5rem}
+.sp-facilities{display:flex;flex-wrap:wrap;gap:.375rem;margin-top:.375rem}
+.sp-chip{padding:.2rem .5rem;border-radius:var(--radius);font-size:.75rem;background:var(--surface-hover);border:1px solid var(--border);color:var(--text-secondary)}
+
+/* Data Table */
+.data-table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1.5rem}
+.data-table{width:100%;border-collapse:collapse;font-size:.8125rem}
+.data-table thead{background:var(--bg-elevated)}
+.data-table th{padding:.75rem 1rem;text-align:left;font-weight:600;font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--border)}
+.data-table th.num{text-align:right}
+.data-table td{padding:.625rem 1rem;border-bottom:1px solid var(--border);color:var(--text)}
+.data-table td.num{text-align:right;font-family:var(--font-mono);font-weight:500}
+.data-table tbody tr:last-child td{border-bottom:none}
+.data-table tbody tr:nth-child(even){background:var(--bg-elevated)}
+.data-table tbody tr:hover{background:var(--surface-hover)}
+
+/* Bar Chart Rows */
+.bar-row{display:flex;align-items:center;gap:.75rem;padding:.5rem 0;font-size:.8125rem}
+.bar-row+.bar-row{border-top:1px solid var(--border)}
+.bar-label{width:120px;color:var(--text);font-weight:500;flex-shrink:0}
+.bar-track{flex:1;height:20px;background:var(--border);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;background:var(--accent);transition:width .4s ease}
+.bar-val{width:60px;text-align:right;font-family:var(--font-mono);font-weight:600;font-size:.8125rem;color:var(--text-secondary);flex-shrink:0}
+
+/* Map Container */
+.map-container{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:.5rem;overflow:hidden;margin-bottom:1.5rem}
+.map-container svg{width:100%;display:block}
+.map-container svg .state{fill:var(--bg-elevated);stroke:var(--border);stroke-width:.5}
+.map-tooltip{position:fixed;pointer-events:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.75rem 1rem;font-family:var(--font-sans);font-size:.8125rem;color:var(--text);box-shadow:0 4px 16px rgba(0,0,0,.2);z-index:1000;max-width:280px;opacity:0;transition:opacity .12s}
+.map-tooltip.visible{opacity:1}
+
+/* Trade policy cards */
+.policy-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:1.5rem}
+.policy-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem}
+.policy-card h4{font-size:.8125rem;font-weight:600;margin-bottom:.5rem}
+.policy-card p{font-size:.8125rem;color:var(--text-secondary);line-height:1.5}
+
+/* Demand driver cards */
+.driver-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.75rem;margin-bottom:1.5rem}
+.driver-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem}
+.driver-card h4{font-size:.875rem;font-weight:600;margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem}
+.driver-card .driver-icon{font-size:1.25rem}
+.driver-card .driver-stat{font-family:var(--font-mono);font-size:1.5rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.25rem}
+.driver-card p{font-size:.8125rem;color:var(--text-secondary);line-height:1.5}
+
+/* Footer */
+.footer{text-align:center;padding:2.5rem 2rem;font-size:.75rem;color:var(--text-muted);border-top:1px solid var(--border);max-width:1400px;margin:2rem auto 0;line-height:1.8}
+.footer-brand{font-weight:500;color:var(--text-secondary)}
+
+/* Responsive */
+@media(max-width:768px){
+  .header{padding:1rem}
+  .header-left h1{font-size:1.125rem}
+  .pills-wrap{padding:.625rem 1rem}
+  .container{padding:1rem}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .charts-grid,.deep-grid,.policy-grid{grid-template-columns:1fr}
+  .mfg-grid{grid-template-columns:1fr}
+  .side-panel{width:100%}
+  .flow-stages{min-width:600px}
+}
+@media(max-width:480px){
+  .stats-row{grid-template-columns:1fr}
+  .risk-grid{grid-template-columns:1fr}
+  .driver-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Transformer Tracker</h1>
+    <p>Grid Supply Chain Intelligence</p>
+  </div>
+  <div class="header-right">
+    <span class="last-updated">Updated Feb 2026</span>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+      <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="display:none"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
+      <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+    </button>
+  </div>
+</div>
+
+<div class="pills-wrap" id="pills">
+  <button class="pill active" data-tab="overview" onclick="switchTab('overview',this)">Overview</button>
+  <button class="pill" data-tab="supply-chain" onclick="switchTab('supply-chain',this)">Supply Chain</button>
+  <button class="pill" data-tab="manufacturers" onclick="switchTab('manufacturers',this)">Manufacturers</button>
+  <button class="pill" data-tab="lead-times" onclick="switchTab('lead-times',this)">Lead Times</button>
+  <button class="pill" data-tab="trade" onclick="switchTab('trade',this)">Trade & Imports</button>
+  <button class="pill" data-tab="demand" onclick="switchTab('demand',this)">Demand Drivers</button>
+</div>
+
+<div class="container">
+
+<!-- ═══════ OVERVIEW ═══════ -->
+<div class="tab-view active" id="tab-overview">
+  <div class="section-header">
+    <h2>U.S. Power Transformer Market — Key Indicators</h2>
+    <span class="section-attribution">Data: DOE, NERC, LBNL, Utility IRPs · February 2026</span>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">US Market Size</div>
+      <div class="stat-value">$85B</div>
+      <div class="stat-sub">Total addressable market through 2030</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">LPT Lead Time</div>
+      <div class="stat-value" style="color:var(--red)">36 mo</div>
+      <div class="stat-sub"><span class="stat-change up">↑ 140%</span> vs. pre-2020</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">GOES Import Dependency</div>
+      <div class="stat-value" style="color:var(--orange)">70%</div>
+      <div class="stat-sub">Grain-oriented electrical steel</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Interconnection Queue</div>
+      <div class="stat-value" style="color:var(--accent)">2,600 GW</div>
+      <div class="stat-sub">Awaiting grid connection</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">LPT Supply Gap</div>
+      <div class="stat-value" style="color:var(--red)">~50/yr</div>
+      <div class="stat-sub">Units short of projected demand</div>
+    </div>
+  </div>
+
+  <h3 style="font-size:.875rem;font-weight:600;margin-bottom:1rem;color:var(--text-secondary)">Key Supply Chain Risks</h3>
+  <div class="risk-grid">
+    <div class="risk-card">
+      <div class="risk-card-top">
+        <div class="risk-card-title">GOES Steel Supply</div>
+        <span class="risk-badge critical">Critical</span>
+      </div>
+      <p>U.S. depends on imports for ~70% of grain-oriented electrical steel. Only one domestic producer (Cleveland-Cliffs). Section 232 tariffs add 25% cost premium, creating supply vs. cost tension.</p>
+    </div>
+    <div class="risk-card">
+      <div class="risk-card-top">
+        <div class="risk-card-title">LPT Manufacturing Capacity</div>
+        <span class="risk-badge critical">Critical</span>
+      </div>
+      <p>Fewer than 10 facilities in North America can build large power transformers (>100 MVA). Each unit is custom-engineered — capacity cannot scale quickly. 12–18 months to expand a facility.</p>
+    </div>
+    <div class="risk-card">
+      <div class="risk-card-top">
+        <div class="risk-card-title">HV Bushings</div>
+        <span class="risk-badge high">High</span>
+      </div>
+      <p>High-voltage bushings are a critical bottleneck. Only a handful of global manufacturers. A single factory disruption can cascade across the entire transformer supply chain.</p>
+    </div>
+    <div class="risk-card">
+      <div class="risk-card-top">
+        <div class="risk-card-title">Skilled Labor Shortage</div>
+        <span class="risk-badge high">High</span>
+      </div>
+      <p>Transformer manufacturing requires highly specialized welders, winders, and test engineers. Average workforce age is 50+. Training pipeline is 3–5 years for key roles.</p>
+    </div>
+    <div class="risk-card">
+      <div class="risk-card-top">
+        <div class="risk-card-title">Copper Supply Competition</div>
+        <span class="risk-badge medium">Medium</span>
+      </div>
+      <p>EVs, data centers, and renewable energy all compete for copper. While transformer copper is ~2–5% of global demand, price volatility directly impacts unit costs and delivery timelines.</p>
+    </div>
+    <div class="risk-card">
+      <div class="risk-card-top">
+        <div class="risk-card-title">SF₆ Regulations</div>
+        <span class="risk-badge medium">Medium</span>
+      </div>
+      <p>SF₆ gas used in high-voltage switchgear is under increasing regulatory pressure (EU F-gas regulation). Transition to alternatives adds cost and engineering complexity to grid equipment.</p>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <h3>Why This Matters</h3>
+    <p>Power transformers are the backbone of the electric grid — they step voltage up for long-distance transmission and down for distribution to homes and businesses. The U.S. has roughly 70,000 large power transformers, many installed 40+ years ago and approaching end of life. Simultaneously, electrification (EVs, heat pumps, data centers) and renewable energy integration are driving unprecedented new demand. With lead times for large units stretching to 3+ years and a limited manufacturing base, the transformer supply chain has become one of the most critical bottlenecks in the energy transition.</p>
+  </div>
+</div>
+
+<!-- ═══════ SUPPLY CHAIN ═══════ -->
+<div class="tab-view" id="tab-supply-chain">
+  <div class="section-header">
+    <h2>Transformer Supply Chain Flow</h2>
+    <span class="section-attribution">Raw Materials → Components → Assembly → Delivery</span>
+  </div>
+
+  <div class="flow-container">
+    <div class="flow-stages">
+      <div class="flow-stage">
+        <div class="flow-stage-header">
+          <div class="flow-stage-icon raw">⛏</div>
+          <div class="flow-stage-title">Raw Materials</div>
+        </div>
+        <ul class="flow-items">
+          <li class="bottleneck">GOES Steel — 70% imported, 18–24 mo procurement</li>
+          <li>Copper windings — $9,200/ton avg, volatile</li>
+          <li>Transformer oil (mineral insulating)</li>
+          <li>Pressboard & insulation paper</li>
+          <li>Structural steel for tanks</li>
+          <li class="bottleneck">Lead time: 6–12 months for GOES allocation</li>
+        </ul>
+      </div>
+      <div class="flow-stage">
+        <div class="flow-stage-header">
+          <div class="flow-stage-icon comp">⚙</div>
+          <div class="flow-stage-title">Component Mfg</div>
+        </div>
+        <ul class="flow-items">
+          <li class="bottleneck">HV Bushings — 3–5 global suppliers</li>
+          <li>Core lamination cutting & stacking</li>
+          <li>Winding fabrication (copper/aluminum)</li>
+          <li>Tap changers (on-load / de-energized)</li>
+          <li>Cooling systems (radiators, fans, pumps)</li>
+          <li class="bottleneck">Bottleneck: Bushing lead time 12–18 mo</li>
+        </ul>
+      </div>
+      <div class="flow-stage">
+        <div class="flow-stage-header">
+          <div class="flow-stage-icon assy">🏭</div>
+          <div class="flow-stage-title">Transformer Assembly</div>
+        </div>
+        <ul class="flow-items">
+          <li>Core & coil assembly (6–12 weeks)</li>
+          <li>Tank fabrication & welding</li>
+          <li>Oil filling & vacuum processing</li>
+          <li class="bottleneck">Factory testing — 2–4 weeks per unit</li>
+          <li>Only ~10 HV test bays in North America</li>
+          <li class="bottleneck">Capacity: ~200 LPTs/year (US total)</li>
+        </ul>
+      </div>
+      <div class="flow-stage">
+        <div class="flow-stage-header">
+          <div class="flow-stage-icon deliv">🚛</div>
+          <div class="flow-stage-title">Delivery & Install</div>
+        </div>
+        <ul class="flow-items">
+          <li>Specialized heavy-haul transport</li>
+          <li>LPTs: 100–400+ tons, oversize load permits</li>
+          <li>Rail transport coordination</li>
+          <li>Site preparation & foundation</li>
+          <li>Field assembly & commissioning</li>
+          <li>Transport adds 4–8 weeks to timeline</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="deep-grid">
+    <div class="deep-card">
+      <h3>GOES Steel — Global Production Share</h3>
+      <canvas id="goesChart"></canvas>
+    </div>
+    <div class="deep-card">
+      <h3>Copper Price Trend ($/ton)</h3>
+      <canvas id="copperChart"></canvas>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <h3>GOES Steel Deep Dive</h3>
+    <p>Grain-Oriented Electrical Steel (GOES) is the single most critical material in transformer manufacturing. It forms the magnetic core and its quality directly determines efficiency. Global production is concentrated: Nippon Steel (~25%), Baowu Steel (~20%), JFE Steel (~15%), and Cleveland-Cliffs (~8%, only US producer). The US imports approximately 70% of its GOES needs. Section 232 tariffs (25%) on steel imports create a cost-supply tension — protecting domestic capacity while raising costs for transformer manufacturers who need specific grades not produced domestically. GOES pricing has risen ~40% since 2020, from ~$2,000/ton to ~$2,800/ton.</p>
+  </div>
+</div>
+
+<!-- ═══════ MANUFACTURERS ═══════ -->
+<div class="tab-view" id="tab-manufacturers">
+  <div class="section-header">
+    <h2>Major Transformer Manufacturers</h2>
+    <span class="section-attribution">Click any card for detailed profile</span>
+  </div>
+
+  <div class="mfg-grid" id="mfg-grid"></div>
+
+  <h3 style="font-size:.875rem;font-weight:600;margin-bottom:1rem;color:var(--text-secondary)">U.S. Manufacturing Facilities</h3>
+  <div class="map-container" id="us-map-container" style="height:480px"></div>
+</div>
+
+<!-- ═══════ LEAD TIMES ═══════ -->
+<div class="tab-view" id="tab-lead-times">
+  <div class="section-header">
+    <h2>Transformer Lead Times by Type</h2>
+    <span class="section-attribution">Data: Utility IRP filings, industry surveys · Estimates with ±20-30% uncertainty</span>
+  </div>
+
+  <div class="data-table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Transformer Type</th>
+          <th class="num">Pre-2020</th>
+          <th class="num">2022–2023 (Peak)</th>
+          <th class="num">2024–2025</th>
+          <th class="num">Change vs Pre-2020</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Distribution</strong> (&lt;5 MVA)</td>
+          <td class="num">8–12 weeks</td>
+          <td class="num" style="color:var(--red)">52–78 weeks</td>
+          <td class="num" style="color:var(--orange)">40–60 weeks</td>
+          <td class="num" style="color:var(--red)">↑ 400–550%</td>
+        </tr>
+        <tr>
+          <td><strong>Medium Power</strong> (5–100 MVA)</td>
+          <td class="num">6–12 months</td>
+          <td class="num" style="color:var(--red)">24–36 months</td>
+          <td class="num" style="color:var(--orange)">18–30 months</td>
+          <td class="num" style="color:var(--red)">↑ 200–300%</td>
+        </tr>
+        <tr>
+          <td><strong>Large Power</strong> (100–400 MVA)</td>
+          <td class="num">12–18 months</td>
+          <td class="num" style="color:var(--red)">36–60 months</td>
+          <td class="num" style="color:var(--orange)">30–48 months</td>
+          <td class="num" style="color:var(--red)">↑ 140–230%</td>
+        </tr>
+        <tr>
+          <td><strong>GSU Transformers</strong> (Generator Step-Up)</td>
+          <td class="num">18–24 months</td>
+          <td class="num" style="color:var(--red)">48–72 months</td>
+          <td class="num" style="color:var(--orange)">36–54 months</td>
+          <td class="num" style="color:var(--red)">↑ 125–200%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="charts-grid">
+    <div class="chart-box">
+      <h3>Lead Time Trend — Large Power Transformers (months)</h3>
+      <canvas id="leadTimeChart"></canvas>
+    </div>
+    <div class="chart-box">
+      <h3>Grid Equipment Lead Times Comparison (months, 2025)</h3>
+      <canvas id="equipCompareChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ TRADE & IMPORTS ═══════ -->
+<div class="tab-view" id="tab-trade">
+  <div class="section-header">
+    <h2>U.S. Transformer Trade & Imports</h2>
+    <span class="section-attribution">Data: USITC, UN Comtrade · HS codes 8504.22, 8504.23</span>
+  </div>
+
+  <div class="charts-grid">
+    <div class="chart-box">
+      <h3>Transformer Imports by Source Country ($M, 2024)</h3>
+      <canvas id="importsByCountryChart"></canvas>
+    </div>
+    <div class="chart-box">
+      <h3>Import Trends — Total US Transformer Imports ($B)</h3>
+      <canvas id="importTrendChart"></canvas>
+    </div>
+  </div>
+
+  <div class="charts-grid" style="margin-top:.75rem">
+    <div class="chart-box">
+      <h3>GOES Steel Imports by Source Country (kMT, 2024)</h3>
+      <canvas id="goesImportsChart"></canvas>
+    </div>
+    <div class="chart-box">
+      <h3>HS Code Breakdown — 2024 Imports</h3>
+      <canvas id="hsCodeChart"></canvas>
+    </div>
+  </div>
+
+  <div class="policy-grid">
+    <div class="policy-card">
+      <h4>Section 232 Steel Tariffs</h4>
+      <p>25% tariff on steel imports including GOES. Initially imposed 2018. Creates tension between protecting domestic steel production and ensuring affordable transformer manufacturing inputs. Some exclusion requests granted for specific GOES grades not produced domestically.</p>
+    </div>
+    <div class="policy-card">
+      <h4>Buy America Provisions</h4>
+      <p>Federal infrastructure funding (IIJA/BIL) includes Buy America requirements for grid equipment. Challenges: limited domestic LPT manufacturing capacity means strict enforcement could slow grid buildout. Waivers available but add procurement delays of 3–6 months.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ DEMAND DRIVERS ═══════ -->
+<div class="tab-view" id="tab-demand">
+  <div class="section-header">
+    <h2>Demand Drivers & Projections</h2>
+    <span class="section-attribution">Data: LBNL, EIA, BloombergNEF, Industry estimates</span>
+  </div>
+
+  <div class="driver-grid">
+    <div class="driver-card">
+      <h4><span class="driver-icon">⚡</span> Interconnection Queue</h4>
+      <div class="driver-stat" style="color:var(--accent)">2,600 GW</div>
+      <p>Record backlog of generation and storage projects awaiting grid connection. Each project requires step-up transformers. Queue has grown 5x since 2015.</p>
+    </div>
+    <div class="driver-card">
+      <h4><span class="driver-icon">🤖</span> AI & Data Centers</h4>
+      <div class="driver-stat" style="color:var(--purple)">35 GW</div>
+      <p>Projected new data center load by 2030. Hyperscale facilities require 50–200+ MVA of transformer capacity each. AI training clusters driving unprecedented density.</p>
+    </div>
+    <div class="driver-card">
+      <h4><span class="driver-icon">🚗</span> EV Infrastructure</h4>
+      <div class="driver-stat" style="color:var(--green)">30M+</div>
+      <p>EVs on US roads projected by 2030. Fast charging stations need distribution transformer upgrades. Fleet electrification driving commercial/industrial upgrades.</p>
+    </div>
+    <div class="driver-card">
+      <h4><span class="driver-icon">🔄</span> Aging Fleet</h4>
+      <div class="driver-stat" style="color:var(--orange)">40+ yrs</div>
+      <p>Average age of US large power transformers. Design life is 30–40 years. ~70,000 LPTs in service, many at or beyond expected service life. Replacement cycle accelerating.</p>
+    </div>
+    <div class="driver-card">
+      <h4><span class="driver-icon">☀️</span> Renewables Integration</h4>
+      <div class="driver-stat" style="color:var(--cyan)">680 GW</div>
+      <p>Solar + wind capacity expected by 2030. Each utility-scale project needs GSU transformers and grid interconnection equipment. Distributed solar drives distribution upgrades.</p>
+    </div>
+    <div class="driver-card">
+      <h4><span class="driver-icon">🏠</span> Electrification</h4>
+      <div class="driver-stat" style="color:var(--red)">+20%</div>
+      <p>Expected residential load growth from heat pumps, induction cooking, EV home charging. Distribution transformers sized for 1970s loads need upsizing across neighborhoods.</p>
+    </div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="chart-box">
+      <h3>Interconnection Queue Growth (GW)</h3>
+      <canvas id="queueChart"></canvas>
+    </div>
+    <div class="chart-box">
+      <h3>Projected Demand vs. Manufacturing Capacity (LPT units/year)</h3>
+      <canvas id="gapChart"></canvas>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<!-- Side Panel -->
+<div class="side-panel-backdrop" id="spBackdrop" onclick="closePanel()"></div>
+<div class="side-panel" id="sidePanel">
+  <div class="sp-header">
+    <h3 id="sp-title"></h3>
+    <button class="sp-close" onclick="closePanel()">✕</button>
+  </div>
+  <div class="sp-body" id="sp-body"></div>
+</div>
+
+<div class="footer">
+  <div class="footer-brand">Prospector Labs · Built by Owen Coonahan</div>
+  Data compiled from public sources including DOE, NERC, LBNL, USITC, utility IRP filings, and manufacturer disclosures.<br>
+  Estimates are approximate and should be verified before business decisions. See SOURCES.md for full methodology.
+</div>
+
+<script>
+/* ═══════ THEME ═══════ */
+function toggleTheme(){
+  const t=document.documentElement.dataset.theme==='dark'?'light':'dark';
+  document.documentElement.dataset.theme=t;
+  document.getElementById('sunIcon').style.display=t==='dark'?'none':'block';
+  document.getElementById('moonIcon').style.display=t==='dark'?'block':'none';
+  localStorage.setItem('theme',t);
+  Object.values(chartInstances).forEach(c=>{if(c&&c.options){updateChartTheme(c);c.update('none')}});
+}
+(function(){const t=localStorage.getItem('theme');if(t){document.documentElement.dataset.theme=t;document.getElementById('sunIcon').style.display=t==='dark'?'none':'block';document.getElementById('moonIcon').style.display=t==='dark'?'block':'none'}})();
+
+function getCSS(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function updateChartTheme(c){
+  const grid=getCSS('--chart-grid'),txt=getCSS('--text-muted'),txt2=getCSS('--text-secondary');
+  if(c.options.scales){
+    Object.values(c.options.scales).forEach(s=>{
+      if(s.grid)s.grid.color=grid;
+      if(s.ticks)s.ticks.color=txt;
+      if(s.title)s.title.color=txt2;
+    });
+  }
+  if(c.options.plugins&&c.options.plugins.legend&&c.options.plugins.legend.labels)c.options.plugins.legend.labels.color=txt;
+}
+
+/* ═══════ TABS ═══════ */
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(!chartsRendered[id]){renderTabCharts(id);chartsRendered[id]=true}
+}
+const chartsRendered={overview:true};
+const chartInstances={};
+
+/* ═══════ CHART DEFAULTS ═══════ */
+Chart.defaults.font.family="'Geist','Geist Mono',sans-serif";
+Chart.defaults.font.size=11;
+Chart.defaults.color=getCSS('--text-muted');
+Chart.defaults.plugins.legend.display=false;
+Chart.defaults.responsive=true;
+Chart.defaults.maintainAspectRatio=false;
+function baseScales(xTitle,yTitle){
+  return {
+    x:{grid:{color:getCSS('--chart-grid')},ticks:{color:getCSS('--text-muted')},title:xTitle?{display:true,text:xTitle,color:getCSS('--text-secondary')}:undefined},
+    y:{grid:{color:getCSS('--chart-grid')},ticks:{color:getCSS('--text-muted')},title:yTitle?{display:true,text:yTitle,color:getCSS('--text-secondary')}:undefined}
+  };
+}
+
+/* ═══════ MANUFACTURER DATA ═══════ */
+// <!-- API_SWAP: Replace with fetch('/api/manufacturers') -->
+const manufacturers=[
+  {name:'Hitachi Energy',hq:'Switzerland',flag:'🇨🇭',share:'~20%',focus:'LPT & Distribution',facilities:['Jefferson City, MO','South Boston, VA','Bland, VA','Varennes, QC (Canada)'],employees:'42,000+',revenue:'$12B (grid segment)',desc:'Global leader in power transformers, acquired ABB Power Grids in 2020. Largest installed base worldwide. Major investment in US capacity expansion announced 2024.',products:['Large Power Transformers','Distribution Transformers','Traction Transformers','HVDC Converter Transformers'],news:['$1.5B US capacity expansion (2024)','New factory line in Jefferson City','Partnered with DOE STEP program']},
+  {name:'Siemens Energy',hq:'Germany',flag:'🇩🇪',share:'~15%',focus:'LPT & Medium Power',facilities:['Charlotte, NC (service center)','Weiz, Austria','Nuremberg, Germany','Jundiaí, Brazil'],employees:'92,000',revenue:'$35B (total)',desc:'Major global transformer manufacturer. US presence primarily through service/repair. Manufacturing concentrated in Europe and Brazil. Expanding US service capabilities.',products:['Large Power Transformers','Phase-Shifting Transformers','Reactor Coils','Mobile Substations'],news:['Expanded Charlotte service hub','Record order backlog in grid technologies','Investing in digital transformer monitoring']},
+  {name:'GE Vernova',hq:'USA',flag:'🇺🇸',share:'~10%',focus:'LPT & Medium Power',facilities:['Clearwater, FL','Shreveport, LA (Prolec-GE JV)','Monroe, NC'],employees:'80,000+ (total)',revenue:'$33B (total)',desc:'Spun off from GE in 2024. Grid Solutions division manufactures transformers. Prolec-GE joint venture in Mexico is a major production hub. Growing US manufacturing commitment.',products:['Large Power Transformers','Generator Step-Up Transformers','Auto-Transformers','Shunt Reactors'],news:['IPO completed April 2024','Prolec-GE expanding Monterrey capacity','Won DOE grid resilience contracts']},
+  {name:'Hyundai Electric',hq:'South Korea',flag:'🇰🇷',share:'~8%',focus:'LPT',facilities:['Montgomery, AL (new plant)','Ulsan, South Korea'],employees:'6,500+',revenue:'$3.5B',desc:'Rapidly growing presence in US market. New $200M manufacturing facility in Montgomery, Alabama announced 2023, operational 2025. One of the first new US LPT factories in decades.',products:['Large Power Transformers','Ultra-High Voltage Transformers','HVDC Transformers'],news:['Montgomery, AL plant operational 2025','$200M investment in US manufacturing','Won multiple US utility contracts']},
+  {name:'Howard Industries',hq:'USA (Laurel, MS)',flag:'🇺🇸',share:'~5% (US dist.)',focus:'Distribution',facilities:['Laurel, MS (multiple plants)'],employees:'4,000+',revenue:'Private',desc:'Largest privately-held transformer manufacturer in the US. Dominant in distribution transformers. Vertically integrated — makes their own cores, windings, and tanks. Employee-owned since restructuring.',products:['Distribution Transformers','Pad-Mount Transformers','Pole-Mount Transformers','Submersible Transformers'],news:['Expanded Laurel campus capacity 20%','Hired 500+ new workers 2023-2024','Key supplier to rural electric cooperatives']},
+  {name:'Virginia Transformer',hq:'USA (Roanoke, VA)',flag:'🇺🇸',share:'~4%',focus:'LPT & Medium Power',facilities:['Roanoke, VA','Pocatello, ID'],employees:'1,200+',revenue:'Private',desc:'Largest US-owned power transformer manufacturer. Specializes in large and medium power transformers. Known for faster lead times through vertically integrated US manufacturing.',products:['Large Power Transformers','Medium Power Transformers','Mobile Transformers','Specialty Transformers'],news:['Doubled Roanoke facility capacity','Launched rapid-response mobile transformer program','Key DOE STEP program participant']},
+  {name:'Prolec-GE',hq:'Mexico',flag:'🇲🇽',share:'~7%',focus:'LPT & Distribution',facilities:['Monterrey, Mexico','Apodaca, Mexico'],employees:'5,000+',revenue:'$1.5B (est)',desc:'Joint venture between GE Vernova and Xignux. One of the largest transformer manufacturers in the Americas. Major supplier to US utilities, particularly in the South and Southwest.',products:['Large Power Transformers','Distribution Transformers','Pad-Mount Transformers','Dry-Type Transformers'],news:['Monterrey capacity expansion underway','New distribution transformer line added','Increased US exports 25% YoY']},
+  {name:'SPX Transformers',hq:'USA (Waukesha, WI)',flag:'🇺🇸',share:'~3%',focus:'Medium Power',facilities:['Waukesha, WI','Goldsboro, NC'],employees:'1,500+',revenue:'Private (SPX Technologies)',desc:'Heritage brand (formerly Waukesha Electric). Specializes in medium power and specialty transformers. Known for quality and reliability. Part of SPX Technologies.',products:['Medium Power Transformers','Mobile Substations','Pad-Mount Transformers','Specialty Designs'],news:['Waukesha facility modernization complete','New mobile substation product line','Growing utility emergency preparedness contracts']},
+  {name:'ERMCO',hq:'USA (Dyersburg, TN)',flag:'🇺🇸',share:'~4% (US dist.)',focus:'Distribution',facilities:['Dyersburg, TN','Crossville, TN','South Pittsburg, TN'],employees:'2,800+',revenue:'Private (Marmon/Berkshire)',desc:'Major US distribution transformer manufacturer. Part of Marmon Group (Berkshire Hathaway). Three Tennessee facilities. Strong in cooperative and municipal utility markets.',products:['Distribution Transformers','Pad-Mount Transformers','Pole-Mount Transformers','Single-Phase & Three-Phase'],news:['Third Tennessee plant expansion','Part of Berkshire Hathaway industrial portfolio','Increased capacity 30% since 2022']},
+  {name:'WEG',hq:'Brazil',flag:'🇧🇷',share:'~3%',focus:'Distribution & Medium Power',facilities:['Jaraguá do Sul, Brazil','Multiple Brazil plants','Washington, MO (US)'],employees:'40,000+',revenue:'$6B (total)',desc:'Brazilian industrial giant expanding in North American transformer market. Washington, MO facility serves US distribution market. Aggressive growth strategy in grid equipment.',products:['Distribution Transformers','Medium Power Transformers','Dry-Type Transformers','Specialty Industrial'],news:['Washington, MO plant expansion','Entered US utility-scale market','Acquired transformer companies in Colombia and Mexico']}
+];
+// <!-- END API_SWAP -->
+
+/* ═══════ RENDER MANUFACTURERS ═══════ */
+function renderMfgGrid(){
+  const grid=document.getElementById('mfg-grid');
+  grid.innerHTML=manufacturers.map((m,i)=>`
+    <div class="mfg-card" onclick="openMfgPanel(${i})">
+      <div class="mfg-card-top">
+        <div>
+          <div class="mfg-card-name">${m.flag} ${m.name}</div>
+          <div class="mfg-card-hq">${m.hq}</div>
+        </div>
+        <div class="mfg-card-badge">${m.share}</div>
+      </div>
+      <div class="mfg-card-row"><span class="mfg-card-label">Focus</span><span class="mfg-card-val">${m.focus}</span></div>
+      <div class="mfg-card-row"><span class="mfg-card-label">US Facilities</span><span class="mfg-card-val">${m.facilities.filter(f=>f.includes('US')||f.includes(', '+ ['MO','VA','AL','MS','WI','NC','TN','FL','LA','ID'].find(s=>f.includes(s)))).length||m.facilities.filter(f=>!f.includes('Germany')&&!f.includes('Austria')&&!f.includes('Brazil')&&!f.includes('Korea')&&!f.includes('Switzerland')&&!f.includes('Mexico')&&!f.includes('Canada')).length}</span></div>
+      <div class="mfg-card-row"><span class="mfg-card-label">Employees</span><span class="mfg-card-val">${m.employees}</span></div>
+    </div>
+  `).join('');
+}
+renderMfgGrid();
+
+function openMfgPanel(i){
+  const m=manufacturers[i];
+  document.getElementById('sp-title').textContent=m.name;
+  document.getElementById('sp-body').innerHTML=`
+    <div class="sp-desc">${m.desc}</div>
+    <div class="sp-row"><span class="sp-row-label">Headquarters</span><span class="sp-row-val">${m.flag} ${m.hq}</span></div>
+    <div class="sp-row"><span class="sp-row-label">Est. Market Share</span><span class="sp-row-val">${m.share}</span></div>
+    <div class="sp-row"><span class="sp-row-label">Product Focus</span><span class="sp-row-val">${m.focus}</span></div>
+    <div class="sp-row"><span class="sp-row-label">Employees</span><span class="sp-row-val">${m.employees}</span></div>
+    <div class="sp-row"><span class="sp-row-label">Revenue</span><span class="sp-row-val">${m.revenue}</span></div>
+    <div class="sp-section-title">Facilities</div>
+    <div class="sp-facilities">${m.facilities.map(f=>`<span class="sp-chip">${f}</span>`).join('')}</div>
+    <div class="sp-section-title">Products</div>
+    <div class="sp-facilities">${m.products.map(p=>`<span class="sp-chip">${p}</span>`).join('')}</div>
+    <div class="sp-section-title">Recent Developments</div>
+    ${m.news.map(n=>`<div style="font-size:.8125rem;color:var(--text-secondary);padding:.375rem 0;border-bottom:1px solid var(--border)">• ${n}</div>`).join('')}
+  `;
+  document.getElementById('spBackdrop').classList.add('open');
+  document.getElementById('sidePanel').classList.add('open');
+}
+function closePanel(){
+  document.getElementById('spBackdrop').classList.remove('open');
+  document.getElementById('sidePanel').classList.remove('open');
+}
+
+/* ═══════ US MAP ═══════ */
+function renderUSMap(){
+  const container=document.getElementById('us-map-container');
+  if(container.querySelector('svg'))return;
+  const w=container.clientWidth||900,h=480;
+  const svg=d3.select(container).append('svg').attr('viewBox',`0 0 ${w} ${h}`).attr('width','100%');
+
+  const facilities=[
+    {name:'Hitachi Energy',city:'Jefferson City, MO',lat:38.57,lon:-92.17,type:'LPT'},
+    {name:'Hitachi Energy',city:'South Boston, VA',lat:36.70,lon:-78.90,type:'LPT'},
+    {name:'Hitachi Energy',city:'Bland, VA',lat:37.10,lon:-81.12,type:'LPT'},
+    {name:'GE Vernova',city:'Clearwater, FL',lat:27.96,lon:-82.80,type:'LPT'},
+    {name:'GE Vernova',city:'Monroe, NC',lat:34.98,lon:-80.55,type:'Medium'},
+    {name:'Hyundai Electric',city:'Montgomery, AL',lat:32.37,lon:-86.30,type:'LPT'},
+    {name:'Howard Industries',city:'Laurel, MS',lat:31.69,lon:-89.13,type:'Distribution'},
+    {name:'Virginia Transformer',city:'Roanoke, VA',lat:37.27,lon:-79.94,type:'LPT'},
+    {name:'Virginia Transformer',city:'Pocatello, ID',lat:42.87,lon:-112.44,type:'LPT'},
+    {name:'SPX Transformers',city:'Waukesha, WI',lat:43.01,lon:-88.23,type:'Medium'},
+    {name:'SPX Transformers',city:'Goldsboro, NC',lat:35.38,lon:-77.99,type:'Medium'},
+    {name:'ERMCO',city:'Dyersburg, TN',lat:36.03,lon:-89.39,type:'Distribution'},
+    {name:'ERMCO',city:'Crossville, TN',lat:35.95,lon:-85.03,type:'Distribution'},
+    {name:'ERMCO',city:'South Pittsburg, TN',lat:35.01,lon:-85.71,type:'Distribution'},
+    {name:'WEG',city:'Washington, MO',lat:38.56,lon:-91.01,type:'Distribution'},
+    {name:'Siemens Energy',city:'Charlotte, NC',lat:35.23,lon:-80.84,type:'Service'},
+    {name:'GE Vernova/Prolec',city:'Shreveport, LA',lat:32.52,lon:-93.75,type:'LPT'}
+  ];
+
+  const projection=d3.geoAlbersUsa().fitSize([w-40,h-40],{type:'Sphere'}).translate([w/2,h/2]);
+  const path=d3.geoPath().projection(projection);
+
+  d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then(us=>{
+    svg.append('g').selectAll('path')
+      .data(topojson.feature(us,us.objects.states).features)
+      .enter().append('path')
+      .attr('class','state')
+      .attr('d',path)
+      .attr('fill',getCSS('--bg-elevated'))
+      .attr('stroke',getCSS('--border'))
+      .attr('stroke-width',.5);
+
+    svg.append('path')
+      .datum(topojson.mesh(us,us.objects.states,(a,b)=>a!==b))
+      .attr('fill','none').attr('stroke',getCSS('--border')).attr('stroke-width',.5).attr('d',path);
+
+    const typeColors={LPT:getCSS('--red'),Medium:getCSS('--orange'),Distribution:getCSS('--accent'),Service:getCSS('--text-muted')};
+
+    const tooltip=d3.select('body').append('div').attr('class','map-tooltip');
+
+    svg.selectAll('circle.facility')
+      .data(facilities.filter(f=>{const p=projection([f.lon,f.lat]);return p}))
+      .enter().append('circle')
+      .attr('cx',d=>projection([d.lon,d.lat])[0])
+      .attr('cy',d=>projection([d.lon,d.lat])[1])
+      .attr('r',6)
+      .attr('fill',d=>typeColors[d.type]||getCSS('--accent'))
+      .attr('stroke',getCSS('--surface'))
+      .attr('stroke-width',2)
+      .attr('opacity',.9)
+      .style('cursor','pointer')
+      .on('mouseenter',function(e,d){
+        d3.select(this).attr('r',9).attr('opacity',1);
+        tooltip.classed('visible',true).html(`<div style="font-weight:600">${d.name}</div><div style="color:var(--text-secondary);font-size:.75rem">${d.city}</div><div style="color:${typeColors[d.type]};font-family:var(--font-mono);font-size:.75rem;margin-top:.25rem">${d.type}</div>`);
+      })
+      .on('mousemove',function(e){tooltip.style('left',(e.clientX+12)+'px').style('top',(e.clientY-10)+'px')})
+      .on('mouseleave',function(){d3.select(this).attr('r',6).attr('opacity',.9);tooltip.classed('visible',false)});
+
+    // Legend
+    const legend=svg.append('g').attr('transform',`translate(${w-180},${h-80})`);
+    const cats=[['LPT','red'],['Medium','orange'],['Distribution','accent'],['Service','text-muted']];
+    cats.forEach(([label,col],i)=>{
+      legend.append('circle').attr('cx',0).attr('cy',i*20).attr('r',5).attr('fill',getCSS('--'+col));
+      legend.append('text').attr('x',14).attr('y',i*20+4).text(label).attr('fill',getCSS('--text-muted')).attr('font-size',11);
+    });
+  });
+}
+
+/* ═══════ RENDER TAB CHARTS ═══════ */
+function renderTabCharts(tab){
+  if(tab==='supply-chain')renderSupplyChainCharts();
+  if(tab==='manufacturers')renderUSMap();
+  if(tab==='lead-times')renderLeadTimeCharts();
+  if(tab==='trade')renderTradeCharts();
+  if(tab==='demand')renderDemandCharts();
+}
+
+function renderSupplyChainCharts(){
+  // GOES production share
+  // <!-- API_SWAP: Replace with fetch('/api/goes-production') -->
+  const goesData={labels:['Nippon Steel','Baowu Steel','JFE Steel','POSCO','Cleveland-Cliffs','ThyssenKrupp','Others'],data:[25,20,15,10,8,7,15],colors:['#ef4444','#f59e0b','#3b82f6','#22c55e','#a855f7','#06b6d4','#71717a']};
+  chartInstances.goes=new Chart(document.getElementById('goesChart'),{
+    type:'doughnut',
+    data:{labels:goesData.labels,datasets:[{data:goesData.data,backgroundColor:goesData.colors,borderColor:getCSS('--surface'),borderWidth:2}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'right',labels:{color:getCSS('--text-muted'),font:{size:11},padding:8,usePointStyle:true,pointStyleWidth:8}}},cutout:'55%'}
+  });
+
+  // Copper price trend
+  // <!-- API_SWAP: Replace with fetch('/api/copper-price') -->
+  const copperData={labels:['2019','2020','2021','2022','2023','2024','2025'],data:[6000,5500,9300,8800,8400,9200,9500]};
+  chartInstances.copper=new Chart(document.getElementById('copperChart'),{
+    type:'line',
+    data:{labels:copperData.labels,datasets:[{data:copperData.data,borderColor:getCSS('--orange'),backgroundColor:'rgba(245,158,11,.1)',fill:true,tension:.3,pointRadius:4,pointBackgroundColor:getCSS('--orange')}]},
+    options:{scales:baseScales(null,'$/ton'),plugins:{legend:{display:false}}}
+  });
+}
+
+function renderLeadTimeCharts(){
+  // LPT lead time trend
+  // <!-- API_SWAP: Replace with fetch('/api/lead-times-trend') -->
+  const ltData={labels:['2017','2018','2019','2020','2021','2022','2023','2024','2025'],data:[15,14,15,18,24,42,54,48,36]};
+  chartInstances.leadTime=new Chart(document.getElementById('leadTimeChart'),{
+    type:'line',
+    data:{labels:ltData.labels,datasets:[{label:'LPT Lead Time',data:ltData.data,borderColor:getCSS('--red'),backgroundColor:'rgba(239,68,68,.1)',fill:true,tension:.3,pointRadius:4,pointBackgroundColor:getCSS('--red')},{label:'Pre-2020 Baseline',data:Array(9).fill(15),borderColor:getCSS('--text-muted'),borderDash:[5,5],pointRadius:0,fill:false}]},
+    options:{scales:baseScales(null,'Months'),plugins:{legend:{display:true,labels:{color:getCSS('--text-muted'),usePointStyle:true}}}}
+  });
+
+  // Equipment comparison
+  // <!-- API_SWAP: Replace with fetch('/api/equipment-lead-times') -->
+  const equipData={labels:['Large Power Transformer','GSU Transformer','Circuit Breaker (HV)','Disconnect Switch','Control Building','Protection Relay'],data:[36,42,18,12,8,4],colors:[getCSS('--red'),getCSS('--red'),getCSS('--orange'),getCSS('--orange'),getCSS('--green'),getCSS('--green')]};
+  chartInstances.equipCompare=new Chart(document.getElementById('equipCompareChart'),{
+    type:'bar',
+    data:{labels:equipData.labels,datasets:[{data:equipData.data,backgroundColor:equipData.colors,borderRadius:4}]},
+    options:{indexAxis:'y',scales:{...baseScales('Months',null),x:{grid:{color:getCSS('--chart-grid')},ticks:{color:getCSS('--text-muted')}},y:{grid:{display:false},ticks:{color:getCSS('--text-muted')}}},plugins:{legend:{display:false}}}
+  });
+}
+
+function renderTradeCharts(){
+  // Imports by country
+  // <!-- API_SWAP: Replace with fetch('/api/transformer-imports') -->
+  const impData={labels:['Mexico','South Korea','Germany','Japan','Canada','China','Others'],data:[680,520,440,380,290,180,310]};
+  chartInstances.importsByCountry=new Chart(document.getElementById('importsByCountryChart'),{
+    type:'bar',
+    data:{labels:impData.labels,datasets:[{data:impData.data,backgroundColor:getCSS('--accent'),borderRadius:4}]},
+    options:{scales:{...baseScales(null,'$M'),y:{grid:{color:getCSS('--chart-grid')},ticks:{color:getCSS('--text-muted')},beginAtZero:true},x:{grid:{display:false},ticks:{color:getCSS('--text-muted')}}}}
+  });
+
+  // Import trend
+  // <!-- API_SWAP: Replace with fetch('/api/import-trend') -->
+  const trendData={labels:['2019','2020','2021','2022','2023','2024'],data:[1.8,1.6,2.1,2.5,2.8,2.8]};
+  chartInstances.importTrend=new Chart(document.getElementById('importTrendChart'),{
+    type:'line',
+    data:{labels:trendData.labels,datasets:[{data:trendData.data,borderColor:getCSS('--accent'),backgroundColor:'rgba(59,130,246,.1)',fill:true,tension:.3,pointRadius:4,pointBackgroundColor:getCSS('--accent')}]},
+    options:{scales:baseScales(null,'$B')}
+  });
+
+  // GOES imports
+  // <!-- API_SWAP: Replace with fetch('/api/goes-imports') -->
+  const goesImp={labels:['Japan','South Korea','Germany','Russia','China','Others'],data:[120,85,60,40,35,30]};
+  chartInstances.goesImports=new Chart(document.getElementById('goesImportsChart'),{
+    type:'bar',
+    data:{labels:goesImp.labels,datasets:[{data:goesImp.data,backgroundColor:getCSS('--orange'),borderRadius:4}]},
+    options:{scales:{...baseScales(null,'kMT'),y:{grid:{color:getCSS('--chart-grid')},ticks:{color:getCSS('--text-muted')},beginAtZero:true},x:{grid:{display:false},ticks:{color:getCSS('--text-muted')}}}}
+  });
+
+  // HS code breakdown
+  const hsData={labels:['HS 8504.23\n(>10,000 kVA, liquid)','HS 8504.22\n(650–10,000 kVA)','HS 8504.21\n(<650 kVA)','Other transformer codes'],data:[1200,850,480,270]};
+  chartInstances.hsCode=new Chart(document.getElementById('hsCodeChart'),{
+    type:'doughnut',
+    data:{labels:hsData.labels,datasets:[{data:hsData.data,backgroundColor:[getCSS('--red'),getCSS('--orange'),getCSS('--accent'),getCSS('--text-muted')],borderColor:getCSS('--surface'),borderWidth:2}]},
+    options:{plugins:{legend:{display:true,position:'right',labels:{color:getCSS('--text-muted'),font:{size:10},padding:6,usePointStyle:true,pointStyleWidth:8}}},cutout:'50%'}
+  });
+}
+
+function renderDemandCharts(){
+  // Queue growth
+  // <!-- API_SWAP: Replace with fetch('/api/interconnection-queue') -->
+  const qData={labels:['2015','2016','2017','2018','2019','2020','2021','2022','2023','2024','2025'],data:[500,550,600,680,750,850,1050,1350,1800,2200,2600]};
+  chartInstances.queue=new Chart(document.getElementById('queueChart'),{
+    type:'line',
+    data:{labels:qData.labels,datasets:[{data:qData.data,borderColor:getCSS('--accent'),backgroundColor:'rgba(59,130,246,.1)',fill:true,tension:.3,pointRadius:3,pointBackgroundColor:getCSS('--accent')}]},
+    options:{scales:baseScales(null,'GW')}
+  });
+
+  // Demand vs capacity gap
+  // <!-- API_SWAP: Replace with fetch('/api/demand-gap') -->
+  const gapLabels=['2020','2021','2022','2023','2024','2025','2026','2027','2028','2029','2030'];
+  const demand=[180,200,230,260,290,310,340,370,400,420,450];
+  const capacity=[200,200,200,210,220,240,260,280,300,320,350];
+  chartInstances.gap=new Chart(document.getElementById('gapChart'),{
+    type:'line',
+    data:{labels:gapLabels,datasets:[
+      {label:'Projected Demand',data:demand,borderColor:getCSS('--red'),backgroundColor:'rgba(239,68,68,.08)',fill:true,tension:.3,pointRadius:3},
+      {label:'Manufacturing Capacity',data:capacity,borderColor:getCSS('--green'),backgroundColor:'rgba(34,197,94,.08)',fill:true,tension:.3,pointRadius:3}
+    ]},
+    options:{scales:baseScales(null,'Units/Year'),plugins:{legend:{display:true,labels:{color:getCSS('--text-muted'),usePointStyle:true}}}}
+  });
+}
+
+/* ═══════ INIT ═══════ */
+document.addEventListener('DOMContentLoaded',()=>{});
+</script>
+</body>
+</html>

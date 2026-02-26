@@ -1,0 +1,173 @@
+{
+  "metadata": {
+    "title": "Transformer Supply Chain Constraints",
+    "description": "Key bottlenecks and constraints in transformer manufacturing",
+    "last_updated": "2026-02-06",
+    "data_quality": "MIXED - combines commodity data with industry estimates",
+    "confidence": "medium-high",
+    "sources": [
+      "USGS mineral commodity summaries",
+      "Industry trade publications",
+      "Company earnings calls",
+      "DOE grid reports"
+    ]
+  },
+  "materials": [
+    {
+      "name": "Grain-Oriented Electrical Steel (GOES)",
+      "alias": "Silicon Steel, Transformer Steel",
+      "importance": "critical",
+      "importance_score": 10,
+      "description": "Specialized steel with directional magnetic properties for transformer cores",
+      "global_supply": {
+        "annual_production_mt": 2200000,
+        "top_producers": [
+          { "company": "Nippon Steel", "country": "Japan", "share_pct": 25 },
+          { "company": "POSCO", "country": "South Korea", "share_pct": 20 },
+          { "company": "Baowu Steel", "country": "China", "share_pct": 18 },
+          { "company": "Cleveland-Cliffs", "country": "USA", "share_pct": 8 },
+          { "company": "ThyssenKrupp", "country": "Germany", "share_pct": 7 }
+        ]
+      },
+      "us_situation": {
+        "domestic_production_mt": 180000,
+        "import_dependency_pct": 70,
+        "tariff_status": "Section 232 steel tariffs apply",
+        "constraints": [
+          "Limited US production capacity",
+          "Quality grades vary by supplier",
+          "Long qualification process for new suppliers"
+        ]
+      },
+      "price_trend": {
+        "2019_usd_per_mt": 2100,
+        "2022_usd_per_mt": 3800,
+        "2024_usd_per_mt": 3200,
+        "current_usd_per_mt": 2900
+      }
+    },
+    {
+      "name": "Copper",
+      "alias": "Winding Copper, Copper Wire",
+      "importance": "high",
+      "importance_score": 8,
+      "description": "Used for transformer windings; requires high purity electrical grade",
+      "global_supply": {
+        "annual_production_mt": 22000000,
+        "transformer_demand_share_pct": 3
+      },
+      "us_situation": {
+        "domestic_production_mt": 1200000,
+        "import_dependency_pct": 35,
+        "tariff_status": "No specific tariffs",
+        "constraints": [
+          "Price volatility impacts costs",
+          "Competition from EV/renewable sectors",
+          "Lead time for specialty grades"
+        ]
+      },
+      "price_trend": {
+        "2019_usd_per_mt": 6000,
+        "2022_usd_per_mt": 9500,
+        "2024_usd_per_mt": 8200,
+        "current_usd_per_mt": 8800
+      }
+    },
+    {
+      "name": "Transformer Oil",
+      "alias": "Mineral Insulating Oil",
+      "importance": "high",
+      "importance_score": 7,
+      "description": "Mineral oil for cooling and insulation in liquid-filled transformers",
+      "global_supply": {
+        "annual_production_liters": 1500000000,
+        "notes": "Derived from petroleum refining"
+      },
+      "us_situation": {
+        "domestic_production": "adequate",
+        "import_dependency_pct": 20,
+        "tariff_status": "Standard petroleum tariffs",
+        "constraints": [
+          "Environmental regulations increasing",
+          "Natural ester alternatives gaining share",
+          "Quality specifications vary by application"
+        ]
+      },
+      "price_trend": {
+        "2019_usd_per_liter": 1.50,
+        "2022_usd_per_liter": 2.80,
+        "2024_usd_per_liter": 2.20,
+        "current_usd_per_liter": 2.10
+      }
+    },
+    {
+      "name": "Bushings",
+      "alias": "High Voltage Bushings",
+      "importance": "critical",
+      "importance_score": 9,
+      "description": "Insulated conductors passing through transformer tanks",
+      "global_supply": {
+        "major_manufacturers": [
+          { "company": "Hitachi Energy", "country": "Switzerland/USA" },
+          { "company": "Trench Group", "country": "Germany/USA" },
+          { "company": "HSP", "country": "Germany" },
+          { "company": "ABB", "country": "Switzerland" }
+        ]
+      },
+      "us_situation": {
+        "domestic_production": "limited",
+        "import_dependency_pct": 60,
+        "constraints": [
+          "Highly specialized manufacturing",
+          "Long lead times (6-12 months)",
+          "Few qualified suppliers",
+          "Porcelain vs. composite technology transition"
+        ]
+      }
+    }
+  ],
+  "capacity_constraints": [
+    {
+      "constraint": "Manufacturing Facilities",
+      "severity": "high",
+      "description": "Limited number of facilities capable of producing large power transformers",
+      "details": {
+        "us_lpt_facilities": 6,
+        "global_lpt_facilities": 45,
+        "expansion_lead_time_months": "18-24",
+        "notes": "Building new facility requires $100M+ and 2+ years"
+      }
+    },
+    {
+      "constraint": "Skilled Labor",
+      "severity": "high",
+      "description": "Specialized workforce for transformer manufacturing and testing",
+      "details": {
+        "training_time_years": "2-5",
+        "retirement_wave": "30% of workforce eligible in next 10 years",
+        "notes": "Knowledge transfer is critical challenge"
+      }
+    },
+    {
+      "constraint": "High-Power Testing",
+      "severity": "medium-high",
+      "description": "Limited test facilities for large transformer certification",
+      "details": {
+        "north_america_facilities": 10,
+        "test_duration_weeks": "2-4",
+        "notes": "Testing is often a bottleneck; some transformers shipped to Europe for testing"
+      }
+    },
+    {
+      "constraint": "Transportation",
+      "severity": "medium",
+      "description": "Large transformers require specialized heavy-haul transport",
+      "details": {
+        "max_road_weight_lbs": 500000,
+        "special_permits_required": true,
+        "rail_car_availability": "limited",
+        "notes": "Transportation can add 2-4 weeks to delivery"
+      }
+    }
+  ]
+}

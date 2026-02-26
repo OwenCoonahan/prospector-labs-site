@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Equipment Lead Time Index (ELTI) — Prospector Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:hsl(0 0% 3.9%);--bg-card:hsl(0 0% 7%);--bg-muted:hsl(0 0% 11%);
+  --border:hsl(0 0% 14.9%);--text:hsl(0 0% 98%);--text-muted:hsl(0 0% 63.9%);
+  --accent:hsl(210 40% 50%);--red:hsl(0 72% 51%);--orange:hsl(25 95% 53%);
+  --yellow:hsl(48 96% 53%);--green:hsl(142 71% 45%);--blue:hsl(217 91% 60%);
+  --radius:8px;
+}
+html.light{
+  --bg:hsl(0 0% 100%);--bg-card:hsl(0 0% 98%);--bg-muted:hsl(0 0% 93%);
+  --border:hsl(0 0% 89.8%);--text:hsl(0 0% 3.9%);--text-muted:hsl(0 0% 45.1%);
+}
+body{font-family:'Geist',sans-serif;background:var(--bg);color:var(--text);line-height:1.5;font-size:14px;overflow-x:hidden}
+code,.mono{font-family:'Geist Mono',monospace}
+a{color:var(--accent);text-decoration:none}
+
+.header{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;backdrop-filter:blur(12px)}
+.header h1{font-size:16px;font-weight:600;letter-spacing:-0.02em}
+.header .subtitle{color:var(--text-muted);font-size:12px;margin-left:12px}
+.header-right{display:flex;align-items:center;gap:12px}
+.theme-toggle{background:var(--bg-muted);border:1px solid var(--border);border-radius:var(--radius);padding:6px 10px;color:var(--text);cursor:pointer;font-size:12px;font-family:'Geist',sans-serif}
+
+.container{max-width:1440px;margin:0 auto;padding:20px 24px}
+
+/* Hero ELTI */
+.hero{display:grid;grid-template-columns:320px 1fr;gap:20px;margin-bottom:20px}
+.hero-index{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.hero-index .label{font-size:11px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px}
+.hero-index .value{font-size:64px;font-weight:700;letter-spacing:-0.04em;font-family:'Geist Mono',monospace;line-height:1}
+.hero-index .trend-arrow{font-size:24px;margin-top:6px}
+.hero-index .change{font-size:14px;font-family:'Geist Mono',monospace;margin-top:4px}
+.hero-index .period{font-size:12px;color:var(--text-muted);margin-top:8px}
+.hero-index .baseline{font-size:11px;color:var(--text-muted);margin-top:4px;opacity:0.7}
+.hero-components{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;overflow:hidden}
+.card-title{font-size:12px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px}
+.stat-value{font-size:28px;font-weight:700;letter-spacing:-0.03em;font-family:'Geist Mono',monospace}
+.stat-sm{font-size:20px}
+.stat-label{font-size:11px;color:var(--text-muted);margin-top:2px}
+
+.badge{display:inline-block;padding:2px 8px;border-radius:9999px;font-size:11px;font-weight:500}
+.badge-red{background:hsl(0 72% 51%/0.15);color:var(--red)}
+.badge-orange{background:hsl(25 95% 53%/0.15);color:var(--orange)}
+.badge-yellow{background:hsl(48 96% 53%/0.15);color:var(--yellow)}
+.badge-green{background:hsl(142 71% 45%/0.15);color:var(--green)}
+
+/* Equipment cards */
+.equip-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.equip-card{position:relative}
+.equip-card .type-name{font-size:13px;font-weight:600;margin-bottom:2px}
+.equip-card .lead-range{font-size:22px;font-weight:700;font-family:'Geist Mono',monospace;letter-spacing:-0.02em}
+.equip-card .lead-unit{font-size:12px;color:var(--text-muted)}
+.sparkline-container{height:40px;margin-top:8px}
+.equip-card canvas{width:100%!important;height:40px!important}
+
+/* Charts section */
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+.chart-card{min-height:340px}
+.chart-card canvas{width:100%!important;max-height:280px}
+
+/* Manufacturer table */
+.mfr-table{width:100%;border-collapse:collapse}
+.mfr-table th{text-align:left;padding:8px 10px;font-size:11px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;border-bottom:1px solid var(--border)}
+.mfr-table td{padding:8px 10px;border-bottom:1px solid var(--border);font-size:13px}
+.mfr-table tr:hover{background:var(--bg-muted)}
+.mfr-scroll{max-height:400px;overflow-y:auto}
+.cap-bar{display:inline-block;height:6px;border-radius:3px;vertical-align:middle;margin-right:6px}
+.us-flag{font-size:11px;opacity:0.7}
+
+/* Import section */
+.import-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
+
+/* Loading */
+.loading{display:flex;align-items:center;justify-content:center;padding:40px;color:var(--text-muted);font-size:13px}
+.loading::before{content:'';width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--text-muted);border-radius:50%;animation:spin .6s linear infinite;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:1024px){
+  .hero{grid-template-columns:1fr}
+  .equip-grid{grid-template-columns:1fr 1fr}
+  .charts-grid,.import-grid{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .equip-grid{grid-template-columns:1fr}
+  .hero-components{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div style="display:flex;align-items:baseline">
+    <h1>Equipment Lead Time Index</h1>
+    <span class="subtitle">ELTI — Prospector Labs</span>
+  </div>
+  <div class="header-right">
+    <span class="mono" style="font-size:11px;color:var(--text-muted)" id="lastUpdate"></span>
+    <button class="theme-toggle" onclick="toggleTheme()">◐ Theme</button>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Hero: Big ELTI Number -->
+  <div class="hero">
+    <div class="hero-index" id="heroIndex">
+      <div class="loading">Loading index…</div>
+    </div>
+    <div class="hero-components" id="heroComponents"></div>
+  </div>
+
+  <!-- Equipment Category Cards -->
+  <div class="equip-grid" id="equipGrid"></div>
+
+  <!-- Charts -->
+  <div class="charts-grid">
+    <div class="card chart-card">
+      <div class="card-title">ELTI Index — Historical Trend</div>
+      <canvas id="trendChart"></canvas>
+    </div>
+    <div class="card chart-card">
+      <div class="card-title">Equipment Type Breakdown</div>
+      <canvas id="breakdownChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Manufacturer Table -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">Manufacturer Comparison</div>
+    <div class="mfr-scroll">
+      <table class="mfr-table" id="mfrTable">
+        <thead>
+          <tr>
+            <th>Manufacturer</th>
+            <th>HQ</th>
+            <th>Equipment</th>
+            <th>Avg Lead Time</th>
+            <th>Capacity Util.</th>
+            <th>Backlog</th>
+            <th>US Mfg</th>
+          </tr>
+        </thead>
+        <tbody id="mfrBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Import Charts -->
+  <div class="import-grid">
+    <div class="card chart-card">
+      <div class="card-title">Import Volume by HTS Code</div>
+      <canvas id="importChart"></canvas>
+    </div>
+    <div class="card chart-card">
+      <div class="card-title">Import YoY Change (%)</div>
+      <canvas id="importYoyChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:8000' : 'https://api.prospectorlabs.co';
+const KEY = 'pl_demo_key_2024';
+const headers = {'X-API-Key': KEY};
+
+const COLORS = {
+  transformer: 'hsl(0,72%,51%)',
+  turbine: 'hsl(25,95%,53%)',
+  switchgear: 'hsl(48,96%,53%)',
+  inverter: 'hsl(142,71%,45%)',
+};
+const LABELS = {
+  transformer: 'Transformers',
+  turbine: 'Turbines',
+  switchgear: 'Switchgear',
+  inverter: 'Inverters',
+};
+
+function toggleTheme(){document.documentElement.classList.toggle('dark');document.documentElement.classList.toggle('light');renderCharts()}
+
+async function api(path){
+  try{
+    const r=await fetch(`${API}${path}`,{headers});
+    if(!r.ok) throw new Error(r.status);
+    return await r.json();
+  }catch(e){console.warn('API error:',path,e);return null}
+}
+
+let trendData=null, importDataAll=null;
+
+function indexColor(v){
+  if(v>=180) return 'var(--red)';
+  if(v>=150) return 'var(--orange)';
+  if(v>=120) return 'var(--yellow)';
+  return 'var(--green)';
+}
+
+function trendArrow(change){
+  if(change>2) return '↑';
+  if(change<-2) return '↓';
+  return '→';
+}
+
+function badgeClass(v){
+  if(v>=180) return 'badge-red';
+  if(v>=150) return 'badge-orange';
+  if(v>=120) return 'badge-yellow';
+  return 'badge-green';
+}
+
+async function loadIndex(){
+  const d=await api('/v1/elti/index');
+  if(!d) return document.getElementById('heroIndex').innerHTML='<div class="loading">API unavailable — using sample data</div>', loadFallback();
+  const el=document.getElementById('heroIndex');
+  const color=indexColor(d.current_value);
+  const arrow=trendArrow(d.change_from_prior);
+  const sign=d.change_from_prior>0?'+':'';
+  el.innerHTML=`
+    <div class="label">ELTI Composite Index</div>
+    <div class="value" style="color:${color}">${d.current_value.toFixed(1)}</div>
+    <div class="trend-arrow" style="color:${color}">${arrow}</div>
+    <div class="change mono" style="color:${color}">${sign}${d.change_from_prior.toFixed(1)} from prior quarter</div>
+    <div class="period">${d.period}</div>
+    <div class="baseline">Baseline: ${d.baseline_year} = ${d.baseline}</div>
+  `;
+
+  const comp=document.getElementById('heroComponents');
+  comp.innerHTML='';
+  for(const [k,v] of Object.entries(d.components)){
+    const c=indexColor(v);
+    const bc=badgeClass(v);
+    comp.innerHTML+=`
+      <div class="card">
+        <div class="card-title">${LABELS[k]||k}</div>
+        <div class="stat-value stat-sm" style="color:${c}">${v.toFixed(1)}</div>
+        <span class="badge ${bc}">${v>=180?'Critical':v>=150?'Elevated':v>=120?'Moderate':'Normal'}</span>
+      </div>`;
+  }
+}
+
+async function loadEquipment(){
+  const grid=document.getElementById('equipGrid');
+  grid.innerHTML='';
+  const trends=await api('/v1/elti/trends');
+  
+  for(const type of ['transformer','turbine','switchgear','inverter']){
+    const data=await api(`/v1/elti/equipment/${type}?limit=200`);
+    if(!data||!data.length) continue;
+    
+    // Latest quarter data
+    const latest=data.slice(0,20);
+    const mins=latest.map(d=>d.lead_time_weeks_min);
+    const maxs=latest.map(d=>d.lead_time_weeks_max);
+    const avgMin=Math.min(...mins);
+    const avgMax=Math.max(...maxs);
+    const avgAvg=latest.reduce((s,d)=>s+d.lead_time_weeks_avg,0)/latest.length;
+    
+    const canvasId=`spark-${type}`;
+    const color=COLORS[type];
+    const bc=badgeClass(avgAvg*1.5);
+    
+    grid.innerHTML+=`
+      <div class="card equip-card">
+        <div class="type-name">${LABELS[type]}</div>
+        <div class="lead-range" style="color:${color}">${avgMin}–${avgMax}</div>
+        <div class="lead-unit">weeks lead time range</div>
+        <div style="margin-top:4px"><span class="badge ${bc}">avg ${avgAvg.toFixed(0)} wks</span></div>
+        <div class="sparkline-container"><canvas id="${canvasId}"></canvas></div>
+      </div>`;
+    
+    // Sparkline from trends
+    if(trends){
+      const key=`${type}_index`;
+      const vals=trends.map(t=>t[key]);
+      setTimeout(()=>{
+        const ctx=document.getElementById(canvasId);
+        if(!ctx) return;
+        new Chart(ctx,{type:'line',data:{labels:trends.map(t=>`${t.quarter} ${t.year}`),datasets:[{data:vals,borderColor:color,borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:color.replace(')','/0.1)').replace('hsl','hsla'),tension:0.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{display:false},y:{display:false}}}});
+      },50);
+    }
+  }
+}
+
+let chartInstances={};
+function destroyChart(id){if(chartInstances[id]){chartInstances[id].destroy();delete chartInstances[id]}}
+
+async function loadTrends(){
+  trendData=await api('/v1/elti/trends');
+  if(!trendData) return;
+  renderTrendChart();
+}
+
+function renderTrendChart(){
+  if(!trendData) return;
+  const isDark=document.documentElement.classList.contains('dark');
+  const gridColor=isDark?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)';
+  const textColor=isDark?'rgba(255,255,255,0.5)':'rgba(0,0,0,0.5)';
+  
+  destroyChart('trendChart');
+  const ctx=document.getElementById('trendChart');
+  chartInstances['trendChart']=new Chart(ctx,{
+    type:'line',
+    data:{
+      labels:trendData.map(t=>`${t.quarter} ${t.year}`),
+      datasets:[
+        {label:'Composite',data:trendData.map(t=>t.composite_index),borderColor:'hsl(210,40%,50%)',borderWidth:2.5,pointRadius:0,tension:0.3},
+        {label:'Transformers',data:trendData.map(t=>t.transformer_index),borderColor:COLORS.transformer,borderWidth:1.5,pointRadius:0,tension:0.3,borderDash:[4,4]},
+        {label:'Turbines',data:trendData.map(t=>t.turbine_index),borderColor:COLORS.turbine,borderWidth:1.5,pointRadius:0,tension:0.3,borderDash:[4,4]},
+        {label:'Switchgear',data:trendData.map(t=>t.switchgear_index),borderColor:COLORS.switchgear,borderWidth:1.5,pointRadius:0,tension:0.3,borderDash:[4,4]},
+        {label:'Inverters',data:trendData.map(t=>t.inverter_index),borderColor:COLORS.inverter,borderWidth:1.5,pointRadius:0,tension:0.3,borderDash:[4,4]},
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{color:textColor,font:{family:'Geist',size:11},boxWidth:12,padding:12}}},
+      scales:{
+        x:{grid:{color:gridColor},ticks:{color:textColor,font:{family:'Geist',size:10},maxTicksLimit:12}},
+        y:{grid:{color:gridColor},ticks:{color:textColor,font:{family:'Geist Mono',size:10}},beginAtZero:false}
+      }
+    }
+  });
+}
+
+async function loadBreakdown(){
+  if(!trendData) trendData=await api('/v1/elti/trends');
+  if(!trendData) return;
+  renderBreakdownChart();
+}
+
+function renderBreakdownChart(){
+  if(!trendData) return;
+  const isDark=document.documentElement.classList.contains('dark');
+  const gridColor=isDark?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)';
+  const textColor=isDark?'rgba(255,255,255,0.5)':'rgba(0,0,0,0.5)';
+  
+  // Latest values for bar chart
+  const latest=trendData[trendData.length-1];
+  const types=['transformer','turbine','switchgear','inverter'];
+  const vals=types.map(t=>latest[`${t}_index`]);
+  
+  destroyChart('breakdownChart');
+  const ctx=document.getElementById('breakdownChart');
+  chartInstances['breakdownChart']=new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:types.map(t=>LABELS[t]),
+      datasets:[{data:vals,backgroundColor:types.map(t=>COLORS[t]),borderRadius:4,barPercentage:0.6}]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{grid:{display:false},ticks:{color:textColor,font:{family:'Geist',size:11}}},
+        y:{grid:{color:gridColor},ticks:{color:textColor,font:{family:'Geist Mono',size:10}},beginAtZero:true}
+      }
+    }
+  });
+}
+
+async function loadManufacturers(){
+  const data=await api('/v1/elti/manufacturers');
+  if(!data) return;
+  const body=document.getElementById('mfrBody');
+  body.innerHTML='';
+  data.forEach(m=>{
+    const capColor=m.capacity_utilization_pct>90?'var(--red)':m.capacity_utilization_pct>80?'var(--orange)':'var(--green)';
+    body.innerHTML+=`<tr>
+      <td style="font-weight:500">${m.name}</td>
+      <td style="color:var(--text-muted)">${m.headquarters}</td>
+      <td><span style="font-size:12px;color:var(--text-muted)">${m.equipment_types}</span></td>
+      <td class="mono">${m.avg_lead_time_weeks.toFixed(0)} wks</td>
+      <td><span class="cap-bar" style="width:${m.capacity_utilization_pct*0.6}px;background:${capColor}"></span><span class="mono">${m.capacity_utilization_pct.toFixed(0)}%</span></td>
+      <td class="mono">${m.backlog_months.toFixed(0)} mo</td>
+      <td>${m.us_manufacturing?'🇺🇸':'—'}</td>
+    </tr>`;
+  });
+}
+
+async function loadImports(){
+  importDataAll=await api('/v1/elti/imports?limit=500');
+  if(!importDataAll) return;
+  renderImportCharts();
+}
+
+function renderImportCharts(){
+  if(!importDataAll) return;
+  const isDark=document.documentElement.classList.contains('dark');
+  const gridColor=isDark?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)';
+  const textColor=isDark?'rgba(255,255,255,0.5)':'rgba(0,0,0,0.5)';
+  
+  // Group by HTS code, get latest year totals
+  const byHts={};
+  importDataAll.forEach(d=>{
+    if(!byHts[d.hts_code]) byHts[d.hts_code]={desc:d.description,total:0,yoy:[]};
+    byHts[d.hts_code].total+=d.import_value_usd;
+    byHts[d.hts_code].yoy.push(d.yoy_change_pct);
+  });
+  
+  const codes=Object.keys(byHts);
+  const palette=['hsl(210,40%,50%)','hsl(0,72%,51%)','hsl(25,95%,53%)','hsl(48,96%,53%)','hsl(142,71%,45%)','hsl(280,60%,55%)','hsl(190,80%,45%)'];
+  
+  destroyChart('importChart');
+  chartInstances['importChart']=new Chart(document.getElementById('importChart'),{
+    type:'bar',
+    data:{
+      labels:codes.map(c=>byHts[c].desc.length>30?byHts[c].desc.slice(0,28)+'…':byHts[c].desc),
+      datasets:[{data:codes.map(c=>byHts[c].total/1e9),backgroundColor:palette.slice(0,codes.length),borderRadius:4,barPercentage:0.6}]
+    },
+    options:{
+      indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`$${ctx.raw.toFixed(1)}B`}}},
+      scales:{
+        x:{grid:{color:gridColor},ticks:{color:textColor,font:{family:'Geist Mono',size:10},callback:v=>`$${v}B`}},
+        y:{grid:{display:false},ticks:{color:textColor,font:{family:'Geist',size:10}}}
+      }
+    }
+  });
+
+  // YoY chart
+  const avgYoy=codes.map(c=>{const y=byHts[c].yoy;return y.reduce((s,v)=>s+v,0)/y.length});
+  destroyChart('importYoyChart');
+  chartInstances['importYoyChart']=new Chart(document.getElementById('importYoyChart'),{
+    type:'bar',
+    data:{
+      labels:codes.map(c=>c),
+      datasets:[{data:avgYoy,backgroundColor:avgYoy.map(v=>v>0?'hsl(142,71%,45%)':'hsl(0,72%,51%)'),borderRadius:4,barPercentage:0.6}]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.raw.toFixed(1)}%`}}},
+      scales:{
+        x:{grid:{display:false},ticks:{color:textColor,font:{family:'Geist Mono',size:10}}},
+        y:{grid:{color:gridColor},ticks:{color:textColor,font:{family:'Geist Mono',size:10},callback:v=>`${v}%`}}
+      }
+    }
+  });
+}
+
+function renderCharts(){
+  renderTrendChart();
+  renderBreakdownChart();
+  renderImportCharts();
+}
+
+async function loadFallback(){
+  // If API unavailable, show static demo
+  const el=document.getElementById('heroIndex');
+  el.innerHTML=`
+    <div class="label">ELTI Composite Index</div>
+    <div class="value" style="color:var(--orange)">172.4</div>
+    <div class="trend-arrow" style="color:var(--green)">↓</div>
+    <div class="change mono" style="color:var(--green)">-9.6 from prior quarter</div>
+    <div class="period">Q1 2026</div>
+    <div class="baseline">Baseline: 2019 = 100</div>
+  `;
+  const comp=document.getElementById('heroComponents');
+  const demo=[{k:'transformer',v:212.3},{k:'turbine',v:168.5},{k:'switchgear',v:140.2},{k:'inverter',v:118.7}];
+  comp.innerHTML='';
+  demo.forEach(({k,v})=>{
+    const c=indexColor(v);const bc=badgeClass(v);
+    comp.innerHTML+=`<div class="card"><div class="card-title">${LABELS[k]}</div><div class="stat-value stat-sm" style="color:${c}">${v}</div><span class="badge ${bc}">${v>=180?'Critical':v>=150?'Elevated':v>=120?'Moderate':'Normal'}</span></div>`;
+  });
+}
+
+// Init
+document.getElementById('lastUpdate').textContent=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+Promise.all([loadIndex(),loadTrends(),loadEquipment(),loadManufacturers(),loadImports()]).then(()=>{loadBreakdown()});
+</script>
+</body>
+</html>

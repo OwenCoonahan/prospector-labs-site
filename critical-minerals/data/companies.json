@@ -1,0 +1,1076 @@
+{
+  "lastUpdated": "2026-02-06",
+  "dataNote": "Company data compiled from annual reports, USGS, S&P Global, and industry sources",
+  "companies": {
+    "lithium": {
+      "mining": [
+        {
+          "name": "Albemarle Corporation",
+          "ticker": "ALB",
+          "exchange": "NYSE",
+          "hq": "Charlotte, NC, USA",
+          "type": "Integrated (Mining + Processing)",
+          "marketShare": 18,
+          "production2024": 180000,
+          "unit": "tonnes LCE",
+          "keyAssets": ["Silver Peak (Nevada)", "Talison (Australia, 49%)", "Salar de Atacama (Chile)"],
+          "recentNews": ["Completed Kemerton lithium hydroxide plant expansion", "Reduced 2024 guidance amid price slump"],
+          "website": "https://www.albemarle.com"
+        },
+        {
+          "name": "SQM (Sociedad Química y Minera)",
+          "ticker": "SQM",
+          "exchange": "NYSE",
+          "hq": "Santiago, Chile",
+          "type": "Integrated (Mining + Processing)",
+          "marketShare": 16,
+          "production2024": 165000,
+          "unit": "tonnes LCE",
+          "keyAssets": ["Salar de Atacama (Chile)", "Mt Holland (Australia, 50%)"],
+          "recentNews": ["Codelco partnership for Atacama announced", "Expanding Mt Holland spodumene project"],
+          "website": "https://www.sqm.com"
+        },
+        {
+          "name": "Ganfeng Lithium",
+          "ticker": "1772.HK / 002460.SZ",
+          "exchange": "HKEX / Shenzhen",
+          "hq": "Jiangxi, China",
+          "type": "Integrated (Mining + Processing + Recycling)",
+          "marketShare": 15,
+          "production2024": 150000,
+          "unit": "tonnes LCE",
+          "keyAssets": ["Mt Marion (Australia)", "Mariana (Argentina)", "Cauchari-Olaroz (Argentina, 46.7%)"],
+          "recentNews": ["Major Argentina expansion", "Battery recycling capacity increase"],
+          "website": "https://www.ganfenglithium.com"
+        },
+        {
+          "name": "Tianqi Lithium",
+          "ticker": "002466.SZ / 9696.HK",
+          "exchange": "Shenzhen / HKEX",
+          "hq": "Sichuan, China",
+          "type": "Integrated (Mining + Processing)",
+          "marketShare": 12,
+          "production2024": 100000,
+          "unit": "tonnes LCE",
+          "keyAssets": ["Talison (Australia, 26%)", "SQM (Chile, 22%)", "Kwinana (Australia)"],
+          "recentNews": ["Kwinana hydroxide plant at full capacity", "Debt restructuring completed"],
+          "website": "https://www.tianqilithium.com"
+        },
+        {
+          "name": "Pilbara Minerals",
+          "ticker": "PLS",
+          "exchange": "ASX",
+          "hq": "Perth, Australia",
+          "type": "Mining (Spodumene)",
+          "marketShare": 8,
+          "production2024": 700000,
+          "unit": "tonnes spodumene",
+          "keyAssets": ["Pilgangoora (Australia)"],
+          "recentNews": ["P1000 expansion completed", "Midstream processing plant operational"],
+          "website": "https://www.pilbaraminerals.com.au"
+        },
+        {
+          "name": "Mineral Resources",
+          "ticker": "MIN",
+          "exchange": "ASX",
+          "hq": "Perth, Australia",
+          "type": "Mining (Spodumene)",
+          "marketShare": 7,
+          "production2024": 600000,
+          "unit": "tonnes spodumene",
+          "keyAssets": ["Mt Marion (Australia, 50%)", "Wodgina (Australia)"],
+          "recentNews": ["Onslow iron ore rail project", "Wodgina restart"],
+          "website": "https://www.mineralresources.com.au"
+        },
+        {
+          "name": "Livent Corporation",
+          "ticker": "LTHM",
+          "exchange": "NYSE",
+          "hq": "Philadelphia, PA, USA",
+          "type": "Integrated",
+          "marketShare": 5,
+          "production2024": 35000,
+          "unit": "tonnes LCE",
+          "keyAssets": ["Salar del Hombre Muerto (Argentina)", "Bessemer City (USA)"],
+          "recentNews": ["Allkem merger completed - now Arcadium Lithium"],
+          "website": "https://www.livent.com"
+        },
+        {
+          "name": "Arcadium Lithium",
+          "ticker": "ALTM",
+          "exchange": "NYSE",
+          "hq": "Philadelphia, PA, USA",
+          "type": "Integrated (Allkem + Livent merger)",
+          "marketShare": 10,
+          "production2024": 85000,
+          "unit": "tonnes LCE",
+          "keyAssets": ["Mt Cattlin (Australia)", "Olaroz (Argentina)", "Salar del Hombre Muerto (Argentina)", "James Bay (Canada)"],
+          "recentNews": ["Merger closed Jan 2024", "Rio Tinto acquisition announced Oct 2024"],
+          "website": "https://www.arcadiumlithium.com"
+        },
+        {
+          "name": "Sigma Lithium",
+          "ticker": "SGML",
+          "exchange": "NASDAQ",
+          "hq": "São Paulo, Brazil",
+          "type": "Mining (Spodumene)",
+          "marketShare": 2,
+          "production2024": 270000,
+          "unit": "tonnes spodumene",
+          "keyAssets": ["Grota do Cirilo (Brazil)"],
+          "recentNews": ["Phase 2 expansion", "Green lithium certification"],
+          "website": "https://www.sigmalithium.com"
+        },
+        {
+          "name": "Prospect Lithium Zimbabwe",
+          "ticker": "Private",
+          "exchange": null,
+          "hq": "Harare, Zimbabwe",
+          "type": "Mining (Spodumene)",
+          "marketShare": 2,
+          "keyAssets": ["Bikita (Zimbabwe)", "Arcadia (Zimbabwe)"],
+          "recentNews": ["Major Chinese investment", "Export ban concerns"],
+          "note": "Multiple Chinese-backed operations"
+        }
+      ],
+      "processing": [
+        {
+          "name": "Ganfeng Lithium",
+          "hq": "China",
+          "type": "Lithium hydroxide/carbonate",
+          "capacity": 180000,
+          "unit": "tonnes LCE",
+          "marketShare": 20
+        },
+        {
+          "name": "Tianqi Lithium",
+          "hq": "China",
+          "type": "Lithium hydroxide/carbonate",
+          "capacity": 140000,
+          "unit": "tonnes LCE",
+          "marketShare": 15
+        },
+        {
+          "name": "Albemarle",
+          "hq": "USA/Australia",
+          "type": "Lithium hydroxide/carbonate",
+          "capacity": 150000,
+          "unit": "tonnes LCE",
+          "marketShare": 16
+        },
+        {
+          "name": "SQM",
+          "hq": "Chile",
+          "type": "Lithium carbonate/hydroxide",
+          "capacity": 180000,
+          "unit": "tonnes LCE",
+          "marketShare": 18
+        },
+        {
+          "name": "Yahua Group",
+          "hq": "China",
+          "type": "Lithium hydroxide",
+          "capacity": 50000,
+          "unit": "tonnes LCE",
+          "marketShare": 5
+        }
+      ],
+      "concentration": {
+        "mining": {
+          "top3Share": 49,
+          "countries": ["Australia (37%)", "Chile (20%)", "China (17%)"],
+          "riskLevel": "moderate"
+        },
+        "processing": {
+          "chinaShare": 65,
+          "riskLevel": "high"
+        }
+      }
+    },
+    "cobalt": {
+      "mining": [
+        {
+          "name": "Glencore",
+          "ticker": "GLEN",
+          "exchange": "LSE",
+          "hq": "Baar, Switzerland",
+          "type": "Diversified Mining",
+          "marketShare": 20,
+          "production2024": 38000,
+          "unit": "tonnes Co",
+          "keyAssets": ["Mutanda (DRC)", "Katanga (DRC)", "Murrin Murrin (Australia)"],
+          "recentNews": ["Mutanda restart", "Responsible sourcing certification expansion"],
+          "website": "https://www.glencore.com"
+        },
+        {
+          "name": "CMOC Group (China Molybdenum)",
+          "ticker": "603993.SS / 3993.HK",
+          "exchange": "Shanghai / HKEX",
+          "hq": "Luoyang, China",
+          "type": "Mining",
+          "marketShare": 18,
+          "production2024": 35000,
+          "unit": "tonnes Co",
+          "keyAssets": ["Tenke Fungurume (DRC, 80%)", "Kisanfu (DRC)"],
+          "recentNews": ["Kisanfu mine ramp-up", "Record DRC production"],
+          "website": "https://www.cmoc.com"
+        },
+        {
+          "name": "Eurasian Resources Group (ERG)",
+          "ticker": "Private",
+          "exchange": null,
+          "hq": "Luxembourg",
+          "type": "Mining",
+          "marketShare": 8,
+          "production2024": 15000,
+          "unit": "tonnes Co",
+          "keyAssets": ["RTR (DRC)", "Metalkol (DRC)"],
+          "recentNews": ["Clean cobalt framework", "Tailings reprocessing expansion"]
+        },
+        {
+          "name": "Chemaf Resources",
+          "ticker": "Private",
+          "exchange": null,
+          "hq": "DRC/Dubai",
+          "type": "Mining & Processing",
+          "marketShare": 5,
+          "keyAssets": ["Etoile (DRC)", "Mutoshi (DRC)"],
+          "recentNews": ["Trafigura offtake agreement"]
+        },
+        {
+          "name": "Nornickel",
+          "ticker": "GMKN",
+          "exchange": "MOEX",
+          "hq": "Moscow, Russia",
+          "type": "Mining (Cobalt byproduct)",
+          "marketShare": 4,
+          "production2024": 7000,
+          "unit": "tonnes Co",
+          "keyAssets": ["Norilsk (Russia)", "Kola Peninsula (Russia)"],
+          "recentNews": ["Sanctions concerns", "Nickel-cobalt diversification"],
+          "website": "https://www.nornickel.com"
+        },
+        {
+          "name": "Vale",
+          "ticker": "VALE",
+          "exchange": "NYSE",
+          "hq": "Rio de Janeiro, Brazil",
+          "type": "Mining (Cobalt byproduct)",
+          "marketShare": 3,
+          "production2024": 5500,
+          "unit": "tonnes Co",
+          "keyAssets": ["Voisey's Bay (Canada)", "Onça Puma (Brazil)"],
+          "website": "https://www.vale.com"
+        },
+        {
+          "name": "PT Vale Indonesia",
+          "ticker": "INCO",
+          "exchange": "IDX",
+          "hq": "Jakarta, Indonesia",
+          "type": "Mining (Cobalt byproduct)",
+          "marketShare": 3,
+          "keyAssets": ["Sorowako (Indonesia)"],
+          "recentNews": ["HPAL project partnership with China"]
+        }
+      ],
+      "processing": [
+        {
+          "name": "Umicore",
+          "ticker": "UMI",
+          "exchange": "Euronext Brussels",
+          "hq": "Brussels, Belgium",
+          "type": "Refining & Recycling",
+          "capacity": 15000,
+          "unit": "tonnes Co",
+          "marketShare": 8,
+          "keyAssets": ["Olen (Belgium)", "Kokkola (Finland)"],
+          "recentNews": ["Battery recycling expansion", "Poland gigafactory"],
+          "website": "https://www.umicore.com"
+        },
+        {
+          "name": "Freeport Cobalt (now Jervois)",
+          "ticker": "JRV",
+          "exchange": "ASX",
+          "hq": "Melbourne, Australia",
+          "type": "Refining",
+          "capacity": 12000,
+          "unit": "tonnes Co",
+          "marketShare": 6,
+          "keyAssets": ["Kokkola (Finland)"],
+          "recentNews": ["Acquired Freeport Cobalt", "Idaho project paused"]
+        },
+        {
+          "name": "Huayou Cobalt",
+          "ticker": "603799.SS",
+          "exchange": "Shanghai",
+          "hq": "Tongxiang, China",
+          "type": "Integrated (Processing + Precursors)",
+          "capacity": 45000,
+          "unit": "tonnes Co",
+          "marketShare": 24,
+          "keyAssets": ["Quzhou (China)", "DRC sourcing operations"],
+          "recentNews": ["Battery precursor expansion", "Indonesia nickel-cobalt project"],
+          "website": "https://www.huayou.com"
+        },
+        {
+          "name": "GEM Co",
+          "ticker": "002340.SZ",
+          "exchange": "Shenzhen",
+          "hq": "Shenzhen, China",
+          "type": "Recycling & Processing",
+          "capacity": 30000,
+          "unit": "tonnes Co",
+          "marketShare": 16,
+          "recentNews": ["Battery recycling partnerships", "Indonesia HPAL project"]
+        }
+      ],
+      "concentration": {
+        "mining": {
+          "drcShare": 68,
+          "top2Share": 38,
+          "riskLevel": "critical",
+          "concerns": ["Child labor in artisanal mining", "Political instability", "ESG risks"]
+        },
+        "processing": {
+          "chinaShare": 72,
+          "riskLevel": "high"
+        }
+      }
+    },
+    "nickel": {
+      "mining": [
+        {
+          "name": "Vale",
+          "ticker": "VALE",
+          "exchange": "NYSE",
+          "hq": "Rio de Janeiro, Brazil",
+          "type": "Diversified Mining",
+          "marketShare": 8,
+          "production2024": 160000,
+          "unit": "tonnes Ni",
+          "keyAssets": ["Sudbury (Canada)", "Voisey's Bay (Canada)", "Onça Puma (Brazil)", "PT Vale Indonesia"],
+          "recentNews": ["Base metals spin-off considered", "Indonesia HPAL development"],
+          "website": "https://www.vale.com"
+        },
+        {
+          "name": "Nornickel",
+          "ticker": "GMKN",
+          "exchange": "MOEX",
+          "hq": "Moscow, Russia",
+          "type": "Diversified Mining",
+          "marketShare": 6,
+          "production2024": 200000,
+          "unit": "tonnes Ni",
+          "keyAssets": ["Norilsk (Russia)", "Kola Peninsula (Russia)", "Harjavalta (Finland)"],
+          "recentNews": ["Western sanctions impact", "Palladium-nickel focus"],
+          "website": "https://www.nornickel.com"
+        },
+        {
+          "name": "Tsingshan Holding Group",
+          "ticker": "Private",
+          "exchange": null,
+          "hq": "Wenzhou, China",
+          "type": "Integrated (Mining + Stainless Steel + Battery Materials)",
+          "marketShare": 15,
+          "production2024": 500000,
+          "unit": "tonnes Ni equivalent",
+          "keyAssets": ["IMIP (Indonesia)", "OSS (Indonesia)", "Multiple HPAL plants"],
+          "recentNews": ["Dominates Indonesia nickel", "NPI to matte conversion breakthrough", "Accused of causing LME nickel squeeze"],
+          "note": "World's largest stainless steel producer"
+        },
+        {
+          "name": "BHP Group",
+          "ticker": "BHP",
+          "exchange": "ASX / LSE",
+          "hq": "Melbourne, Australia",
+          "type": "Diversified Mining",
+          "marketShare": 3,
+          "production2024": 80000,
+          "unit": "tonnes Ni",
+          "keyAssets": ["Nickel West (Australia)"],
+          "recentNews": ["Nickel West review amid low prices", "Battery-grade nickel focus"],
+          "website": "https://www.bhp.com"
+        },
+        {
+          "name": "Glencore",
+          "ticker": "GLEN",
+          "exchange": "LSE",
+          "hq": "Baar, Switzerland",
+          "type": "Diversified Mining",
+          "marketShare": 3,
+          "production2024": 100000,
+          "unit": "tonnes Ni",
+          "keyAssets": ["Murrin Murrin (Australia)", "Koniambo (New Caledonia)", "Sudbury (Canada)"],
+          "website": "https://www.glencore.com"
+        },
+        {
+          "name": "First Quantum Minerals",
+          "ticker": "FM",
+          "exchange": "TSX",
+          "hq": "Vancouver, Canada",
+          "type": "Mining",
+          "marketShare": 2,
+          "production2024": 35000,
+          "unit": "tonnes Ni",
+          "keyAssets": ["Ravensthorpe (Australia)"],
+          "website": "https://www.first-quantum.com"
+        },
+        {
+          "name": "Eramet",
+          "ticker": "ERA",
+          "exchange": "Euronext Paris",
+          "hq": "Paris, France",
+          "type": "Mining",
+          "marketShare": 3,
+          "production2024": 45000,
+          "unit": "tonnes Ni",
+          "keyAssets": ["SLN (New Caledonia)", "Weda Bay (Indonesia)"],
+          "website": "https://www.eramet.com"
+        },
+        {
+          "name": "Nickel Asia Corporation",
+          "ticker": "NIKL",
+          "exchange": "PSE",
+          "hq": "Makati, Philippines",
+          "type": "Mining (Laterite ore)",
+          "marketShare": 4,
+          "keyAssets": ["Multiple mines in Philippines"],
+          "recentNews": ["China export dependency", "HPAL development plans"]
+        },
+        {
+          "name": "Harita Nickel (PT Trimegah Bangun Persada)",
+          "ticker": "NCKL",
+          "exchange": "IDX",
+          "hq": "Jakarta, Indonesia",
+          "type": "Mining & Processing",
+          "marketShare": 5,
+          "keyAssets": ["Obi Island (Indonesia)"],
+          "recentNews": ["IPO 2023", "HPAL expansion"]
+        }
+      ],
+      "processing": [
+        {
+          "name": "Tsingshan Group",
+          "hq": "China/Indonesia",
+          "type": "NPI, Matte, Ferronickel, HPAL",
+          "capacity": 500000,
+          "unit": "tonnes Ni",
+          "marketShare": 20,
+          "note": "Dominates Indonesia processing"
+        },
+        {
+          "name": "CNGR Advanced Material",
+          "ticker": "300919.SZ",
+          "exchange": "Shenzhen",
+          "hq": "Hunan, China",
+          "type": "Battery precursors",
+          "capacity": 200000,
+          "unit": "tonnes precursors",
+          "marketShare": 8,
+          "recentNews": ["Indonesia expansion", "Tesla supplier"]
+        },
+        {
+          "name": "Huayou Cobalt",
+          "hq": "China/Indonesia",
+          "type": "HPAL, Battery precursors",
+          "capacity": 120000,
+          "unit": "tonnes Ni equivalent",
+          "marketShare": 6
+        },
+        {
+          "name": "Sumitomo Metal Mining",
+          "ticker": "5713",
+          "exchange": "TSE",
+          "hq": "Tokyo, Japan",
+          "type": "Smelting & Refining",
+          "capacity": 65000,
+          "unit": "tonnes Ni",
+          "marketShare": 3,
+          "keyAssets": ["Niihama (Japan)", "Coral Bay (Philippines)"]
+        }
+      ],
+      "concentration": {
+        "mining": {
+          "indonesiaShare": 50,
+          "riskLevel": "high",
+          "concerns": ["Indonesian export controls", "Environmental damage from HPAL", "Chinese processing dominance"]
+        },
+        "processing": {
+          "chinaShare": 68,
+          "indonesiaShare": 20,
+          "riskLevel": "high"
+        }
+      }
+    },
+    "copper": {
+      "mining": [
+        {
+          "name": "Codelco",
+          "ticker": "State-owned",
+          "exchange": null,
+          "hq": "Santiago, Chile",
+          "type": "State Mining Company",
+          "marketShare": 8,
+          "production2024": 1400000,
+          "unit": "tonnes Cu",
+          "keyAssets": ["Chuquicamata", "El Teniente", "Radomiro Tomic", "Andina"],
+          "recentNews": ["Production decline concerns", "Major capex program", "Underground expansion"],
+          "website": "https://www.codelco.com"
+        },
+        {
+          "name": "Freeport-McMoRan",
+          "ticker": "FCX",
+          "exchange": "NYSE",
+          "hq": "Phoenix, AZ, USA",
+          "type": "Mining",
+          "marketShare": 8,
+          "production2024": 1900000,
+          "unit": "tonnes Cu",
+          "keyAssets": ["Grasberg (Indonesia)", "Morenci (USA)", "Cerro Verde (Peru)"],
+          "recentNews": ["Grasberg underground ramp-up", "Record production"],
+          "website": "https://www.fcx.com"
+        },
+        {
+          "name": "BHP Group",
+          "ticker": "BHP",
+          "exchange": "ASX / LSE",
+          "hq": "Melbourne, Australia",
+          "type": "Diversified Mining",
+          "marketShare": 8,
+          "production2024": 1700000,
+          "unit": "tonnes Cu",
+          "keyAssets": ["Escondida (Chile, 57.5%)", "Olympic Dam (Australia)", "Spence (Chile)"],
+          "recentNews": ["Anglo American bid failed", "Escondida expansion"],
+          "website": "https://www.bhp.com"
+        },
+        {
+          "name": "Glencore",
+          "ticker": "GLEN",
+          "exchange": "LSE",
+          "hq": "Baar, Switzerland",
+          "type": "Diversified Mining & Trading",
+          "marketShare": 5,
+          "production2024": 1000000,
+          "unit": "tonnes Cu",
+          "keyAssets": ["Collahuasi (Chile, 44%)", "Antamina (Peru, 33.75%)", "Katanga (DRC)"],
+          "website": "https://www.glencore.com"
+        },
+        {
+          "name": "Southern Copper (Grupo México)",
+          "ticker": "SCCO",
+          "exchange": "NYSE",
+          "hq": "Mexico City, Mexico",
+          "type": "Mining",
+          "marketShare": 4,
+          "production2024": 950000,
+          "unit": "tonnes Cu",
+          "keyAssets": ["Cuajone (Peru)", "Toquepala (Peru)", "Buenavista (Mexico)"],
+          "recentNews": ["Tía María project controversy", "Peru expansion plans"],
+          "website": "https://www.southerncopper.com"
+        },
+        {
+          "name": "Rio Tinto",
+          "ticker": "RIO",
+          "exchange": "LSE / ASX",
+          "hq": "London, UK",
+          "type": "Diversified Mining",
+          "marketShare": 3,
+          "production2024": 600000,
+          "unit": "tonnes Cu",
+          "keyAssets": ["Kennecott (USA)", "Oyu Tolgoi (Mongolia)", "Escondida (Chile, 30%)"],
+          "recentNews": ["Oyu Tolgoi underground production started", "Arcadium acquisition"],
+          "website": "https://www.riotinto.com"
+        },
+        {
+          "name": "First Quantum Minerals",
+          "ticker": "FM",
+          "exchange": "TSX",
+          "hq": "Vancouver, Canada",
+          "type": "Mining",
+          "marketShare": 3,
+          "production2024": 400000,
+          "unit": "tonnes Cu",
+          "keyAssets": ["Cobre Panama (suspended)", "Kansanshi (Zambia)", "Sentinel (Zambia)"],
+          "recentNews": ["Panama contract terminated", "Africa focus"],
+          "website": "https://www.first-quantum.com"
+        },
+        {
+          "name": "Antofagasta",
+          "ticker": "ANTO",
+          "exchange": "LSE",
+          "hq": "London, UK (Chilean operations)",
+          "type": "Mining",
+          "marketShare": 3,
+          "production2024": 650000,
+          "unit": "tonnes Cu",
+          "keyAssets": ["Los Pelambres (Chile)", "Centinela (Chile)", "Antucoya (Chile)"],
+          "website": "https://www.antofagasta.co.uk"
+        },
+        {
+          "name": "KGHM Polska Miedź",
+          "ticker": "KGH",
+          "exchange": "WSE",
+          "hq": "Lubin, Poland",
+          "type": "Mining & Smelting",
+          "marketShare": 3,
+          "production2024": 400000,
+          "unit": "tonnes Cu",
+          "keyAssets": ["Legnica-Głogów (Poland)", "Robinson (USA)", "Sierra Gorda (Chile, 55%)"],
+          "website": "https://www.kghm.com"
+        },
+        {
+          "name": "Zijin Mining",
+          "ticker": "2899.HK / 601899.SS",
+          "exchange": "HKEX / Shanghai",
+          "hq": "Fujian, China",
+          "type": "Mining",
+          "marketShare": 4,
+          "production2024": 1000000,
+          "unit": "tonnes Cu",
+          "keyAssets": ["Kamoa-Kakula (DRC, 45%)", "Qulong (Tibet)", "Bor (Serbia)"],
+          "recentNews": ["Major DRC expansion", "Aggressive M&A strategy"],
+          "website": "https://www.zijinmining.com"
+        }
+      ],
+      "smelting": [
+        {
+          "name": "China Copper (CCC)",
+          "hq": "China",
+          "type": "Smelting & Refining",
+          "capacity": 1500000,
+          "unit": "tonnes Cu",
+          "marketShare": 8
+        },
+        {
+          "name": "Jiangxi Copper",
+          "ticker": "600362.SS",
+          "exchange": "Shanghai",
+          "hq": "Jiangxi, China",
+          "type": "Mining, Smelting & Refining",
+          "capacity": 1500000,
+          "unit": "tonnes Cu",
+          "marketShare": 7,
+          "website": "https://www.jxcc.com"
+        },
+        {
+          "name": "Tongling Nonferrous Metals",
+          "ticker": "000630.SZ",
+          "exchange": "Shenzhen",
+          "hq": "Anhui, China",
+          "type": "Smelting & Refining",
+          "capacity": 1400000,
+          "unit": "tonnes Cu",
+          "marketShare": 6
+        },
+        {
+          "name": "Codelco",
+          "hq": "Chile",
+          "type": "Integrated",
+          "capacity": 1400000,
+          "unit": "tonnes Cu",
+          "marketShare": 6
+        },
+        {
+          "name": "Aurubis",
+          "ticker": "NDA",
+          "exchange": "Frankfurt",
+          "hq": "Hamburg, Germany",
+          "type": "Smelting & Recycling",
+          "capacity": 1100000,
+          "unit": "tonnes Cu",
+          "marketShare": 5,
+          "website": "https://www.aurubis.com"
+        }
+      ],
+      "concentration": {
+        "mining": {
+          "chileShare": 24,
+          "top5CountryShare": 60,
+          "riskLevel": "moderate"
+        },
+        "smelting": {
+          "chinaShare": 45,
+          "riskLevel": "moderate"
+        }
+      }
+    },
+    "graphite": {
+      "mining": [
+        {
+          "name": "Syrah Resources",
+          "ticker": "SYR",
+          "exchange": "ASX",
+          "hq": "Melbourne, Australia",
+          "type": "Mining & Processing",
+          "marketShare": 8,
+          "production2024": 170000,
+          "unit": "tonnes natural graphite",
+          "keyAssets": ["Balama (Mozambique)", "Vidalia (USA - AAM plant)"],
+          "recentNews": ["DOE loan for Vidalia", "First non-China active anode material plant in US"],
+          "website": "https://www.syrahresources.com.au"
+        },
+        {
+          "name": "Tirupati Graphite",
+          "ticker": "TGR",
+          "exchange": "LSE/AIM",
+          "hq": "Mauritius",
+          "type": "Mining",
+          "marketShare": 2,
+          "keyAssets": ["Vatomina (Madagascar)", "Sahamamy (Madagascar)"],
+          "recentNews": ["Madagascar expansion"]
+        },
+        {
+          "name": "NextSource Materials",
+          "ticker": "NEXT",
+          "exchange": "TSX",
+          "hq": "Toronto, Canada",
+          "type": "Mining",
+          "marketShare": 1,
+          "keyAssets": ["Molo (Madagascar)"],
+          "recentNews": ["Phase 1 production started"]
+        },
+        {
+          "name": "Nouveau Monde Graphite",
+          "ticker": "NOU",
+          "exchange": "TSX / NYSE",
+          "hq": "Montreal, Canada",
+          "type": "Mining & Processing",
+          "marketShare": 0,
+          "keyAssets": ["Matawinie (Quebec)", "Bécancour (Quebec - AAM plant)"],
+          "recentNews": ["Development stage", "Panasonic supply agreement"],
+          "website": "https://www.nmg.com"
+        },
+        {
+          "name": "BTR New Material Group",
+          "ticker": "835185.BJ",
+          "exchange": "Beijing",
+          "hq": "Shenzhen, China",
+          "type": "Processing (Anode materials)",
+          "marketShare": 25,
+          "capacity": 350000,
+          "unit": "tonnes anode material",
+          "recentNews": ["Dominates global anode market", "Synthetic graphite expansion"],
+          "website": "https://www.btrchina.com"
+        },
+        {
+          "name": "Shanshan Technology",
+          "ticker": "600884.SS",
+          "exchange": "Shanghai",
+          "hq": "Ningbo, China",
+          "type": "Processing (Anode materials)",
+          "marketShare": 15,
+          "capacity": 200000,
+          "unit": "tonnes anode material"
+        },
+        {
+          "name": "Showa Denko",
+          "ticker": "4004",
+          "exchange": "TSE",
+          "hq": "Tokyo, Japan",
+          "type": "Processing (Synthetic graphite)",
+          "marketShare": 5,
+          "keyAssets": ["Japan plants"],
+          "recentNews": ["Premium synthetic graphite focus"],
+          "website": "https://www.sdk.co.jp"
+        }
+      ],
+      "concentration": {
+        "mining": {
+          "chinaShare": 75,
+          "riskLevel": "critical"
+        },
+        "processing": {
+          "chinaShare": 95,
+          "riskLevel": "critical",
+          "concerns": ["Near-monopoly on anode material production", "Spherical graphite processing concentrated in China"]
+        }
+      }
+    },
+    "rareEarths": {
+      "mining": [
+        {
+          "name": "China Northern Rare Earth (Group) High-Tech",
+          "ticker": "600111.SS",
+          "exchange": "Shanghai",
+          "hq": "Inner Mongolia, China",
+          "type": "Mining & Processing",
+          "marketShare": 35,
+          "production2024": 80000,
+          "unit": "tonnes REO",
+          "keyAssets": ["Bayan Obo (Inner Mongolia)"],
+          "recentNews": ["Government consolidation", "Export quota holder"],
+          "website": "https://www.northernrareearth.com"
+        },
+        {
+          "name": "China Southern Rare Earth Group",
+          "ticker": "600259.SS",
+          "exchange": "Shanghai",
+          "hq": "Jiangxi, China",
+          "type": "Mining & Processing",
+          "marketShare": 15,
+          "production2024": 35000,
+          "unit": "tonnes REO",
+          "keyAssets": ["Ionic clay deposits (Southern China)"],
+          "recentNews": ["Heavy rare earth focus", "Government consolidation"]
+        },
+        {
+          "name": "Chinalco Rare Earth (Shenghe Resources)",
+          "ticker": "600392.SS",
+          "exchange": "Shanghai",
+          "hq": "Beijing, China",
+          "type": "Mining, Processing & Trading",
+          "marketShare": 10,
+          "keyAssets": ["Multiple Chinese mines", "International partnerships"],
+          "recentNews": ["MP Materials offtake", "Greenland project interest"]
+        },
+        {
+          "name": "MP Materials",
+          "ticker": "MP",
+          "exchange": "NYSE",
+          "hq": "Las Vegas, NV, USA",
+          "type": "Mining & Processing (developing)",
+          "marketShare": 12,
+          "production2024": 43000,
+          "unit": "tonnes REO",
+          "keyAssets": ["Mountain Pass (California)"],
+          "recentNews": ["Magnetics facility in Texas", "GM partnership", "DoD funding"],
+          "website": "https://www.mpmaterials.com"
+        },
+        {
+          "name": "Lynas Rare Earths",
+          "ticker": "LYC",
+          "exchange": "ASX",
+          "hq": "Sydney, Australia",
+          "type": "Mining & Processing",
+          "marketShare": 8,
+          "production2024": 10500,
+          "unit": "tonnes REO (NdPr)",
+          "keyAssets": ["Mt Weld (Australia)", "Kuantan (Malaysia)", "Kalgoorlie (Australia)"],
+          "recentNews": ["US facility in Texas", "DoD contract", "Only significant non-China processor"],
+          "website": "https://www.lynasrareearths.com"
+        },
+        {
+          "name": "Iluka Resources",
+          "ticker": "ILU",
+          "exchange": "ASX",
+          "hq": "Perth, Australia",
+          "type": "Mining (developing REE)",
+          "marketShare": 0,
+          "keyAssets": ["Eneabba (Australia)", "Wimmera (Australia)"],
+          "recentNews": ["Eneabba refinery funded by Australian government"],
+          "website": "https://www.iluka.com"
+        },
+        {
+          "name": "Hastings Technology Metals",
+          "ticker": "HAS",
+          "exchange": "ASX",
+          "hq": "Perth, Australia",
+          "type": "Development",
+          "keyAssets": ["Yangibana (Australia)"],
+          "recentNews": ["Construction underway"]
+        },
+        {
+          "name": "Energy Fuels",
+          "ticker": "UUUU",
+          "exchange": "NYSE",
+          "hq": "Lakewood, CO, USA",
+          "type": "Processing (developing)",
+          "keyAssets": ["White Mesa Mill (Utah)"],
+          "recentNews": ["REE separation from monazite", "First US separated REE in decades"],
+          "website": "https://www.energyfuels.com"
+        }
+      ],
+      "processing": [
+        {
+          "name": "China Northern Rare Earth",
+          "hq": "China",
+          "type": "Separation & Metals",
+          "marketShare": 40
+        },
+        {
+          "name": "China Southern Rare Earth",
+          "hq": "China",
+          "type": "Separation & Metals",
+          "marketShare": 25
+        },
+        {
+          "name": "Shenghe Resources",
+          "hq": "China",
+          "type": "Separation & Trading",
+          "marketShare": 15
+        },
+        {
+          "name": "Lynas Rare Earths",
+          "hq": "Malaysia/Australia",
+          "type": "Separation (only non-China)",
+          "marketShare": 8
+        },
+        {
+          "name": "Silmet (NPM Group)",
+          "hq": "Estonia",
+          "type": "Separation",
+          "marketShare": 2,
+          "note": "Only EU rare earth separator"
+        }
+      ],
+      "magnetManufacturing": [
+        {
+          "name": "JL MAG Rare-Earth",
+          "ticker": "300748.SZ",
+          "exchange": "Shenzhen",
+          "hq": "Jiangxi, China",
+          "type": "NdFeB Magnets",
+          "marketShare": 10
+        },
+        {
+          "name": "Zhenghai Magnetic Material",
+          "ticker": "300224.SZ",
+          "exchange": "Shenzhen",
+          "hq": "Zhejiang, China",
+          "type": "NdFeB Magnets",
+          "marketShare": 8
+        },
+        {
+          "name": "TDK Corporation",
+          "ticker": "6762",
+          "exchange": "TSE",
+          "hq": "Tokyo, Japan",
+          "type": "NdFeB Magnets",
+          "marketShare": 5,
+          "website": "https://www.tdk.com"
+        },
+        {
+          "name": "Shin-Etsu Chemical",
+          "ticker": "4063",
+          "exchange": "TSE",
+          "hq": "Tokyo, Japan",
+          "type": "NdFeB Magnets",
+          "marketShare": 4,
+          "website": "https://www.shinetsu.co.jp"
+        },
+        {
+          "name": "Hitachi Metals",
+          "ticker": "5486",
+          "exchange": "TSE",
+          "hq": "Tokyo, Japan",
+          "type": "NdFeB Magnets",
+          "marketShare": 3,
+          "recentNews": ["Acquired by Bain Capital"]
+        }
+      ],
+      "concentration": {
+        "mining": {
+          "chinaShare": 69,
+          "riskLevel": "critical"
+        },
+        "processing": {
+          "chinaShare": 90,
+          "riskLevel": "critical"
+        },
+        "magnets": {
+          "chinaShare": 92,
+          "riskLevel": "critical",
+          "concerns": ["Near-total China dominance", "Export restriction risk", "Defense supply chain vulnerability", "Heavy REE (Dy, Tb) especially critical"]
+        }
+      }
+    },
+    "gallium": {
+      "production": [
+        {
+          "name": "Chalco (Aluminum Corporation of China)",
+          "ticker": "2600.HK / 601600.SS",
+          "exchange": "HKEX / Shanghai",
+          "hq": "Beijing, China",
+          "type": "Byproduct of Aluminum",
+          "marketShare": 35,
+          "note": "Gallium extracted from alumina refining"
+        },
+        {
+          "name": "Zhuhai Fangyuan",
+          "ticker": "Private",
+          "exchange": null,
+          "hq": "Guangdong, China",
+          "type": "Primary & Refining",
+          "marketShare": 20
+        },
+        {
+          "name": "JX Nippon Mining & Metals",
+          "ticker": "5020 (ENEOS Holdings)",
+          "exchange": "TSE",
+          "hq": "Tokyo, Japan",
+          "type": "Refining",
+          "marketShare": 5
+        },
+        {
+          "name": "Neo Performance Materials",
+          "ticker": "NEO",
+          "exchange": "TSX",
+          "hq": "Toronto, Canada",
+          "type": "Processing",
+          "marketShare": 2,
+          "keyAssets": ["Silmet (Estonia)"]
+        }
+      ],
+      "concentration": {
+        "production": {
+          "chinaShare": 96,
+          "riskLevel": "critical",
+          "concerns": ["China export restrictions (Aug 2023)", "No primary deposits - byproduct only", "Critical for semiconductors and 5G"]
+        }
+      }
+    },
+    "germanium": {
+      "production": [
+        {
+          "name": "Yunnan Germanium Industry",
+          "ticker": "002428.SZ",
+          "exchange": "Shenzhen",
+          "hq": "Yunnan, China",
+          "type": "Primary Production",
+          "marketShare": 35
+        },
+        {
+          "name": "Yunnan Chihong Zinc & Germanium",
+          "ticker": "600497.SS",
+          "exchange": "Shanghai",
+          "hq": "Yunnan, China",
+          "type": "Byproduct of Zinc",
+          "marketShare": 15
+        },
+        {
+          "name": "Umicore",
+          "ticker": "UMI",
+          "exchange": "Euronext Brussels",
+          "hq": "Brussels, Belgium",
+          "type": "Recycling & Refining",
+          "marketShare": 10,
+          "note": "Largest non-China producer"
+        },
+        {
+          "name": "Teck Resources",
+          "ticker": "TECK",
+          "exchange": "TSX / NYSE",
+          "hq": "Vancouver, Canada",
+          "type": "Byproduct of Zinc",
+          "marketShare": 5,
+          "keyAssets": ["Trail smelter (BC)"]
+        },
+        {
+          "name": "Indium Corporation",
+          "ticker": "Private",
+          "exchange": null,
+          "hq": "Clinton, NY, USA",
+          "type": "Refining",
+          "marketShare": 3
+        }
+      ],
+      "concentration": {
+        "production": {
+          "chinaShare": 67,
+          "riskLevel": "critical",
+          "concerns": ["China export restrictions (Aug 2023)", "Critical for fiber optics and infrared", "Limited substitutes"]
+        }
+      }
+    }
+  }
+}

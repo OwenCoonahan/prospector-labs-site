@@ -1,0 +1,405 @@
+{
+  "meta": {
+    "title": "Grid Infrastructure Components Database",
+    "updated": "2026-02-06",
+    "description": "Comprehensive catalog of electrical grid infrastructure components"
+  },
+  "components": [
+    {
+      "id": "lpt",
+      "name": "Large Power Transformers (LPT)",
+      "category": "Transformers",
+      "description": "Transformers rated 100 MVA and above, used in transmission substations and power plants",
+      "specs": {
+        "powerRating": "100-1500+ MVA",
+        "voltageClass": "115-765 kV",
+        "weight": "100-400+ tons",
+        "dimensions": "Up to 50ft long, 15ft wide, 18ft tall"
+      },
+      "subcategories": [
+        {
+          "id": "gsu",
+          "name": "Generator Step-Up (GSU) Transformers",
+          "description": "Connect generators to transmission grid, typically 200-1000+ MVA",
+          "applications": ["Nuclear plants", "Gas plants", "Coal plants", "Large solar/wind farms"],
+          "leadTime": "36-48 months"
+        },
+        {
+          "id": "auto-transformer",
+          "name": "EHV Autotransformers",
+          "description": "Voltage transformation in transmission network, 345-765 kV",
+          "applications": ["Transmission substations", "Interconnection points"],
+          "leadTime": "34-42 months"
+        },
+        {
+          "id": "network-transformer",
+          "name": "Network Transformers",
+          "description": "Large transformers for urban underground distribution",
+          "applications": ["Urban substations", "Data centers"],
+          "leadTime": "28-36 months"
+        }
+      ],
+      "keyMaterials": ["GOES core steel", "Copper windings", "Transformer oil", "HV bushings", "Pressboard insulation"],
+      "manufacturers": ["hitachi-energy", "siemens-energy", "ge-vernova", "mitsubishi-electric", "toshiba-energy", "hyundai-electric", "virginia-transformer", "spx-transformer"],
+      "constraints": [
+        "Only ~6 US facilities can manufacture LPT",
+        "Each unit is custom-engineered",
+        "Requires specialized heavy-haul transportation",
+        "2-5 years of specialized labor training",
+        "High-power testing facility bottleneck"
+      ],
+      "marketSize": {
+        "globalUnits": "~800/year",
+        "usUnits": "~200/year",
+        "globalValue": "$8-10B/year"
+      }
+    },
+    {
+      "id": "distribution-transformers",
+      "name": "Distribution Transformers",
+      "category": "Transformers",
+      "description": "Transformers rated under 10 MVA, step down voltage for end-use",
+      "specs": {
+        "powerRating": "5-10,000 kVA",
+        "voltageClass": "2.4-69 kV primary, 120-480V secondary",
+        "weight": "100 lbs - 20 tons"
+      },
+      "subcategories": [
+        {
+          "id": "pole-mount",
+          "name": "Pole-Mounted Transformers",
+          "description": "Single-phase units on utility poles",
+          "applications": ["Residential service", "Rural distribution"],
+          "leadTime": "6-12 months"
+        },
+        {
+          "id": "pad-mount",
+          "name": "Pad-Mounted Transformers",
+          "description": "Ground-level enclosed transformers",
+          "applications": ["Commercial buildings", "Residential developments", "Underground distribution"],
+          "leadTime": "8-14 months"
+        },
+        {
+          "id": "submersible",
+          "name": "Submersible Transformers",
+          "description": "Vault-mounted for underground systems",
+          "applications": ["Urban underground", "High water table areas"],
+          "leadTime": "10-16 months"
+        }
+      ],
+      "keyMaterials": ["GOES core steel", "Copper or aluminum windings", "Transformer oil", "Steel enclosures"],
+      "manufacturers": ["howard-industries", "hitachi-energy", "prolec-ge", "siemens-energy", "ge-vernova"],
+      "constraints": [
+        "GOES steel availability",
+        "Labor constraints",
+        "Copper price volatility"
+      ],
+      "marketSize": {
+        "usUnits": "~500,000/year",
+        "globalValue": "$12-15B/year"
+      }
+    },
+    {
+      "id": "medium-power-transformers",
+      "name": "Medium Power Transformers",
+      "category": "Transformers",
+      "description": "Transformers rated 10-100 MVA, used in substations and industrial facilities",
+      "specs": {
+        "powerRating": "10-100 MVA",
+        "voltageClass": "34.5-230 kV",
+        "weight": "20-100 tons"
+      },
+      "keyMaterials": ["GOES core steel", "Copper windings", "Transformer oil", "Bushings"],
+      "manufacturers": ["hitachi-energy", "ge-vernova", "virginia-transformer", "delta-star", "pennsylvania-transformer", "prolec-ge"],
+      "constraints": ["Similar to LPT but less severe"],
+      "leadTime": "18-26 months",
+      "marketSize": {
+        "usUnits": "~1,500/year"
+      }
+    },
+    {
+      "id": "hv-bushings",
+      "name": "High Voltage Bushings",
+      "category": "Transformer Components",
+      "description": "Insulated conductors that pass through transformer tanks, critical bottleneck component",
+      "specs": {
+        "voltageClass": "69-1200 kV",
+        "currentRating": "600-4000+ A",
+        "types": ["Oil-impregnated paper (OIP)", "Resin-impregnated paper (RIP)", "Resin-impregnated synthetic (RIS)"]
+      },
+      "subcategories": [
+        {
+          "id": "oip-bushing",
+          "name": "Oil-Impregnated Paper (OIP)",
+          "description": "Traditional technology, proven reliability",
+          "concerns": ["PCB contamination legacy", "Environmental regulations"]
+        },
+        {
+          "id": "rip-bushing",
+          "name": "Resin-Impregnated Paper (RIP)",
+          "description": "Modern standard, better environmental profile",
+          "advantages": ["Non-flammable", "Lower maintenance"]
+        },
+        {
+          "id": "ris-bushing",
+          "name": "Resin-Impregnated Synthetic (RIS)",
+          "description": "Latest technology with synthetic materials",
+          "advantages": ["Extended life", "Better moisture resistance"]
+        }
+      ],
+      "keyMaterials": ["Porcelain or composite housings", "Kraft paper", "Epoxy resins", "Copper conductors"],
+      "manufacturers": ["ABB/Hitachi Energy", "Siemens Energy", "Trench (Siemens)", "Nexans", "HSP Hochspannungsgeräte"],
+      "constraints": [
+        "~60% imported to US",
+        "Few qualified global suppliers",
+        "Long qualification process for new suppliers",
+        "Critical failure mode for transformers"
+      ],
+      "leadTime": "12-24 months",
+      "marketSize": {
+        "globalValue": "$2-3B/year"
+      }
+    },
+    {
+      "id": "gis",
+      "name": "Gas-Insulated Switchgear (GIS)",
+      "category": "Switchgear",
+      "description": "Compact switchgear using SF6 gas insulation for high voltage applications",
+      "specs": {
+        "voltageClass": "72.5-1200 kV",
+        "currentRating": "2000-8000 A",
+        "insulation": "SF6 gas (increasingly SF6-free alternatives)"
+      },
+      "subcategories": [
+        {
+          "id": "transmission-gis",
+          "name": "Transmission GIS",
+          "description": "345-765 kV for transmission substations",
+          "applications": ["Urban substations", "Offshore platforms", "Space-constrained sites"]
+        },
+        {
+          "id": "distribution-gis",
+          "name": "Distribution GIS",
+          "description": "72.5-170 kV for distribution",
+          "applications": ["Industrial facilities", "Data centers", "Urban distribution"]
+        }
+      ],
+      "keyMaterials": ["SF6 gas", "Aluminum enclosures", "Epoxy insulators", "Copper contacts"],
+      "manufacturers": ["siemens-energy", "hitachi-energy", "mitsubishi-electric", "ge-vernova", "hyundai-electric"],
+      "constraints": [
+        "SF6 environmental regulations tightening",
+        "Complex manufacturing",
+        "Limited qualified installers"
+      ],
+      "leadTime": "18-30 months",
+      "marketSize": {
+        "globalValue": "$25-30B/year"
+      }
+    },
+    {
+      "id": "ais",
+      "name": "Air-Insulated Switchgear (AIS)",
+      "category": "Switchgear",
+      "description": "Traditional outdoor switchgear using air as insulation medium",
+      "specs": {
+        "voltageClass": "72.5-800 kV",
+        "currentRating": "1200-4000 A"
+      },
+      "keyMaterials": ["Steel structures", "Porcelain insulators", "Copper/aluminum conductors"],
+      "manufacturers": ["hitachi-energy", "siemens-energy", "ge-vernova", "hyundai-electric"],
+      "constraints": ["Large footprint", "Weather exposure"],
+      "leadTime": "12-24 months",
+      "marketSize": {
+        "globalValue": "$8-10B/year"
+      }
+    },
+    {
+      "id": "circuit-breakers",
+      "name": "High Voltage Circuit Breakers",
+      "category": "Switchgear",
+      "description": "Protective devices that interrupt fault currents in transmission and distribution systems",
+      "specs": {
+        "voltageClass": "72.5-1200 kV",
+        "breakingCapacity": "40-80 kA",
+        "types": ["SF6", "Vacuum", "Oil (legacy)"]
+      },
+      "subcategories": [
+        {
+          "id": "sf6-breaker",
+          "name": "SF6 Circuit Breakers",
+          "description": "Standard for HV applications",
+          "voltageClass": "145-1200 kV"
+        },
+        {
+          "id": "vacuum-breaker",
+          "name": "Vacuum Circuit Breakers",
+          "description": "Preferred for medium voltage, growing in HV",
+          "voltageClass": "Up to 145 kV"
+        },
+        {
+          "id": "dead-tank",
+          "name": "Dead Tank Breakers",
+          "description": "Grounded tank design common in North America",
+          "applications": ["Transmission substations"]
+        },
+        {
+          "id": "live-tank",
+          "name": "Live Tank Breakers",
+          "description": "Energized tank design common internationally",
+          "applications": ["International markets"]
+        }
+      ],
+      "keyMaterials": ["SF6 gas", "Porcelain bushings", "Copper contacts", "Steel tanks"],
+      "manufacturers": ["hitachi-energy", "siemens-energy", "mitsubishi-electric", "ge-vernova", "hyundai-electric"],
+      "constraints": [
+        "SF6 phase-down regulations",
+        "Limited US manufacturing",
+        "Long testing cycles"
+      ],
+      "leadTime": "14-24 months",
+      "marketSize": {
+        "globalValue": "$12-15B/year"
+      }
+    },
+    {
+      "id": "hv-cables",
+      "name": "High Voltage Cables & Conductors",
+      "category": "Cables",
+      "description": "Underground and submarine cables for power transmission",
+      "specs": {
+        "voltageClass": "Up to 525 kV AC, 640 kV DC",
+        "types": ["XLPE insulated", "Mass-impregnated", "Submarine"]
+      },
+      "subcategories": [
+        {
+          "id": "hvdc-cables",
+          "name": "HVDC Cables",
+          "description": "Direct current cables for long-distance transmission",
+          "applications": ["Offshore wind connections", "Interconnections", "Undersea links"],
+          "leadTime": "24-48 months"
+        },
+        {
+          "id": "xlpe-cables",
+          "name": "XLPE AC Cables",
+          "description": "Cross-linked polyethylene insulated cables",
+          "applications": ["Underground transmission", "Urban areas"],
+          "leadTime": "12-24 months"
+        },
+        {
+          "id": "submarine-cables",
+          "name": "Submarine Power Cables",
+          "description": "Cables designed for underwater installation",
+          "applications": ["Offshore wind farms", "Island connections"],
+          "leadTime": "24-48 months"
+        }
+      ],
+      "keyMaterials": ["Copper conductors", "Aluminum conductors", "XLPE insulation", "Lead sheathing", "Steel armor"],
+      "manufacturers": ["Prysmian", "Nexans", "NKT", "Sumitomo Electric", "LS Cable", "Southwire"],
+      "constraints": [
+        "Limited HVDC cable manufacturing globally",
+        "Installation vessel availability",
+        "Copper supply"
+      ],
+      "leadTime": "12-48 months depending on type",
+      "marketSize": {
+        "globalValue": "$20-25B/year"
+      }
+    },
+    {
+      "id": "overhead-conductors",
+      "name": "Overhead Transmission Conductors",
+      "category": "Cables",
+      "description": "Bare conductors for overhead transmission lines",
+      "specs": {
+        "types": ["ACSR", "ACSS", "HTLS", "Carbon Core"],
+        "voltageClass": "69-765 kV"
+      },
+      "subcategories": [
+        {
+          "id": "acsr",
+          "name": "ACSR (Aluminum Conductor Steel Reinforced)",
+          "description": "Traditional workhorse conductor",
+          "applications": ["Standard transmission lines"]
+        },
+        {
+          "id": "htls",
+          "name": "HTLS (High Temperature Low Sag)",
+          "description": "Advanced conductors for higher capacity",
+          "applications": ["Reconductoring", "Capacity upgrades"]
+        },
+        {
+          "id": "carbon-core",
+          "name": "Carbon Fiber Core Conductors",
+          "description": "Latest technology with carbon fiber core",
+          "applications": ["Maximum capacity upgrades"]
+        }
+      ],
+      "keyMaterials": ["Aluminum", "Steel core", "Carbon fiber (HTLS)"],
+      "manufacturers": ["Southwire", "General Cable (Prysmian)", "Nexans", "CTC Global", "APAR Industries"],
+      "constraints": [
+        "Aluminum supply",
+        "Carbon fiber availability for HTLS"
+      ],
+      "leadTime": "4-12 months",
+      "marketSize": {
+        "globalValue": "$8-10B/year"
+      }
+    },
+    {
+      "id": "insulators",
+      "name": "High Voltage Insulators",
+      "category": "Substation Components",
+      "description": "Devices that support and insulate conductors from grounded structures",
+      "specs": {
+        "voltageClass": "15-1200 kV",
+        "types": ["Porcelain", "Glass", "Polymer/Composite"]
+      },
+      "subcategories": [
+        {
+          "id": "porcelain-insulators",
+          "name": "Porcelain Insulators",
+          "description": "Traditional ceramic insulators, proven reliability",
+          "applications": ["Substations", "Transmission lines"]
+        },
+        {
+          "id": "polymer-insulators",
+          "name": "Polymer/Composite Insulators",
+          "description": "Lightweight, vandal-resistant",
+          "applications": ["Transmission lines", "Compact substations"]
+        },
+        {
+          "id": "post-insulators",
+          "name": "Station Post Insulators",
+          "description": "Vertical insulators for substation equipment support",
+          "applications": ["Switchyards", "Substations"]
+        }
+      ],
+      "keyMaterials": ["Porcelain", "Silicone rubber", "Fiberglass core", "Metal fittings"],
+      "manufacturers": ["NGK", "Seves (Sediver)", "TE Connectivity", "Hubbell", "MacLean Power"],
+      "constraints": [
+        "Porcelain manufacturing declining in West",
+        "Quality variations in imports"
+      ],
+      "leadTime": "6-16 months",
+      "marketSize": {
+        "globalValue": "$4-5B/year"
+      }
+    },
+    {
+      "id": "surge-arresters",
+      "name": "Surge Arresters",
+      "category": "Substation Components",
+      "description": "Protective devices that limit overvoltages from lightning or switching",
+      "specs": {
+        "voltageClass": "Up to 1200 kV",
+        "types": ["Station class", "Intermediate class", "Distribution class"]
+      },
+      "keyMaterials": ["Metal oxide varistors", "Porcelain or polymer housings", "Aluminum"],
+      "manufacturers": ["hitachi-energy", "siemens-energy", "Toshiba", "GE Vernova", "Hubbell"],
+      "leadTime": "8-16 months",
+      "marketSize": {
+        "globalValue": "$2-3B/year"
+      }
+    }
+  ]
+}

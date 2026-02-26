@@ -1,0 +1,125 @@
+{
+  "lastUpdated": "2026-02-06",
+  "description": "Supply chain flows for critical minerals from mine to end use",
+  "lithiumBatteryChain": {
+    "description": "Lithium supply chain for EV batteries",
+    "flows": [
+      {"source": "Australia Mining", "target": "China Processing", "value": 70},
+      {"source": "Chile Mining", "target": "Chile Processing", "value": 30},
+      {"source": "Chile Mining", "target": "China Processing", "value": 20},
+      {"source": "China Mining", "target": "China Processing", "value": 35},
+      {"source": "Argentina Mining", "target": "China Processing", "value": 15},
+      {"source": "China Processing", "target": "China Cathode", "value": 80},
+      {"source": "Chile Processing", "target": "Korea Cathode", "value": 15},
+      {"source": "Chile Processing", "target": "Japan Cathode", "value": 15},
+      {"source": "China Cathode", "target": "China Cell", "value": 70},
+      {"source": "Korea Cathode", "target": "Korea Cell", "value": 15},
+      {"source": "Japan Cathode", "target": "Japan Cell", "value": 10},
+      {"source": "China Cell", "target": "China EV", "value": 40},
+      {"source": "China Cell", "target": "Europe EV", "value": 20},
+      {"source": "China Cell", "target": "USA EV", "value": 10},
+      {"source": "Korea Cell", "target": "USA EV", "value": 10},
+      {"source": "Korea Cell", "target": "Europe EV", "value": 5},
+      {"source": "Japan Cell", "target": "Japan EV", "value": 8},
+      {"source": "Japan Cell", "target": "USA EV", "value": 2}
+    ]
+  },
+  "rareEarthMagnetChain": {
+    "description": "Rare earth supply chain for permanent magnets",
+    "flows": [
+      {"source": "China REE Mining", "target": "China Separation", "value": 70},
+      {"source": "Myanmar Mining", "target": "China Separation", "value": 10},
+      {"source": "USA Mining", "target": "China Separation", "value": 8},
+      {"source": "Australia Mining", "target": "Malaysia Separation", "value": 5},
+      {"source": "China Separation", "target": "China Metals", "value": 85},
+      {"source": "Malaysia Separation", "target": "Japan Metals", "value": 5},
+      {"source": "China Metals", "target": "China Magnets", "value": 80},
+      {"source": "Japan Metals", "target": "Japan Magnets", "value": 5},
+      {"source": "China Magnets", "target": "EV Motors", "value": 45},
+      {"source": "China Magnets", "target": "Wind Turbines", "value": 25},
+      {"source": "China Magnets", "target": "Consumer Electronics", "value": 15},
+      {"source": "Japan Magnets", "target": "EV Motors", "value": 5},
+      {"source": "Japan Magnets", "target": "Industrial", "value": 3}
+    ]
+  },
+  "cobaltBatteryChain": {
+    "description": "Cobalt supply chain for EV batteries",
+    "flows": [
+      {"source": "DRC Mining", "target": "China Refining", "value": 70},
+      {"source": "DRC Mining", "target": "Finland Refining", "value": 10},
+      {"source": "Indonesia Mining", "target": "China Refining", "value": 15},
+      {"source": "Australia Mining", "target": "Finland Refining", "value": 5},
+      {"source": "China Refining", "target": "China Cathode", "value": 75},
+      {"source": "Finland Refining", "target": "Europe Cathode", "value": 10},
+      {"source": "Finland Refining", "target": "Korea Cathode", "value": 5},
+      {"source": "China Cathode", "target": "Battery Cells", "value": 75},
+      {"source": "Europe Cathode", "target": "Battery Cells", "value": 10},
+      {"source": "Korea Cathode", "target": "Battery Cells", "value": 8},
+      {"source": "Battery Cells", "target": "Electric Vehicles", "value": 70},
+      {"source": "Battery Cells", "target": "Consumer Electronics", "value": 15},
+      {"source": "Battery Cells", "target": "Energy Storage", "value": 8}
+    ]
+  },
+  "copperChain": {
+    "description": "Copper supply chain for electrification",
+    "flows": [
+      {"source": "Chile Mining", "target": "Chile Smelting", "value": 35},
+      {"source": "Chile Mining", "target": "China Smelting", "value": 20},
+      {"source": "Peru Mining", "target": "China Smelting", "value": 20},
+      {"source": "DRC Mining", "target": "China Smelting", "value": 15},
+      {"source": "USA Mining", "target": "USA Smelting", "value": 8},
+      {"source": "Chile Smelting", "target": "China Refining", "value": 20},
+      {"source": "Chile Smelting", "target": "USA Refining", "value": 15},
+      {"source": "China Smelting", "target": "China Refining", "value": 50},
+      {"source": "USA Smelting", "target": "USA Refining", "value": 8},
+      {"source": "China Refining", "target": "Electrical Wiring", "value": 40},
+      {"source": "China Refining", "target": "EV/Renewable", "value": 20},
+      {"source": "USA Refining", "target": "Electrical Wiring", "value": 15},
+      {"source": "USA Refining", "target": "Construction", "value": 10}
+    ]
+  },
+  "concentrationRisks": [
+    {
+      "mineral": "Gallium",
+      "stage": "Production",
+      "country": "China",
+      "share": 96,
+      "riskLevel": "critical"
+    },
+    {
+      "mineral": "Graphite (Natural)",
+      "stage": "Production",
+      "country": "China",
+      "share": 75,
+      "riskLevel": "high"
+    },
+    {
+      "mineral": "Rare Earths",
+      "stage": "Processing",
+      "country": "China",
+      "share": 90,
+      "riskLevel": "critical"
+    },
+    {
+      "mineral": "Cobalt",
+      "stage": "Mining",
+      "country": "DR Congo",
+      "share": 68,
+      "riskLevel": "high"
+    },
+    {
+      "mineral": "Polysilicon",
+      "stage": "Production",
+      "country": "China",
+      "share": 90,
+      "riskLevel": "critical"
+    },
+    {
+      "mineral": "Lithium",
+      "stage": "Processing",
+      "country": "China",
+      "share": 65,
+      "riskLevel": "high"
+    }
+  ]
+}

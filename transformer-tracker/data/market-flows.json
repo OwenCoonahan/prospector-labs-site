@@ -1,0 +1,200 @@
+{
+  "meta": {
+    "title": "US Grid Equipment Market Flows",
+    "updated": "2026-02-06",
+    "description": "Sankey-ready data for supply chain flow visualizations"
+  },
+  "marketOverview": {
+    "totalMarket": 85,
+    "unit": "billion USD",
+    "year": 2025,
+    "description": "Total US grid equipment market"
+  },
+  "categoryBreakdown": [
+    {"category": "Transformers", "value": 28, "domestic": 8, "imported": 20, "importPct": 71},
+    {"category": "Switchgear", "value": 22, "domestic": 6, "imported": 16, "importPct": 73},
+    {"category": "Cables & Conductors", "value": 18, "domestic": 12, "imported": 6, "importPct": 33},
+    {"category": "Substation Components", "value": 12, "domestic": 4, "imported": 8, "importPct": 67},
+    {"category": "Materials (GOES, SF6)", "value": 5, "domestic": 1.5, "imported": 3.5, "importPct": 70}
+  ],
+  "transformerFlows": {
+    "production": [
+      {"source": "Japan", "target": "LPT Manufacturing", "value": 15},
+      {"source": "South Korea", "target": "LPT Manufacturing", "value": 12},
+      {"source": "Germany", "target": "LPT Manufacturing", "value": 18},
+      {"source": "Mexico", "target": "LPT Manufacturing", "value": 22},
+      {"source": "USA Domestic", "target": "LPT Manufacturing", "value": 25},
+      {"source": "China", "target": "LPT Manufacturing", "value": 8}
+    ],
+    "toEndUsers": [
+      {"source": "LPT Manufacturing", "target": "Investor-Owned Utilities", "value": 45},
+      {"source": "LPT Manufacturing", "target": "Public Power", "value": 18},
+      {"source": "LPT Manufacturing", "target": "Co-ops", "value": 12},
+      {"source": "LPT Manufacturing", "target": "Industrial", "value": 15},
+      {"source": "LPT Manufacturing", "target": "Renewables/IPP", "value": 10}
+    ],
+    "subcategories": [
+      {"category": "LPT (100+ MVA)", "value": 3.2, "domestic": 0.8, "imported": 2.4},
+      {"category": "GSU Transformers", "value": 2.1, "domestic": 0.4, "imported": 1.7},
+      {"category": "Medium Power (10-100 MVA)", "value": 4.8, "domestic": 1.5, "imported": 3.3},
+      {"category": "Distribution (<10 MVA)", "value": 17.9, "domestic": 5.3, "imported": 12.6}
+    ]
+  },
+  "goesFlows": {
+    "nodes": ["Japan", "South Korea", "China", "Germany", "USA (Cleveland-Cliffs)", "US Transformer Mfg"],
+    "links": [
+      {"source": "Japan", "target": "US Transformer Mfg", "value": 85000, "pct": 34},
+      {"source": "South Korea", "target": "US Transformer Mfg", "value": 55000, "pct": 22},
+      {"source": "China", "target": "US Transformer Mfg", "value": 20000, "pct": 8},
+      {"source": "Germany", "target": "US Transformer Mfg", "value": 15000, "pct": 6},
+      {"source": "USA (Cleveland-Cliffs)", "target": "US Transformer Mfg", "value": 75000, "pct": 30}
+    ],
+    "unit": "metric tons/year",
+    "totalUS": 250000,
+    "importDependency": 70
+  },
+  "copperFlows": {
+    "links": [
+      {"source": "Chile", "target": "Global Smelters", "value": 5.8},
+      {"source": "Peru", "target": "Global Smelters", "value": 2.4},
+      {"source": "USA", "target": "Global Smelters", "value": 1.2},
+      {"source": "DRC", "target": "Global Smelters", "value": 1.8},
+      {"source": "Australia", "target": "Global Smelters", "value": 0.9},
+      {"source": "Global Smelters", "target": "US Grid Manufacturing", "value": 2.8}
+    ],
+    "unit": "million metric tons",
+    "usGridDemand": 2.8
+  },
+  "sf6Flows": {
+    "links": [
+      {"source": "China", "target": "US Switchgear", "value": 3000},
+      {"source": "Belgium (Solvay)", "target": "US Switchgear", "value": 2000},
+      {"source": "USA (Honeywell)", "target": "US Switchgear", "value": 1500},
+      {"source": "Germany (Linde)", "target": "US Switchgear", "value": 1500},
+      {"source": "USA (Chemours)", "target": "US Switchgear", "value": 1000}
+    ],
+    "unit": "metric tons/year",
+    "totalUS": 9000,
+    "alternatives": {
+      "g3": {"gwp": 1, "status": "Commercial deployment"},
+      "cleanAir": {"gwp": 1, "status": "Commercial"},
+      "vacuum": {"maxVoltage": "145 kV", "status": "Proven"}
+    }
+  },
+  "switchgearFlows": {
+    "production": [
+      {"source": "Germany", "target": "GIS Manufacturing", "value": 35},
+      {"source": "Japan", "target": "GIS Manufacturing", "value": 25},
+      {"source": "South Korea", "target": "GIS Manufacturing", "value": 15},
+      {"source": "USA Domestic", "target": "GIS Manufacturing", "value": 20},
+      {"source": "China", "target": "GIS Manufacturing", "value": 5}
+    ],
+    "subcategories": [
+      {"category": "GIS (145+ kV)", "value": 8.5, "domestic": 1.7, "imported": 6.8},
+      {"category": "AIS (145+ kV)", "value": 5.2, "domestic": 2.1, "imported": 3.1},
+      {"category": "HV Circuit Breakers", "value": 4.8, "domestic": 1.2, "imported": 3.6},
+      {"category": "MV Switchgear", "value": 3.5, "domestic": 1.0, "imported": 2.5}
+    ]
+  },
+  "cableFlows": {
+    "subcategories": [
+      {"category": "HVDC Submarine", "value": 4.2, "domestic": 0.4, "imported": 3.8, "importPct": 90},
+      {"category": "XLPE Underground", "value": 5.8, "domestic": 3.5, "imported": 2.3, "importPct": 40},
+      {"category": "Overhead Conductors", "value": 8.0, "domestic": 8.0, "imported": 0, "importPct": 0}
+    ],
+    "hvdcProducers": [
+      {"country": "Italy (Prysmian)", "share": 35},
+      {"country": "France (Nexans)", "share": 30},
+      {"country": "Denmark (NKT)", "share": 20},
+      {"country": "Japan (Sumitomo)", "share": 10},
+      {"country": "Other", "share": 5}
+    ]
+  },
+  "componentFlows": {
+    "hvBushings": {
+      "total": 2.5,
+      "domestic": 1.0,
+      "imported": 1.5,
+      "importPct": 60,
+      "sources": [
+        {"country": "Germany", "pct": 25},
+        {"country": "Switzerland", "pct": 20},
+        {"country": "USA", "pct": 40},
+        {"country": "China", "pct": 10},
+        {"country": "Other", "pct": 5}
+      ]
+    },
+    "insulators": {
+      "total": 1.8,
+      "domestic": 0.5,
+      "imported": 1.3,
+      "importPct": 72,
+      "sources": [
+        {"country": "China", "pct": 40},
+        {"country": "Japan (NGK)", "pct": 20},
+        {"country": "France (Seves)", "pct": 15},
+        {"country": "USA", "pct": 18},
+        {"country": "Other", "pct": 7}
+      ]
+    },
+    "surgeArresters": {
+      "total": 1.2,
+      "domestic": 0.4,
+      "imported": 0.8,
+      "importPct": 67,
+      "sources": [
+        {"country": "Switzerland", "pct": 30},
+        {"country": "Germany", "pct": 25},
+        {"country": "Japan", "pct": 20},
+        {"country": "USA", "pct": 20},
+        {"country": "Other", "pct": 5}
+      ]
+    }
+  },
+  "manufacturerMarketShare": {
+    "lpt": [
+      {"name": "Hitachi Energy", "share": 20, "hq": "Switzerland"},
+      {"name": "Siemens Energy", "share": 15, "hq": "Germany"},
+      {"name": "GE Vernova", "share": 14, "hq": "USA"},
+      {"name": "Prolec GE", "share": 10, "hq": "Mexico"},
+      {"name": "Virginia Transformer", "share": 8, "hq": "USA"},
+      {"name": "Toshiba", "share": 8, "hq": "Japan"},
+      {"name": "Hyundai Electric", "share": 6, "hq": "South Korea"},
+      {"name": "Mitsubishi Electric", "share": 5, "hq": "Japan"},
+      {"name": "SPX Transformer", "share": 3, "hq": "USA"},
+      {"name": "Others", "share": 11, "hq": "Various"}
+    ],
+    "gis": [
+      {"name": "Siemens Energy", "share": 28, "hq": "Germany"},
+      {"name": "Hitachi Energy", "share": 24, "hq": "Switzerland"},
+      {"name": "GE Vernova", "share": 18, "hq": "USA"},
+      {"name": "Mitsubishi Electric", "share": 12, "hq": "Japan"},
+      {"name": "Hyundai Electric", "share": 8, "hq": "South Korea"},
+      {"name": "Others", "share": 10, "hq": "Various"}
+    ],
+    "distribution": [
+      {"name": "Howard Industries", "share": 20, "hq": "USA"},
+      {"name": "Hitachi Energy", "share": 18, "hq": "Switzerland"},
+      {"name": "Prolec GE", "share": 15, "hq": "Mexico"},
+      {"name": "Siemens Energy", "share": 12, "hq": "Germany"},
+      {"name": "WEG", "share": 8, "hq": "Brazil"},
+      {"name": "Others", "share": 27, "hq": "Various"}
+    ]
+  },
+  "capacityGap": {
+    "lpt": {
+      "currentDemand": 200,
+      "currentCapacity": 150,
+      "gap": 50,
+      "unit": "units/year",
+      "projectedDemand2030": 280,
+      "plannedCapacity2030": 220
+    },
+    "distribution": {
+      "currentDemand": 500000,
+      "currentCapacity": 450000,
+      "gap": 50000,
+      "unit": "units/year"
+    }
+  }
+}

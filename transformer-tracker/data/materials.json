@@ -1,0 +1,368 @@
+{
+  "meta": {
+    "title": "Grid Infrastructure Materials Supply Chain",
+    "updated": "2026-02-06",
+    "description": "Critical raw materials and components for electrical grid infrastructure"
+  },
+  "materials": [
+    {
+      "id": "goes",
+      "name": "Grain-Oriented Electrical Steel (GOES)",
+      "category": "Core Materials",
+      "description": "Specialized silicon steel with aligned grain structure for transformer cores. Critical bottleneck material.",
+      "criticality": 5,
+      "specs": {
+        "grainTypes": ["Conventional (CGO)", "High-permeability (HiB)", "Domain-refined"],
+        "thickness": "0.23-0.35mm typical",
+        "coreGrade": "M-2 to M-6 (ASTM)"
+      },
+      "applications": ["Power transformer cores", "Distribution transformer cores", "Reactor cores", "Large motors"],
+      "supplyChain": {
+        "globalProduction": "~2.5 million metric tons/year",
+        "majorProducers": [
+          {"company": "Nippon Steel", "country": "Japan", "share": "~25%", "notes": "Technology leader"},
+          {"company": "JFE Steel", "country": "Japan", "share": "~15%"},
+          {"company": "POSCO", "country": "South Korea", "share": "~12%"},
+          {"company": "Baowu Steel", "country": "China", "share": "~20%", "notes": "Rapidly growing"},
+          {"company": "thyssenkrupp", "country": "Germany", "share": "~8%"},
+          {"company": "AK Steel (Cleveland-Cliffs)", "country": "USA", "share": "~8%", "notes": "Only US producer"}
+        ],
+        "usImportDependency": "~70%",
+        "usProducers": [
+          {
+            "company": "Cleveland-Cliffs (formerly AK Steel)",
+            "location": "Butler, PA & Zanesville, OH",
+            "capacity": "~200,000 tons/year",
+            "notes": "Only US GOES producer. Capacity expansions underway."
+          }
+        ]
+      },
+      "pricing": {
+        "currentPrice": "$3,500-4,500/ton",
+        "trend": "↑ 15-25% YoY",
+        "drivers": ["Demand surge", "Limited capacity", "Energy costs"]
+      },
+      "constraints": [
+        "Limited global capacity",
+        "18-24 month lead time for new capacity",
+        "Complex manufacturing process",
+        "Section 232 tariffs (US)",
+        "Japan/Korea supply concentration"
+      ],
+      "tariffs": {
+        "section232": "Yes - 25% tariff on imports (some exemptions)",
+        "exclusions": "Some country/product exclusions available"
+      },
+      "outlook": {
+        "demandGrowth": "5-8% annually through 2030",
+        "supplyExpansion": "Cleveland-Cliffs, Nippon Steel expanding",
+        "riskLevel": "HIGH"
+      }
+    },
+    {
+      "id": "copper",
+      "name": "Copper (Winding & Conductor Grade)",
+      "category": "Conductor Materials",
+      "description": "High-purity copper for transformer windings and power conductors",
+      "criticality": 4,
+      "specs": {
+        "purity": "99.9%+ electrolytic grade",
+        "forms": ["Continuously transposed conductor (CTC)", "Rectangular wire", "Strip", "Rod"]
+      },
+      "applications": ["Transformer windings", "Generator windings", "Power cables", "Busbars"],
+      "supplyChain": {
+        "globalProduction": "~25 million metric tons/year",
+        "majorProducers": [
+          {"company": "Codelco", "country": "Chile", "share": "~8%"},
+          {"company": "Freeport-McMoRan", "country": "USA", "share": "~5%"},
+          {"company": "BHP", "country": "Australia", "share": "~5%"},
+          {"company": "Glencore", "country": "Switzerland", "share": "~4%"}
+        ],
+        "majorMiningCountries": ["Chile (27%)", "Peru (10%)", "China (8%)", "DRC (8%)", "USA (6%)"],
+        "usProducers": [
+          {"company": "Freeport-McMoRan", "location": "Arizona", "notes": "Largest US producer"},
+          {"company": "Rio Tinto (Kennecott)", "location": "Utah"}
+        ]
+      },
+      "pricing": {
+        "currentPrice": "$8,500-9,500/ton (LME)",
+        "trend": "↑ 10-20% YoY",
+        "drivers": ["EV demand", "Renewable energy", "Data centers", "Grid expansion"]
+      },
+      "constraints": [
+        "Competition from EV sector",
+        "Mining permits increasingly difficult",
+        "Grade decline at existing mines",
+        "Smelting capacity concentration in China"
+      ],
+      "outlook": {
+        "demandGrowth": "3-5% annually",
+        "supplyGap": "Potential 5-10 million ton deficit by 2030",
+        "riskLevel": "MEDIUM-HIGH"
+      }
+    },
+    {
+      "id": "aluminum",
+      "name": "Aluminum (Conductor Grade)",
+      "category": "Conductor Materials",
+      "description": "High-conductivity aluminum for overhead lines and transformer windings",
+      "criticality": 3,
+      "specs": {
+        "grade": "EC Grade (99.5%+ purity)",
+        "conductivity": "61% IACS minimum",
+        "forms": ["Rod", "Wire", "Strip", "Foil"]
+      },
+      "applications": ["Overhead transmission lines", "Transformer windings (cost-sensitive)", "Cable conductors", "Busbars"],
+      "supplyChain": {
+        "globalProduction": "~70 million metric tons/year",
+        "majorProducers": [
+          {"company": "China Hongqiao", "country": "China", "share": "~10%"},
+          {"company": "Chalco", "country": "China", "share": "~8%"},
+          {"company": "Rusal", "country": "Russia", "share": "~6%", "notes": "Sanction concerns"},
+          {"company": "Rio Tinto Alcan", "country": "Canada", "share": "~5%"},
+          {"company": "Alcoa", "country": "USA", "share": "~3%"}
+        ],
+        "usProduction": "~4 million tons/year"
+      },
+      "pricing": {
+        "currentPrice": "$2,300-2,800/ton (LME)",
+        "trend": "→ Stable to slight increase",
+        "drivers": ["Energy costs", "Chinese production controls"]
+      },
+      "constraints": [
+        "Energy-intensive production",
+        "Russia supply concerns",
+        "Tariff volatility"
+      ],
+      "outlook": {
+        "demandGrowth": "2-4% annually",
+        "supplyAdequacy": "Generally adequate",
+        "riskLevel": "MEDIUM"
+      }
+    },
+    {
+      "id": "transformer-oil",
+      "name": "Transformer Oil (Mineral Insulating Oil)",
+      "category": "Insulation Materials",
+      "description": "Highly refined mineral oil for transformer cooling and insulation",
+      "criticality": 3,
+      "specs": {
+        "types": ["Mineral oil (naphthenic)", "Mineral oil (paraffinic)", "Natural ester", "Synthetic ester"],
+        "properties": ["High dielectric strength", "Low viscosity", "Thermal stability", "Oxidation resistance"]
+      },
+      "applications": ["Power transformers", "Distribution transformers", "Reactors", "HV bushings"],
+      "supplyChain": {
+        "globalProduction": "~3 million metric tons/year",
+        "majorProducers": [
+          {"company": "Nynas", "country": "Sweden", "share": "~25%", "notes": "Specialty focus"},
+          {"company": "Ergon", "country": "USA", "share": "~15%"},
+          {"company": "Calumet", "country": "USA", "share": "~10%"},
+          {"company": "Petrochina", "country": "China", "share": "~15%"},
+          {"company": "Shell/ExxonMobil", "country": "Various", "share": "~10%"}
+        ],
+        "usProducers": [
+          {"company": "Ergon", "location": "Vicksburg, MS"},
+          {"company": "Calumet", "location": "Multiple locations"},
+          {"company": "HollyFrontier", "location": "Tulsa, OK"}
+        ]
+      },
+      "pricing": {
+        "currentPrice": "$1,500-2,500/ton",
+        "trend": "↑ 5-10% YoY",
+        "drivers": ["Naphthenic crude availability", "Refinery closures"]
+      },
+      "constraints": [
+        "Naphthenic crude declining",
+        "Refinery consolidation",
+        "Environmental regulations",
+        "Natural ester adoption growing"
+      ],
+      "alternatives": [
+        {
+          "type": "Natural Ester (Bio-based)",
+          "brands": ["FR3 (Cargill)", "MIDEL eN (M&I Materials)"],
+          "benefits": ["Biodegradable", "Higher fire point", "Moisture tolerant"],
+          "adoption": "Growing, especially in fire-sensitive locations"
+        },
+        {
+          "type": "Synthetic Ester",
+          "brands": ["MIDEL 7131"],
+          "benefits": ["Excellent fire safety", "Wide temperature range"],
+          "adoption": "Premium applications"
+        }
+      ],
+      "outlook": {
+        "demandGrowth": "3-5% annually",
+        "supplyAdequacy": "Generally adequate but shifting",
+        "riskLevel": "LOW-MEDIUM"
+      }
+    },
+    {
+      "id": "sf6",
+      "name": "Sulfur Hexafluoride (SF6)",
+      "category": "Insulation Materials",
+      "description": "Gaseous insulation and arc-quenching medium for switchgear and circuit breakers",
+      "criticality": 4,
+      "specs": {
+        "properties": ["Excellent dielectric strength", "Arc quenching", "Non-flammable", "Non-toxic"],
+        "gwp": "23,500 (Global Warming Potential) - highest of any gas"
+      },
+      "applications": ["GIS switchgear", "Circuit breakers", "Gas-insulated lines"],
+      "supplyChain": {
+        "globalProduction": "~10,000 metric tons/year",
+        "majorProducers": [
+          {"company": "Solvay", "country": "Belgium", "share": "~20%"},
+          {"company": "Linde", "country": "Germany", "share": "~15%"},
+          {"company": "Honeywell", "country": "USA", "share": "~15%"},
+          {"company": "Chemours", "country": "USA", "share": "~10%"},
+          {"company": "Chinese producers", "country": "China", "share": "~30%"}
+        ]
+      },
+      "pricing": {
+        "currentPrice": "$15-25/kg",
+        "trend": "↑ 20-30% YoY",
+        "drivers": ["Regulatory restrictions", "Supply tightening"]
+      },
+      "constraints": [
+        "EU F-gas regulations phasing out",
+        "California restrictions",
+        "GWP concerns driving alternatives",
+        "Reclamation requirements"
+      ],
+      "alternatives": [
+        {
+          "type": "g3 (GE Vernova)",
+          "composition": "Fluoronitrile mixture",
+          "gwp": "<1",
+          "status": "Commercial, limited deployment"
+        },
+        {
+          "type": "Clean Air (Hitachi Energy)",
+          "composition": "Mixture with CO2/O2",
+          "gwp": "<1",
+          "status": "Commercial"
+        },
+        {
+          "type": "Vacuum",
+          "notes": "Expanding to higher voltages",
+          "status": "Up to 145 kV proven"
+        }
+      ],
+      "outlook": {
+        "demandGrowth": "Declining in developed markets",
+        "regulatoryPressure": "Increasing",
+        "riskLevel": "MEDIUM (supply adequate, regulations challenging)"
+      }
+    },
+    {
+      "id": "porcelain",
+      "name": "Electrical Porcelain (Insulators & Bushings)",
+      "category": "Insulation Materials",
+      "description": "High-strength ceramic material for insulators and bushing housings",
+      "criticality": 3,
+      "specs": {
+        "types": ["Wet process", "Dry process"],
+        "properties": ["High mechanical strength", "Excellent dielectric", "Weather resistant"]
+      },
+      "applications": ["Post insulators", "Suspension insulators", "Bushing housings", "Transformer bushings"],
+      "supplyChain": {
+        "majorProducers": [
+          {"company": "NGK", "country": "Japan", "share": "~20%"},
+          {"company": "Seves (Sediver)", "country": "France", "share": "~15%"},
+          {"company": "Lapp Insulators", "country": "USA", "share": "~10%"},
+          {"company": "Chinese manufacturers", "country": "China", "share": "~40%"}
+        ],
+        "usProducers": [
+          {"company": "Lapp Insulators", "location": "LeRoy, NY"},
+          {"company": "Victor Insulators", "location": "Victor, NY"}
+        ]
+      },
+      "pricing": {
+        "trend": "→ Stable",
+        "drivers": ["Energy costs", "Labor"]
+      },
+      "constraints": [
+        "Western manufacturing declining",
+        "Quality consistency in imports",
+        "Competition from polymer alternatives"
+      ],
+      "alternatives": [
+        {
+          "type": "Polymer/Composite Insulators",
+          "benefits": ["Lighter", "Vandal resistant", "Easier handling"],
+          "status": "Gaining share, especially for lines"
+        }
+      ],
+      "outlook": {
+        "demandGrowth": "Stable",
+        "supplyAdequacy": "Adequate",
+        "riskLevel": "LOW"
+      }
+    },
+    {
+      "id": "composite-insulators",
+      "name": "Composite/Polymer Insulators",
+      "category": "Insulation Materials",
+      "description": "Fiberglass core with silicone rubber sheds for lightweight insulators",
+      "criticality": 2,
+      "specs": {
+        "core": "ECR fiberglass rod",
+        "housing": "Silicone rubber or EPDM",
+        "voltageClass": "Up to 1200 kV"
+      },
+      "applications": ["Transmission line insulators", "Substation post insulators", "Bushings (composite housings)"],
+      "supplyChain": {
+        "majorProducers": [
+          {"company": "TE Connectivity", "country": "USA", "share": "~15%"},
+          {"company": "Hubbell", "country": "USA", "share": "~12%"},
+          {"company": "MacLean Power", "country": "USA", "share": "~10%"},
+          {"company": "K-Line", "country": "Canada", "share": "~8%"},
+          {"company": "Chinese manufacturers", "country": "China", "share": "~35%"}
+        ]
+      },
+      "pricing": {
+        "trend": "→ Stable to declining",
+        "drivers": ["Competition", "Economies of scale"]
+      },
+      "constraints": [
+        "Silicone rubber supply (specialty grade)",
+        "Quality variations"
+      ],
+      "outlook": {
+        "demandGrowth": "5-8% annually",
+        "supplyAdequacy": "Good",
+        "riskLevel": "LOW"
+      }
+    },
+    {
+      "id": "xlpe",
+      "name": "Cross-Linked Polyethylene (XLPE)",
+      "category": "Cable Insulation",
+      "description": "Thermosetting polymer for high voltage cable insulation",
+      "criticality": 3,
+      "specs": {
+        "types": ["XLPE (AC cables)", "DC-XLPE (HVDC cables)"],
+        "voltageClass": "Up to 525 kV"
+      },
+      "applications": ["Underground transmission cables", "Submarine cables", "Distribution cables"],
+      "supplyChain": {
+        "majorProducers": [
+          {"company": "Borealis", "country": "Austria", "share": "~25%"},
+          {"company": "Dow", "country": "USA", "share": "~20%"},
+          {"company": "LyondellBasell", "country": "Netherlands", "share": "~15%"}
+        ],
+        "compoundProducers": ["Borealis", "Dow", "Sumitomo Chemical"]
+      },
+      "constraints": [
+        "DC-grade XLPE limited suppliers",
+        "Manufacturing quality critical",
+        "Long qualification cycles"
+      ],
+      "outlook": {
+        "demandGrowth": "8-12% annually (driven by HVDC)",
+        "supplyExpansion": "Investments ongoing",
+        "riskLevel": "MEDIUM"
+      }
+    }
+  ]
+}

@@ -1,0 +1,459 @@
+{
+  "meta": {
+    "title": "Grid Infrastructure Manufacturers Database",
+    "updated": "2026-02-06",
+    "description": "Comprehensive profiles of major electrical grid equipment manufacturers"
+  },
+  "manufacturers": [
+    {
+      "id": "hitachi-energy",
+      "name": "Hitachi Energy",
+      "hq": {
+        "country": "Switzerland",
+        "city": "Zurich"
+      },
+      "website": "https://www.hitachienergy.com",
+      "parent": "Hitachi Ltd. (Japan)",
+      "background": "Formed from ABB Power Grids acquisition in 2020. One of the world's largest grid equipment manufacturers.",
+      "products": ["Large Power Transformers", "Distribution Transformers", "HVDC Systems", "GIS Switchgear", "Circuit Breakers", "Bushings", "Surge Arresters", "Power Cables"],
+      "facilities": [
+        {"location": "Jefferson City, MO, USA", "type": "Manufacturing", "products": ["Large Power Transformers"], "capacity": "~40 units/year"},
+        {"location": "South Boston, VA, USA", "type": "Manufacturing", "products": ["Distribution Transformers"], "capacity": "~5,000 units/year"},
+        {"location": "Bland, VA, USA", "type": "Manufacturing", "products": ["Medium Power Transformers"], "capacity": "~150 units/year"},
+        {"location": "Crystal Springs, MS, USA", "type": "Manufacturing", "products": ["Distribution Transformers"], "capacity": "~3,000 units/year"},
+        {"location": "Ludvika, Sweden", "type": "Manufacturing", "products": ["Ultra-Large Power Transformers", "HVDC Converters"], "expansion": "Major expansion underway 2024-2026"},
+        {"location": "Varennes, QC, Canada", "type": "Manufacturing", "products": ["Large Power Transformers"], "capacity": "~30 units/year"},
+        {"location": "Monselice, Italy", "type": "Manufacturing", "products": ["Power Transformers"]},
+        {"location": "Bad Honnef, Germany", "type": "Manufacturing", "products": ["Large Power Transformers"]},
+        {"location": "Zhongshan, China", "type": "Manufacturing", "products": ["Transformers"]},
+        {"location": "Vadodara, India", "type": "Manufacturing", "products": ["Power Transformers", "Reactors"]}
+      ],
+      "marketShare": {
+        "global": "18-22%",
+        "usLPT": "~20%"
+      },
+      "leadTimes": {
+        "LPT": "30-42 months",
+        "distribution": "10-14 months"
+      },
+      "recentNews": [
+        {"date": "2024-10", "headline": "Ludvika factory expansion construction begins", "significance": "Adding capacity for HVDC and ultra-large transformers"},
+        {"date": "2024-08", "headline": "Awarded major US utility transformer contract", "significance": "$200M+ order"}
+      ],
+      "strengths": ["HVDC market leader", "Strong US manufacturing presence", "TXpert digital platform"],
+      "concerns": ["Long lead times", "Capacity constraints"]
+    },
+    {
+      "id": "siemens-energy",
+      "name": "Siemens Energy",
+      "hq": {
+        "country": "Germany",
+        "city": "Munich"
+      },
+      "website": "https://www.siemens-energy.com",
+      "parent": "Siemens AG (spun off 2020)",
+      "background": "Spun off from Siemens AG in 2020. Major global player in power generation and transmission equipment.",
+      "products": ["Large Power Transformers", "Distribution Transformers", "GIS Switchgear", "AIS Switchgear", "Circuit Breakers", "HVDC Systems", "Surge Arresters"],
+      "facilities": [
+        {"location": "Charlotte, NC, USA", "type": "Service/Assembly", "products": ["Transformer Service"]},
+        {"location": "Wendell, NC, USA", "type": "Manufacturing", "products": ["Medium Voltage Equipment"]},
+        {"location": "Nuremberg, Germany", "type": "Manufacturing", "products": ["Large Power Transformers"], "capacity": "~50 units/year"},
+        {"location": "Berlin, Germany", "type": "Manufacturing", "products": ["GIS Switchgear"]},
+        {"location": "Jundiaí, Brazil", "type": "Manufacturing", "products": ["Power Transformers"]},
+        {"location": "Wuhan, China", "type": "Manufacturing", "products": ["Power Transformers"]},
+        {"location": "Vadodara, India", "type": "Manufacturing", "products": ["Power Transformers"]}
+      ],
+      "marketShare": {
+        "global": "12-16%",
+        "usLPT": "~15%"
+      },
+      "leadTimes": {
+        "LPT": "28-40 months",
+        "distribution": "12-16 months"
+      },
+      "recentNews": [
+        {"date": "2025-01", "headline": "Announced grid investment program", "significance": "€1.5B in transmission equipment expansion"}
+      ],
+      "strengths": ["GIS market leader", "Strong European manufacturing base", "Integrated power solutions"],
+      "concerns": ["Limited US LPT manufacturing", "Gamesa wind challenges affecting finances"]
+    },
+    {
+      "id": "ge-vernova",
+      "name": "GE Vernova",
+      "hq": {
+        "country": "USA",
+        "city": "Cambridge, MA"
+      },
+      "website": "https://www.gevernova.com",
+      "parent": "General Electric (spun off 2024)",
+      "background": "GE's energy business spun off in April 2024. Owns Prolec GE (Mexico JV) and Grid Solutions division.",
+      "products": ["Large Power Transformers", "Distribution Transformers", "GIS Switchgear", "Circuit Breakers", "HVDC Systems", "Grid Automation"],
+      "facilities": [
+        {"location": "Charleroi, PA, USA", "type": "Manufacturing", "products": ["Large Power Transformers"], "capacity": "~25 units/year", "notes": "Historic facility, expanding"},
+        {"location": "Clearwater, FL, USA", "type": "Manufacturing", "products": ["Medium Power Transformers"]},
+        {"location": "Monterrey, Mexico", "type": "Manufacturing", "products": ["Large Power Transformers", "Distribution Transformers"], "capacity": "~60 LPT/year", "notes": "Prolec GE JV"},
+        {"location": "Apodaca, Mexico", "type": "Manufacturing", "products": ["Distribution Transformers"], "notes": "Prolec GE"},
+        {"location": "Stafford, UK", "type": "Manufacturing", "products": ["Power Transformers"]},
+        {"location": "Villeurbanne, France", "type": "Manufacturing", "products": ["GIS Switchgear"]}
+      ],
+      "marketShare": {
+        "global": "10-14%",
+        "usLPT": "~14%"
+      },
+      "leadTimes": {
+        "LPT": "30-42 months",
+        "distribution": "10-14 months"
+      },
+      "recentNews": [
+        {"date": "2024-04", "headline": "Successful spin-off from GE", "significance": "Now pure-play energy company"},
+        {"date": "2024-09", "headline": "Charleroi plant expansion announced", "significance": "Adding LPT capacity"}
+      ],
+      "strengths": ["US manufacturing", "Prolec GE North America access", "HVDC capabilities"],
+      "concerns": ["Post-spin-off restructuring", "Concentrated Mexico manufacturing"]
+    },
+    {
+      "id": "mitsubishi-electric",
+      "name": "Mitsubishi Electric",
+      "hq": {
+        "country": "Japan",
+        "city": "Tokyo"
+      },
+      "website": "https://www.mitsubishielectric.com",
+      "parent": "Mitsubishi Group",
+      "background": "Major Japanese conglomerate with significant power systems division. Strong in GIS and HVDC.",
+      "products": ["Large Power Transformers", "GIS Switchgear", "Circuit Breakers", "HVDC Converters", "Power Semiconductors"],
+      "facilities": [
+        {"location": "Memphis, TN, USA", "type": "Service/Sales", "products": ["Service Operations"]},
+        {"location": "Pittsburgh, PA, USA", "type": "Service", "products": ["Transformer Service"]},
+        {"location": "Itami, Japan", "type": "Manufacturing", "products": ["Large Power Transformers"]},
+        {"location": "Ako, Japan", "type": "Manufacturing", "products": ["GIS Switchgear", "Circuit Breakers"]},
+        {"location": "Fukuyama, Japan", "type": "Manufacturing", "products": ["Power Semiconductors"]}
+      ],
+      "marketShare": {
+        "global": "5-7%",
+        "usLPT": "~5%"
+      },
+      "leadTimes": {
+        "LPT": "28-36 months",
+        "GIS": "18-24 months"
+      },
+      "recentNews": [
+        {"date": "2024-11", "headline": "US service expansion", "significance": "Growing US market presence"}
+      ],
+      "strengths": ["High quality manufacturing", "Strong in GIS", "HVDC technology"],
+      "concerns": ["Limited US manufacturing", "Shipping time from Japan"]
+    },
+    {
+      "id": "toshiba-energy",
+      "name": "Toshiba Energy Systems",
+      "hq": {
+        "country": "Japan",
+        "city": "Tokyo"
+      },
+      "website": "https://www.toshiba-energy.com",
+      "parent": "Toshiba Corporation",
+      "background": "Historic power systems manufacturer. Restructuring after accounting scandals but remains major player.",
+      "products": ["Large Power Transformers", "Generator Transformers", "Reactors", "GIS Switchgear", "HVDC"],
+      "facilities": [
+        {"location": "Houston, TX, USA", "type": "Sales/Service", "products": ["Sales and Service"]},
+        {"location": "Hamakawasaki, Japan", "type": "Manufacturing", "products": ["Large Power Transformers", "GSU Transformers"]},
+        {"location": "Fuchu, Japan", "type": "Manufacturing", "products": ["GIS Switchgear"]}
+      ],
+      "marketShare": {
+        "global": "4-6%",
+        "usLPT": "~8%"
+      },
+      "leadTimes": {
+        "LPT": "30-40 months",
+        "GSU": "36-48 months"
+      },
+      "strengths": ["Nuclear generator transformers", "High reliability"],
+      "concerns": ["Corporate restructuring", "No US manufacturing"]
+    },
+    {
+      "id": "hyundai-electric",
+      "name": "Hyundai Electric & Energy Systems",
+      "hq": {
+        "country": "South Korea",
+        "city": "Seoul"
+      },
+      "website": "https://www.hyundai-electric.com",
+      "parent": "Hyundai Heavy Industries",
+      "background": "Part of Hyundai Heavy Industries Group. Growing global presence with new US facility.",
+      "products": ["Large Power Transformers", "Distribution Transformers", "GIS Switchgear", "Circuit Breakers", "Reactors"],
+      "facilities": [
+        {"location": "Montgomery, AL, USA", "type": "Manufacturing", "products": ["Large Power Transformers"], "status": "Under construction", "capacity": "~24 units/year", "openDate": "2025"},
+        {"location": "Ulsan, South Korea", "type": "Manufacturing", "products": ["Large Power Transformers", "GIS"], "capacity": "~80 units/year"},
+        {"location": "Riyadh, Saudi Arabia", "type": "Manufacturing", "products": ["Transformers"]}
+      ],
+      "marketShare": {
+        "global": "5-8%",
+        "usLPT": "~6%"
+      },
+      "leadTimes": {
+        "LPT": "26-36 months",
+        "distribution": "8-12 months"
+      },
+      "recentNews": [
+        {"date": "2024-06", "headline": "Montgomery, AL plant construction progress", "significance": "First Korean LPT plant in US"},
+        {"date": "2024-09", "headline": "Major utility orders secured", "significance": "Backlog growing"}
+      ],
+      "strengths": ["New US manufacturing", "Competitive pricing", "Growing capacity"],
+      "concerns": ["New to US market", "Workforce development"]
+    },
+    {
+      "id": "tbea",
+      "name": "TBEA Co., Ltd.",
+      "hq": {
+        "country": "China",
+        "city": "Xinjiang"
+      },
+      "website": "https://www.tbea.com",
+      "parent": "TBEA Group (State-affiliated)",
+      "background": "China's largest transformer manufacturer. Limited US market access due to security concerns.",
+      "products": ["Large Power Transformers", "Ultra-High Voltage Transformers", "HVDC Equipment", "Distribution Transformers", "Power Cables"],
+      "facilities": [
+        {"location": "Changji, Xinjiang, China", "type": "Manufacturing", "products": ["Ultra-High Voltage Transformers"], "capacity": "~150 LPT/year"},
+        {"location": "Shenyang, China", "type": "Manufacturing", "products": ["Large Power Transformers"]},
+        {"location": "Hengyang, China", "type": "Manufacturing", "products": ["Power Cables"]},
+        {"location": "Multiple provinces, China", "type": "Manufacturing", "products": ["Various"]}
+      ],
+      "marketShare": {
+        "global": "10-15%",
+        "usLPT": "<2%",
+        "chinaLPT": "~35%"
+      },
+      "leadTimes": {
+        "LPT": "18-28 months",
+        "UHVDC": "24-36 months"
+      },
+      "recentNews": [
+        {"date": "2024-03", "headline": "DOE restrictions on Chinese transformers", "significance": "Effectively blocked from US bulk power system"}
+      ],
+      "strengths": ["Massive capacity", "UHVDC technology", "Low cost"],
+      "concerns": ["US security restrictions", "Limited Western market access", "Quality perception"]
+    },
+    {
+      "id": "baoding-tianwei",
+      "name": "Baoding Tianwei Group",
+      "hq": {
+        "country": "China",
+        "city": "Baoding, Hebei"
+      },
+      "website": "https://www.btw.cn",
+      "parent": "China General Technology Group (state-owned)",
+      "background": "One of China's oldest transformer manufacturers. Major domestic supplier with limited exports.",
+      "products": ["Large Power Transformers", "Reactors", "Distribution Transformers"],
+      "facilities": [
+        {"location": "Baoding, China", "type": "Manufacturing", "products": ["Large Power Transformers", "Reactors"], "capacity": "~100 LPT/year"},
+        {"location": "Qinhuangdao, China", "type": "Manufacturing", "products": ["Transformers"]}
+      ],
+      "marketShare": {
+        "global": "5-8%",
+        "usLPT": "<1%",
+        "chinaLPT": "~20%"
+      },
+      "leadTimes": {
+        "LPT": "16-24 months"
+      },
+      "strengths": ["Large domestic capacity", "Reactor expertise"],
+      "concerns": ["US market restrictions", "Restructuring after financial difficulties"]
+    },
+    {
+      "id": "spx-transformer",
+      "name": "SPX Transformer Solutions",
+      "hq": {
+        "country": "USA",
+        "city": "Waukesha, WI"
+      },
+      "website": "https://www.spxtransformersolutions.com",
+      "parent": "SPX Corporation",
+      "background": "US-based manufacturer focused on utility and industrial transformers. Waukesha heritage brand.",
+      "products": ["Large Power Transformers", "Medium Power Transformers", "Mobile Substations", "Specialty Transformers"],
+      "facilities": [
+        {"location": "Waukesha, WI, USA", "type": "Manufacturing", "products": ["Large Power Transformers"], "capacity": "~20 units/year"},
+        {"location": "Goldsboro, NC, USA", "type": "Manufacturing", "products": ["Medium Power Transformers"]}
+      ],
+      "marketShare": {
+        "global": "1-2%",
+        "usLPT": "~3%"
+      },
+      "leadTimes": {
+        "LPT": "28-38 months",
+        "mediumPower": "18-24 months"
+      },
+      "recentNews": [
+        {"date": "2024-07", "headline": "Capacity expansion at Waukesha facility", "significance": "Adding production lines"}
+      ],
+      "strengths": ["US manufacturing", "Utility relationships", "Mobile substation specialty"],
+      "concerns": ["Smaller scale", "Capacity limits"]
+    },
+    {
+      "id": "virginia-transformer",
+      "name": "Virginia Transformer Corp.",
+      "hq": {
+        "country": "USA",
+        "city": "Roanoke, VA"
+      },
+      "website": "https://www.virginiatransformer.com",
+      "parent": "Private",
+      "background": "Largest privately-owned US transformer manufacturer. Family-owned since 1971.",
+      "products": ["Large Power Transformers", "Medium Power Transformers", "Distribution Transformers", "Rectifier Transformers"],
+      "facilities": [
+        {"location": "Roanoke, VA, USA", "type": "Manufacturing", "products": ["Large Power Transformers", "Medium Power Transformers"], "capacity": "~35 LPT/year"},
+        {"location": "Pocatello, ID, USA", "type": "Manufacturing", "products": ["Medium Power Transformers"]},
+        {"location": "Rincon, GA, USA", "type": "Manufacturing", "products": ["Distribution Transformers"]}
+      ],
+      "marketShare": {
+        "global": "2-3%",
+        "usLPT": "~8%"
+      },
+      "leadTimes": {
+        "LPT": "26-36 months",
+        "mediumPower": "16-22 months"
+      },
+      "recentNews": [
+        {"date": "2024-08", "headline": "Roanoke facility expansion", "significance": "Adding LPT capacity"},
+        {"date": "2024-05", "headline": "DOE grant received", "significance": "Federal support for expansion"}
+      ],
+      "strengths": ["100% US manufacturing", "Quick response", "Utility relationships", "Buy America compliant"],
+      "concerns": ["Capacity constraints", "Material sourcing"]
+    },
+    {
+      "id": "pennsylvania-transformer",
+      "name": "Pennsylvania Transformer Technology",
+      "hq": {
+        "country": "USA",
+        "city": "Canonsburg, PA"
+      },
+      "website": "https://www.patransformer.com",
+      "parent": "Private",
+      "background": "Focused on specialty and custom transformers for industrial and utility applications.",
+      "products": ["Medium Power Transformers", "Rectifier Transformers", "Furnace Transformers", "Specialty Transformers"],
+      "facilities": [
+        {"location": "Canonsburg, PA, USA", "type": "Manufacturing", "products": ["Medium Power Transformers", "Specialty"], "capacity": "~50 units/year"}
+      ],
+      "marketShare": {
+        "global": "<1%",
+        "usMediumPower": "~4%"
+      },
+      "leadTimes": {
+        "mediumPower": "16-24 months",
+        "specialty": "12-18 months"
+      },
+      "strengths": ["Custom solutions", "Industrial expertise", "US manufacturing"],
+      "concerns": ["Smaller scale", "Niche focus"]
+    },
+    {
+      "id": "delta-star",
+      "name": "Delta Star Inc.",
+      "hq": {
+        "country": "USA",
+        "city": "Lynchburg, VA"
+      },
+      "website": "https://www.deltastar.com",
+      "parent": "Private",
+      "background": "US manufacturer focused on mobile and pad-mounted transformers.",
+      "products": ["Medium Power Transformers", "Mobile Transformers", "Pad-Mounted Transformers", "Substation Transformers"],
+      "facilities": [
+        {"location": "Lynchburg, VA, USA", "type": "Manufacturing", "products": ["Medium Power Transformers", "Mobile Units"], "capacity": "~100 units/year"},
+        {"location": "San Carlos, CA, USA", "type": "Manufacturing", "products": ["Pad-Mounted Transformers"]}
+      ],
+      "marketShare": {
+        "global": "<1%",
+        "usMobile": "~15%"
+      },
+      "leadTimes": {
+        "mediumPower": "14-20 months",
+        "mobile": "12-18 months"
+      },
+      "strengths": ["Mobile/emergency transformers", "Quick deployment", "US manufacturing"],
+      "concerns": ["Not in LPT market", "Capacity limits"]
+    },
+    {
+      "id": "howard-industries",
+      "name": "Howard Industries",
+      "hq": {
+        "country": "USA",
+        "city": "Laurel, MS"
+      },
+      "website": "https://www.howard-ind.com",
+      "parent": "Private (Employee-owned)",
+      "background": "Largest US manufacturer of distribution transformers. Employee-owned since 2014.",
+      "products": ["Distribution Transformers", "Pad-Mounted Transformers", "Pole-Mounted Transformers", "Small Power Transformers"],
+      "facilities": [
+        {"location": "Laurel, MS, USA", "type": "Manufacturing", "products": ["Distribution Transformers"], "capacity": "~50,000 units/year"},
+        {"location": "Ellisville, MS, USA", "type": "Manufacturing", "products": ["Transformer Components"]}
+      ],
+      "marketShare": {
+        "global": "2-3%",
+        "usDistribution": "~20%"
+      },
+      "leadTimes": {
+        "distribution": "8-14 months"
+      },
+      "recentNews": [
+        {"date": "2024-06", "headline": "Major capacity expansion completed", "significance": "30% increase in distribution transformer output"}
+      ],
+      "strengths": ["Distribution transformer leader", "US manufacturing", "Employee ownership culture"],
+      "concerns": ["Not in LPT market", "GOES sourcing"]
+    },
+    {
+      "id": "prolec-ge",
+      "name": "Prolec GE",
+      "hq": {
+        "country": "Mexico",
+        "city": "Monterrey"
+      },
+      "website": "https://www.prolec.com.mx",
+      "parent": "GE Vernova (60%) / XIGNUX (40%)",
+      "background": "Joint venture between GE and Mexican industrial group XIGNUX. Major North American supplier.",
+      "products": ["Large Power Transformers", "Distribution Transformers", "Reactors", "Mobile Substations"],
+      "facilities": [
+        {"location": "Monterrey, Mexico", "type": "Manufacturing", "products": ["Large Power Transformers"], "capacity": "~60 LPT/year"},
+        {"location": "Apodaca, Mexico", "type": "Manufacturing", "products": ["Distribution Transformers"], "capacity": "~40,000 units/year"}
+      ],
+      "marketShare": {
+        "global": "4-5%",
+        "usLPT": "~10%",
+        "usDistribution": "~15%"
+      },
+      "leadTimes": {
+        "LPT": "28-38 months",
+        "distribution": "8-12 months"
+      },
+      "recentNews": [
+        {"date": "2024-10", "headline": "Capacity expansion for US demand", "significance": "Adding LPT production lines"}
+      ],
+      "strengths": ["North American proximity", "Large capacity", "GE technology"],
+      "concerns": ["USMCA tariff considerations", "Not US manufacturing for Buy America"]
+    },
+    {
+      "id": "weg",
+      "name": "WEG Transformers",
+      "hq": {
+        "country": "Brazil",
+        "city": "Jaraguá do Sul"
+      },
+      "website": "https://www.weg.net",
+      "parent": "WEG S.A. (Public)",
+      "background": "Major Brazilian electrical equipment manufacturer. Growing transformer business.",
+      "products": ["Distribution Transformers", "Medium Power Transformers", "Dry-Type Transformers"],
+      "facilities": [
+        {"location": "Blumenau, Brazil", "type": "Manufacturing", "products": ["Transformers"]},
+        {"location": "Mexico City, Mexico", "type": "Manufacturing", "products": ["Distribution Transformers"]},
+        {"location": "Various US", "type": "Service", "products": ["Service Operations"]}
+      ],
+      "marketShare": {
+        "global": "2-3%",
+        "latinAmerica": "~15%"
+      },
+      "leadTimes": {
+        "distribution": "8-14 months",
+        "mediumPower": "14-20 months"
+      },
+      "strengths": ["Strong Latin American presence", "Vertical integration", "Motors + transformers"],
+      "concerns": ["Limited US manufacturing", "Not in LPT market"]
+    }
+  ]
+}

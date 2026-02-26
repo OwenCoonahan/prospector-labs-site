@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Offtake Agreement Tracker — Prospector Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:hsl(0 0% 3.9%);--bg-card:hsl(0 0% 6%);--bg-muted:hsl(0 0% 9%);
+  --border:hsl(0 0% 14.9%);--border-hover:hsl(0 0% 20%);
+  --fg:hsl(0 0% 98%);--fg-muted:hsl(0 0% 63.9%);--fg-dim:hsl(0 0% 45%);
+  --accent:hsl(142 71% 45%);--accent-muted:hsl(142 40% 20%);
+  --red:hsl(0 72% 51%);--amber:hsl(38 92% 50%);--blue:hsl(217 91% 60%);
+  --radius:8px;--font:'Geist',system-ui,sans-serif;--mono:'Geist Mono',monospace;
+}
+html.light{
+  --bg:hsl(0 0% 100%);--bg-card:hsl(0 0% 98%);--bg-muted:hsl(0 0% 96%);
+  --border:hsl(0 0% 89.8%);--border-hover:hsl(0 0% 80%);
+  --fg:hsl(0 0% 3.9%);--fg-muted:hsl(0 0% 45.1%);--fg-dim:hsl(0 0% 63%);
+  --accent:hsl(142 71% 35%);--accent-muted:hsl(142 40% 90%);
+}
+body{font-family:var(--font);background:var(--bg);color:var(--fg);line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+button{font-family:var(--font);cursor:pointer}
+input,select{font-family:var(--font)}
+
+/* Layout */
+.app{max-width:1400px;margin:0 auto;padding:16px 24px}
+header{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);margin-bottom:24px}
+header h1{font-size:20px;font-weight:600;letter-spacing:-0.02em}
+header h1 span{color:var(--accent)}
+.header-right{display:flex;align-items:center;gap:12px}
+.badge{font-size:11px;font-family:var(--mono);background:var(--accent-muted);color:var(--accent);padding:2px 8px;border-radius:99px;font-weight:500}
+
+/* Theme toggle */
+.theme-btn{background:none;border:1px solid var(--border);border-radius:var(--radius);padding:6px 10px;color:var(--fg-muted);font-size:14px;transition:border-color .2s}
+.theme-btn:hover{border-color:var(--border-hover)}
+
+/* Tabs */
+.tabs{display:flex;gap:2px;background:var(--bg-muted);border-radius:var(--radius);padding:3px;margin-bottom:24px;overflow-x:auto}
+.tab{padding:7px 16px;border-radius:6px;font-size:13px;font-weight:500;color:var(--fg-muted);background:none;border:none;white-space:nowrap;transition:all .15s}
+.tab:hover{color:var(--fg)}
+.tab.active{background:var(--bg-card);color:var(--fg);box-shadow:0 1px 2px rgba(0,0,0,.1)}
+
+/* Cards */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+.card-sm{padding:14px 16px}
+.card h3{font-size:14px;font-weight:600;margin-bottom:12px;letter-spacing:-0.01em}
+
+/* Stats grid */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:24px}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+.stat-label{font-size:12px;color:var(--fg-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em}
+.stat-value{font-size:28px;font-weight:700;letter-spacing:-0.03em;font-family:var(--mono)}
+.stat-sub{font-size:12px;color:var(--fg-dim);margin-top:2px}
+
+/* Filters */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;align-items:center}
+.filter-input{background:var(--bg-muted);border:1px solid var(--border);border-radius:var(--radius);padding:7px 12px;font-size:13px;color:var(--fg);min-width:140px;outline:none;transition:border-color .2s}
+.filter-input:focus{border-color:var(--accent)}
+.filter-input::placeholder{color:var(--fg-dim)}
+select.filter-input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+
+/* Deal table */
+.deal-table{width:100%;border-collapse:collapse;font-size:13px}
+.deal-table th{text-align:left;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--fg-muted);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;position:sticky;top:0;background:var(--bg-card)}
+.deal-table td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+.deal-table tr:hover td{background:var(--bg-muted)}
+.deal-table .mineral-tag{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:99px;font-family:var(--mono)}
+.mineral-lithium{background:hsl(217 60% 18%);color:hsl(217 91% 70%)}
+.mineral-cobalt{background:hsl(262 50% 18%);color:hsl(262 70% 70%)}
+.mineral-nickel{background:hsl(142 40% 16%);color:hsl(142 60% 65%)}
+.mineral-rare_earths{background:hsl(38 50% 18%);color:hsl(38 80% 65%)}
+.mineral-graphite{background:hsl(0 0% 18%);color:hsl(0 0% 70%)}
+.mineral-manganese{background:hsl(330 40% 18%);color:hsl(330 60% 65%)}
+.mineral-copper{background:hsl(20 50% 18%);color:hsl(20 70% 65%)}
+.status-active{color:var(--accent)}
+.status-expired{color:var(--fg-dim)}
+.status-terminated{color:var(--red)}
+.status-rumored{color:var(--amber)}
+.clickable{cursor:pointer;color:var(--accent)}
+.clickable:hover{text-decoration:underline}
+.volume-cell{font-family:var(--mono);font-size:12px}
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-card)}
+
+/* Charts */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.chart-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.chart-card h3{font-size:14px;font-weight:600;margin-bottom:16px}
+.chart-card canvas{width:100%!important}
+.chart-full{grid-column:1/-1}
+
+/* Flow diagram */
+.flow-container{position:relative;overflow-x:auto}
+.flow-svg{width:100%;min-height:400px}
+
+/* Company/Mineral detail panel */
+.detail-panel{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:24px}
+.detail-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.detail-header h2{font-size:22px;font-weight:700;letter-spacing:-0.02em}
+.back-btn{background:none;border:1px solid var(--border);border-radius:var(--radius);padding:6px 14px;color:var(--fg-muted);font-size:13px}
+.back-btn:hover{border-color:var(--border-hover);color:var(--fg)}
+.detail-stats{display:flex;gap:24px;margin-bottom:20px}
+.detail-stat{text-align:center}
+.detail-stat .val{font-size:24px;font-weight:700;font-family:var(--mono)}
+.detail-stat .lbl{font-size:11px;color:var(--fg-muted);text-transform:uppercase}
+
+/* Pagination */
+.pagination{display:flex;align-items:center;justify-content:space-between;padding:12px 0;font-size:13px;color:var(--fg-muted)}
+.pagination button{background:var(--bg-muted);border:1px solid var(--border);border-radius:var(--radius);padding:6px 14px;color:var(--fg);font-size:13px}
+.pagination button:disabled{opacity:.3;cursor:not-allowed}
+.pagination button:not(:disabled):hover{border-color:var(--border-hover)}
+
+/* Loading */
+.loading{text-align:center;padding:40px;color:var(--fg-muted)}
+.spinner{display:inline-block;width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Responsive */
+@media(max-width:900px){
+  .chart-grid{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  .app{padding:12px}
+  .stats-grid{grid-template-columns:1fr}
+  header{flex-direction:column;align-items:flex-start;gap:8px}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header>
+    <div>
+      <h1><span>⛏</span> Offtake Agreement Tracker</h1>
+      <div style="font-size:12px;color:var(--fg-dim);margin-top:2px">Critical minerals supply chain intelligence — Prospector Labs</div>
+    </div>
+    <div class="header-right">
+      <span class="badge" id="dealCount">—</span>
+      <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme">◐</button>
+    </div>
+  </header>
+
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-tab="dashboard">Dashboard</button>
+    <button class="tab" data-tab="deals">Deal Feed</button>
+    <button class="tab" data-tab="flows">Supply Flows</button>
+    <button class="tab" data-tab="timeline">Timeline</button>
+  </div>
+
+  <div id="content"></div>
+</div>
+
+<script>
+const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:8000' : 'https://api.yoursite.com';
+const API_KEY = 'demo';
+const H = {'X-API-Key': API_KEY, 'Content-Type': 'application/json'};
+
+// State
+let state = {
+  tab: 'dashboard',
+  deals: [],
+  stats: null,
+  filters: {mineral:'',buyer:'',seller:'',year:'',status:''},
+  offset: 0,
+  limit: 50,
+  total: 0,
+  detailType: null, // 'company' | 'mineral'
+  detailName: null,
+  detailData: null,
+};
+
+// ─── API helpers ─────────────────────────────────────────────────────────
+async function api(path, params={}) {
+  const url = new URL(API + path);
+  Object.entries(params).forEach(([k,v]) => { if(v) url.searchParams.set(k,v) });
+  try {
+    const r = await fetch(url, {headers: H});
+    if (!r.ok) throw new Error(`${r.status}`);
+    return await r.json();
+  } catch(e) {
+    console.warn('API error:', e);
+    return null;
+  }
+}
+
+// ─── Data loading ────────────────────────────────────────────────────────
+async function loadStats() {
+  state.stats = await api('/v1/offtakes/stats');
+}
+
+async function loadDeals() {
+  const p = {...state.filters, offset: state.offset, limit: state.limit};
+  const r = await api('/v1/offtakes', p);
+  if (r) { state.deals = r.data; state.total = r.total; }
+}
+
+async function loadRecent() {
+  const r = await api('/v1/offtakes/recent', {limit: 10});
+  return r || [];
+}
+
+async function loadCompany(name) {
+  return await api(`/v1/offtakes/companies/${encodeURIComponent(name)}`);
+}
+
+async function loadMineral(mineral) {
+  return await api(`/v1/offtakes/minerals/${encodeURIComponent(mineral)}`);
+}
+
+// ─── Rendering ───────────────────────────────────────────────────────────
+function mineralTag(m) {
+  return `<span class="mineral-tag mineral-${m}">${m.replace('_',' ')}</span>`;
+}
+
+function statusSpan(s) {
+  return `<span class="status-${s}">${s}</span>`;
+}
+
+function fmtVol(v, u) {
+  if (!v) return '—';
+  return v.toLocaleString() + ' ' + (u||'MT');
+}
+
+function fmtDate(d) {
+  if (!d) return '—';
+  return d.slice(0,10);
+}
+
+function dealRow(d) {
+  return `<tr>
+    <td>${fmtDate(d.announcement_date)}</td>
+    <td class="clickable" onclick="showCompany('${esc(d.buyer)}')">${esc(d.buyer)}</td>
+    <td class="clickable" onclick="showCompany('${esc(d.seller)}')">${esc(d.seller)}</td>
+    <td>${mineralTag(d.mineral)}</td>
+    <td class="volume-cell">${fmtVol(d.volume_mt, d.volume_unit)}</td>
+    <td>${d.price_mechanism}</td>
+    <td>${d.duration_years ? d.duration_years+'y' : '—'}</td>
+    <td>${statusSpan(d.status)}</td>
+    <td>${d.filing_url ? `<a href="${d.filing_url}" target="_blank">📄</a>` : ''}</td>
+  </tr>`;
+}
+
+function esc(s) { return s ? s.replace(/'/g, "\\'").replace(/"/g, '&quot;') : ''; }
+
+function dealTable(deals) {
+  return `<div class="table-wrap"><table class="deal-table">
+    <thead><tr>
+      <th>Date</th><th>Buyer</th><th>Seller</th><th>Mineral</th><th>Volume</th><th>Pricing</th><th>Term</th><th>Status</th><th></th>
+    </tr></thead>
+    <tbody>${deals.map(dealRow).join('')}</tbody>
+  </table></div>`;
+}
+
+// ─── Dashboard Tab ───────────────────────────────────────────────────────
+async function renderDashboard() {
+  const el = $('content');
+  el.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  
+  await loadStats();
+  const recent = await loadRecent();
+  const s = state.stats;
+  if (!s) { el.innerHTML = '<div class="card">Failed to load data. Is the API running?</div>'; return; }
+
+  document.getElementById('dealCount').textContent = s.total_deals + ' deals';
+
+  const minerals = Object.entries(s.by_mineral).sort((a,b)=>b[1]-a[1]);
+  const years = Object.entries(s.by_year).sort((a,b)=>a[0].localeCompare(b[0]));
+
+  el.innerHTML = `
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Total Deals</div><div class="stat-value">${s.total_deals}</div></div>
+      <div class="stat-card"><div class="stat-label">Total Volume (disclosed)</div><div class="stat-value">${(s.total_volume_mt/1000).toFixed(0)}k</div><div class="stat-sub">MT across all minerals</div></div>
+      <div class="stat-card"><div class="stat-label">Avg Duration</div><div class="stat-value">${s.avg_duration_years}y</div></div>
+      <div class="stat-card"><div class="stat-label">Minerals Tracked</div><div class="stat-value">${minerals.length}</div></div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card"><h3>Deals by Mineral</h3><canvas id="chartMineral"></canvas></div>
+      <div class="chart-card"><h3>Price Mechanism</h3><canvas id="chartPricing"></canvas></div>
+      <div class="chart-card"><h3>Deals by Year</h3><canvas id="chartYear"></canvas></div>
+      <div class="chart-card"><h3>Volume by Mineral (disclosed MT)</h3><canvas id="chartVolume"></canvas></div>
+    </div>
+
+    <div class="card">
+      <h3>Top Buyers</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        ${s.top_buyers.map(b => `<span class="clickable" onclick="showCompany('${esc(b.name)}')" style="background:var(--bg-muted);padding:4px 10px;border-radius:99px;font-size:12px">${b.name} <span style="color:var(--fg-dim)">(${b.count})</span></span>`).join('')}
+      </div>
+    </div>
+    <div class="card">
+      <h3>Top Sellers</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        ${s.top_sellers.map(b => `<span class="clickable" onclick="showCompany('${esc(b.name)}')" style="background:var(--bg-muted);padding:4px 10px;border-radius:99px;font-size:12px">${b.name} <span style="color:var(--fg-dim)">(${b.count})</span></span>`).join('')}
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h3>Latest Deals</h3>
+      ${dealTable(recent)}
+    </div>
+  `;
+
+  // Charts
+  const mineralColors = {lithium:'#3b82f6',cobalt:'#8b5cf6',nickel:'#22c55e',rare_earths:'#f59e0b',graphite:'#6b7280',manganese:'#ec4899',copper:'#f97316'};
+  
+  new Chart($('chartMineral'), {
+    type:'doughnut',
+    data:{labels:minerals.map(m=>m[0].replace('_',' ')),datasets:[{data:minerals.map(m=>m[1]),backgroundColor:minerals.map(m=>mineralColors[m[0]]||'#444')}]},
+    options:{responsive:true,plugins:{legend:{position:'right',labels:{color:'var(--fg-muted)',font:{family:'Geist',size:11},padding:8,boxWidth:12}}},onClick:(e,els)=>{if(els.length){showMineral(minerals[els[0].index][0])}}}
+  });
+
+  const pm = Object.entries(s.by_price_mechanism);
+  new Chart($('chartPricing'), {
+    type:'doughnut',
+    data:{labels:pm.map(p=>p[0]),datasets:[{data:pm.map(p=>p[1]),backgroundColor:['#22c55e','#3b82f6','#6b7280','#f59e0b']}]},
+    options:{responsive:true,plugins:{legend:{position:'right',labels:{color:'var(--fg-muted)',font:{family:'Geist',size:11},padding:8,boxWidth:12}}}}
+  });
+
+  new Chart($('chartYear'), {
+    type:'bar',
+    data:{labels:years.map(y=>y[0]),datasets:[{label:'Deals',data:years.map(y=>y[1]),backgroundColor:'hsl(142 71% 45%)',borderRadius:4}]},
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'var(--fg-dim)',font:{family:'Geist Mono',size:11}},grid:{display:false}},y:{ticks:{color:'var(--fg-dim)',font:{family:'Geist Mono',size:11}},grid:{color:'rgba(255,255,255,.05)'}}}}
+  });
+
+  const volMinerals = Object.entries(s.volume_by_mineral).filter(v=>v[1]>0).sort((a,b)=>b[1]-a[1]);
+  new Chart($('chartVolume'), {
+    type:'bar',
+    data:{labels:volMinerals.map(v=>v[0].replace('_',' ')),datasets:[{label:'MT',data:volMinerals.map(v=>v[1]),backgroundColor:volMinerals.map(v=>mineralColors[v[0]]||'#444'),borderRadius:4}]},
+    options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{color:'var(--fg-dim)',font:{family:'Geist Mono',size:11},callback:v=>(v/1000)+'k'},grid:{color:'rgba(255,255,255,.05)'}},y:{ticks:{color:'var(--fg-dim)',font:{family:'Geist',size:11}},grid:{display:false}}}}
+  });
+}
+
+// ─── Deal Feed Tab ───────────────────────────────────────────────────────
+async function renderDeals() {
+  const el = $('content');
+  el.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  
+  if (state.detailType === 'company') return renderCompanyDetail(el);
+  if (state.detailType === 'mineral') return renderMineralDetail(el);
+
+  await loadDeals();
+
+  const mineralOpts = ['lithium','cobalt','nickel','rare_earths','graphite','manganese','copper'];
+  const statusOpts = ['active','expired','terminated','rumored'];
+
+  el.innerHTML = `
+    <div class="filters">
+      <input class="filter-input" placeholder="Search buyer/seller..." id="fQ" value="${state.filters.q||''}" onkeydown="if(event.key==='Enter')applyFilters()">
+      <select class="filter-input" id="fMineral" onchange="applyFilters()">
+        <option value="">All Minerals</option>
+        ${mineralOpts.map(m=>`<option value="${m}" ${state.filters.mineral===m?'selected':''}>${m.replace('_',' ')}</option>`).join('')}
+      </select>
+      <select class="filter-input" id="fStatus" onchange="applyFilters()">
+        <option value="">All Status</option>
+        ${statusOpts.map(s=>`<option value="${s}" ${state.filters.status===s?'selected':''}>${s}</option>`).join('')}
+      </select>
+      <input class="filter-input" placeholder="Year" type="number" id="fYear" value="${state.filters.year||''}" style="width:90px" onkeydown="if(event.key==='Enter')applyFilters()">
+      <button class="theme-btn" onclick="applyFilters()">Filter</button>
+      <button class="theme-btn" onclick="clearFilters()">Clear</button>
+    </div>
+    ${dealTable(state.deals)}
+    <div class="pagination">
+      <span>Showing ${state.offset+1}–${Math.min(state.offset+state.limit,state.total)} of ${state.total}</span>
+      <div style="display:flex;gap:8px">
+        <button onclick="paginate(-1)" ${state.offset===0?'disabled':''}>← Prev</button>
+        <button onclick="paginate(1)" ${state.offset+state.limit>=state.total?'disabled':''}>Next →</button>
+      </div>
+    </div>
+  `;
+}
+
+function applyFilters() {
+  state.filters.q = $('fQ')?.value || '';
+  state.filters.mineral = $('fMineral')?.value || '';
+  state.filters.status = $('fStatus')?.value || '';
+  state.filters.year = $('fYear')?.value || '';
+  state.offset = 0;
+  render();
+}
+
+function clearFilters() {
+  state.filters = {mineral:'',buyer:'',seller:'',year:'',status:'',q:''};
+  state.offset = 0;
+  render();
+}
+
+function paginate(dir) {
+  state.offset = Math.max(0, state.offset + dir * state.limit);
+  render();
+}
+
+// ─── Company Detail ──────────────────────────────────────────────────────
+async function renderCompanyDetail(el) {
+  const data = await loadCompany(state.detailName);
+  if (!data) { el.innerHTML = '<div class="card">Company not found</div>'; return; }
+  state.detailData = data;
+
+  el.innerHTML = `
+    <div class="detail-panel">
+      <div class="detail-header">
+        <h2>${data.name}</h2>
+        <button class="back-btn" onclick="closeDetail()">← Back</button>
+      </div>
+      <div class="detail-stats">
+        <div class="detail-stat"><div class="val">${data.deal_count}</div><div class="lbl">Total Deals</div></div>
+        <div class="detail-stat"><div class="val">${data.as_buyer.length}</div><div class="lbl">As Buyer</div></div>
+        <div class="detail-stat"><div class="val">${data.as_seller.length}</div><div class="lbl">As Seller</div></div>
+        <div class="detail-stat"><div class="val">${data.total_volume_mt ? (data.total_volume_mt/1000).toFixed(0)+'k' : '—'}</div><div class="lbl">Volume MT</div></div>
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:16px">
+        ${data.minerals.map(m=>mineralTag(m)).join(' ')}
+      </div>
+      ${data.as_buyer.length ? `<h3 style="margin:16px 0 8px;font-size:14px">As Buyer</h3>${dealTable(data.as_buyer)}` : ''}
+      ${data.as_seller.length ? `<h3 style="margin:16px 0 8px;font-size:14px">As Seller</h3>${dealTable(data.as_seller)}` : ''}
+    </div>
+  `;
+}
+
+// ─── Mineral Detail ──────────────────────────────────────────────────────
+async function renderMineralDetail(el) {
+  const data = await loadMineral(state.detailName);
+  if (!data) { el.innerHTML = '<div class="card">Mineral not found</div>'; return; }
+
+  const yrs = Object.entries(data.volume_by_year).sort((a,b)=>a[0].localeCompare(b[0]));
+
+  el.innerHTML = `
+    <div class="detail-panel">
+      <div class="detail-header">
+        <h2>${mineralTag(data.mineral)} ${data.mineral.replace('_',' ')} Deals</h2>
+        <button class="back-btn" onclick="closeDetail()">← Back</button>
+      </div>
+      <div class="detail-stats">
+        <div class="detail-stat"><div class="val">${data.deal_count}</div><div class="lbl">Deals</div></div>
+        <div class="detail-stat"><div class="val">${data.total_volume_mt ? (data.total_volume_mt/1000).toFixed(0)+'k' : '—'}</div><div class="lbl">Volume MT</div></div>
+      </div>
+      ${yrs.length ? `<div class="card" style="margin-bottom:16px"><h3>Disclosed Volume by Year (MT)</h3><canvas id="mineralVolChart"></canvas></div>` : ''}
+      ${dealTable(data.deals)}
+    </div>
+  `;
+
+  if (yrs.length && $('mineralVolChart')) {
+    new Chart($('mineralVolChart'), {
+      type:'bar',
+      data:{labels:yrs.map(y=>y[0]),datasets:[{label:'MT',data:yrs.map(y=>y[1]),backgroundColor:'hsl(142 71% 45%)',borderRadius:4}]},
+      options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'var(--fg-dim)',font:{family:'Geist Mono'}},grid:{display:false}},y:{ticks:{color:'var(--fg-dim)',font:{family:'Geist Mono'}},grid:{color:'rgba(255,255,255,.05)'}}}}
+    });
+  }
+}
+
+function showCompany(name) {
+  state.detailType = 'company';
+  state.detailName = name;
+  setTab('deals');
+}
+
+function showMineral(mineral) {
+  state.detailType = 'mineral';
+  state.detailName = mineral;
+  setTab('deals');
+}
+
+function closeDetail() {
+  state.detailType = null;
+  state.detailName = null;
+  render();
+}
+
+// ─── Flows Tab (Sankey-like) ─────────────────────────────────────────────
+async function renderFlows() {
+  const el = $('content');
+  el.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+  // Get all deals
+  const r = await api('/v1/offtakes', {limit: 500});
+  if (!r) { el.innerHTML = '<div class="card">Failed to load</div>'; return; }
+
+  // Build flow data: buyer → seller counts
+  const flows = {};
+  const buyers = new Set();
+  const sellers = new Set();
+  r.data.forEach(d => {
+    const key = d.buyer + '→' + d.seller;
+    flows[key] = (flows[key]||0) + 1;
+    buyers.add(d.buyer);
+    sellers.add(d.seller);
+  });
+
+  // Top flows
+  const topFlows = Object.entries(flows).sort((a,b)=>b[1]-a[1]).slice(0,30);
+  const topBuyers = [...new Set(topFlows.map(f=>f[0].split('→')[0]))];
+  const topSellers = [...new Set(topFlows.map(f=>f[0].split('→')[1]))];
+
+  const maxFlow = topFlows[0]?.[1] || 1;
+  const svgH = Math.max(500, Math.max(topBuyers.length, topSellers.length) * 32 + 60);
+  const colW = 200;
+  const midX = 500;
+
+  // Position nodes
+  const buyerY = {};
+  topBuyers.forEach((b,i) => buyerY[b] = 40 + i * (svgH - 80) / Math.max(topBuyers.length-1, 1));
+  const sellerY = {};
+  topSellers.forEach((s,i) => sellerY[s] = 40 + i * (svgH - 80) / Math.max(topSellers.length-1, 1));
+
+  let paths = '';
+  topFlows.forEach(([key, count]) => {
+    const [buyer, seller] = key.split('→');
+    const y1 = buyerY[buyer]; const y2 = sellerY[seller];
+    if (y1 === undefined || y2 === undefined) return;
+    const opacity = 0.15 + (count / maxFlow) * 0.55;
+    const width = 1 + (count / maxFlow) * 8;
+    paths += `<path d="M${colW},${y1} C${midX/2+colW/2},${y1} ${midX/2+colW/2},${y2} ${midX+colW},${y2}" stroke="hsl(142 71% 45%)" stroke-width="${width}" fill="none" opacity="${opacity}">
+      <title>${buyer} → ${seller}: ${count} deal${count>1?'s':''}</title></path>`;
+  });
+
+  let labels = '';
+  topBuyers.forEach(b => {
+    labels += `<text x="${colW-8}" y="${buyerY[b]+4}" text-anchor="end" fill="var(--fg)" font-size="11" font-family="Geist" class="flow-label" style="cursor:pointer" onclick="showCompany('${esc(b)}')">${b}</text>`;
+  });
+  topSellers.forEach(s => {
+    labels += `<text x="${midX+colW+8}" y="${sellerY[s]+4}" text-anchor="start" fill="var(--fg)" font-size="11" font-family="Geist" class="flow-label" style="cursor:pointer" onclick="showCompany('${esc(s)}')">${s}</text>`;
+  });
+
+  el.innerHTML = `
+    <div class="card">
+      <h3>Supply Flow: Buyer → Seller (Top 30 relationships)</h3>
+      <div class="flow-container" style="overflow-x:auto">
+        <svg viewBox="0 0 ${midX+colW*2+20} ${svgH}" class="flow-svg" style="min-width:800px">
+          <text x="${colW/2}" y="16" text-anchor="middle" fill="var(--fg-muted)" font-size="12" font-family="Geist" font-weight="600">BUYERS</text>
+          <text x="${midX+colW+colW/2}" y="16" text-anchor="middle" fill="var(--fg-muted)" font-size="12" font-family="Geist" font-weight="600">SELLERS</text>
+          ${paths}
+          ${labels}
+        </svg>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>Flow Matrix</h3>
+      <div style="font-size:12px;color:var(--fg-muted);margin-bottom:8px">${Object.keys(flows).length} unique buyer-seller relationships across ${r.total} deals</div>
+      <div class="table-wrap"><table class="deal-table">
+        <thead><tr><th>Buyer</th><th>Seller</th><th>Deals</th></tr></thead>
+        <tbody>${topFlows.map(([k,c])=>{const[b,s]=k.split('→');return `<tr><td class="clickable" onclick="showCompany('${esc(b)}')">${b}</td><td class="clickable" onclick="showCompany('${esc(s)}')">${s}</td><td class="volume-cell">${c}</td></tr>`}).join('')}</tbody>
+      </table></div>
+    </div>
+  `;
+}
+
+// ─── Timeline Tab ────────────────────────────────────────────────────────
+async function renderTimeline() {
+  const el = $('content');
+  el.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+  const r = await api('/v1/offtakes', {limit: 500});
+  if (!r) { el.innerHTML = '<div class="card">Failed to load</div>'; return; }
+
+  // Group by quarter
+  const quarters = {};
+  const mineralQuarters = {};
+  r.data.forEach(d => {
+    const date = new Date(d.announcement_date);
+    const q = `${date.getFullYear()} Q${Math.ceil((date.getMonth()+1)/3)}`;
+    quarters[q] = (quarters[q]||0) + 1;
+    if (!mineralQuarters[d.mineral]) mineralQuarters[d.mineral] = {};
+    mineralQuarters[d.mineral][q] = (mineralQuarters[d.mineral][q]||0) + 1;
+  });
+
+  const sortedQ = Object.keys(quarters).sort();
+  const minerals = Object.keys(mineralQuarters);
+  const mineralColors = {lithium:'#3b82f6',cobalt:'#8b5cf6',nickel:'#22c55e',rare_earths:'#f59e0b',graphite:'#6b7280',manganese:'#ec4899',copper:'#f97316'};
+
+  el.innerHTML = `
+    <div class="chart-grid">
+      <div class="chart-card chart-full"><h3>Deal Volume by Quarter</h3><canvas id="chartTimeline" height="80"></canvas></div>
+      <div class="chart-card chart-full"><h3>Deals by Mineral Over Time</h3><canvas id="chartMineralTimeline" height="80"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Cumulative Deal Count</h3>
+      <canvas id="chartCumulative" height="60"></canvas>
+    </div>
+  `;
+
+  new Chart($('chartTimeline'), {
+    type:'bar',
+    data:{labels:sortedQ,datasets:[{label:'Deals',data:sortedQ.map(q=>quarters[q]||0),backgroundColor:'hsl(142 71% 45%)',borderRadius:4}]},
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'var(--fg-dim)',font:{family:'Geist Mono',size:10}},grid:{display:false}},y:{ticks:{color:'var(--fg-dim)',font:{family:'Geist Mono'}},grid:{color:'rgba(255,255,255,.05)'}}}}
+  });
+
+  new Chart($('chartMineralTimeline'), {
+    type:'bar',
+    data:{labels:sortedQ,datasets:minerals.map(m=>({label:m.replace('_',' '),data:sortedQ.map(q=>mineralQuarters[m][q]||0),backgroundColor:mineralColors[m]||'#444',borderRadius:2}))},
+    options:{responsive:true,plugins:{legend:{position:'top',labels:{color:'var(--fg-muted)',font:{family:'Geist',size:11},boxWidth:12,padding:8}}},scales:{x:{stacked:true,ticks:{color:'var(--fg-dim)',font:{family:'Geist Mono',size:10}},grid:{display:false}},y:{stacked:true,ticks:{color:'var(--fg-dim)',font:{family:'Geist Mono'}},grid:{color:'rgba(255,255,255,.05)'}}}}
+  });
+
+  // Cumulative
+  let cum = 0;
+  const cumData = sortedQ.map(q => { cum += quarters[q]||0; return cum; });
+  new Chart($('chartCumulative'), {
+    type:'line',
+    data:{labels:sortedQ,datasets:[{label:'Cumulative',data:cumData,borderColor:'hsl(142 71% 45%)',backgroundColor:'hsla(142,71%,45%,0.1)',fill:true,tension:0.3,pointRadius:2}]},
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'var(--fg-dim)',font:{family:'Geist Mono',size:10}},grid:{display:false}},y:{ticks:{color:'var(--fg-dim)',font:{family:'Geist Mono'}},grid:{color:'rgba(255,255,255,.05)'}}}}
+  });
+}
+
+// ─── Tab system ──────────────────────────────────────────────────────────
+function setTab(tab) {
+  state.tab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  render();
+}
+
+function render() {
+  switch(state.tab) {
+    case 'dashboard': renderDashboard(); break;
+    case 'deals': renderDeals(); break;
+    case 'flows': renderFlows(); break;
+    case 'timeline': renderTimeline(); break;
+  }
+}
+
+// ─── Theme ───────────────────────────────────────────────────────────────
+function toggleTheme() {
+  document.documentElement.classList.toggle('dark');
+  document.documentElement.classList.toggle('light');
+  localStorage.setItem('theme', document.documentElement.classList.contains('light') ? 'light' : 'dark');
+}
+
+function initTheme() {
+  const saved = localStorage.getItem('theme');
+  if (saved === 'light') { document.documentElement.classList.remove('dark'); document.documentElement.classList.add('light'); }
+}
+
+// ─── Init ────────────────────────────────────────────────────────────────
+function $(id) { return document.getElementById(id); }
+
+document.getElementById('tabs').addEventListener('click', e => {
+  if (e.target.classList.contains('tab')) {
+    state.detailType = null;
+    state.detailName = null;
+    setTab(e.target.dataset.tab);
+  }
+});
+
+initTheme();
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,560 @@
+{
+  "lastUpdated": "2026-02-06",
+  "dataNote": "Supply chain processing stages from mining to end products",
+  "supplyChains": {
+    "lithium": {
+      "name": "Lithium",
+      "symbol": "Li",
+      "stages": [
+        {
+          "stage": 1,
+          "name": "Mining/Extraction",
+          "description": "Extraction of lithium from hard rock (spodumene) or brine deposits",
+          "products": ["Spodumene ore (6% Li2O)", "Lithium brine"],
+          "locations": {
+            "hardRock": ["Australia (Greenbushes, Mt Marion, Pilgangoora)", "Zimbabwe (Bikita, Arcadia)", "Brazil (Grota do Cirilo)"],
+            "brine": ["Chile (Salar de Atacama)", "Argentina (Olaroz, Cauchari)", "Bolivia (Salar de Uyuni)", "China (Zabuye, Chaerhan)"]
+          },
+          "timeToProcess": "Brine: 12-24 months evaporation; Hard rock: days",
+          "dominantCountries": ["Australia (37%)", "Chile (20%)", "China (17%)"]
+        },
+        {
+          "stage": 2,
+          "name": "Concentration/Beneficiation",
+          "description": "Conversion of raw ore to concentrate",
+          "products": ["Spodumene concentrate (5-6% Li2O)", "Concentrated brine"],
+          "process": {
+            "hardRock": "Crushing, dense media separation, flotation → 5-6% Li2O concentrate",
+            "brine": "Solar evaporation, impurity removal → concentrated lithium chloride"
+          },
+          "locations": ["Australia (near mines)", "Chile (Salar)", "Argentina"],
+          "dominantCountries": ["Australia", "Chile", "Argentina"]
+        },
+        {
+          "stage": 3,
+          "name": "Refining/Chemical Processing",
+          "description": "Conversion to battery-grade lithium compounds",
+          "products": ["Lithium carbonate (Li2CO3)", "Lithium hydroxide (LiOH)"],
+          "process": {
+            "fromSpodumene": "Roasting (1100°C) → sulfuric acid leaching → purification → precipitation",
+            "fromBrine": "Precipitation with sodium carbonate → purification",
+            "hydroxideConversion": "Lithium carbonate + Ca(OH)2 → Lithium hydroxide"
+          },
+          "specifications": {
+            "batteryGradeCarbonate": "99.5% Li2CO3 min",
+            "batteryGradeHydroxide": "56.5% LiOH·H2O min"
+          },
+          "locations": ["China (65%)", "Chile (20%)", "Argentina (8%)", "Australia (4%)", "USA (3%)"],
+          "dominantCountries": ["China (65%)"],
+          "bottleneck": true
+        },
+        {
+          "stage": 4,
+          "name": "Cathode Active Material (CAM) Production",
+          "description": "Synthesis of cathode materials for lithium-ion batteries",
+          "products": ["NMC (Nickel-Manganese-Cobalt)", "LFP (Lithium Iron Phosphate)", "NCA (Nickel-Cobalt-Aluminum)", "LMO (Lithium Manganese Oxide)"],
+          "process": "Co-precipitation or solid-state synthesis with lithium, nickel, cobalt, manganese",
+          "locations": ["China (77%)", "Korea (10%)", "Japan (8%)", "Europe (3%)", "USA (2%)"],
+          "dominantCountries": ["China (77%)"],
+          "bottleneck": true
+        },
+        {
+          "stage": 5,
+          "name": "Battery Cell Manufacturing",
+          "description": "Assembly of battery cells from cathode, anode, electrolyte, separator",
+          "products": ["Prismatic cells", "Pouch cells", "Cylindrical cells (18650, 2170, 4680)"],
+          "majorCompanies": {
+            "china": ["CATL", "BYD", "EVE Energy", "CALB", "Gotion"],
+            "korea": ["LG Energy Solution", "Samsung SDI", "SK On"],
+            "japan": ["Panasonic", "AESC", "Murata"],
+            "usa": ["Tesla (Nevada)", "Ultium (GM/LG)"],
+            "europe": ["Northvolt", "ACC"]
+          },
+          "locations": ["China (77%)", "Korea (12%)", "Japan (6%)", "USA (3%)", "Europe (2%)"],
+          "dominantCountries": ["China (77%)"]
+        },
+        {
+          "stage": 6,
+          "name": "Battery Pack Assembly & End Products",
+          "description": "Integration into EVs, energy storage, and electronics",
+          "products": ["Electric vehicles", "Grid storage systems", "Consumer electronics", "Power tools"],
+          "evBatteryContent": "40-80 kg lithium carbonate equivalent per EV",
+          "locations": ["China (60%)", "Europe (22%)", "USA (10%)", "Other (8%)"]
+        }
+      ],
+      "valueChain": {
+        "ore": {"value": 100, "unit": "baseline"},
+        "concentrate": {"valueMultiple": 3, "note": "3x ore value"},
+        "carbonate": {"valueMultiple": 10, "note": "10x ore value"},
+        "hydroxide": {"valueMultiple": 12, "note": "Premium for high-nickel batteries"},
+        "cathode": {"valueMultiple": 20, "note": "Major value-add step"},
+        "cell": {"valueMultiple": 50, "note": "Highest value step"},
+        "ev": {"valueMultiple": 200, "note": "Final product value"}
+      }
+    },
+    "cobalt": {
+      "name": "Cobalt",
+      "symbol": "Co",
+      "stages": [
+        {
+          "stage": 1,
+          "name": "Mining",
+          "description": "Extraction primarily as byproduct of copper or nickel mining",
+          "products": ["Cobalt-bearing copper ore", "Laterite nickel ore with cobalt", "Artisanal cobalt ore"],
+          "miningTypes": {
+            "industrial": "Large-scale copper-cobalt mines (90% of DRC production)",
+            "artisanal": "Small-scale manual mining (ASM) - 15-30% of DRC production, ESG concerns"
+          },
+          "locations": ["DR Congo (68%)", "Indonesia (9%)", "Russia (5%)", "Australia (3%)"],
+          "dominantCountries": ["DR Congo (68%)"],
+          "concerns": ["Child labor in ASM", "Human rights", "Environmental damage"]
+        },
+        {
+          "stage": 2,
+          "name": "Concentration/Hydrometallurgy",
+          "description": "Separation of cobalt from copper or nickel",
+          "products": ["Cobalt hydroxide (Co(OH)2)", "Mixed hydroxide precipitate (MHP)", "Cobalt sulfate solution"],
+          "process": {
+            "drc": "Flotation → acid leaching → solvent extraction → cobalt hydroxide precipitation",
+            "indonesia": "High-pressure acid leach (HPAL) → MHP containing nickel and cobalt"
+          },
+          "locations": ["DR Congo (in-country processing)", "Indonesia (HPAL plants)"],
+          "dominantCountries": ["DR Congo", "Indonesia"]
+        },
+        {
+          "stage": 3,
+          "name": "Refining",
+          "description": "Purification to refined cobalt products",
+          "products": ["Cobalt metal (99.8%)", "Cobalt sulfate (battery grade)", "Cobalt oxide", "Cobalt chloride"],
+          "process": "Electrowinning or hydrogen reduction → refined cobalt metal; Crystallization → cobalt sulfate",
+          "locations": ["China (72%)", "Finland (10%)", "Belgium (5%)", "Other (13%)"],
+          "dominantCountries": ["China (72%)"],
+          "bottleneck": true,
+          "majorCompanies": ["Huayou Cobalt", "GEM", "Freeport Cobalt", "Umicore"]
+        },
+        {
+          "stage": 4,
+          "name": "Precursor Production",
+          "description": "Synthesis of battery precursor materials",
+          "products": ["NCM precursor (NixCoyMnz(OH)2)", "NCA precursor"],
+          "process": "Co-precipitation of nickel, cobalt, manganese hydroxides",
+          "locations": ["China (80%)", "Korea (10%)", "Japan (7%)", "Other (3%)"],
+          "dominantCountries": ["China (80%)"],
+          "bottleneck": true
+        },
+        {
+          "stage": 5,
+          "name": "Cathode & Battery Manufacturing",
+          "description": "Integration into battery cathodes and cells",
+          "cobaltContent": {
+            "nmc811": "10% cobalt by weight",
+            "nmc622": "20% cobalt",
+            "nmc532": "20% cobalt",
+            "nca": "9% cobalt"
+          },
+          "trend": "Industry moving to lower-cobalt (NMC 811) and cobalt-free (LFP) chemistries",
+          "locations": ["China", "Korea", "Japan"]
+        },
+        {
+          "stage": 6,
+          "name": "End Products",
+          "description": "Final applications",
+          "products": {
+            "batteries": "60% of demand - EVs, electronics, storage",
+            "superalloys": "15% - Jet engines, gas turbines",
+            "catalysts": "10% - Petroleum refining, chemicals",
+            "ceramics": "8% - Pigments, enamels",
+            "magnets": "7% - Hard magnets"
+          }
+        }
+      ],
+      "recycling": {
+        "potential": "High - cobalt is valuable and recyclable",
+        "currentRate": "Less than 5% of demand from recycling",
+        "majorPlayers": ["Umicore", "GEM", "Li-Cycle", "Redwood Materials"]
+      }
+    },
+    "nickel": {
+      "name": "Nickel",
+      "symbol": "Ni",
+      "stages": [
+        {
+          "stage": 1,
+          "name": "Mining",
+          "description": "Extraction from sulfide or laterite deposits",
+          "oreTypes": {
+            "sulfide": {
+              "grade": "1-3% Ni",
+              "locations": ["Russia", "Canada", "Australia"],
+              "product": "Class 1 nickel (high purity)",
+              "share": "30% of supply"
+            },
+            "laterite": {
+              "limonite": {"grade": "1-1.5% Ni", "locations": ["Philippines", "Indonesia"], "product": "NPI, MHP"},
+              "saprolite": {"grade": "1.5-3% Ni", "locations": ["Indonesia", "New Caledonia"], "product": "Ferronickel"}
+            }
+          },
+          "locations": ["Indonesia (50%)", "Philippines (11%)", "Russia (6%)", "New Caledonia (5%)"],
+          "dominantCountries": ["Indonesia (50%)"]
+        },
+        {
+          "stage": 2,
+          "name": "Primary Processing",
+          "description": "Conversion to intermediate products",
+          "products": {
+            "fromSulfide": ["Nickel matte (70% Ni)", "Nickel concentrate"],
+            "fromLaterite": ["Ferronickel (20-40% Ni)", "Nickel pig iron (NPI, 10-15% Ni)", "Mixed hydroxide precipitate (MHP, 40% Ni)"]
+          },
+          "processes": {
+            "sulfide": "Flotation → flash smelting → matte",
+            "limonite": "High-pressure acid leach (HPAL) → MHP",
+            "saprolite": "Rotary kiln → electric furnace → ferronickel"
+          },
+          "locations": ["Indonesia (35%)", "China (35%)", "Japan (8%)", "Other (22%)"],
+          "dominantCountries": ["Indonesia", "China"]
+        },
+        {
+          "stage": 3,
+          "name": "Refining",
+          "description": "Purification to Class 1 or battery-grade nickel",
+          "products": {
+            "class1": ["Nickel cathode (99.8%)", "Nickel briquettes", "Nickel powder"],
+            "batteryGrade": ["Nickel sulfate (NiSO4)", "Nickel metal for sulfate production"]
+          },
+          "processes": {
+            "electrowinning": "Electrolytic refining → LME-grade cathode",
+            "carbonylProcess": "Nickel carbonyl → decomposition → nickel pellets (Nornickel)",
+            "sulfateProduction": "Dissolution → crystallization → battery-grade nickel sulfate"
+          },
+          "class1vsClass2": {
+            "class1": "Needed for batteries and specialty alloys - from sulfide or converted from NPI/MHP",
+            "class2": "Ferronickel, NPI - used in stainless steel"
+          },
+          "locations": ["China (40%)", "Indonesia (20%)", "Japan (10%)", "Russia (8%)"],
+          "dominantCountries": ["China"],
+          "innovation": "Tsingshan's NPI-to-matte conversion breakthrough (2021) unlocked Indonesian laterite for batteries"
+        },
+        {
+          "stage": 4,
+          "name": "Battery Precursor Production",
+          "description": "Synthesis of cathode precursors",
+          "products": ["pCAM (precursor cathode active material)", "NCM hydroxide precursor", "NCA precursor"],
+          "nickelContent": "50-80% of precursor weight for high-nickel batteries",
+          "locations": ["China (80%)", "Korea (10%)", "Japan (5%)"],
+          "dominantCountries": ["China (80%)"]
+        },
+        {
+          "stage": 5,
+          "name": "End Products",
+          "description": "Final applications",
+          "demandBreakdown": {
+            "stainlessSteel": "70% - Construction, appliances, automotive",
+            "batteries": "15% (growing rapidly) - EVs, energy storage",
+            "alloys": "10% - Aerospace, industrial",
+            "plating": "5% - Corrosion protection"
+          },
+          "evGrowthImpact": "EV demand expected to quadruple nickel demand by 2040"
+        }
+      ],
+      "environmentalConcerns": {
+        "hpal": "High-pressure acid leach produces significant tailings",
+        "indonesiaDeforestation": "Rapid mine development causing rainforest loss",
+        "carbonIntensity": "Coal-powered NPI production is highly carbon-intensive"
+      }
+    },
+    "copper": {
+      "name": "Copper",
+      "symbol": "Cu",
+      "stages": [
+        {
+          "stage": 1,
+          "name": "Mining",
+          "description": "Extraction from porphyry, sediment-hosted, or VMS deposits",
+          "oreTypes": {
+            "sulfide": {"grade": "0.5-2% Cu", "share": "80%", "process": "Concentration → smelting"},
+            "oxide": {"grade": "0.4-1% Cu", "share": "20%", "process": "Heap leaching → SX-EW"}
+          },
+          "miningMethods": ["Open pit (Escondida, Chuquicamata)", "Underground (Grasberg, El Teniente)", "Block caving"],
+          "locations": ["Chile (24%)", "Peru (12%)", "DR Congo (11%)", "China (9%)", "USA (5%)"],
+          "dominantCountries": ["Chile (24%)"]
+        },
+        {
+          "stage": 2,
+          "name": "Concentration",
+          "description": "Beneficiation of sulfide ores",
+          "products": ["Copper concentrate (25-35% Cu)"],
+          "process": "Crushing → grinding → froth flotation → dewatering",
+          "location": "At or near mine site",
+          "concentrate": {
+            "copper": "25-35%",
+            "sulfur": "25-35%",
+            "iron": "25-35%",
+            "byproducts": "Gold, silver, molybdenum"
+          }
+        },
+        {
+          "stage": 3,
+          "name": "Smelting",
+          "description": "Pyrometallurgical processing to blister copper",
+          "products": ["Blister copper (98-99% Cu)", "Copper matte"],
+          "process": {
+            "flash": "Flash smelting (Outotec) - most common",
+            "bath": "Isasmelt, Ausmelt - for complex concentrates",
+            "converting": "Pierce-Smith converters → blister copper"
+          },
+          "byproducts": ["Sulfuric acid", "Slag (iron silicate)"],
+          "locations": ["China (45%)", "Japan (7%)", "Chile (10%)", "Other (38%)"],
+          "dominantCountries": ["China (45%)"],
+          "tradeTension": "China imports concentrate, smelts domestically - TC/RC negotiations with miners"
+        },
+        {
+          "stage": 4,
+          "name": "Refining",
+          "description": "Electrolytic purification to refined copper",
+          "products": ["Copper cathode (99.99% Cu - LME Grade A)", "Anode slimes (contain gold, silver, PGMs)"],
+          "process": "Electrorefining: blister anode → electrolyte → pure cathode",
+          "specifications": {
+            "lmeGradeA": "99.99% Cu minimum",
+            "comexGrade1": "99.99% Cu minimum"
+          },
+          "locations": ["China (45%)", "Chile (8%)", "Japan (6%)", "USA (5%)"],
+          "dominantCountries": ["China (45%)"]
+        },
+        {
+          "stage": 5,
+          "name": "Semi-Fabrication",
+          "description": "Manufacturing of copper products",
+          "products": ["Wire rod", "Copper tube", "Copper sheet/strip", "Copper powder"],
+          "process": "Melting → casting → rolling/drawing → finished semi",
+          "majorProducers": ["China", "USA", "Germany", "Japan"]
+        },
+        {
+          "stage": 6,
+          "name": "End Products",
+          "description": "Final applications driving demand",
+          "demandBreakdown": {
+            "electrical": "65% - Power cables, building wire, motors, transformers",
+            "construction": "20% - Plumbing, roofing, architectural",
+            "transportation": "10% - EVs (3-4x more copper than ICE vehicles), wiring harnesses",
+            "industrial": "5% - Machinery, equipment"
+          },
+          "evImpact": {
+            "iceVehicle": "23 kg copper",
+            "electricVehicle": "83 kg copper",
+            "charger": "10-50 kg copper depending on type"
+          },
+          "renewableImpact": {
+            "solarPV": "5 tonnes/MW",
+            "offshoreWind": "15 tonnes/MW",
+            "gridConnection": "Significant additional copper for transmission"
+          }
+        }
+      ],
+      "recycling": {
+        "rate": "~30% of demand from recycled copper",
+        "advantage": "Copper is infinitely recyclable without quality loss",
+        "sources": ["End-of-life products", "Manufacturing scrap", "Construction demolition"]
+      }
+    },
+    "rareEarths": {
+      "name": "Rare Earth Elements",
+      "symbol": "REE",
+      "stages": [
+        {
+          "stage": 1,
+          "name": "Mining",
+          "description": "Extraction from bastnasite, monazite, xenotime, or ionic clay",
+          "oreTypes": {
+            "bastnäsite": {"locations": ["China (Bayan Obo)", "USA (Mountain Pass)"], "ree": "Light REE (Ce, La, Nd, Pr)"},
+            "monazite": {"locations": ["Australia", "India", "Brazil"], "ree": "Light REE + some heavy"},
+            "ionicClay": {"locations": ["Southern China", "Myanmar"], "ree": "Heavy REE (Dy, Tb, Y)", "note": "Most critical elements"},
+            "xenotime": {"locations": ["Malaysia"], "ree": "Heavy REE"}
+          },
+          "locations": ["China (69%)", "USA (12%)", "Myanmar (9%)", "Australia (5%)"],
+          "dominantCountries": ["China (69%)"]
+        },
+        {
+          "stage": 2,
+          "name": "Concentration/Cracking",
+          "description": "Separation of REE from host rock",
+          "products": ["REE concentrate (30-70% TREO)", "Mixed rare earth carbonate"],
+          "process": {
+            "bastnäsite": "Flotation → roasting → acid leaching",
+            "monazite": "Caustic soda crack or acid crack",
+            "ionicClay": "In-situ leaching with ammonium sulfate"
+          },
+          "location": "Often at or near mine, except for Mountain Pass → China"
+        },
+        {
+          "stage": 3,
+          "name": "Separation",
+          "description": "Separation of individual rare earth elements - most difficult step",
+          "products": ["Individual REE oxides (Nd2O3, Pr6O11, Dy2O3, Tb4O7, etc.)"],
+          "process": "Solvent extraction (SX) - hundreds of mixer-settler stages",
+          "difficulty": "REEs have nearly identical chemical properties - requires many extraction stages",
+          "locations": ["China (90%)", "Malaysia (5% - Lynas)", "Estonia (2% - Silmet)", "Other (3%)"],
+          "dominantCountries": ["China (90%)"],
+          "bottleneck": true,
+          "criticalNote": "This is where China's dominance is most absolute - no practical alternative"
+        },
+        {
+          "stage": 4,
+          "name": "Metal Production",
+          "description": "Reduction of oxides to metal",
+          "products": ["REE metals", "REE alloys", "Mischmetal"],
+          "process": {
+            "moltenSalt": "Electrowinning in molten salt for La, Ce",
+            "calciothermic": "Calcium reduction for Nd, Pr, Dy",
+            "vacuum": "High-purity metal production"
+          },
+          "locations": ["China (92%)", "Japan (5%)", "Other (3%)"],
+          "dominantCountries": ["China (92%)"],
+          "bottleneck": true
+        },
+        {
+          "stage": 5,
+          "name": "Alloy & Magnet Manufacturing",
+          "description": "Production of NdFeB permanent magnets",
+          "products": ["NdFeB magnets (sintered)", "NdFeB magnets (bonded)", "SmCo magnets"],
+          "process": {
+            "sintered": "Melting → strip casting → hydrogen decrepitation → jet milling → pressing → sintering → machining → coating",
+            "bonded": "Powder mixed with binder → injection molding or compression"
+          },
+          "composition": {
+            "ndfeB": "30-32% Nd/Pr, 1-2% Dy (for high-temp), 65% Fe, 1% B",
+            "smCo": "34% Sm, 50% Co, 10% Fe, 5% Cu, 1% Zr"
+          },
+          "locations": ["China (92%)", "Japan (5%)", "Germany (1%)", "USA (<1%)"],
+          "dominantCountries": ["China (92%)"],
+          "bottleneck": true
+        },
+        {
+          "stage": 6,
+          "name": "End Products",
+          "description": "Final applications",
+          "magnetApplications": {
+            "evMotors": "1-3 kg NdFeB per motor - largest growth segment",
+            "windTurbines": "600 kg per MW for direct-drive",
+            "electronics": "HDDs, speakers, headphones",
+            "industrial": "Robotics, automation, MRI"
+          },
+          "otherApplications": {
+            "catalysts": "La, Ce for catalytic converters and fluid cracking",
+            "polishing": "Ce oxide for glass and semiconductor polishing",
+            "phosphors": "Eu, Tb, Y for displays (declining)",
+            "batteries": "La for NiMH batteries"
+          }
+        }
+      ],
+      "criticality": {
+        "mostCritical": ["Dysprosium", "Terbium"],
+        "reason": "Required for high-temperature magnet performance (EV motors), very limited supply outside China/Myanmar",
+        "heavyReeNote": "Heavy REEs (Dy, Tb) are the true bottleneck - mostly from Chinese ionic clays and illegal Myanmar mining"
+      }
+    },
+    "graphite": {
+      "name": "Graphite",
+      "symbol": "C",
+      "stages": [
+        {
+          "stage": 1,
+          "name": "Mining/Production",
+          "description": "Natural graphite mining or synthetic graphite production",
+          "types": {
+            "natural": {
+              "flake": {"grade": "Medium to large flakes, 85-98% C", "locations": ["China", "Mozambique", "Madagascar", "Brazil"]},
+              "amorphous": {"grade": "Microcrystalline, 70-85% C", "locations": ["China", "Mexico"]},
+              "vein": {"grade": "Highest purity, 99%+ C", "locations": ["Sri Lanka"]}
+            },
+            "synthetic": {
+              "description": "Made from petroleum coke or coal tar pitch",
+              "process": "Graphitization at 2500-3000°C",
+              "locations": ["China (70%)", "Japan (15%)", "USA (10%)"]
+            }
+          },
+          "locations": ["China (75%)", "Madagascar (6%)", "Mozambique (6%)", "Brazil (4%)"],
+          "dominantCountries": ["China (75%)"]
+        },
+        {
+          "stage": 2,
+          "name": "Purification",
+          "description": "Removal of impurities for battery applications",
+          "products": ["Purified flake graphite (95-99.95% C)"],
+          "process": {
+            "thermal": "High-temperature treatment (2000°C+) - expensive but high purity",
+            "chemical": "Acid leaching (HF, HCl) - lower cost but environmental concerns"
+          },
+          "specifications": {
+            "batteryGrade": "99.95% C minimum for anodes"
+          },
+          "locations": ["China (90%)"],
+          "dominantCountries": ["China (90%)"],
+          "bottleneck": true
+        },
+        {
+          "stage": 3,
+          "name": "Spheronization",
+          "description": "Shaping graphite for battery anodes",
+          "products": ["Spherical graphite (99.95% C, 15-25 μm)"],
+          "process": "Milling flake graphite into spheres, coating with pitch or polymer",
+          "yield": "30-50% - significant material loss",
+          "locations": ["China (95%)"],
+          "dominantCountries": ["China (95%)"],
+          "bottleneck": true,
+          "note": "Even non-China natural graphite is sent to China for spheronization"
+        },
+        {
+          "stage": 4,
+          "name": "Anode Material Production",
+          "description": "Final coating and treatment for battery-ready anode",
+          "products": ["Coated spherical graphite", "Composite anode materials (graphite + silicon)"],
+          "process": {
+            "coating": "Pitch or polymer coating for improved SEI layer",
+            "carbonization": "Baking at 1000-1300°C",
+            "siliconAddition": "Adding silicon nanoparticles for higher capacity"
+          },
+          "majorCompanies": ["BTR (25% global share)", "Shanshan (15%)", "Mitsubishi Chemical", "Showa Denko"],
+          "locations": ["China (95%)", "Japan (3%)", "Korea (2%)"],
+          "dominantCountries": ["China (95%)"],
+          "bottleneck": true
+        },
+        {
+          "stage": 5,
+          "name": "Battery Manufacturing",
+          "description": "Integration into lithium-ion battery anodes",
+          "composition": {
+            "conventional": "100% graphite anode",
+            "siliconBlended": "5-15% silicon + 85-95% graphite",
+            "future": "Higher silicon content for increased energy density"
+          },
+          "graphitePerEV": "50-100 kg of graphite per EV battery"
+        },
+        {
+          "stage": 6,
+          "name": "End Products",
+          "description": "Final applications",
+          "demandBreakdown": {
+            "batteries": "35% and growing rapidly",
+            "refractories": "25% - Steel and foundry",
+            "lubricants": "10%",
+            "brakes": "8%",
+            "other": "22% - Pencils, seals, thermal management"
+          }
+        }
+      ],
+      "supplyChainRisk": {
+        "chinaControl": {
+          "mining": 75,
+          "purification": 90,
+          "spheronization": 95,
+          "anodeMaterial": 95
+        },
+        "diversificationEfforts": [
+          "Syrah Resources - Mozambique to USA (Vidalia)",
+          "Nouveau Monde - Quebec integrated production",
+          "Talga Resources - Sweden mine to refinery"
+        ]
+      }
+    }
+  }
+}

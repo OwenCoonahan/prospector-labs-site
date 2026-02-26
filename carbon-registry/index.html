@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carbon Credit Registry Aggregator — Prospector Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:hsl(0 0% 3.9%);--bg-card:hsl(0 0% 7%);--bg-muted:hsl(0 0% 10%);
+  --border:hsl(0 0% 14.9%);--fg:hsl(0 0% 98%);--fg-muted:hsl(0 0% 63.9%);
+  --accent:hsl(142 76% 46%);--accent2:hsl(217 91% 60%);
+  --accent3:hsl(47 96% 53%);--accent4:hsl(280 73% 58%);
+  --ring:hsl(142 76% 46%/0.3);--radius:0.625rem;
+  --font-sans:'Geist',system-ui,-apple-system,sans-serif;
+  --font-mono:'Geist Mono','SF Mono',monospace;
+}
+html.light{
+  --bg:hsl(0 0% 100%);--bg-card:hsl(0 0% 98%);--bg-muted:hsl(0 0% 94%);
+  --border:hsl(0 0% 89.8%);--fg:hsl(0 0% 3.9%);--fg-muted:hsl(0 0% 45.1%);
+}
+html{font-family:var(--font-sans);background:var(--bg);color:var(--fg);line-height:1.5;-webkit-font-smoothing:antialiased}
+body{min-height:100vh;padding:1.5rem;max-width:1440px;margin:0 auto}
+.mono{font-family:var(--font-mono)}
+
+/* Header */
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
+header h1{font-size:1.5rem;font-weight:600;letter-spacing:-0.025em}
+header h1 span{color:var(--accent);font-weight:700}
+.header-actions{display:flex;gap:0.5rem;align-items:center}
+.badge{font-size:0.7rem;padding:0.15rem 0.5rem;border-radius:999px;background:var(--accent);color:#000;font-weight:600;letter-spacing:0.03em}
+
+/* Theme toggle */
+.theme-btn{background:none;border:1px solid var(--border);border-radius:var(--radius);padding:0.4rem 0.6rem;cursor:pointer;color:var(--fg);font-size:0.85rem;transition:all 0.15s}
+.theme-btn:hover{background:var(--bg-muted)}
+
+/* Stat cards */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem}
+.stat-card .label{font-size:0.75rem;color:var(--fg-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.25rem}
+.stat-card .value{font-size:1.75rem;font-weight:700;font-family:var(--font-mono);letter-spacing:-0.03em}
+.stat-card .sub{font-size:0.75rem;color:var(--fg-muted);margin-top:0.25rem}
+
+/* Charts section */
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem}
+@media(max-width:900px){.charts-grid{grid-template-columns:1fr}}
+.chart-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem}
+.chart-card h3{font-size:0.85rem;font-weight:500;margin-bottom:1rem;color:var(--fg-muted)}
+.chart-card canvas{width:100%!important;max-height:300px}
+
+/* Registry comparison */
+.registry-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
+@media(max-width:900px){.registry-grid{grid-template-columns:repeat(2,1fr)}}
+.registry-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;text-align:center}
+.registry-card .rname{font-weight:600;font-size:0.9rem;margin-bottom:0.5rem}
+.registry-card .rstat{font-family:var(--font-mono);font-size:1.1rem;font-weight:600}
+.registry-card .rstat.green{color:var(--accent)}
+.registry-card .rlabel{font-size:0.7rem;color:var(--fg-muted);margin-top:0.15rem}
+.bar{height:4px;background:var(--bg-muted);border-radius:2px;margin-top:0.5rem;overflow:hidden}
+.bar-fill{height:100%;border-radius:2px;transition:width 0.5s ease}
+
+/* Filters & table */
+.filters{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;align-items:center}
+.filters select,.filters input{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:0.45rem 0.75rem;color:var(--fg);font-size:0.8rem;font-family:var(--font-sans);outline:none;min-width:140px}
+.filters select:focus,.filters input:focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--ring)}
+.table-wrap{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:auto;margin-bottom:2rem}
+table{width:100%;border-collapse:collapse;font-size:0.8rem}
+th{text-align:left;padding:0.75rem 1rem;border-bottom:1px solid var(--border);font-weight:500;color:var(--fg-muted);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap;cursor:pointer;user-select:none}
+th:hover{color:var(--fg)}
+td{padding:0.6rem 1rem;border-bottom:1px solid var(--border);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg-muted)}
+.tag{display:inline-block;padding:0.1rem 0.4rem;border-radius:4px;font-size:0.7rem;font-weight:500;background:var(--bg-muted);margin-right:0.25rem}
+.tag.verra{background:hsl(142 76% 46%/0.15);color:hsl(142 76% 56%)}
+.tag.gs{background:hsl(47 96% 53%/0.15);color:hsl(47 96% 63%)}
+.tag.acr{background:hsl(217 91% 60%/0.15);color:hsl(217 91% 70%)}
+.tag.car{background:hsl(280 73% 58%/0.15);color:hsl(280 73% 68%)}
+.pagination{display:flex;gap:0.5rem;justify-content:center;align-items:center;margin-bottom:2rem}
+.pagination button{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:0.35rem 0.75rem;color:var(--fg);cursor:pointer;font-size:0.8rem}
+.pagination button:disabled{opacity:0.3;cursor:default}
+.pagination span{font-size:0.8rem;color:var(--fg-muted)}
+
+/* Country treemap */
+.treemap{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:2rem}
+.treemap-cell{border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:500;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.5);cursor:default;transition:transform 0.1s;overflow:hidden;text-overflow:ellipsis;padding:0.25rem}
+.treemap-cell:hover{transform:scale(1.03);z-index:1}
+
+/* Detail modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:100;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;max-width:700px;width:90%;max-height:85vh;overflow-y:auto}
+.modal h2{font-size:1.1rem;font-weight:600;margin-bottom:1rem}
+.modal .close-btn{float:right;background:none;border:none;color:var(--fg-muted);cursor:pointer;font-size:1.2rem}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+.detail-grid .item{font-size:0.8rem}
+.detail-grid .item .dl{color:var(--fg-muted);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.04em}
+.detail-grid .item .dv{font-weight:500;margin-top:0.15rem}
+
+.section-title{font-size:1rem;font-weight:600;margin:2rem 0 1rem;letter-spacing:-0.02em}
+.loading{text-align:center;padding:3rem;color:var(--fg-muted)}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.stat-card,.chart-card,.registry-card,.table-wrap{animation:fadeIn 0.3s ease both}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🌍 <span>Carbon</span> Credit Registry Aggregator</h1>
+  <div class="header-actions">
+    <span class="badge">PROSPECTOR LABS</span>
+    <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme">◐</button>
+  </div>
+</header>
+
+<div id="stats-section" class="stats-grid"><div class="loading">Loading market data…</div></div>
+
+<h3 class="section-title">Registry Comparison</h3>
+<div id="registry-section" class="registry-grid"></div>
+
+<div class="charts-grid">
+  <div class="chart-card"><h3>Issuance vs Retirement Trends</h3><canvas id="trendChart"></canvas></div>
+  <div class="chart-card"><h3>Methodology Breakdown</h3><canvas id="methChart"></canvas></div>
+  <div class="chart-card"><h3>Project Type Distribution</h3><canvas id="typeChart"></canvas></div>
+  <div class="chart-card"><h3>Credits by Registry</h3><canvas id="regChart"></canvas></div>
+</div>
+
+<h3 class="section-title">Country Distribution</h3>
+<div id="treemap" class="treemap"></div>
+
+<h3 class="section-title">Project Explorer</h3>
+<div class="filters">
+  <input type="text" id="f-search" placeholder="Search projects…">
+  <select id="f-registry"><option value="">All Registries</option><option>Verra</option><option>Gold Standard</option><option>ACR</option><option>CAR</option></select>
+  <select id="f-type"><option value="">All Types</option></select>
+  <select id="f-country"><option value="">All Countries</option></select>
+  <select id="f-methodology"><option value="">All Methodologies</option></select>
+</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr>
+      <th data-col="project_id">ID</th>
+      <th data-col="name">Project</th>
+      <th data-col="registry">Registry</th>
+      <th data-col="project_type">Type</th>
+      <th data-col="country">Country</th>
+      <th data-col="total_credits_issued">Issued (tCO₂e)</th>
+      <th data-col="total_credits_retired">Retired (tCO₂e)</th>
+      <th data-col="registration_date">Registered</th>
+    </tr></thead>
+    <tbody id="project-tbody"></tbody>
+  </table>
+</div>
+<div class="pagination">
+  <button id="prev-btn" onclick="changePage(-1)">← Prev</button>
+  <span id="page-info"></span>
+  <button id="next-btn" onclick="changePage(1)">Next →</button>
+</div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="close-btn" onclick="closeModal()">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:8000' : '';
+const API_KEY = 'prospector-dev';
+const H = {'X-API-Key': API_KEY};
+
+// State
+let currentPage=0, pageSize=25, totalProjects=0, sortBy='total_credits_issued', sortDir='desc';
+let allStats=null, allRegistries=null;
+
+// Theme
+function toggleTheme(){
+  document.documentElement.classList.toggle('dark');
+  document.documentElement.classList.toggle('light');
+  initCharts();
+}
+
+// Fetch helper
+async function api(path){
+  const r=await fetch(`${API}${path}`,{headers:H});
+  if(!r.ok) throw new Error(`API ${r.status}`);
+  return r.json();
+}
+
+function fmt(n){
+  if(n==null) return '—';
+  if(n>=1e9) return (n/1e9).toFixed(1)+'B';
+  if(n>=1e6) return (n/1e6).toFixed(1)+'M';
+  if(n>=1e3) return (n/1e3).toFixed(1)+'K';
+  return n.toLocaleString();
+}
+
+function regClass(r){return{'Verra':'verra','Gold Standard':'gs','ACR':'acr','CAR':'car'}[r]||''}
+
+// Load stats
+async function loadStats(){
+  allStats = await api('/v1/carbon/stats');
+  const s=allStats;
+  document.getElementById('stats-section').innerHTML=`
+    <div class="stat-card"><div class="label">Total Projects</div><div class="value mono">${fmt(s.total_projects)}</div><div class="sub">Across 4 registries</div></div>
+    <div class="stat-card"><div class="label">Credits Issued</div><div class="value mono" style="color:var(--accent)">${fmt(s.total_credits_issued)}</div><div class="sub">tCO₂e lifetime</div></div>
+    <div class="stat-card"><div class="label">Credits Retired</div><div class="value mono" style="color:var(--accent2)">${fmt(s.total_credits_retired)}</div><div class="sub">tCO₂e retired</div></div>
+    <div class="stat-card"><div class="label">Available</div><div class="value mono" style="color:var(--accent3)">${fmt(s.total_credits_available)}</div><div class="sub">tCO₂e remaining</div></div>
+  `;
+
+  // Populate filter dropdowns
+  const types=Object.keys(s.by_project_type).sort();
+  const sel=document.getElementById('f-type');
+  types.forEach(t=>{const o=document.createElement('option');o.value=t;o.textContent=t;sel.appendChild(o)});
+
+  const countries=Object.keys(s.by_country).sort();
+  const csel=document.getElementById('f-country');
+  countries.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;csel.appendChild(o)});
+
+  // Treemap
+  renderTreemap(s.by_country);
+}
+
+// Registries
+async function loadRegistries(){
+  const r=await api('/v1/carbon/registries');
+  allRegistries=r.data;
+  const maxIssued=Math.max(...r.data.map(d=>d.total_credits_issued));
+  document.getElementById('registry-section').innerHTML=r.data.map(d=>`
+    <div class="registry-card">
+      <div class="rname"><span class="tag ${regClass(d.registry)}">${d.registry}</span></div>
+      <div class="rstat green">${fmt(d.total_credits_issued)}</div><div class="rlabel">Credits Issued</div>
+      <div class="rstat">${fmt(d.project_count)}</div><div class="rlabel">Projects</div>
+      <div class="bar"><div class="bar-fill" style="width:${(d.total_credits_issued/maxIssued*100).toFixed(1)}%;background:var(--accent)"></div></div>
+    </div>
+  `).join('');
+}
+
+// Methodologies
+async function loadMethodologies(){
+  const r=await api('/v1/carbon/methodologies');
+  const sel=document.getElementById('f-methodology');
+  r.data.forEach(m=>{const o=document.createElement('option');o.value=m.methodology;o.textContent=`${m.methodology} (${m.project_count})`;sel.appendChild(o)});
+  return r.data;
+}
+
+// Charts
+let charts={};
+function destroyCharts(){Object.values(charts).forEach(c=>c.destroy());charts={}}
+
+async function initCharts(){
+  destroyCharts();
+  const isDark=document.documentElement.classList.contains('dark');
+  const gridColor=isDark?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)';
+  const txtColor=isDark?'#a1a1aa':'#52525b';
+  Chart.defaults.color=txtColor;
+  Chart.defaults.borderColor=gridColor;
+
+  // Trend chart
+  if(allStats?.yearly_trends){
+    const trends=allStats.yearly_trends;
+    const years=[...new Set(trends.map(t=>t.year))].sort();
+    const issued=years.map(y=>{const r=trends.find(t=>t.year===y&&t.transaction_type==='issuance');return r?r.total:0});
+    const retired=years.map(y=>{const r=trends.find(t=>t.year===y&&t.transaction_type==='retirement');return r?r.total:0});
+    charts.trend=new Chart(document.getElementById('trendChart'),{
+      type:'bar',
+      data:{labels:years,datasets:[
+        {label:'Issued',data:issued,backgroundColor:'hsl(142 76% 46%/0.7)',borderRadius:3},
+        {label:'Retired',data:retired,backgroundColor:'hsl(217 91% 60%/0.7)',borderRadius:3}
+      ]},
+      options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:12,font:{size:11}}}},scales:{x:{grid:{display:false}},y:{ticks:{callback:v=>fmt(v)}}}}
+    });
+  }
+
+  // Methodology donut
+  const meth=await loadMethodologies();
+  const topMeth=meth.slice(0,10);
+  const methColors=['#22c55e','#3b82f6','#eab308','#a855f7','#ef4444','#06b6d4','#f97316','#ec4899','#14b8a6','#8b5cf6'];
+  charts.meth=new Chart(document.getElementById('methChart'),{
+    type:'doughnut',
+    data:{labels:topMeth.map(m=>m.methodology),datasets:[{data:topMeth.map(m=>m.total_credits_issued),backgroundColor:methColors,borderWidth:0}]},
+    options:{responsive:true,cutout:'60%',plugins:{legend:{position:'right',labels:{boxWidth:10,font:{size:10},padding:8}}}}
+  });
+
+  // Type bar
+  if(allStats?.by_project_type){
+    const entries=Object.entries(allStats.by_project_type).sort((a,b)=>b[1]-a[1]);
+    charts.type=new Chart(document.getElementById('typeChart'),{
+      type:'bar',
+      data:{labels:entries.map(e=>e[0]),datasets:[{data:entries.map(e=>e[1]),backgroundColor:'hsl(142 76% 46%/0.6)',borderRadius:3}]},
+      options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{callback:v=>fmt(v)}},y:{ticks:{font:{size:10}}}}}
+    });
+  }
+
+  // Registry pie
+  if(allRegistries){
+    const regColors=['#22c55e','#eab308','#3b82f6','#a855f7'];
+    charts.reg=new Chart(document.getElementById('regChart'),{
+      type:'pie',
+      data:{labels:allRegistries.map(r=>r.registry),datasets:[{data:allRegistries.map(r=>r.total_credits_issued),backgroundColor:regColors,borderWidth:0}]},
+      options:{responsive:true,plugins:{legend:{position:'right',labels:{boxWidth:10,font:{size:11},padding:8}}}}
+    });
+  }
+}
+
+// Treemap
+function renderTreemap(byCountry){
+  const entries=Object.entries(byCountry).sort((a,b)=>b[1]-a[1]);
+  const total=entries.reduce((s,e)=>s+e[1],0);
+  const colors=['#22c55e','#16a34a','#15803d','#166534','#14532d','#3b82f6','#2563eb','#1d4ed8','#a855f7','#7c3aed','#eab308','#ca8a04','#ef4444','#dc2626','#06b6d4','#0891b2','#f97316','#ea580c','#ec4899','#db2777','#14b8a6','#0d9488','#8b5cf6'];
+  const el=document.getElementById('treemap');
+  el.innerHTML=entries.map((e,i)=>{
+    const pct=Math.max(e[1]/total*100,2);
+    return`<div class="treemap-cell" style="flex-basis:${pct}%;min-width:${Math.max(pct,3)}%;height:${Math.max(40,pct*2)}px;background:${colors[i%colors.length]}" title="${e[0]}: ${e[1]} projects">${e[0]} (${e[1]})</div>`;
+  }).join('');
+}
+
+// Projects table
+async function loadProjects(){
+  const params=new URLSearchParams({offset:currentPage*pageSize,limit:pageSize,sort_by:sortBy,sort_dir:sortDir});
+  const search=document.getElementById('f-search').value;
+  const registry=document.getElementById('f-registry').value;
+  const type=document.getElementById('f-type').value;
+  const country=document.getElementById('f-country').value;
+  const meth=document.getElementById('f-methodology').value;
+  if(search) params.set('search',search);
+  if(registry) params.set('registry',registry);
+  if(type) params.set('project_type',type);
+  if(country) params.set('country',country);
+  if(meth) params.set('methodology',meth);
+
+  const r=await api(`/v1/carbon/projects?${params}`);
+  totalProjects=r.total;
+  const tbody=document.getElementById('project-tbody');
+  tbody.innerHTML=r.data.map(p=>`
+    <tr onclick="showProject('${p.project_id}')" style="cursor:pointer">
+      <td class="mono" style="font-size:0.75rem">${p.project_id}</td>
+      <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis">${p.name}</td>
+      <td><span class="tag ${regClass(p.registry)}">${p.registry}</span></td>
+      <td>${p.project_type}</td>
+      <td>${p.country}</td>
+      <td class="mono">${fmt(p.total_credits_issued)}</td>
+      <td class="mono">${fmt(p.total_credits_retired)}</td>
+      <td class="mono" style="font-size:0.75rem">${p.registration_date||'—'}</td>
+    </tr>
+  `).join('');
+
+  const totalPages=Math.ceil(totalProjects/pageSize);
+  document.getElementById('page-info').textContent=`Page ${currentPage+1} of ${totalPages} (${totalProjects} projects)`;
+  document.getElementById('prev-btn').disabled=currentPage===0;
+  document.getElementById('next-btn').disabled=currentPage>=totalPages-1;
+}
+
+function changePage(d){currentPage+=d;loadProjects()}
+
+// Sort
+document.querySelectorAll('th[data-col]').forEach(th=>{
+  th.addEventListener('click',()=>{
+    const col=th.dataset.col;
+    if(sortBy===col) sortDir=sortDir==='asc'?'desc':'asc';
+    else{sortBy=col;sortDir='desc'}
+    currentPage=0;loadProjects();
+  });
+});
+
+// Filter listeners
+['f-search','f-registry','f-type','f-country','f-methodology'].forEach(id=>{
+  const el=document.getElementById(id);
+  el.addEventListener(id==='f-search'?'input':'change',()=>{currentPage=0;loadProjects()});
+});
+// Debounce search
+let searchTimeout;
+document.getElementById('f-search').addEventListener('input',function(){
+  clearTimeout(searchTimeout);
+  searchTimeout=setTimeout(()=>loadProjects(),300);
+},{capture:true});
+
+// Project detail modal
+async function showProject(pid){
+  const p=await api(`/v1/carbon/projects/${pid}`);
+  document.getElementById('modal-content').innerHTML=`
+    <h2>${p.name}</h2>
+    <div class="detail-grid">
+      <div class="item"><div class="dl">Project ID</div><div class="dv mono">${p.project_id}</div></div>
+      <div class="item"><div class="dl">Registry</div><div class="dv"><span class="tag ${regClass(p.registry)}">${p.registry}</span></div></div>
+      <div class="item"><div class="dl">Type</div><div class="dv">${p.project_type}</div></div>
+      <div class="item"><div class="dl">Methodology</div><div class="dv mono">${p.methodology}</div></div>
+      <div class="item"><div class="dl">Country</div><div class="dv">${p.country}</div></div>
+      <div class="item"><div class="dl">Developer</div><div class="dv">${p.developer}</div></div>
+      <div class="item"><div class="dl">Status</div><div class="dv">${p.status}</div></div>
+      <div class="item"><div class="dl">Annual Reductions</div><div class="dv mono">${fmt(p.estimated_annual_reductions_tco2e)} tCO₂e</div></div>
+      <div class="item"><div class="dl">Credits Issued</div><div class="dv mono" style="color:var(--accent)">${fmt(p.total_credits_issued)} tCO₂e</div></div>
+      <div class="item"><div class="dl">Credits Retired</div><div class="dv mono" style="color:var(--accent2)">${fmt(p.total_credits_retired)} tCO₂e</div></div>
+      <div class="item"><div class="dl">Available</div><div class="dv mono" style="color:var(--accent3)">${fmt(p.total_credits_available)} tCO₂e</div></div>
+      <div class="item"><div class="dl">Registration</div><div class="dv mono">${p.registration_date||'—'}</div></div>
+      <div class="item"><div class="dl">Crediting Period</div><div class="dv mono">${p.crediting_period_start||'—'} → ${p.crediting_period_end||'—'}</div></div>
+      <div class="item"><div class="dl">SDGs</div><div class="dv">${(p.sdg_goals||'').split(',').map(s=>`<span class="tag">${s.trim()}</span>`).join(' ')}</div></div>
+    </div>
+    ${p.credits?.length?`
+      <h3 style="margin-top:1.5rem;font-size:0.85rem;font-weight:500;color:var(--fg-muted)">Credit Transactions (${p.credits.length})</h3>
+      <div style="overflow:auto;max-height:200px;margin-top:0.5rem">
+        <table><thead><tr><th>Date</th><th>Type</th><th>Vintage</th><th>Quantity</th><th>Buyer</th></tr></thead><tbody>
+          ${p.credits.map(c=>`<tr><td class="mono">${c.transaction_date}</td><td><span class="tag ${c.transaction_type==='issuance'?'verra':'acr'}">${c.transaction_type}</span></td><td class="mono">${c.vintage_year}</td><td class="mono">${fmt(c.quantity_tco2e)}</td><td>${c.buyer||'—'}</td></tr>`).join('')}
+        </tbody></table>
+      </div>
+    `:''}
+    <p style="margin-top:1rem;font-size:0.8rem;color:var(--fg-muted)">${p.description||''}</p>
+  `;
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+
+// Init
+(async()=>{
+  try{
+    await Promise.all([loadStats(),loadRegistries()]);
+    await initCharts();
+    await loadProjects();
+  }catch(e){
+    console.error('Failed to load:',e);
+    document.getElementById('stats-section').innerHTML=`<div class="stat-card"><div class="label">Error</div><div class="value" style="font-size:1rem">API unavailable — ensure prospector-api is running on port 8000</div></div>`;
+  }
+})();
+</script>
+</body>
+</html>

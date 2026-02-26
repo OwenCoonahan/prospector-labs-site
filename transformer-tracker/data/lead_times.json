@@ -1,0 +1,82 @@
+{
+  "metadata": {
+    "title": "Power Transformer Lead Times by Type",
+    "description": "Estimated lead times for power transformer procurement",
+    "last_updated": "2026-02-06",
+    "data_quality": "ESTIMATED - compiled from utility filings and industry reports",
+    "confidence": "medium",
+    "sources": [
+      "Utility IRP filings (Duke, AEP, PG&E, Xcel)",
+      "NERC reliability assessments",
+      "T&D World industry coverage",
+      "DOE Grid Deployment Office reports"
+    ]
+  },
+  "lead_times": [
+    {
+      "type": "Distribution Transformer",
+      "voltage_class": "<69 kV",
+      "capacity_range": "<5 MVA",
+      "periods": {
+        "pre_2020": { "min_months": 2, "max_months": 3, "typical_months": 2.5 },
+        "2020_2021": { "min_months": 6, "max_months": 12, "typical_months": 9 },
+        "2022_2023": { "min_months": 12, "max_months": 18, "typical_months": 15 },
+        "2024_2025": { "min_months": 10, "max_months": 15, "typical_months": 12 },
+        "current": { "min_months": 8, "max_months": 14, "typical_months": 11 }
+      },
+      "notes": "Most improved segment due to DOE efficiency standards delays and capacity additions"
+    },
+    {
+      "type": "Medium Power Transformer",
+      "voltage_class": "69-230 kV",
+      "capacity_range": "5-100 MVA",
+      "periods": {
+        "pre_2020": { "min_months": 6, "max_months": 12, "typical_months": 9 },
+        "2020_2021": { "min_months": 12, "max_months": 18, "typical_months": 15 },
+        "2022_2023": { "min_months": 24, "max_months": 36, "typical_months": 30 },
+        "2024_2025": { "min_months": 18, "max_months": 30, "typical_months": 24 },
+        "current": { "min_months": 16, "max_months": 28, "typical_months": 22 }
+      },
+      "notes": "Significant backlog from renewable interconnection demand"
+    },
+    {
+      "type": "Large Power Transformer",
+      "voltage_class": "230-500 kV",
+      "capacity_range": "100-400 MVA",
+      "periods": {
+        "pre_2020": { "min_months": 12, "max_months": 18, "typical_months": 15 },
+        "2020_2021": { "min_months": 18, "max_months": 24, "typical_months": 21 },
+        "2022_2023": { "min_months": 36, "max_months": 60, "typical_months": 48 },
+        "2024_2025": { "min_months": 30, "max_months": 48, "typical_months": 38 },
+        "current": { "min_months": 28, "max_months": 44, "typical_months": 36 }
+      },
+      "notes": "Critical bottleneck for transmission expansion and data center connections"
+    },
+    {
+      "type": "Generator Step-Up (GSU)",
+      "voltage_class": "230-500 kV",
+      "capacity_range": "200-1000+ MVA",
+      "periods": {
+        "pre_2020": { "min_months": 18, "max_months": 24, "typical_months": 21 },
+        "2020_2021": { "min_months": 24, "max_months": 36, "typical_months": 30 },
+        "2022_2023": { "min_months": 48, "max_months": 72, "typical_months": 60 },
+        "2024_2025": { "min_months": 36, "max_months": 54, "typical_months": 45 },
+        "current": { "min_months": 32, "max_months": 50, "typical_months": 42 }
+      },
+      "notes": "Longest lead times; custom specifications for each power plant"
+    },
+    {
+      "type": "Autotransformer",
+      "voltage_class": "345-765 kV",
+      "capacity_range": "500-1500 MVA",
+      "periods": {
+        "pre_2020": { "min_months": 18, "max_months": 24, "typical_months": 21 },
+        "2020_2021": { "min_months": 24, "max_months": 30, "typical_months": 27 },
+        "2022_2023": { "min_months": 42, "max_months": 66, "typical_months": 54 },
+        "2024_2025": { "min_months": 36, "max_months": 52, "typical_months": 44 },
+        "current": { "min_months": 30, "max_months": 48, "typical_months": 40 }
+      },
+      "notes": "EHV interconnection; limited global manufacturing capacity"
+    }
+  ]
+}

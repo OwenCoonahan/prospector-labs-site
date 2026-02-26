@@ -1,0 +1,259 @@
+{
+  "generated": "2026-02-06",
+  "source": "US ISO Interconnection Queues",
+  "isos": [
+    {
+      "id": "PJM",
+      "name": "PJM Interconnection",
+      "projects": 8152,
+      "totalMW": 876166,
+      "avgMW": 107,
+      "withdrawn": 4885,
+      "operational": 1195,
+      "active": 1942,
+      "withdrawalRate": 0.599,
+      "completionRate": 0.147,
+      "avgTimelineYears": 3.4,
+      "capacityMix": {
+        "solar": 201384,
+        "wind": 107673,
+        "storage": 75210,
+        "gas": 317566,
+        "other": 174333
+      },
+      "yearlyGrowth": [
+        { "year": 2019, "projects": 695, "mw": 61162 },
+        { "year": 2020, "projects": 972, "mw": 67388 },
+        { "year": 2021, "projects": 1304, "mw": 107026 },
+        { "year": 2022, "projects": 517, "mw": 58680 },
+        { "year": 2023, "projects": 466, "mw": 33325 }
+      ]
+    },
+    {
+      "id": "West",
+      "name": "Western Interconnection",
+      "projects": 6008,
+      "totalMW": 1133237,
+      "avgMW": 189,
+      "withdrawn": 3728,
+      "operational": 660,
+      "active": 1455,
+      "withdrawalRate": 0.621,
+      "completionRate": 0.110,
+      "avgTimelineYears": 3.5,
+      "capacityMix": {
+        "solar": 147837,
+        "wind": 248394,
+        "storage": 173116,
+        "gas": 87354,
+        "other": 476536
+      },
+      "yearlyGrowth": [
+        { "year": 2019, "projects": 280, "mw": 52023 },
+        { "year": 2020, "projects": 243, "mw": 51433 },
+        { "year": 2021, "projects": 505, "mw": 118083 },
+        { "year": 2022, "projects": 753, "mw": 181986 },
+        { "year": 2023, "projects": 791, "mw": 233491 },
+        { "year": 2024, "projects": 367, "mw": 78743 }
+      ]
+    },
+    {
+      "id": "MISO",
+      "name": "MISO",
+      "projects": 5435,
+      "totalMW": 1001656,
+      "avgMW": 185,
+      "withdrawn": 3341,
+      "operational": 987,
+      "active": 1107,
+      "withdrawalRate": 0.615,
+      "completionRate": 0.182,
+      "avgTimelineYears": 3.3,
+      "capacityMix": {
+        "solar": 304700,
+        "wind": 256768,
+        "storage": 102493,
+        "gas": 153239,
+        "other": 184456
+      },
+      "yearlyGrowth": [
+        { "year": 2019, "projects": 306, "mw": 45247 },
+        { "year": 2020, "projects": 302, "mw": 43149 },
+        { "year": 2021, "projects": 413, "mw": 61985 },
+        { "year": 2022, "projects": 1023, "mw": 176284 },
+        { "year": 2023, "projects": 39, "mw": 4822 },
+        { "year": 2024, "projects": 710, "mw": 139698 },
+        { "year": 2025, "projects": 399, "mw": 106942 }
+      ]
+    },
+    {
+      "id": "ERCOT",
+      "name": "ERCOT",
+      "projects": 3768,
+      "totalMW": 798474,
+      "avgMW": 212,
+      "withdrawn": 2021,
+      "operational": 489,
+      "active": 1258,
+      "withdrawalRate": 0.537,
+      "completionRate": 0.130,
+      "avgTimelineYears": 4.9,
+      "capacityMix": {
+        "solar": 257334,
+        "wind": 164908,
+        "storage": 39872,
+        "gas": 110244,
+        "other": 226116
+      },
+      "yearlyGrowth": [
+        { "year": 2019, "projects": 223, "mw": 42045 },
+        { "year": 2020, "projects": 222, "mw": 44662 },
+        { "year": 2021, "projects": 311, "mw": 57550 },
+        { "year": 2022, "projects": 354, "mw": 66701 },
+        { "year": 2023, "projects": 460, "mw": 92078 },
+        { "year": 2024, "projects": 439, "mw": 97608 }
+      ]
+    },
+    {
+      "id": "Southeast",
+      "name": "Southeast",
+      "projects": 2879,
+      "totalMW": 636066,
+      "avgMW": 221,
+      "withdrawn": 1881,
+      "operational": 275,
+      "active": 710,
+      "withdrawalRate": 0.653,
+      "completionRate": 0.095,
+      "avgTimelineYears": 4.1,
+      "capacityMix": {
+        "solar": 152604,
+        "wind": 12533,
+        "storage": 24671,
+        "gas": 237083,
+        "other": 209175
+      },
+      "yearlyGrowth": [
+        { "year": 2019, "projects": 214, "mw": 43527 },
+        { "year": 2020, "projects": 210, "mw": 34300 },
+        { "year": 2021, "projects": 167, "mw": 27895 },
+        { "year": 2022, "projects": 254, "mw": 36885 },
+        { "year": 2023, "projects": 382, "mw": 57019 },
+        { "year": 2024, "projects": 289, "mw": 58433 }
+      ]
+    },
+    {
+      "id": "SPP",
+      "name": "SPP",
+      "projects": 2841,
+      "totalMW": 581049,
+      "avgMW": 205,
+      "withdrawn": 2517,
+      "operational": 43,
+      "active": 281,
+      "withdrawalRate": 0.886,
+      "completionRate": 0.015,
+      "avgTimelineYears": 5.4,
+      "capacityMix": {
+        "solar": 119556,
+        "wind": 237788,
+        "storage": 62024,
+        "gas": 97907,
+        "other": 63774
+      },
+      "yearlyGrowth": [
+        { "year": 2019, "projects": 79, "mw": 9455 },
+        { "year": 2020, "projects": 103, "mw": 19548 },
+        { "year": 2021, "projects": 115, "mw": 22090 },
+        { "year": 2022, "projects": 116, "mw": 24100 },
+        { "year": 2023, "projects": 421, "mw": 86932 },
+        { "year": 2024, "projects": 110, "mw": 25533 },
+        { "year": 2025, "projects": 369, "mw": 98356 }
+      ]
+    },
+    {
+      "id": "CAISO",
+      "name": "CAISO",
+      "projects": 2837,
+      "totalMW": 708171,
+      "avgMW": 250,
+      "withdrawn": 2298,
+      "operational": 228,
+      "active": 311,
+      "withdrawalRate": 0.810,
+      "completionRate": 0.080,
+      "avgTimelineYears": 5.2,
+      "capacityMix": {
+        "solar": 122779,
+        "wind": 63929,
+        "storage": 193556,
+        "gas": 71392,
+        "other": 256515
+      },
+      "yearlyGrowth": [
+        { "year": 2019, "projects": 139, "mw": 42957 },
+        { "year": 2020, "projects": 153, "mw": 43744 },
+        { "year": 2021, "projects": 361, "mw": 108258 },
+        { "year": 2022, "projects": 3, "mw": 388 },
+        { "year": 2023, "projects": 562, "mw": 215006 }
+      ]
+    },
+    {
+      "id": "NYISO",
+      "name": "NYISO",
+      "projects": 1948,
+      "totalMW": 385307,
+      "avgMW": 199,
+      "withdrawn": 1677,
+      "operational": 111,
+      "active": 4,
+      "withdrawalRate": 0.861,
+      "completionRate": 0.057,
+      "avgTimelineYears": 5.9,
+      "capacityMix": {
+        "solar": 34970,
+        "wind": 37278,
+        "storage": 101450,
+        "gas": 52418,
+        "other": 159191
+      },
+      "yearlyGrowth": [
+        { "year": 2019, "projects": 200, "mw": 20577 },
+        { "year": 2020, "projects": 152, "mw": 28198 },
+        { "year": 2021, "projects": 163, "mw": 24768 },
+        { "year": 2022, "projects": 168, "mw": 57277 },
+        { "year": 2023, "projects": 140, "mw": 41666 },
+        { "year": 2024, "projects": 401, "mw": 81545 },
+        { "year": 2025, "projects": 27, "mw": 8397 }
+      ]
+    },
+    {
+      "id": "ISO-NE",
+      "name": "ISO-NE",
+      "projects": 1601,
+      "totalMW": 206148,
+      "avgMW": 143,
+      "withdrawn": 1225,
+      "operational": 297,
+      "active": 79,
+      "withdrawalRate": 0.765,
+      "completionRate": 0.185,
+      "avgTimelineYears": 3.5,
+      "capacityMix": {
+        "solar": 10247,
+        "wind": 47098,
+        "storage": 42631,
+        "gas": 20225,
+        "other": 85947
+      },
+      "yearlyGrowth": [
+        { "year": 2019, "projects": 115, "mw": 13494 },
+        { "year": 2020, "projects": 142, "mw": 10480 },
+        { "year": 2021, "projects": 121, "mw": 15483 },
+        { "year": 2022, "projects": 135, "mw": 21735 },
+        { "year": 2023, "projects": 140, "mw": 22791 },
+        { "year": 2024, "projects": 116, "mw": 18930 }
+      ]
+    }
+  ]
+}

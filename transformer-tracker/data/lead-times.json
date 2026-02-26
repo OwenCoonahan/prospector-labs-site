@@ -1,0 +1,232 @@
+{
+  "meta": {
+    "title": "Grid Equipment Lead Times Database",
+    "updated": "2026-02-06",
+    "description": "Current and historical lead times for grid infrastructure equipment",
+    "disclaimer": "Lead times are estimates compiled from industry sources, utility filings, and manufacturer communications. Actual times vary by specification and supplier."
+  },
+  "summary": {
+    "overallTrend": "Improving from 2022-23 peak but still elevated vs pre-2020",
+    "outlook": "Gradual normalization expected 2026-2028",
+    "constraintDuration": "18-24 months before significant relief"
+  },
+  "leadTimes": {
+    "transformers": [
+      {
+        "category": "Large Power Transformers (LPT)",
+        "subcategory": "100-400 MVA",
+        "periods": {
+          "pre2020": {"min": 12, "typical": 15, "max": 18},
+          "peak2023": {"min": 36, "typical": 48, "max": 60},
+          "current": {"min": 28, "typical": 36, "max": 42}
+        },
+        "byManufacturer": [
+          {"manufacturer": "Hitachi Energy", "current": "30-42 months", "backlog": "Full through 2027"},
+          {"manufacturer": "Siemens Energy", "current": "28-40 months", "backlog": "Full through 2027"},
+          {"manufacturer": "GE Vernova", "current": "30-42 months", "backlog": "Full through 2027"},
+          {"manufacturer": "Hyundai Electric", "current": "26-36 months", "backlog": "Growing, new capacity 2025"},
+          {"manufacturer": "Virginia Transformer", "current": "26-36 months", "backlog": "Full through 2026"},
+          {"manufacturer": "SPX Transformer", "current": "28-38 months", "backlog": "Full through 2027"},
+          {"manufacturer": "Prolec GE", "current": "28-38 months", "backlog": "Full through 2026"}
+        ],
+        "trend": "Slight improvement, still 2x+ pre-pandemic"
+      },
+      {
+        "category": "Generator Step-Up (GSU)",
+        "subcategory": "200-1000+ MVA",
+        "periods": {
+          "pre2020": {"min": 18, "typical": 21, "max": 24},
+          "peak2023": {"min": 48, "typical": 60, "max": 72},
+          "current": {"min": 36, "typical": 42, "max": 48}
+        },
+        "byManufacturer": [
+          {"manufacturer": "Hitachi Energy", "current": "36-48 months"},
+          {"manufacturer": "Toshiba", "current": "36-48 months"},
+          {"manufacturer": "Mitsubishi Electric", "current": "36-42 months"},
+          {"manufacturer": "Siemens Energy", "current": "38-48 months"}
+        ],
+        "trend": "Stable, longest lead component"
+      },
+      {
+        "category": "EHV Autotransformers",
+        "subcategory": "345-765 kV",
+        "periods": {
+          "pre2020": {"min": 18, "typical": 21, "max": 24},
+          "peak2023": {"min": 42, "typical": 54, "max": 66},
+          "current": {"min": 32, "typical": 40, "max": 48}
+        },
+        "trend": "Slow improvement"
+      },
+      {
+        "category": "Medium Power Transformers",
+        "subcategory": "10-100 MVA",
+        "periods": {
+          "pre2020": {"min": 6, "typical": 9, "max": 12},
+          "peak2023": {"min": 20, "typical": 30, "max": 36},
+          "current": {"min": 16, "typical": 22, "max": 28}
+        },
+        "trend": "Improving faster than LPT"
+      },
+      {
+        "category": "Distribution Transformers",
+        "subcategory": "<5 MVA",
+        "periods": {
+          "pre2020": {"min": 2, "typical": 3, "max": 6},
+          "peak2023": {"min": 12, "typical": 18, "max": 24},
+          "current": {"min": 8, "typical": 11, "max": 14}
+        },
+        "byManufacturer": [
+          {"manufacturer": "Howard Industries", "current": "8-12 months"},
+          {"manufacturer": "Hitachi Energy", "current": "10-14 months"},
+          {"manufacturer": "Prolec GE", "current": "8-12 months"},
+          {"manufacturer": "WEG", "current": "8-14 months"}
+        ],
+        "trend": "Improving, capacity expansions helping"
+      }
+    ],
+    "switchgear": [
+      {
+        "category": "Gas-Insulated Switchgear (GIS)",
+        "subcategory": "145-550 kV",
+        "periods": {
+          "pre2020": {"min": 12, "typical": 16, "max": 20},
+          "peak2023": {"min": 24, "typical": 30, "max": 36},
+          "current": {"min": 18, "typical": 24, "max": 30}
+        },
+        "byManufacturer": [
+          {"manufacturer": "Siemens Energy", "current": "20-28 months"},
+          {"manufacturer": "Hitachi Energy", "current": "18-26 months"},
+          {"manufacturer": "Mitsubishi Electric", "current": "18-24 months"},
+          {"manufacturer": "GE Vernova", "current": "20-28 months"}
+        ],
+        "trend": "Gradually improving"
+      },
+      {
+        "category": "Air-Insulated Switchgear (AIS)",
+        "subcategory": "145-550 kV",
+        "periods": {
+          "pre2020": {"min": 8, "typical": 12, "max": 16},
+          "peak2023": {"min": 16, "typical": 22, "max": 28},
+          "current": {"min": 12, "typical": 18, "max": 24}
+        },
+        "trend": "Improving"
+      }
+    ],
+    "circuitBreakers": [
+      {
+        "category": "HV Circuit Breakers",
+        "subcategory": "145-550 kV Dead Tank",
+        "periods": {
+          "pre2020": {"min": 8, "typical": 12, "max": 16},
+          "peak2023": {"min": 18, "typical": 24, "max": 30},
+          "current": {"min": 14, "typical": 20, "max": 26}
+        },
+        "trend": "Improving"
+      },
+      {
+        "category": "Generator Circuit Breakers",
+        "subcategory": "15-38 kV",
+        "periods": {
+          "pre2020": {"min": 10, "typical": 14, "max": 18},
+          "peak2023": {"min": 20, "typical": 28, "max": 36},
+          "current": {"min": 16, "typical": 22, "max": 28}
+        },
+        "trend": "Stable"
+      }
+    ],
+    "bushings": [
+      {
+        "category": "HV Bushings",
+        "subcategory": "230+ kV RIP/RIS",
+        "periods": {
+          "pre2020": {"min": 6, "typical": 10, "max": 14},
+          "peak2023": {"min": 14, "typical": 20, "max": 28},
+          "current": {"min": 12, "typical": 18, "max": 24}
+        },
+        "notes": "Critical bottleneck, limited qualified suppliers",
+        "trend": "Slow improvement"
+      },
+      {
+        "category": "EHV Bushings",
+        "subcategory": "500+ kV",
+        "periods": {
+          "pre2020": {"min": 10, "typical": 14, "max": 18},
+          "peak2023": {"min": 18, "typical": 28, "max": 36},
+          "current": {"min": 16, "typical": 24, "max": 30}
+        },
+        "notes": "Very limited suppliers globally",
+        "trend": "Flat"
+      }
+    ],
+    "cables": [
+      {
+        "category": "HVDC Submarine Cables",
+        "subcategory": "320-525 kV DC",
+        "periods": {
+          "pre2020": {"min": 24, "typical": 36, "max": 48},
+          "peak2023": {"min": 36, "typical": 48, "max": 60},
+          "current": {"min": 32, "typical": 42, "max": 52}
+        },
+        "notes": "Limited manufacturing globally, installation vessel constraints",
+        "trend": "Stable, capacity expansions underway"
+      },
+      {
+        "category": "Underground XLPE Cables",
+        "subcategory": "138-345 kV",
+        "periods": {
+          "pre2020": {"min": 8, "typical": 12, "max": 18},
+          "peak2023": {"min": 14, "typical": 20, "max": 28},
+          "current": {"min": 12, "typical": 18, "max": 24}
+        },
+        "trend": "Improving"
+      },
+      {
+        "category": "Overhead Conductors",
+        "subcategory": "ACSR/HTLS",
+        "periods": {
+          "pre2020": {"min": 3, "typical": 6, "max": 10},
+          "peak2023": {"min": 6, "typical": 10, "max": 16},
+          "current": {"min": 4, "typical": 8, "max": 12}
+        },
+        "trend": "Improving to normal"
+      }
+    ],
+    "insulators": [
+      {
+        "category": "Station Post Insulators",
+        "subcategory": "345-765 kV Porcelain",
+        "periods": {
+          "pre2020": {"min": 6, "typical": 10, "max": 14},
+          "peak2023": {"min": 10, "typical": 16, "max": 22},
+          "current": {"min": 8, "typical": 14, "max": 18}
+        },
+        "trend": "Improving"
+      },
+      {
+        "category": "Line Insulators",
+        "subcategory": "Polymer/Composite",
+        "periods": {
+          "pre2020": {"min": 4, "typical": 8, "max": 12},
+          "peak2023": {"min": 8, "typical": 14, "max": 20},
+          "current": {"min": 6, "typical": 12, "max": 16}
+        },
+        "trend": "Improving"
+      }
+    ]
+  },
+  "recommendations": {
+    "procurement": [
+      "Order LPTs 42-48 months ahead of need",
+      "Secure capacity slots with multiple manufacturers",
+      "Consider spare transformer strategies",
+      "Standardize designs where possible",
+      "Engage DOE STEP program for critical projects"
+    ],
+    "riskMitigation": [
+      "Dual-source critical components",
+      "Maintain relationships with multiple suppliers",
+      "Consider refurbishment of existing units",
+      "Invest in mobile/temporary solutions"
+    ]
+  }
+}
