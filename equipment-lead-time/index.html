@@ -558,5 +558,6 @@ async function loadFallback(){
 document.getElementById('lastUpdate').textContent=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
 Promise.all([loadIndex(),loadTrends(),loadEquipment(),loadManufacturers(),loadImports()]).then(()=>{loadBreakdown()});
 </script>
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
