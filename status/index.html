@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Status — Prospector Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --card: #1a1a2e;
+    --card-border: #2a2a3e;
+    --text: #e4e4e7;
+    --text-muted: #a1a1aa;
+    --healthy: #00d4aa;
+    --stale: #f59e0b;
+    --broken: #ef4444;
+    --unknown: #6b7280;
+    --accent: #00d4aa;
+    --font-sans: 'Inter', -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* --- Header --- */
+  .header {
+    border-bottom: 1px solid var(--card-border);
+    padding: 1.25rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    position: sticky;
+    top: 0;
+    background: rgba(10, 10, 15, 0.92);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .header h1 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .header h1 span { color: var(--text-muted); font-weight: 400; }
+  .status-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--unknown);
+    flex-shrink: 0;
+    position: relative;
+  }
+  .status-dot.ok { background: var(--healthy); box-shadow: 0 0 8px var(--healthy); }
+  .status-dot.degraded { background: var(--stale); box-shadow: 0 0 8px var(--stale); }
+  .status-dot.down { background: var(--broken); box-shadow: 0 0 8px var(--broken); }
+  .status-dot.ok::after, .status-dot.degraded::after, .status-dot.down::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    background: inherit;
+    opacity: 0.3;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 0; transform: scale(1.8); } }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+  .refresh-btn {
+    background: none;
+    border: 1px solid var(--card-border);
+    color: var(--text-muted);
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    transition: all 0.2s;
+  }
+  .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* --- Layout --- */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+
+  /* --- Cards grid --- */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 1.25rem;
+  }
+  .card-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+  .card-value {
+    font-family: var(--font-mono);
+    font-size: 1.75rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .card-sub {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+    font-family: var(--font-mono);
+  }
+  .card-value.status-ok { color: var(--healthy); }
+  .card-value.status-degraded { color: var(--stale); }
+  .card-value.status-down { color: var(--broken); }
+
+  /* --- Section --- */
+  .section {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .section-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title .count {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    background: rgba(255,255,255,0.06);
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    color: var(--text-muted);
+  }
+
+  /* --- Health bar --- */
+  .health-bar-container { margin-bottom: 1rem; }
+  .health-bar {
+    display: flex;
+    height: 28px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.04);
+  }
+  .health-bar div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: #000;
+    min-width: 30px;
+    transition: width 0.5s ease;
+  }
+  .health-bar .seg-healthy { background: var(--healthy); }
+  .health-bar .seg-stale { background: var(--stale); }
+  .health-bar .seg-broken { background: var(--broken); }
+  .health-bar .seg-unknown { background: var(--unknown); }
+  .health-legend {
+    display: flex;
+    gap: 1.25rem;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  .health-legend span::before {
+    content: '';
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 2px;
+    margin-right: 0.35rem;
+    vertical-align: middle;
+  }
+  .health-legend .leg-healthy::before { background: var(--healthy); }
+  .health-legend .leg-stale::before { background: var(--stale); }
+  .health-legend .leg-broken::before { background: var(--broken); }
+  .health-legend .leg-unknown::before { background: var(--unknown); }
+
+  /* --- Warnings / Errors --- */
+  .alert-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .alert-item {
+    font-size: 0.8rem;
+    font-family: var(--font-mono);
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    border-left: 3px solid;
+  }
+  .alert-item.warn { background: rgba(245,158,11,0.08); border-color: var(--stale); color: var(--stale); }
+  .alert-item.err { background: rgba(239,68,68,0.08); border-color: var(--broken); color: var(--broken); }
+
+  /* --- Progress bars --- */
+  .coverage-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  @media (max-width: 640px) { .coverage-grid { grid-template-columns: 1fr; } }
+  .coverage-item label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    margin-bottom: 0.35rem;
+  }
+  .coverage-item label span:last-child {
+    font-family: var(--font-mono);
+    font-weight: 500;
+  }
+  .progress-track {
+    height: 8px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: var(--accent);
+    transition: width 0.6s ease;
+  }
+  .progress-fill.low { background: var(--broken); }
+  .progress-fill.mid { background: var(--stale); }
+
+  /* --- Tables --- */
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+  }
+  th {
+    text-align: left;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--card-border);
+    white-space: nowrap;
+  }
+  td {
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    white-space: nowrap;
+  }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .badge-healthy { background: rgba(0,212,170,0.15); color: var(--healthy); }
+  .badge-stale { background: rgba(245,158,11,0.15); color: var(--stale); }
+  .badge-broken { background: rgba(239,68,68,0.15); color: var(--broken); }
+  .badge-unknown { background: rgba(107,114,128,0.15); color: var(--unknown); }
+
+  /* --- Collapsible --- */
+  .collapsible-toggle {
+    background: none;
+    border: none;
+    color: var(--text);
+    font: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    text-align: left;
+  }
+  .collapsible-toggle .chevron {
+    transition: transform 0.2s;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+  }
+  .collapsible-toggle.open .chevron { transform: rotate(90deg); }
+  .collapsible-body { display: none; margin-top: 1rem; }
+  .collapsible-body.open { display: block; }
+
+  /* --- Skeleton --- */
+  .skeleton {
+    background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 6px;
+  }
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+  .skel-line { height: 1.2rem; margin-bottom: 0.5rem; width: 60%; }
+  .skel-block { height: 6rem; }
+  .skel-card .card-value { display: none; }
+  .skel-card .card-sub { display: none; }
+  .skel-card .skel-line { display: block; }
+
+  /* --- Error state --- */
+  .error-banner {
+    background: rgba(239,68,68,0.08);
+    border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 10px;
+    padding: 1.25rem;
+    text-align: center;
+    color: var(--broken);
+    margin-bottom: 1.5rem;
+    display: none;
+  }
+  .error-banner h3 { font-size: 1rem; margin-bottom: 0.25rem; }
+  .error-banner p { font-size: 0.8rem; opacity: 0.8; }
+
+  /* --- Footer --- */
+  .footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--card-border);
+    margin-top: 1rem;
+  }
+  .footer strong { color: var(--text); font-weight: 500; }
+
+  /* --- Responsive --- */
+  @media (max-width: 640px) {
+    .header { padding: 1rem; }
+    .header h1 { font-size: 0.95rem; }
+    .container { padding: 1rem; }
+    .cards { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+    .card { padding: 1rem; }
+    .card-value { font-size: 1.35rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-left">
+    <div class="status-dot" id="headerDot"></div>
+    <h1>Prospector Labs <span>— System Status</span></h1>
+  </div>
+  <div class="header-right">
+    <span id="countdown">Refresh in 60s</span>
+    <button class="refresh-btn" onclick="fetchAll()" id="refreshBtn">Refresh</button>
+  </div>
+</header>
+
+<!-- Error banner -->
+<div class="container">
+  <div class="error-banner" id="errorBanner">
+    <h3>Unable to connect</h3>
+    <p>Could not reach the Prospector Labs API. Retrying automatically...</p>
+  </div>
+</div>
+
+<!-- Overview Cards -->
+<div class="container" style="padding-bottom:0">
+  <div class="cards" id="overviewCards">
+    <div class="card" id="cardStatus">
+      <div class="card-label">Overall Status</div>
+      <div class="card-value skeleton skel-line" id="valStatus">&nbsp;</div>
+      <div class="card-sub" id="subStatus"></div>
+    </div>
+    <div class="card" id="cardProjects">
+      <div class="card-label">Total Projects</div>
+      <div class="card-value skeleton skel-line" id="valProjects">&nbsp;</div>
+      <div class="card-sub" id="subProjects"></div>
+    </div>
+    <div class="card" id="cardDbSize">
+      <div class="card-label">Database Size</div>
+      <div class="card-value skeleton skel-line" id="valDbSize">&nbsp;</div>
+      <div class="card-sub" id="subDbSize"></div>
+    </div>
+    <div class="card" id="cardFreshness">
+      <div class="card-label">Data Freshness</div>
+      <div class="card-value skeleton skel-line" id="valFreshness">&nbsp;</div>
+      <div class="card-sub" id="subFreshness"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Data Health -->
+<div class="container" style="padding-bottom:0">
+  <div class="section" id="sectionHealth">
+    <div class="section-title">Data Health <span class="count" id="healthCount">—</span></div>
+    <div class="health-bar-container">
+      <div class="health-bar" id="healthBar">
+        <div class="skeleton" style="width:100%;min-width:0">&nbsp;</div>
+      </div>
+      <div class="health-legend">
+        <span class="leg-healthy">Healthy</span>
+        <span class="leg-stale">Stale</span>
+        <span class="leg-broken">Broken</span>
+        <span class="leg-unknown">Unknown</span>
+      </div>
+    </div>
+    <ul class="alert-list" id="alertList"></ul>
+  </div>
+</div>
+
+<!-- Enrichment Coverage -->
+<div class="container" style="padding-bottom:0">
+  <div class="section" id="sectionCoverage">
+    <div class="section-title">Enrichment Coverage</div>
+    <div class="coverage-grid" id="coverageGrid">
+      <div class="skeleton skel-block">&nbsp;</div>
+    </div>
+  </div>
+</div>
+
+<!-- Source Registry -->
+<div class="container" style="padding-bottom:0">
+  <div class="section" id="sectionSources">
+    <button class="collapsible-toggle" id="sourceToggle" onclick="toggleSection('source')">
+      <span class="chevron">&#9654;</span>
+      <span class="section-title" style="margin-bottom:0">Source Registry <span class="count" id="sourceCount">—</span></span>
+    </button>
+    <div class="collapsible-body" id="sourceBody">
+      <div class="table-wrap">
+        <table id="sourceTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Database</th>
+              <th>Status</th>
+              <th>Rows</th>
+              <th>Last Updated</th>
+              <th>Cadence (hrs)</th>
+            </tr>
+          </thead>
+          <tbody id="sourceTbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Database Summary -->
+<div class="container">
+  <div class="section" id="sectionDatabases">
+    <button class="collapsible-toggle" id="dbToggle" onclick="toggleSection('db')">
+      <span class="chevron">&#9654;</span>
+      <span class="section-title" style="margin-bottom:0">Databases <span class="count" id="dbCount">—</span></span>
+    </button>
+    <div class="collapsible-body" id="dbBody">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Size (MB)</th>
+              <th>Tables</th>
+              <th>Total Rows</th>
+            </tr>
+          </thead>
+          <tbody id="dbTbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <strong>Prospector Labs</strong> &middot; Data refreshes daily at 6:00 AM ET &middot; Last checked: <span id="lastChecked">—</span>
+</footer>
+
+<script>
+const API = 'https://prospector-platform-production.up.railway.app';
+let countdownSec = 60;
+let timer = null;
+
+// --- Helpers ---
+function fmt(n, d) { return n != null ? Number(n).toFixed(d ?? 0) : '—'; }
+function fmtRows(n) { return n != null ? Number(n).toLocaleString() : '—'; }
+function timeAgo(iso) {
+  if (!iso) return '—';
+  const diff = (Date.now() - new Date(iso).getTime()) / 1000;
+  if (diff < 60) return Math.round(diff) + 's ago';
+  if (diff < 3600) return Math.round(diff / 60) + 'm ago';
+  if (diff < 86400) return Math.round(diff / 3600) + 'h ago';
+  return Math.round(diff / 86400) + 'd ago';
+}
+function hoursSince(iso) {
+  if (!iso) return null;
+  return (Date.now() - new Date(iso).getTime()) / 3600000;
+}
+function statusClass(s) {
+  if (!s) return 'unknown';
+  const l = s.toLowerCase();
+  if (l === 'healthy' || l === 'ok' || l === 'active') return 'healthy';
+  if (l === 'stale' || l === 'degraded' || l === 'warning') return 'stale';
+  if (l === 'broken' || l === 'error' || l === 'down' || l === 'failed') return 'broken';
+  return 'unknown';
+}
+function dotClass(s) {
+  const c = statusClass(s);
+  if (c === 'healthy') return 'ok';
+  if (c === 'stale') return 'degraded';
+  if (c === 'broken') return 'down';
+  return '';
+}
+
+function progressColor(pct) {
+  if (pct >= 80) return '';
+  if (pct >= 50) return 'mid';
+  return 'low';
+}
+
+function toggleSection(id) {
+  const toggle = document.getElementById(id === 'source' ? 'sourceToggle' : 'dbToggle');
+  const body = document.getElementById(id === 'source' ? 'sourceBody' : 'dbBody');
+  toggle.classList.toggle('open');
+  body.classList.toggle('open');
+}
+
+// --- Fetch data ---
+async function safeFetch(url) {
+  const res = await fetch(url, { signal: AbortSignal.timeout(15000) });
+  if (!res.ok) throw new Error(res.status);
+  return res.json();
+}
+
+async function fetchAll() {
+  countdownSec = 60;
+  document.getElementById('refreshBtn').textContent = '...';
+
+  let health = null, validate = null, pipeline = null;
+  let anySuccess = false;
+
+  try {
+    [health, validate, pipeline] = await Promise.allSettled([
+      safeFetch(API + '/health'),
+      safeFetch(API + '/validate'),
+      safeFetch(API + '/pipeline/status'),
+    ]);
+    anySuccess = [health, validate, pipeline].some(r => r.status === 'fulfilled');
+  } catch(e) {
+    // all failed
+  }
+
+  const banner = document.getElementById('errorBanner');
+  if (!anySuccess) {
+    banner.style.display = 'block';
+    document.getElementById('headerDot').className = 'status-dot down';
+    document.getElementById('refreshBtn').textContent = 'Refresh';
+    document.getElementById('lastChecked').textContent = new Date().toLocaleTimeString();
+    return;
+  }
+  banner.style.display = 'none';
+
+  if (health.status === 'fulfilled') renderHealth(health.value);
+  if (validate.status === 'fulfilled') renderValidate(validate.value);
+  if (pipeline.status === 'fulfilled') renderPipeline(pipeline.value);
+
+  document.getElementById('lastChecked').textContent = new Date().toLocaleTimeString();
+  document.getElementById('refreshBtn').textContent = 'Refresh';
+}
+
+// --- Renderers ---
+function renderHealth(d) {
+  // Overall status
+  const s = d.status || 'unknown';
+  const el = document.getElementById('valStatus');
+  el.textContent = s.charAt(0).toUpperCase() + s.slice(1);
+  el.className = 'card-value status-' + dotClass(s);
+  el.classList.remove('skeleton', 'skel-line');
+  document.getElementById('subStatus').textContent = d.timestamp ? timeAgo(d.timestamp) : '';
+  document.getElementById('headerDot').className = 'status-dot ' + dotClass(s);
+
+  // Projects
+  const pEl = document.getElementById('valProjects');
+  pEl.textContent = fmt(d.projects);
+  pEl.className = 'card-value';
+  document.getElementById('subProjects').textContent = 'tracked';
+
+  // DB size
+  const dbEl = document.getElementById('valDbSize');
+  dbEl.textContent = fmt(d.database_mb, 1) + ' MB';
+  dbEl.className = 'card-value';
+  document.getElementById('subDbSize').textContent = 'total';
+
+  // Freshness
+  const hrs = hoursSince(d.last_refresh);
+  const fEl = document.getElementById('valFreshness');
+  if (hrs !== null) {
+    fEl.textContent = fmt(hrs, 1) + 'h';
+    fEl.className = 'card-value' + (hrs > 48 ? ' status-down' : hrs > 24 ? ' status-degraded' : ' status-ok');
+  } else {
+    fEl.textContent = '—';
+    fEl.className = 'card-value';
+  }
+  document.getElementById('subFreshness').textContent = d.last_refresh ? 'since refresh' : '';
+
+  // Data health
+  const dh = d.data_health;
+  if (dh && dh.summary) {
+    const sm = dh.summary;
+    const total = sm.total || 1;
+    document.getElementById('healthCount').textContent = total + ' sources';
+
+    const bar = document.getElementById('healthBar');
+    bar.innerHTML = '';
+    const segs = [
+      { cls: 'seg-healthy', val: sm.healthy || 0 },
+      { cls: 'seg-stale', val: sm.stale || 0 },
+      { cls: 'seg-broken', val: sm.broken || 0 },
+      { cls: 'seg-unknown', val: sm.unknown || 0 },
+    ];
+    segs.forEach(function(seg) {
+      if (seg.val > 0) {
+        const div = document.createElement('div');
+        div.className = seg.cls;
+        div.style.width = (seg.val / total * 100) + '%';
+        div.textContent = seg.val;
+        bar.appendChild(div);
+      }
+    });
+
+    // Alerts
+    const list = document.getElementById('alertList');
+    list.innerHTML = '';
+    (dh.warnings || []).forEach(function(w) {
+      const li = document.createElement('li');
+      li.className = 'alert-item warn';
+      li.textContent = typeof w === 'string' ? w : JSON.stringify(w);
+      list.appendChild(li);
+    });
+    (dh.errors || []).forEach(function(e) {
+      const li = document.createElement('li');
+      li.className = 'alert-item err';
+      li.textContent = typeof e === 'string' ? e : JSON.stringify(e);
+      list.appendChild(li);
+    });
+  }
+}
+
+function renderValidate(d) {
+  const cov = d.coverage || {};
+  const grid = document.getElementById('coverageGrid');
+  grid.innerHTML = '';
+
+  const metrics = [
+    { key: 'tax_credit_pct', label: 'Tax Credit' },
+    { key: 'energy_community_pct', label: 'Energy Community' },
+    { key: 'low_income_pct', label: 'Low Income' },
+    { key: 'type_std_pct', label: 'Type Standardized' },
+  ];
+
+  // Also include any extra coverage keys
+  Object.keys(cov).forEach(function(k) {
+    if (!metrics.find(function(m) { return m.key === k; }) && k.endsWith('_pct')) {
+      metrics.push({ key: k, label: k.replace(/_pct$/, '').replace(/_/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); }) });
+    }
+  });
+
+  metrics.forEach(function(m) {
+    const val = cov[m.key];
+    if (val == null) return;
+    const pct = Number(val);
+    const div = document.createElement('div');
+    div.className = 'coverage-item';
+    div.innerHTML =
+      '<label><span>' + m.label + '</span><span>' + pct.toFixed(1) + '%</span></label>' +
+      '<div class="progress-track"><div class="progress-fill ' + progressColor(pct) + '" style="width:' + Math.min(pct, 100) + '%"></div></div>';
+    grid.appendChild(div);
+  });
+
+  // Also show validation summary if useful
+  if (d.summary && (d.summary.failed > 0 || d.summary.warnings > 0)) {
+    const list = document.getElementById('alertList');
+    if (d.summary.errors && d.summary.errors.length) {
+      d.summary.errors.forEach(function(e) {
+        const li = document.createElement('li');
+        li.className = 'alert-item err';
+        li.textContent = typeof e === 'string' ? e : JSON.stringify(e);
+        list.appendChild(li);
+      });
+    }
+  }
+}
+
+function renderPipeline(d) {
+  const data = d.data || d;
+
+  // Source registry
+  const sources = data.source_registry || [];
+  document.getElementById('sourceCount').textContent = sources.length + ' sources';
+
+  // Sort: broken first, then stale, then healthy, then unknown
+  const order = { broken: 0, error: 0, failed: 0, stale: 1, degraded: 1, warning: 1, healthy: 2, ok: 2, active: 2 };
+  sources.sort(function(a, b) {
+    const oa = order[(a.status || '').toLowerCase()];
+    const ob = order[(b.status || '').toLowerCase()];
+    return (oa != null ? oa : 3) - (ob != null ? ob : 3);
+  });
+
+  const tbody = document.getElementById('sourceTbody');
+  tbody.innerHTML = '';
+  sources.forEach(function(s) {
+    const sc = statusClass(s.status);
+    const tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td>' + (s.name || '—') + '</td>' +
+      '<td>' + (s.database || '—') + '</td>' +
+      '<td><span class="badge badge-' + sc + '">' + (s.status || 'unknown') + '</span></td>' +
+      '<td>' + fmtRows(s.actual_rows) + '</td>' +
+      '<td>' + timeAgo(s.last_updated) + '</td>' +
+      '<td>' + fmt(s.cadence_hours) + '</td>';
+    tbody.appendChild(tr);
+  });
+
+  // Auto-expand if there are broken sources
+  if (sources.some(function(s) { return statusClass(s.status) === 'broken'; })) {
+    document.getElementById('sourceToggle').classList.add('open');
+    document.getElementById('sourceBody').classList.add('open');
+  }
+
+  // Databases
+  const dbs = data.databases || [];
+  document.getElementById('dbCount').textContent = dbs.length + ' databases';
+  const dbTbody = document.getElementById('dbTbody');
+  dbTbody.innerHTML = '';
+  dbs.forEach(function(db) {
+    const tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td>' + (db.name || '—') + '</td>' +
+      '<td>' + fmt(db.size_mb, 2) + '</td>' +
+      '<td>' + fmt(db.tables) + '</td>' +
+      '<td>' + fmtRows(db.total_rows) + '</td>';
+    dbTbody.appendChild(tr);
+  });
+}
+
+// --- Countdown timer ---
+function startTimer() {
+  if (timer) clearInterval(timer);
+  timer = setInterval(function() {
+    countdownSec--;
+    document.getElementById('countdown').textContent = 'Refresh in ' + countdownSec + 's';
+    if (countdownSec <= 0) fetchAll();
+  }, 1000);
+}
+
+// --- Init ---
+fetchAll();
+startTimer();
+</script>
+</body>
+</html>
