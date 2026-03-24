@@ -263,7 +263,7 @@ async function loadProjects(page) {
         <td>${p.state || '?'}</td>
         <td><span class="badge stage">${p.construction_stage || '?'}</span></td>
         <td class="dev-name" title="${p.developer_canonical || ''}">${p.developer_canonical || '?'}</td>
-        <td>${pct(p.effective_credit_rate)}</td>
+        <td>${pct(p.itc_rate || p.effective_credit_rate)}</td>
         <td>${bonuses.join(' ') || '-'}</td>
         <td>${p.cod_std || '?'}</td>
       </tr>`;
