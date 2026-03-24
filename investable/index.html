@@ -1,83 +1,190 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Investable Projects | Prospector Labs</title>
 <style>
-  :root {
-    --bg: #0a0e17; --surface: #111827; --border: #1f2937;
-    --text: #e5e7eb; --muted: #9ca3af; --accent: #3b82f6;
-    --green: #10b981; --yellow: #f59e0b; --red: #ef4444;
+  :root[data-theme="dark"] {
+    --bg: #09090b; --surface: #18181b; --surface-2: #27272a;
+    --border: rgba(255,255,255,0.08); --border-hover: rgba(255,255,255,0.15);
+    --text: #fafafa; --text-2: #a1a1aa; --text-3: #71717a;
+    --accent: #3b82f6; --accent-hover: #2563eb;
+    --green: #22c55e; --yellow: #eab308; --red: #ef4444;
+    --score-a-bg: rgba(34,197,94,0.12); --score-a-fg: #4ade80;
+    --score-b-bg: rgba(59,130,246,0.12); --score-b-fg: #93c5fd;
+    --score-c-bg: rgba(234,179,8,0.12); --score-c-fg: #fde047;
+    --badge-ec-bg: rgba(34,197,94,0.12); --badge-ec-fg: #4ade80;
+    --badge-li-bg: rgba(168,85,247,0.12); --badge-li-fg: #c084fc;
+    --badge-stage-bg: rgba(59,130,246,0.1); --badge-stage-fg: #93c5fd;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3);
+    --toggle-icon: "&#9790;";
   }
+  :root[data-theme="light"] {
+    --bg: #fafafa; --surface: #ffffff; --surface-2: #f4f4f5;
+    --border: rgba(0,0,0,0.08); --border-hover: rgba(0,0,0,0.15);
+    --text: #18181b; --text-2: #52525b; --text-3: #a1a1aa;
+    --accent: #2563eb; --accent-hover: #1d4ed8;
+    --green: #16a34a; --yellow: #ca8a04; --red: #dc2626;
+    --score-a-bg: rgba(22,163,74,0.08); --score-a-fg: #15803d;
+    --score-b-bg: rgba(37,99,235,0.08); --score-b-fg: #1d4ed8;
+    --score-c-bg: rgba(202,138,4,0.08); --score-c-fg: #a16207;
+    --badge-ec-bg: rgba(22,163,74,0.08); --badge-ec-fg: #15803d;
+    --badge-li-bg: rgba(147,51,234,0.08); --badge-li-fg: #7c3aed;
+    --badge-stage-bg: rgba(37,99,235,0.06); --badge-stage-fg: #1d4ed8;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06);
+    --toggle-icon: "&#9728;";
+  }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
-  h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 4px; }
-  .subtitle { color: var(--muted); font-size: 0.85rem; margin-bottom: 20px; }
-  .kpi-row { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
-  .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; flex: 1; min-width: 140px; }
-  .kpi .label { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
-  .kpi .value { font-size: 1.8rem; font-weight: 700; margin-top: 4px; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+    background: var(--bg); color: var(--text);
+    padding: 24px; max-width: 1400px; margin: 0 auto;
+    line-height: 1.5; transition: background 0.2s, color 0.2s;
+  }
+
+  /* Header */
+  .header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+  h1 { font-size: 1.25rem; font-weight: 600; letter-spacing: -0.02em; }
+  .subtitle { color: var(--text-3); font-size: 0.8rem; }
+  .header-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  .theme-toggle {
+    background: none; border: 1px solid var(--border); color: var(--text-2);
+    width: 32px; height: 32px; border-radius: 6px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; transition: border-color 0.15s;
+  }
+  .theme-toggle:hover { border-color: var(--border-hover); }
+  .refresh-btn {
+    background: var(--accent); color: #fff; border: none;
+    padding: 6px 14px; border-radius: 6px; cursor: pointer;
+    font-size: 0.8rem; font-weight: 500; transition: background 0.15s;
+  }
+  .refresh-btn:hover { background: var(--accent-hover); }
+  .last-updated { color: var(--text-3); font-size: 0.7rem; }
+
+  /* KPIs */
+  .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .kpi {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px; box-shadow: var(--shadow);
+  }
+  .kpi .label { color: var(--text-3); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; }
+  .kpi .value { font-size: 1.6rem; font-weight: 700; margin-top: 2px; letter-spacing: -0.02em; }
   .kpi .value.green { color: var(--green); }
   .kpi .value.accent { color: var(--accent); }
   .kpi .value.yellow { color: var(--yellow); }
-  .filters { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
-  .filters select, .filters input { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; }
-  .filters select { min-width: 130px; }
-  .filters input { width: 80px; }
-  .filters label { color: var(--muted); font-size: 0.8rem; }
-  table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: 8px; overflow: hidden; }
-  th { background: #1a2332; color: var(--muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 12px; text-align: left; white-space: nowrap; cursor: pointer; }
-  th:hover { color: var(--text); }
-  td { padding: 10px 12px; border-top: 1px solid var(--border); font-size: 0.85rem; white-space: nowrap; }
-  tr:hover td { background: #1a2332; }
-  .score { display: inline-block; width: 32px; text-align: center; padding: 2px 6px; border-radius: 4px; font-weight: 600; font-size: 0.8rem; }
-  .score.a { background: #065f46; color: #6ee7b7; }
-  .score.b { background: #1e3a5f; color: #93c5fd; }
-  .score.c { background: #78350f; color: #fcd34d; }
-  .badge { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 0.7rem; font-weight: 500; }
-  .badge.ec { background: #065f46; color: #6ee7b7; }
-  .badge.li { background: #3b0764; color: #d8b4fe; }
-  .badge.stage { background: #1e3a5f; color: #93c5fd; }
-  .pagination { display: flex; gap: 8px; margin-top: 12px; justify-content: center; align-items: center; }
-  .pagination button { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 6px 14px; border-radius: 4px; cursor: pointer; }
-  .pagination button:disabled { opacity: 0.4; cursor: default; }
+
+  /* Breakdowns */
+  .breakdown { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .breakdown-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px; box-shadow: var(--shadow);
+  }
+  .breakdown-card h3 { color: var(--text-3); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; font-weight: 500; }
+  .breakdown-item { display: flex; justify-content: space-between; font-size: 0.78rem; padding: 2px 0; }
+  .breakdown-item .count { color: var(--accent); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  /* Filters */
+  .filters {
+    display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: flex-end;
+  }
+  .filter-group { display: flex; flex-direction: column; gap: 3px; }
+  .filter-group label { color: var(--text-3); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
+  .filters select, .filters input[type="number"] {
+    background: var(--surface); border: 1px solid var(--border); color: var(--text);
+    padding: 7px 10px; border-radius: 6px; font-size: 0.8rem;
+    transition: border-color 0.15s; outline: none;
+  }
+  .filters select { min-width: 110px; }
+  .filters input[type="number"] { width: 72px; }
+  .filters select:focus, .filters input:focus { border-color: var(--accent); }
+  .apply-btn {
+    background: var(--surface-2); color: var(--text); border: 1px solid var(--border);
+    padding: 7px 14px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;
+    transition: border-color 0.15s;
+  }
+  .apply-btn:hover { border-color: var(--border-hover); }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); box-shadow: var(--shadow); }
+  table { width: 100%; border-collapse: collapse; background: var(--surface); }
+  th {
+    background: var(--surface-2); color: var(--text-3);
+    font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 10px 12px; text-align: left; white-space: nowrap;
+    font-weight: 500; border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 9px 12px; border-top: 1px solid var(--border);
+    font-size: 0.82rem; white-space: nowrap; font-variant-numeric: tabular-nums;
+  }
+  tr:hover td { background: var(--surface-2); }
+
+  .score {
+    display: inline-block; min-width: 28px; text-align: center;
+    padding: 2px 6px; border-radius: 5px; font-weight: 600; font-size: 0.78rem;
+  }
+  .score.a { background: var(--score-a-bg); color: var(--score-a-fg); }
+  .score.b { background: var(--score-b-bg); color: var(--score-b-fg); }
+  .score.c { background: var(--score-c-bg); color: var(--score-c-fg); }
+
+  .badge {
+    display: inline-block; padding: 1px 6px; border-radius: 4px;
+    font-size: 0.65rem; font-weight: 500; letter-spacing: 0.02em;
+  }
+  .badge.ec { background: var(--badge-ec-bg); color: var(--badge-ec-fg); }
+  .badge.li { background: var(--badge-li-bg); color: var(--badge-li-fg); }
+  .badge.stage { background: var(--badge-stage-bg); color: var(--badge-stage-fg); }
+
+  .dev-name { max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
+  .project-name { max-width: 220px; overflow: hidden; text-overflow: ellipsis; }
+  .cod-stale { color: var(--red); }
+
+  /* Pagination */
+  .pagination { display: flex; gap: 8px; margin-top: 14px; justify-content: center; align-items: center; }
+  .pagination button {
+    background: var(--surface); border: 1px solid var(--border); color: var(--text);
+    padding: 5px 12px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;
+    transition: border-color 0.15s;
+  }
+  .pagination button:disabled { opacity: 0.3; cursor: default; }
   .pagination button:hover:not(:disabled) { border-color: var(--accent); }
-  .pagination span { color: var(--muted); font-size: 0.85rem; }
-  .loading { text-align: center; padding: 40px; color: var(--muted); }
-  .error { background: #7f1d1d; color: #fca5a5; padding: 12px; border-radius: 6px; margin-bottom: 16px; }
-  .refresh-btn { background: var(--accent); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; }
-  .refresh-btn:hover { background: #2563eb; }
-  .last-updated { color: var(--muted); font-size: 0.75rem; margin-left: auto; }
-  .header-row { display: flex; align-items: center; gap: 16px; margin-bottom: 4px; }
-  .breakdown { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
-  .breakdown-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; min-width: 200px; flex: 1; }
-  .breakdown-card h3 { color: var(--muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
-  .breakdown-item { display: flex; justify-content: space-between; font-size: 0.8rem; padding: 2px 0; }
-  .breakdown-item .count { color: var(--accent); font-weight: 600; }
-  .dev-name { max-width: 200px; overflow: hidden; text-overflow: ellipsis; }
-  .project-name { max-width: 250px; overflow: hidden; text-overflow: ellipsis; }
+  .pagination span { color: var(--text-3); font-size: 0.8rem; }
+
+  .loading { text-align: center; padding: 32px; color: var(--text-3); font-size: 0.85rem; }
+  .error { background: rgba(239,68,68,0.1); color: var(--red); padding: 10px 14px; border-radius: 8px; margin-bottom: 14px; font-size: 0.82rem; border: 1px solid rgba(239,68,68,0.15); }
+
   @media (max-width: 768px) {
-    .kpi-row { flex-direction: column; }
-    .breakdown { flex-direction: column; }
+    body { padding: 14px; }
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .breakdown { grid-template-columns: 1fr; }
     table { font-size: 0.75rem; }
     td, th { padding: 6px 8px; }
+    .project-name { max-width: 140px; }
+    .dev-name { max-width: 120px; }
   }
 </style>
 </head>
 <body>
 
-<div class="header-row">
-  <h1>Investable Projects</h1>
-  <button class="refresh-btn" onclick="loadAll()">Refresh</button>
-  <span class="last-updated" id="lastUpdated"></span>
+<div class="header">
+  <div>
+    <h1>Investable Projects</h1>
+    <div class="subtitle">ITC-eligible projects from independent developers near completion</div>
+  </div>
+  <div class="header-right">
+    <span class="last-updated" id="lastUpdated"></span>
+    <button class="refresh-btn" onclick="loadAll()">Refresh</button>
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme"></button>
+  </div>
 </div>
-<div class="subtitle">ITC-eligible projects from independent developers near completion</div>
 
 <div id="error" class="error" style="display:none"></div>
 
 <div class="kpi-row" id="kpis">
-  <div class="kpi"><div class="label">Investable Projects</div><div class="value green" id="kpiTotal">--</div></div>
+  <div class="kpi"><div class="label">Investable</div><div class="value green" id="kpiTotal">--</div></div>
   <div class="kpi"><div class="label">Total MW</div><div class="value accent" id="kpiMW">--</div></div>
   <div class="kpi"><div class="label">Avg Score</div><div class="value yellow" id="kpiScore">--</div></div>
   <div class="kpi"><div class="label">Est. Credit Value</div><div class="value green" id="kpiValue">--</div></div>
@@ -90,12 +197,12 @@
 </div>
 
 <div class="filters">
-  <div>
-    <label>State</label><br>
+  <div class="filter-group">
+    <label>State</label>
     <select id="fState"><option value="">All</option></select>
   </div>
-  <div>
-    <label>Stage</label><br>
+  <div class="filter-group">
+    <label>Stage</label>
     <select id="fStage">
       <option value="">All</option>
       <option value="construction">Construction</option>
@@ -103,8 +210,8 @@
       <option value="mid">Mid</option>
     </select>
   </div>
-  <div>
-    <label>Type</label><br>
+  <div class="filter-group">
+    <label>Type</label>
     <select id="fType">
       <option value="">All</option>
       <option value="Solar">Solar</option>
@@ -114,23 +221,22 @@
       <option value="Wind">Wind</option>
     </select>
   </div>
-  <div>
-    <label>Min MW</label><br>
+  <div class="filter-group">
+    <label>Min MW</label>
     <input type="number" id="fMinMW" step="0.5" placeholder="0.5">
   </div>
-  <div>
-    <label>Max MW</label><br>
+  <div class="filter-group">
+    <label>Max MW</label>
     <input type="number" id="fMaxMW" step="1" placeholder="10">
   </div>
-  <div>
-    <label>Min Score</label><br>
+  <div class="filter-group">
+    <label>Min Score</label>
     <input type="number" id="fMinScore" step="5" placeholder="55">
   </div>
-  <div style="align-self: flex-end;">
-    <button class="refresh-btn" onclick="loadProjects(1)">Apply</button>
-  </div>
+  <button class="apply-btn" onclick="loadProjects(1)">Apply</button>
 </div>
 
+<div class="table-wrap">
 <table>
   <thead>
     <tr>
@@ -140,7 +246,7 @@
       <th>State</th>
       <th>Stage</th>
       <th>Developer</th>
-      <th>ITC Rate</th>
+      <th>ITC</th>
       <th>Bonuses</th>
       <th>COD</th>
     </tr>
@@ -149,6 +255,7 @@
     <tr><td colspan="9" class="loading">Loading...</td></tr>
   </tbody>
 </table>
+</div>
 
 <div class="pagination">
   <button id="prevBtn" onclick="prevPage()" disabled>&larr; Prev</button>
@@ -161,14 +268,33 @@ const API = 'https://prospector-platform-production.up.railway.app';
 let currentPage = 1;
 const perPage = 50;
 
+// Theme
+function getTheme() {
+  const stored = localStorage.getItem('prospector-theme');
+  if (stored) return stored;
+  return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+}
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  document.getElementById('themeToggle').innerHTML = t === 'dark' ? '&#9728;' : '&#9790;';
+}
+function toggleTheme() {
+  const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('prospector-theme', next);
+  applyTheme(next);
+}
+applyTheme(getTheme());
+
+// Formatters
 function fmt(n) { return n != null ? Number(n).toLocaleString() : '--'; }
 function fmtM(n) { return n != null ? '$' + (n/1e6).toFixed(1) + 'M' : '--'; }
 function pct(n) { return n != null ? (n * 100).toFixed(0) + '%' : '--'; }
+function scoreClass(s) { return s >= 80 ? 'a' : s >= 65 ? 'b' : 'c'; }
 
-function scoreClass(s) {
-  if (s >= 80) return 'a';
-  if (s >= 65) return 'b';
-  return 'c';
+// Escape HTML to prevent XSS from project names
+function esc(s) {
+  if (!s) return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 async function loadSummary() {
@@ -182,35 +308,27 @@ async function loadSummary() {
     document.getElementById('kpiScore').textContent = data.avg_score || '--';
     document.getElementById('kpiValue').textContent = fmtM(data.total_credit_value);
 
-    // By stage
-    const stageHtml = Object.entries(data.by_stage || {}).map(([k, v]) =>
-      `<div class="breakdown-item"><span>${k}</span><span class="count">${fmt(v.count)}</span></div>`
+    const mkBreakdown = (obj) => Object.entries(obj || {}).map(([k, v]) =>
+      `<div class="breakdown-item"><span>${esc(k)}</span><span class="count">${fmt(v.count || v)}</span></div>`
     ).join('');
-    document.getElementById('byStage').innerHTML = stageHtml || '--';
 
-    // By type
-    const typeHtml = Object.entries(data.by_type || {}).map(([k, v]) =>
-      `<div class="breakdown-item"><span>${k}</span><span class="count">${fmt(v.count)}</span></div>`
-    ).join('');
-    document.getElementById('byType').innerHTML = typeHtml || '--';
+    document.getElementById('byStage').innerHTML = mkBreakdown(data.by_stage) || '--';
+    document.getElementById('byType').innerHTML = mkBreakdown(data.by_type) || '--';
+    document.getElementById('byState').innerHTML = Object.entries(data.by_state || {}).slice(0, 8).map(([k, v]) =>
+      `<div class="breakdown-item"><span>${esc(k)}</span><span class="count">${fmt(v.count)}</span></div>`
+    ).join('') || '--';
 
-    // Top states
-    const stateHtml = Object.entries(data.by_state || {}).slice(0, 8).map(([k, v]) =>
-      `<div class="breakdown-item"><span>${k}</span><span class="count">${fmt(v.count)}</span></div>`
-    ).join('');
-    document.getElementById('byState').innerHTML = stateHtml || '--';
-
-    // Populate state filter
     const sel = document.getElementById('fState');
-    Object.keys(data.by_state || {}).forEach(s => {
-      const opt = document.createElement('option');
-      opt.value = s; opt.textContent = s;
-      sel.appendChild(opt);
-    });
-
+    if (sel.options.length <= 1) {
+      Object.keys(data.by_state || {}).forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s; opt.textContent = s;
+        sel.appendChild(opt);
+      });
+    }
     document.getElementById('error').style.display = 'none';
   } catch (e) {
-    document.getElementById('error').textContent = `Failed to load summary: ${e.message}. Make sure the API is running and investability enrichment has been deployed.`;
+    document.getElementById('error').textContent = `Failed to load summary: ${e.message}`;
     document.getElementById('error').style.display = 'block';
   }
 }
@@ -223,19 +341,14 @@ async function loadProjects(page) {
   params.set('sort', 'investability_score');
   params.set('order', 'desc');
 
-  const state = document.getElementById('fState').value;
-  const stage = document.getElementById('fStage').value;
-  const type = document.getElementById('fType').value;
-  const minMW = document.getElementById('fMinMW').value;
-  const maxMW = document.getElementById('fMaxMW').value;
-  const minScore = document.getElementById('fMinScore').value;
-
-  if (state) params.set('state', state);
-  if (stage) params.set('construction_stage', stage);
-  if (type) params.set('type', type);
-  if (minMW) params.set('min_mw', minMW);
-  if (maxMW) params.set('max_mw', maxMW);
-  if (minScore) params.set('min_score', minScore);
+  const filters = {
+    state: 'fState', construction_stage: 'fStage', type: 'fType',
+    min_mw: 'fMinMW', max_mw: 'fMaxMW', min_score: 'fMinScore',
+  };
+  for (const [param, id] of Object.entries(filters)) {
+    const val = document.getElementById(id).value;
+    if (val) params.set(param, val);
+  }
 
   const tbody = document.getElementById('tableBody');
   tbody.innerHTML = '<tr><td colspan="9" class="loading">Loading...</td></tr>';
@@ -256,21 +369,23 @@ async function loadProjects(page) {
       if (p.energy_community_eligible) bonuses.push('<span class="badge ec">EC</span>');
       if (p.low_income_eligible) bonuses.push('<span class="badge li">LI</span>');
       const score = p.investability_score || 0;
+      const rate = pct(p.itc_rate || p.effective_credit_rate);
+      const cod = p.cod_std || '?';
       return `<tr>
         <td><span class="score ${scoreClass(score)}">${score}</span></td>
-        <td class="project-name" title="${p.name || ''}">${p.name || '?'}</td>
+        <td class="project-name" title="${esc(p.name)}">${esc(p.name) || '?'}</td>
         <td>${p.capacity_mw ? p.capacity_mw.toFixed(1) : '?'}</td>
-        <td>${p.state || '?'}</td>
-        <td><span class="badge stage">${p.construction_stage || '?'}</span></td>
-        <td class="dev-name" title="${p.developer_canonical || ''}">${p.developer_canonical || '?'}</td>
-        <td>${pct(p.itc_rate || p.effective_credit_rate)}</td>
+        <td>${esc(p.state) || '?'}</td>
+        <td><span class="badge stage">${esc(p.construction_stage) || '?'}</span></td>
+        <td class="dev-name" title="${esc(p.developer_canonical)}">${esc(p.developer_canonical) || '?'}</td>
+        <td>${rate}</td>
         <td>${bonuses.join(' ') || '-'}</td>
-        <td>${p.cod_std || '?'}</td>
+        <td>${esc(cod)}</td>
       </tr>`;
     }).join('');
 
     const totalPages = meta.total_pages || 1;
-    document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages} (${fmt(meta.total)} projects)`;
+    document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages} (${fmt(meta.total)})`;
     document.getElementById('prevBtn').disabled = currentPage <= 1;
     document.getElementById('nextBtn').disabled = currentPage >= totalPages;
     document.getElementById('error').style.display = 'none';
@@ -283,12 +398,11 @@ function prevPage() { if (currentPage > 1) loadProjects(currentPage - 1); }
 function nextPage() { loadProjects(currentPage + 1); }
 
 function loadAll() {
-  document.getElementById('lastUpdated').textContent = 'Updated: ' + new Date().toLocaleTimeString();
+  document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString();
   loadSummary();
   loadProjects(1);
 }
 
-// Load on page open
 loadAll();
 </script>
 
