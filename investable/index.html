@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Investable Projects | Prospector Labs</title>
+<style>
+  :root {
+    --bg: #0a0e17; --surface: #111827; --border: #1f2937;
+    --text: #e5e7eb; --muted: #9ca3af; --accent: #3b82f6;
+    --green: #10b981; --yellow: #f59e0b; --red: #ef4444;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
+  h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 4px; }
+  .subtitle { color: var(--muted); font-size: 0.85rem; margin-bottom: 20px; }
+  .kpi-row { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+  .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; flex: 1; min-width: 140px; }
+  .kpi .label { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .kpi .value { font-size: 1.8rem; font-weight: 700; margin-top: 4px; }
+  .kpi .value.green { color: var(--green); }
+  .kpi .value.accent { color: var(--accent); }
+  .kpi .value.yellow { color: var(--yellow); }
+  .filters { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .filters select, .filters input { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; }
+  .filters select { min-width: 130px; }
+  .filters input { width: 80px; }
+  .filters label { color: var(--muted); font-size: 0.8rem; }
+  table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: 8px; overflow: hidden; }
+  th { background: #1a2332; color: var(--muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 12px; text-align: left; white-space: nowrap; cursor: pointer; }
+  th:hover { color: var(--text); }
+  td { padding: 10px 12px; border-top: 1px solid var(--border); font-size: 0.85rem; white-space: nowrap; }
+  tr:hover td { background: #1a2332; }
+  .score { display: inline-block; width: 32px; text-align: center; padding: 2px 6px; border-radius: 4px; font-weight: 600; font-size: 0.8rem; }
+  .score.a { background: #065f46; color: #6ee7b7; }
+  .score.b { background: #1e3a5f; color: #93c5fd; }
+  .score.c { background: #78350f; color: #fcd34d; }
+  .badge { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 0.7rem; font-weight: 500; }
+  .badge.ec { background: #065f46; color: #6ee7b7; }
+  .badge.li { background: #3b0764; color: #d8b4fe; }
+  .badge.stage { background: #1e3a5f; color: #93c5fd; }
+  .pagination { display: flex; gap: 8px; margin-top: 12px; justify-content: center; align-items: center; }
+  .pagination button { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 6px 14px; border-radius: 4px; cursor: pointer; }
+  .pagination button:disabled { opacity: 0.4; cursor: default; }
+  .pagination button:hover:not(:disabled) { border-color: var(--accent); }
+  .pagination span { color: var(--muted); font-size: 0.85rem; }
+  .loading { text-align: center; padding: 40px; color: var(--muted); }
+  .error { background: #7f1d1d; color: #fca5a5; padding: 12px; border-radius: 6px; margin-bottom: 16px; }
+  .refresh-btn { background: var(--accent); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; }
+  .refresh-btn:hover { background: #2563eb; }
+  .last-updated { color: var(--muted); font-size: 0.75rem; margin-left: auto; }
+  .header-row { display: flex; align-items: center; gap: 16px; margin-bottom: 4px; }
+  .breakdown { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+  .breakdown-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; min-width: 200px; flex: 1; }
+  .breakdown-card h3 { color: var(--muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+  .breakdown-item { display: flex; justify-content: space-between; font-size: 0.8rem; padding: 2px 0; }
+  .breakdown-item .count { color: var(--accent); font-weight: 600; }
+  .dev-name { max-width: 200px; overflow: hidden; text-overflow: ellipsis; }
+  .project-name { max-width: 250px; overflow: hidden; text-overflow: ellipsis; }
+  @media (max-width: 768px) {
+    .kpi-row { flex-direction: column; }
+    .breakdown { flex-direction: column; }
+    table { font-size: 0.75rem; }
+    td, th { padding: 6px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header-row">
+  <h1>Investable Projects</h1>
+  <button class="refresh-btn" onclick="loadAll()">Refresh</button>
+  <span class="last-updated" id="lastUpdated"></span>
+</div>
+<div class="subtitle">ITC-eligible projects from independent developers near completion</div>
+
+<div id="error" class="error" style="display:none"></div>
+
+<div class="kpi-row" id="kpis">
+  <div class="kpi"><div class="label">Investable Projects</div><div class="value green" id="kpiTotal">--</div></div>
+  <div class="kpi"><div class="label">Total MW</div><div class="value accent" id="kpiMW">--</div></div>
+  <div class="kpi"><div class="label">Avg Score</div><div class="value yellow" id="kpiScore">--</div></div>
+  <div class="kpi"><div class="label">Est. Credit Value</div><div class="value green" id="kpiValue">--</div></div>
+</div>
+
+<div class="breakdown" id="breakdowns">
+  <div class="breakdown-card"><h3>By Stage</h3><div id="byStage">--</div></div>
+  <div class="breakdown-card"><h3>By Type</h3><div id="byType">--</div></div>
+  <div class="breakdown-card"><h3>Top States</h3><div id="byState">--</div></div>
+</div>
+
+<div class="filters">
+  <div>
+    <label>State</label><br>
+    <select id="fState"><option value="">All</option></select>
+  </div>
+  <div>
+    <label>Stage</label><br>
+    <select id="fStage">
+      <option value="">All</option>
+      <option value="construction">Construction</option>
+      <option value="late">Late</option>
+      <option value="mid">Mid</option>
+    </select>
+  </div>
+  <div>
+    <label>Type</label><br>
+    <select id="fType">
+      <option value="">All</option>
+      <option value="Solar">Solar</option>
+      <option value="Battery">Battery</option>
+      <option value="Solar+Storage">Solar+Storage</option>
+      <option value="Hybrid">Hybrid</option>
+      <option value="Wind">Wind</option>
+    </select>
+  </div>
+  <div>
+    <label>Min MW</label><br>
+    <input type="number" id="fMinMW" step="0.5" placeholder="0.5">
+  </div>
+  <div>
+    <label>Max MW</label><br>
+    <input type="number" id="fMaxMW" step="1" placeholder="10">
+  </div>
+  <div>
+    <label>Min Score</label><br>
+    <input type="number" id="fMinScore" step="5" placeholder="55">
+  </div>
+  <div style="align-self: flex-end;">
+    <button class="refresh-btn" onclick="loadProjects(1)">Apply</button>
+  </div>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Score</th>
+      <th>Project</th>
+      <th>MW</th>
+      <th>State</th>
+      <th>Stage</th>
+      <th>Developer</th>
+      <th>ITC Rate</th>
+      <th>Bonuses</th>
+      <th>COD</th>
+    </tr>
+  </thead>
+  <tbody id="tableBody">
+    <tr><td colspan="9" class="loading">Loading...</td></tr>
+  </tbody>
+</table>
+
+<div class="pagination">
+  <button id="prevBtn" onclick="prevPage()" disabled>&larr; Prev</button>
+  <span id="pageInfo">Page 1</span>
+  <button id="nextBtn" onclick="nextPage()">Next &rarr;</button>
+</div>
+
+<script>
+const API = 'https://prospector-platform-production.up.railway.app';
+let currentPage = 1;
+const perPage = 50;
+
+function fmt(n) { return n != null ? Number(n).toLocaleString() : '--'; }
+function fmtM(n) { return n != null ? '$' + (n/1e6).toFixed(1) + 'M' : '--'; }
+function pct(n) { return n != null ? (n * 100).toFixed(0) + '%' : '--'; }
+
+function scoreClass(s) {
+  if (s >= 80) return 'a';
+  if (s >= 65) return 'b';
+  return 'c';
+}
+
+async function loadSummary() {
+  try {
+    const r = await fetch(`${API}/investable/summary`);
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const { data } = await r.json();
+
+    document.getElementById('kpiTotal').textContent = fmt(data.total_investable);
+    document.getElementById('kpiMW').textContent = fmt(data.total_mw);
+    document.getElementById('kpiScore').textContent = data.avg_score || '--';
+    document.getElementById('kpiValue').textContent = fmtM(data.total_credit_value);
+
+    // By stage
+    const stageHtml = Object.entries(data.by_stage || {}).map(([k, v]) =>
+      `<div class="breakdown-item"><span>${k}</span><span class="count">${fmt(v.count)}</span></div>`
+    ).join('');
+    document.getElementById('byStage').innerHTML = stageHtml || '--';
+
+    // By type
+    const typeHtml = Object.entries(data.by_type || {}).map(([k, v]) =>
+      `<div class="breakdown-item"><span>${k}</span><span class="count">${fmt(v.count)}</span></div>`
+    ).join('');
+    document.getElementById('byType').innerHTML = typeHtml || '--';
+
+    // Top states
+    const stateHtml = Object.entries(data.by_state || {}).slice(0, 8).map(([k, v]) =>
+      `<div class="breakdown-item"><span>${k}</span><span class="count">${fmt(v.count)}</span></div>`
+    ).join('');
+    document.getElementById('byState').innerHTML = stateHtml || '--';
+
+    // Populate state filter
+    const sel = document.getElementById('fState');
+    Object.keys(data.by_state || {}).forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s; opt.textContent = s;
+      sel.appendChild(opt);
+    });
+
+    document.getElementById('error').style.display = 'none';
+  } catch (e) {
+    document.getElementById('error').textContent = `Failed to load summary: ${e.message}. Make sure the API is running and investability enrichment has been deployed.`;
+    document.getElementById('error').style.display = 'block';
+  }
+}
+
+async function loadProjects(page) {
+  currentPage = page || 1;
+  const params = new URLSearchParams();
+  params.set('page', currentPage);
+  params.set('per_page', perPage);
+  params.set('sort', 'investability_score');
+  params.set('order', 'desc');
+
+  const state = document.getElementById('fState').value;
+  const stage = document.getElementById('fStage').value;
+  const type = document.getElementById('fType').value;
+  const minMW = document.getElementById('fMinMW').value;
+  const maxMW = document.getElementById('fMaxMW').value;
+  const minScore = document.getElementById('fMinScore').value;
+
+  if (state) params.set('state', state);
+  if (stage) params.set('construction_stage', stage);
+  if (type) params.set('type', type);
+  if (minMW) params.set('min_mw', minMW);
+  if (maxMW) params.set('max_mw', maxMW);
+  if (minScore) params.set('min_score', minScore);
+
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = '<tr><td colspan="9" class="loading">Loading...</td></tr>';
+
+  try {
+    const r = await fetch(`${API}/investable?${params}`);
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const { data, meta } = await r.json();
+
+    if (!data || data.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="9" class="loading">No projects match filters</td></tr>';
+      document.getElementById('pageInfo').textContent = '0 results';
+      return;
+    }
+
+    tbody.innerHTML = data.map(p => {
+      const bonuses = [];
+      if (p.energy_community_eligible) bonuses.push('<span class="badge ec">EC</span>');
+      if (p.low_income_eligible) bonuses.push('<span class="badge li">LI</span>');
+      const score = p.investability_score || 0;
+      return `<tr>
+        <td><span class="score ${scoreClass(score)}">${score}</span></td>
+        <td class="project-name" title="${p.name || ''}">${p.name || '?'}</td>
+        <td>${p.capacity_mw ? p.capacity_mw.toFixed(1) : '?'}</td>
+        <td>${p.state || '?'}</td>
+        <td><span class="badge stage">${p.construction_stage || '?'}</span></td>
+        <td class="dev-name" title="${p.developer_canonical || ''}">${p.developer_canonical || '?'}</td>
+        <td>${pct(p.effective_credit_rate)}</td>
+        <td>${bonuses.join(' ') || '-'}</td>
+        <td>${p.cod_std || '?'}</td>
+      </tr>`;
+    }).join('');
+
+    const totalPages = meta.total_pages || 1;
+    document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages} (${fmt(meta.total)} projects)`;
+    document.getElementById('prevBtn').disabled = currentPage <= 1;
+    document.getElementById('nextBtn').disabled = currentPage >= totalPages;
+    document.getElementById('error').style.display = 'none';
+  } catch (e) {
+    tbody.innerHTML = `<tr><td colspan="9" class="loading">Error: ${e.message}</td></tr>`;
+  }
+}
+
+function prevPage() { if (currentPage > 1) loadProjects(currentPage - 1); }
+function nextPage() { loadProjects(currentPage + 1); }
+
+function loadAll() {
+  document.getElementById('lastUpdated').textContent = 'Updated: ' + new Date().toLocaleTimeString();
+  loadSummary();
+  loadProjects(1);
+}
+
+// Load on page open
+loadAll();
+</script>
+
+</body>
+</html>
