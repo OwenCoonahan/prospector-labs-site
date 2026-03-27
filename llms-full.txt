@@ -94,7 +94,7 @@ The `prospector-energy-mcp` package exposes 31 tools for Claude, GPT, Cursor, an
 - `GET /regulatory-filings` — FERC and state regulatory filings.
 
 ### Distributed Generation
-- `GET /dg/projects` — Search 4.8M DG installations. Params: state, type, status, min_kw, max_kw, page, per_page.
+- `GET /dg/projects` — Search 5.4M DG installations. Params: state, type, status, min_kw, max_kw, page, per_page.
 - `GET /dg/stats` — Aggregate DG stats by state, type, status.
 - `POST /dg/stats/refresh` — Refresh DG stats cache.
 
@@ -174,7 +174,7 @@ The `prospector-energy-mcp` package exposes 31 tools for Claude, GPT, Cursor, an
 28. `get_generators` — EIA generator inventory
 
 ### Distributed Generation
-29. `search_dg_projects` — Search 4.8M DG installations
+29. `search_dg_projects` — Search 5.4M DG installations
 30. `get_dg_stats` — DG aggregate statistics
 
 ## Data Sources

@@ -1,6 +1,6 @@
 # Prospector Labs — Glass Energy API
 
-> US energy infrastructure data platform. 47,000+ interconnection queue projects, 4.8M distributed generation installations, 6,593 developer profiles, ITC/PTC tax credit calculations, and deal sourcing for investors.
+> US energy infrastructure data platform. 47,000+ interconnection queue projects, 5.4M distributed generation installations, 6,593 developer profiles, ITC/PTC tax credit calculations, and deal sourcing for investors.
 
 ## API
 
@@ -29,7 +29,7 @@
 - GET /developers/{id} — Developer track record + portfolio
 - GET /tax-credits/calculate — ITC/PTC calculator with IRA bonuses
 - GET /domestic-content/{id} — Domestic content bonus eligibility
-- GET /dg/projects — Search 4.8M distributed generation installations
+- GET /dg/projects — Search 5.4M distributed generation installations
 - GET /lmp/daily — Locational marginal prices (6 ISOs)
 - GET /capacity/prices — Capacity market auction results
 - GET /generators — EIA generator inventory (26K+)
