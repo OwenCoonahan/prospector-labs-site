@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agent Integration | Glass Energy API | Prospector Labs</title>
-  <meta name="description" content="Connect AI agents to US energy infrastructure data. 20 MCP tools for Claude, GPT, and custom agents. OpenAPI spec for any framework.">
+  <meta name="description" content="Connect AI agents to US energy infrastructure data. 31 MCP tools for Claude, GPT, and custom agents. OpenAPI spec for any framework.">
   <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -172,7 +172,7 @@
     <div class="container">
       <div class="hero-label">Agent Integration</div>
       <h1>Give your AI agent<br>energy market intelligence.</h1>
-      <p>20 MCP tools for Claude, GPT, and custom agents. Or use the OpenAPI spec with any framework. Your agent gets access to 47,000 interconnection projects, 4.8M DG installations, tax credit calculations, and developer intelligence.</p>
+      <p>31 MCP tools for Claude, GPT, and custom agents. Or use the OpenAPI spec with any framework. Your agent gets access to 47,000 interconnection projects, 4.8M DG installations, tax credit calculations, and developer intelligence.</p>
       <div class="hero-actions">
         <a href="https://github.com/OwenCoonahan/prospector-energy-mcp" class="btn-primary">View on GitHub</a>
         <a href="https://prospector-platform-production.up.railway.app/openapi.json" class="btn-secondary">OpenAPI Spec</a>
@@ -334,7 +334,7 @@ prospector-energy-mcp</pre></div>
   <section class="tools" id="tools">
     <div class="container">
       <div class="section-label">MCP Tools</div>
-      <div class="section-title">20 tools your agent can call.</div>
+      <div class="section-title">31 tools your agent can call.</div>
       <div class="section-desc">Each tool has a detailed description so agents know exactly when and how to use it. Tools map 1:1 to REST API endpoints.</div>
 
       <div class="tools-grid">
@@ -401,9 +401,33 @@ prospector-energy-mcp</pre></div>
         </div>
 
         <div class="tool-row">
-          <div class="tool-name">get_market_stats</div>
+          <div class="tool-name">get_queue_stats</div>
           <div class="tool-desc">Aggregate interconnection queue statistics: total projects and capacity by region, technology, and status. Includes data freshness timestamps.</div>
           <div class="tool-example">"What's the total solar capacity in the US interconnection queue?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_itc_summary</div>
+          <div class="tool-desc">Aggregate ITC deal pipeline statistics: total eligible projects, estimated ITC value, breakdown by state, region, technology, and bonus eligibility.</div>
+          <div class="tool-example">"How much ITC deal flow is available nationally?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_deal_sheet</div>
+          <div class="tool-desc">Formatted 1-page deal sheet with project details, ITC credit breakdown, developer track record, investability score, and risk flags. Print to PDF.</div>
+          <div class="tool-example">"Generate a deal sheet for project AI2-322"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_project_score</div>
+          <div class="tool-desc">Investability score breakdown: ITC eligibility, size fit, construction stage, developer capital needs, bonus stacking, and data completeness.</div>
+          <div class="tool-example">"What's the investability score breakdown for project 563202?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">export_projects</div>
+          <div class="tool-desc">Export up to 50,000 projects as CSV. Filter by state, region, technology, and status.</div>
+          <div class="tool-example">"Export all active solar projects in PJM as CSV"</div>
         </div>
 
         <div class="tool-row">
@@ -412,7 +436,7 @@ prospector-energy-mcp</pre></div>
           <div class="tool-example">"How many rooftop solar installations are there in California?"</div>
         </div>
 
-        <div class="tool-section-header">Market &amp; Reference Tools</div>
+        <div class="tool-section-header">Market, Grid &amp; Reference Tools</div>
 
         <div class="tool-row">
           <div class="tool-name">get_lmp_daily</div>
@@ -421,9 +445,33 @@ prospector-energy-mcp</pre></div>
         </div>
 
         <div class="tool-row">
+          <div class="tool-name">get_lmp_monthly</div>
+          <div class="tool-desc">Monthly average LMP trends for long-term market analysis. Filter by ISO, zone, and number of months.</div>
+          <div class="tool-example">"Show me PJM monthly LMP trends over the past year"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_lmp_zones</div>
+          <div class="tool-desc">List available LMP pricing zones by ISO. Use to discover valid zone names before querying LMP data.</div>
+          <div class="tool-example">"What pricing zones are available in NYISO?"</div>
+        </div>
+
+        <div class="tool-row">
           <div class="tool-name">get_capacity_prices</div>
           <div class="tool-desc">Capacity market auction results by ISO and year. Covers PJM RPM, ISO-NE FCA, MISO PRA, and NYISO ICAP.</div>
           <div class="tool-example">"What were the PJM capacity auction prices for 2025?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_fuel_prices</div>
+          <div class="tool-desc">Natural gas, coal, and other fuel prices by state and fuel type from EIA data.</div>
+          <div class="tool-example">"What are natural gas prices in Texas?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_rto_generation</div>
+          <div class="tool-desc">RTO-level electricity generation data by fuel type and balancing authority region from EIA.</div>
+          <div class="tool-example">"What's the fuel mix for PJM generation?"</div>
         </div>
 
         <div class="tool-row">
@@ -448,6 +496,18 @@ prospector-energy-mcp</pre></div>
           <div class="tool-name">get_grid_turbines</div>
           <div class="tool-desc">75,000+ wind turbines from the US Wind Turbine Database. Search by state, manufacturer, and capacity. Includes location, model, and hub height.</div>
           <div class="tool-example">"How many Vestas turbines are installed in Iowa?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_grid_transmission</div>
+          <div class="tool-desc">95,000+ US transmission lines from HIFLD. Search by state, owner, and minimum voltage.</div>
+          <div class="tool-example">"Find high-voltage transmission lines in California"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_grid_substations</div>
+          <div class="tool-desc">64,000+ US electrical substations from HIFLD. Search by state and owner.</div>
+          <div class="tool-example">"How many substations does Duke Energy operate in North Carolina?"</div>
         </div>
 
         <div class="tool-row">
