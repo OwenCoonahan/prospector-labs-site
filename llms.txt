@@ -1,0 +1,64 @@
+# Prospector Labs — Glass Energy API
+
+> US energy infrastructure data platform. 47,000+ interconnection queue projects, 4.8M distributed generation installations, 6,593 developer profiles, ITC/PTC tax credit calculations, and deal sourcing for investors.
+
+## API
+
+- Base URL: https://prospector-platform-production.up.railway.app
+- Docs: https://prospector-platform-production.up.railway.app/docs
+- OpenAPI: https://prospector-platform-production.up.railway.app/openapi.json
+- Auth: Free API key via POST /api-keys/register (50 requests/month free)
+
+## MCP Server
+
+- Install: pip install prospector-energy-mcp
+- GitHub: https://github.com/OwenCoonahan/prospector-energy-mcp
+- PyPI: https://pypi.org/project/prospector-energy-mcp/
+- 31 tools for Claude, GPT, and other AI agents
+
+## Key Endpoints
+
+- GET /projects — Search 47,000+ interconnection queue projects
+- GET /projects/{id} — Full project detail with enrichment
+- GET /deals/itc — ITC-eligible investment opportunities
+- GET /deals/itc/summary — Aggregate ITC deal pipeline
+- GET /deals/{id}/sheet — 1-page HTML deal sheet
+- GET /investable — Pre-screened investable projects (scored 0-100)
+- GET /investable/summary — Investability pipeline stats
+- GET /developers/search — Search 6,593 developer profiles
+- GET /developers/{id} — Developer track record + portfolio
+- GET /tax-credits/calculate — ITC/PTC calculator with IRA bonuses
+- GET /domestic-content/{id} — Domestic content bonus eligibility
+- GET /dg/projects — Search 4.8M distributed generation installations
+- GET /lmp/daily — Locational marginal prices (6 ISOs)
+- GET /capacity/prices — Capacity market auction results
+- GET /generators — EIA generator inventory (26K+)
+- GET /technology-costs — NREL ATB cost projections
+- GET /grid/turbines — 75K+ wind turbines
+- GET /grid/transmission — 95K+ transmission lines
+- GET /grid/substations — 64K+ substations
+- GET /export/projects — CSV export (up to 50K)
+- POST /query — Read-only SQL against 9 databases
+
+## Data Coverage
+
+- Interconnection queues: PJM, MISO, ERCOT, CAISO, NYISO, SPP, ISO-NE, West, Southeast
+- Distributed generation: 27 states, 16 programs (LBNL TTS, NY-SUN, NJ, CA, IL, MA, FL, NC)
+- Market data: LMP (6 ISOs), capacity prices, fuel prices, technology costs
+- Grid infrastructure: wind turbines, transmission lines, substations
+- Tax credits: ITC/PTC with energy community, low-income, domestic content bonuses
+- Developers: 6,593 profiles, tier classification, capital needs assessment
+
+## Website
+
+- Homepage: https://www.prospectorlabs.io
+- API Landing: https://www.prospectorlabs.io/api/
+- Getting Started: https://www.prospectorlabs.io/api/getting-started.html
+- Agent Docs: https://www.prospectorlabs.io/api/agents.html
+- Queue Lookup: https://www.prospectorlabs.io/queue-lookup/
+- Investable Projects: https://www.prospectorlabs.io/investable/
+
+## Contact
+
+- Email: owen@prospectorlabs.com
+- Company: Prospector Labs

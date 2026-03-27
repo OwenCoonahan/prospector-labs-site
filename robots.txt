@@ -1,0 +1,13 @@
+# Prospector Labs — prospectorlabs.io
+User-agent: *
+Allow: /
+
+# Block duplicate/experimental landing page variants
+Disallow: /interconnection-landing.html
+Disallow: /interconnection-landing-v2.html
+Disallow: /interconnection-landing-v3.html
+Disallow: /interconnection-landing-v4.html
+Disallow: /interconnection-landing-v5.html
+Disallow: /index-original.html
+
+Sitemap: https://www.prospectorlabs.io/sitemap.xml

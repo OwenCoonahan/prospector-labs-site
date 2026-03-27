@@ -1,0 +1,196 @@
+# Prospector Labs — Glass Energy API — Full Reference
+
+> US energy infrastructure data platform for the energy transition. Covers interconnection queues, distributed generation, developer intelligence, tax credits, market data, and grid infrastructure across all US ISOs/RTOs.
+
+## Company
+
+Prospector Labs builds data infrastructure for the energy sector. The primary product is Glass Energy — an API and data platform serving investors, developers, and analysts in the renewable energy space. The platform specializes in ITC (Investment Tax Credit) deal sourcing for small-to-mid investors seeking tax credit eligible projects built by independent developers who need outside capital.
+
+## API Access
+
+- **Base URL:** https://prospector-platform-production.up.railway.app
+- **Interactive Docs (Swagger):** https://prospector-platform-production.up.railway.app/docs
+- **ReDoc:** https://prospector-platform-production.up.railway.app/redoc
+- **OpenAPI Spec:** https://prospector-platform-production.up.railway.app/openapi.json
+- **Auth:** `X-API-Key` header or `?api_key=` query param
+- **Free tier:** 50 requests/month (register at POST /api-keys/register with name + email)
+- **Paid tiers:** Growth (5K/mo), Pro (10K/mo), Enterprise (unlimited)
+
+## MCP Server (for AI Agents)
+
+The `prospector-energy-mcp` package exposes 31 tools for Claude, GPT, Cursor, and any MCP-compatible agent.
+
+- **Install:** `pip install prospector-energy-mcp` or `uvx prospector-energy-mcp`
+- **GitHub:** https://github.com/OwenCoonahan/prospector-energy-mcp
+- **PyPI:** https://pypi.org/project/prospector-energy-mcp/
+
+### Claude Desktop Config
+```json
+{
+  "mcpServers": {
+    "prospector-energy": {
+      "command": "uvx",
+      "args": ["prospector-energy-mcp"]
+    }
+  }
+}
+```
+
+### Environment Variables
+- `PROSPECTOR_API_URL` — API base URL (default: Railway production)
+- `PROSPECTOR_API_KEY` — API key for authenticated access
+
+## Complete Endpoint Reference (63 endpoints)
+
+### Projects (search & detail)
+- `GET /projects` — Search interconnection queue projects. Params: state, region, type, status, developer, min_mw, max_mw, county, page, per_page.
+- `GET /projects/{project_id}` — Full project detail with all enrichment fields (tax credits, developer, investability, energy community, low-income).
+- `GET /search` — Full-text search across project name, developer, location. Params: q, page, per_page.
+- `GET /score/{project_id}` — Investability score breakdown (ITC eligibility, size fit, stage, developer needs, bonus stacking, data completeness).
+- `GET /stats` — Aggregate queue statistics: counts/capacity by region, type, status.
+
+### Deals & Investment
+- `GET /deals/itc` — ITC-eligible deals with scoring. Params: state, region, type, min_credit_rate, max_capacity_mw, page, per_page.
+- `GET /deals/itc/summary` — Aggregate ITC pipeline: total projects, ITC value, by state/region/type/rate tier/bonus eligibility.
+- `GET /deals/itc/{queue_id}` — Detailed ITC deal profile for one project.
+- `GET /investable` — Pre-screened investable projects (score >= 55, ITC-eligible, mid/late/construction stage, independent developer). Params: min_score, state, region, type, page, per_page.
+- `GET /investable/summary` — Investability pipeline stats: total count/MW, by grade/tier/region/type, avg score.
+- `GET /deals/{queue_id}/sheet` — Self-contained HTML deal sheet (print to PDF). Project details, ITC breakdown, developer track record, score components, risk flags.
+- `POST /deals/sheets/batch` — Batch deal sheet generation. Params: queue_ids (comma-separated) or auto-selects from investable pipeline. Returns JSON with HTML per sheet.
+
+### Tax Credits
+- `GET /tax-credits/calculate` — Calculate ITC/PTC eligibility. Params: technology, capacity_mw, state, county, cod_year. Returns base rate + all IRA bonuses (energy community +10%, low-income +10-20%, domestic content +10%).
+- `GET /domestic-content/{queue_id}` — Domestic content bonus eligibility check based on equipment manufacturer analysis.
+
+### Developers
+- `GET /developers` — List developers with pagination. Params: tier, state, min_projects, page, per_page.
+- `GET /developers/search` — Search by name (partial match across 6,332 aliases). Params: q.
+- `GET /developers/stats` — Aggregate stats: count by tier, avg completion rates, capital needs, top HQ states.
+- `GET /developers/{developer_id}` — Full profile: tier, project counts, capacity, completion rate, regional breakdown, tech mix, aliases, corporate relationships, capital needs.
+- `GET /developers/{developer_id}/projects` — All projects by developer. Params: page, per_page, sort, order.
+
+### Market Data
+- `GET /lmp/daily` — Daily locational marginal prices. Params: iso (CAISO/ERCOT/ISONE/MISO/NYISO/PJM), zone, days.
+- `GET /lmp/monthly` — Monthly average LMP. Params: iso, zone, months.
+- `GET /lmp/zones` — List available pricing zones. Params: iso.
+- `GET /capacity/prices` — Capacity auction results. Params: iso, year.
+- `GET /capacity/zones` — Capacity market zones.
+- `GET /capacity/elcc` — Effective load carrying capability data.
+- `GET /fuel-prices` — Fuel prices by state/type from EIA.
+- `GET /technology-costs` — NREL ATB cost projections (LCOE, capex, capacity factors). Params: technology, year.
+- `GET /technology-costs/summary` — Summary across technologies.
+- `GET /rto-generation` — RTO-level generation by fuel type from EIA.
+
+### Reference Data
+- `GET /generators` — EIA-860 generator inventory (26K+). Params: state, fuel_type, min_mw, page, per_page.
+- `GET /plants` — EIA power plant data.
+- `GET /ferc/plants` — FERC Form 1 plant financials.
+- `GET /ferc/plants/{plant_id}` — Detailed FERC plant data.
+- `GET /ferc/utilities` — FERC utility financial data.
+- `GET /corporate/ownership/{company}` — Corporate ownership lookup.
+- `GET /corporate/search` — Search corporate entities.
+- `GET /permits` — Permits and siting data.
+- `GET /ic-costs` — LBNL interconnection cost studies.
+- `GET /regulatory-filings` — FERC and state regulatory filings.
+
+### Distributed Generation
+- `GET /dg/projects` — Search 4.8M DG installations. Params: state, type, status, min_kw, max_kw, page, per_page.
+- `GET /dg/stats` — Aggregate DG stats by state, type, status.
+- `POST /dg/stats/refresh` — Refresh DG stats cache.
+
+### Grid Infrastructure
+- `GET /grid/turbines` — 75K+ wind turbines (USWTDB). Params: state, manufacturer, min_kw, page, per_page.
+- `GET /grid/transmission` — 95K+ transmission lines (HIFLD). Params: state, owner, min_voltage, page, per_page.
+- `GET /grid/substations` — 64K+ substations (HIFLD). Params: state, owner, page, per_page.
+
+### Export
+- `GET /export/projects` — CSV export of projects (up to 50K rows). Same filters as /projects.
+- `GET /export/dg` — CSV export of DG projects (up to 50K rows).
+- `POST /query` — Read-only SQL SELECT against any of 9 databases. Params: db, sql, limit (max 10K rows).
+
+### System
+- `GET /health` — Health check (thresholds: 45K projects, 4M DG, 48h freshness).
+- `GET /health/detailed` — Per-database health checks.
+- `GET /source-freshness` — Per-source freshness report (last_checked, last_changed, records).
+- `GET /monitoring` — HTML monitoring dashboard.
+- `GET /pipeline/status` — Pipeline run history and health.
+- `GET /pipeline/dashboard` — Pipeline dashboard HTML.
+- `GET /validate` — Data validation checks.
+- `GET /manifest.json` — API manifest.
+
+### Auth
+- `POST /api-keys/register` — Self-serve free API key registration. Params: name, email, use_case.
+- `GET /register` — HTML registration page.
+
+### Admin (requires ADMIN_SECRET)
+- `POST /admin/trigger/{job_name}` — Trigger scheduler job.
+- `GET /admin/keys` — List API keys.
+- `POST /admin/keys` — Create API key.
+- `GET /admin/usage` — Usage statistics.
+- `GET /admin/cache` — Cache stats.
+- `POST /admin/cache/clear` — Clear response cache.
+- `POST /admin/upload-db` — Upload database file to Railway volume.
+
+## MCP Tools (31 total)
+
+### Projects & Search
+1. `search_projects` — Search 47K+ projects by state, ISO, type, developer, capacity
+2. `get_project` — Full project detail with all enrichment
+3. `get_project_score` — Investability score breakdown
+4. `get_queue_stats` — Aggregate queue statistics
+5. `export_projects` — CSV export (up to 50K)
+
+### Deals & Investment
+6. `find_itc_deals` — ITC-eligible deals with scoring
+7. `get_itc_deal` — Detailed ITC deal profile
+8. `get_itc_summary` — Aggregate ITC pipeline stats
+9. `get_investable_projects` — Pre-screened investable projects
+10. `get_investable_summary` — Investability pipeline stats
+11. `get_deal_sheet` — 1-page HTML deal sheet
+
+### Tax Credits
+12. `calculate_tax_credits` — ITC/PTC with all IRA bonuses
+13. `check_domestic_content` — Domestic content bonus eligibility
+
+### Developers
+14. `search_developers` — Search 6,593 profiles by name
+15. `get_developer` — Full developer profile + track record
+16. `get_developer_projects` — All projects by developer
+17. `get_developer_stats` — Developer aggregate stats
+
+### Market Data
+18. `get_lmp_daily` — Daily LMP prices
+19. `get_lmp_monthly` — Monthly LMP trends
+20. `get_lmp_zones` — Available pricing zones
+21. `get_capacity_prices` — Capacity auction results
+22. `get_fuel_prices` — Fuel prices by state/type
+23. `get_technology_costs` — NREL ATB projections
+24. `get_rto_generation` — RTO generation by fuel type
+
+### Grid Infrastructure
+25. `get_grid_turbines` — 75K+ wind turbines
+26. `get_grid_transmission` — 95K+ transmission lines
+27. `get_grid_substations` — 64K+ substations
+28. `get_generators` — EIA generator inventory
+
+### Distributed Generation
+29. `search_dg_projects` — Search 4.8M DG installations
+30. `get_dg_stats` — DG aggregate statistics
+
+## Data Sources
+
+- **Interconnection Queues:** MISO (API), PJM (Data Miner 2), ERCOT (Excel), CAISO (Excel), NYISO (Excel), SPP (gridstatus), ISO-NE (IRTT HTML), LBNL (annual), West/Southeast (regional)
+- **Distributed Generation:** LBNL Tracking the Sun (27 states), NY-SUN (Socrata), NJ Clean Energy (6 programs), CA DG Stats, IL Shines (3 reports), MA SMART, NY DPS SIR (6 utilities), FL PSC (Duke/Tampa), NC NCUC, Ameren IL, NREL Sharing the Sun
+- **EIA:** 860/860M generators, 923 plant generation, 930 demand/generation/interchange, RTO generation, state profiles, CO2, fuel prices
+- **Market:** LMP (direct ISO APIs + gridstatus), capacity auctions (PJM RPM, ISO-NE FCA, MISO PRA, NYISO ICAP), NREL ATB
+- **Grid:** USWTDB wind turbines, HIFLD transmission + substations
+- **FERC:** Form 1 plant financials, interconnection filings
+- **Corporate:** EIA-861 utilities, SEC 10-K, PUDL ownership data
+- **EPA:** eGRID plant emissions + capacity factors
+- **Tax Credits:** IRA bonus calculator (energy community, low-income, domestic content), DOE + Zenodo reference data
+
+## Contact
+
+- **Website:** https://www.prospectorlabs.io
+- **Email:** owen@prospectorlabs.com
+- **Company:** Prospector Labs

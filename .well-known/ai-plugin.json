@@ -1,0 +1,19 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Prospector Energy",
+  "name_for_model": "prospector_energy",
+  "description_for_human": "US energy infrastructure data — interconnection queues, tax credits, developer intelligence, and deal sourcing for the energy transition.",
+  "description_for_model": "Access US energy infrastructure data. Search 47,000+ interconnection queue projects across 9 ISOs, 4.8M distributed generation installations, 6,593 developer profiles with track records and capital needs, ITC/PTC tax credit calculations with all IRA bonuses, investable project scoring, market data (LMP, capacity prices), and grid infrastructure (turbines, transmission, substations). Use for energy investment analysis, project due diligence, tax credit calculations, developer research, and market intelligence.",
+  "auth": {
+    "type": "service_http",
+    "authorization_type": "bearer",
+    "verification_tokens": {}
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://prospector-platform-production.up.railway.app/openapi.json"
+  },
+  "logo_url": "https://www.prospectorlabs.io/favicon.png",
+  "contact_email": "owen@prospectorlabs.com",
+  "legal_info_url": "https://www.prospectorlabs.io/"
+}
