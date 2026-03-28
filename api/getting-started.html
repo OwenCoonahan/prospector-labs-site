@@ -141,7 +141,7 @@
         <a href="/api/" class="nav-link">Overview</a>
         <a href="/api/getting-started.html" class="nav-link" style="color: var(--black); font-weight: 500;">Getting Started</a>
         <a href="https://prospector-platform-production.up.railway.app/docs" class="nav-link">API Reference</a>
-        <a href="mailto:owen@prospectorlabs.com?subject=API Key Request" class="nav-cta">Get API Key</a>
+        <a href="https://prospector-platform-production.up.railway.app/register" class="nav-cta">Get API Key</a>
       </div>
     </div>
   </nav>
@@ -156,10 +156,10 @@
       <!-- SECTION 1: API KEY -->
       <h2>1. Get your API key</h2>
 
-      <p>Request a free API key to start querying. The free tier includes 50 queries per month across all endpoints.</p>
+      <p>Register for a free API key to start querying. The free tier includes 50 queries per month across all endpoints.</p>
 
       <div class="info">
-        <strong>Email:</strong> <a href="mailto:owen@prospectorlabs.com?subject=Free API Key Request">owen@prospectorlabs.com</a> with subject "Free API Key Request" and we'll send you a key within minutes.
+        <strong>Self-serve:</strong> Register at <a href="https://prospector-platform-production.up.railway.app/register"><code>/register</code></a> to get your API key instantly. No approval needed.
       </div>
 
       <p>Include your key in every request via the <code>X-API-Key</code> header:</p>
@@ -534,7 +534,7 @@ curl -H <span class="s">"X-API-Key: $KEY"</span> <span class="s">"$BASE/develope
           <span class="code-lang">json</span>
         </div>
         <div class="code-body">
-<pre>{ <span class="kw">"detail"</span>: <span class="s">"Monthly query limit exceeded. Upgrade at owen@prospectorlabs.com"</span> }</pre>
+<pre>{ <span class="kw">"detail"</span>: <span class="s">"Monthly query limit exceeded. Upgrade at prospectorlabs.com/api"</span> }</pre>
         </div>
       </div>
 
