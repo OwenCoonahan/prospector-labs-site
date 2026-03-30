@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solar & Wind Tax Credit Calculator (IRA 2024-2032) | Prospector Labs</title>
+  <link rel="canonical" href="https://www.prospectorlabs.io/calculator/">
+  <meta name="description" content="Calculate ITC and PTC tax credits for solar, wind, and storage projects under the Inflation Reduction Act. Energy community, domestic content, and low-income bonuses included.">
+  <meta property="og:title" content="IRA Tax Credit Calculator | Prospector Labs">
+  <meta property="og:description" content="Calculate ITC and PTC credits for energy projects. Base rates + IRA bonus stacking (energy community, domestic content, low-income).">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.prospectorlabs.io/calculator/">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "IRA Tax Credit Calculator",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "author": { "@type": "Organization", "name": "Prospector Labs", "url": "https://prospectorlabs.com" },
+    "description": "Calculate ITC and PTC tax credits for solar, wind, and storage projects under the Inflation Reduction Act."
+  }
+  </script>
+  <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --white: #ffffff;
+      --black: #0a0a0a;
+      --gray-50: #fafafa;
+      --gray-100: #f5f5f5;
+      --gray-200: #e5e5e5;
+      --gray-300: #d4d4d4;
+      --gray-400: #a3a3a3;
+      --gray-500: #737373;
+      --gray-600: #525252;
+      --gray-700: #404040;
+      --gray-800: #262626;
+      --gray-900: #171717;
+      --accent: #16a34a;
+      --blue: #2563eb;
+      --red: #dc2626;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Geist', system-ui, sans-serif;
+      background: var(--white);
+      color: var(--black);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* NAV */
+    nav { padding: 20px 0; border-bottom: 1px solid var(--gray-200); }
+    nav .container { display: flex; justify-content: space-between; align-items: center; }
+    .nav-brand { display: flex; align-items: center; gap: 12px; }
+    .nav-logo { font-size: 15px; letter-spacing: -0.02em; }
+    .logo-glass { font-weight: 600; }
+    .logo-energy { font-weight: 400; color: var(--gray-500); }
+    .nav-byline { font-size: 12px; color: var(--gray-400); padding-left: 12px; border-left: 1px solid var(--gray-200); }
+    .nav-byline a { color: var(--gray-500); transition: color 0.2s; }
+    .nav-byline a:hover { color: var(--black); }
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+    .nav-link { font-size: 14px; color: var(--gray-600); transition: color 0.2s; }
+    .nav-link:hover { color: var(--black); }
+    .nav-cta { font-size: 14px; font-weight: 500; padding: 10px 20px; background: var(--black); color: var(--white); border-radius: 6px; transition: background 0.2s; }
+    .nav-cta:hover { background: var(--gray-800); }
+
+    /* HERO */
+    .hero { padding: 60px 0 40px; }
+    .hero-label { font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+    .hero h1 { font-size: 36px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 12px; }
+    .hero p { font-size: 16px; color: var(--gray-600); max-width: 640px; }
+
+    /* CALCULATOR LAYOUT */
+    .calc-section { padding: 40px 0 80px; }
+    .calc-grid { display: grid; grid-template-columns: 400px 1fr; gap: 48px; align-items: start; }
+
+    /* FORM */
+    .calc-form { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 12px; padding: 32px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--gray-700); }
+    .form-group select,
+    .form-group input {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--gray-200); border-radius: 6px;
+      font-family: inherit; font-size: 14px; background: var(--white); color: var(--black);
+      outline: none; transition: border-color 0.2s;
+    }
+    .form-group select:focus,
+    .form-group input:focus { border-color: var(--accent); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .toggle-group { display: flex; gap: 8px; }
+    .toggle-btn {
+      flex: 1; padding: 8px 12px; border: 1px solid var(--gray-200); border-radius: 6px;
+      font-size: 13px; font-weight: 500; text-align: center; cursor: pointer;
+      background: var(--white); color: var(--gray-600); transition: all 0.2s;
+    }
+    .toggle-btn.active { border-color: var(--accent); background: #f0fdf4; color: var(--accent); }
+    .toggle-btn:hover:not(.active) { border-color: var(--gray-300); }
+    .calc-submit {
+      width: 100%; padding: 12px; background: var(--accent); color: var(--white);
+      border: none; border-radius: 6px; font-family: inherit; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: background 0.2s; margin-top: 4px;
+    }
+    .calc-submit:hover { background: #15803d; }
+    .calc-submit:disabled { background: #86efac; cursor: not-allowed; }
+
+    /* RESULTS */
+    .results-panel { min-height: 200px; }
+    .results-empty { text-align: center; padding: 80px 24px; color: var(--gray-400); font-size: 15px; }
+    .results-error { padding: 16px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; color: var(--red); font-size: 14px; }
+
+    .result-header { margin-bottom: 32px; }
+    .result-header h2 { font-size: 14px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+    .total-rate { font-family: 'JetBrains Mono', monospace; font-size: 56px; font-weight: 600; color: var(--accent); letter-spacing: -0.03em; line-height: 1; }
+    .total-rate-label { font-size: 14px; color: var(--gray-500); margin-top: 4px; }
+    .recommended-badge { display: inline-block; margin-top: 8px; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 4px; background: #f0fdf4; color: var(--accent); border: 1px solid #bbf7d0; }
+
+    .result-value-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--gray-100); }
+    .result-value-row:last-child { border-bottom: none; }
+    .rv-label { font-size: 14px; color: var(--gray-600); }
+    .rv-value { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 500; }
+    .rv-value.green { color: var(--accent); }
+    .rv-value.large { font-size: 20px; font-weight: 600; }
+
+    .bonus-card { border: 1px solid var(--gray-200); border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+    .bonus-card.eligible { border-color: #bbf7d0; background: #f0fdf4; }
+    .bonus-card.not-eligible { border-color: var(--gray-200); background: var(--gray-50); }
+    .bonus-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .bonus-name { font-size: 14px; font-weight: 600; }
+    .bonus-rate { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 600; }
+    .bonus-rate.green { color: var(--accent); }
+    .bonus-detail { font-size: 13px; color: var(--gray-500); }
+
+    .result-section { margin-top: 32px; }
+    .result-section h3 { font-size: 14px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; }
+
+    .notes-list { list-style: none; padding: 0; }
+    .notes-list li { font-size: 13px; color: var(--gray-600); padding: 4px 0 4px 16px; position: relative; }
+    .notes-list li::before { content: ''; position: absolute; left: 0; top: 12px; width: 5px; height: 5px; border-radius: 50%; background: var(--gray-300); }
+
+    /* LEAD CAPTURE */
+    .lead-capture { margin-top: 32px; padding: 24px; border: 1px solid var(--gray-200); border-radius: 8px; background: var(--gray-50); }
+    .lead-capture h3 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .lead-capture p { font-size: 13px; color: var(--gray-500); margin-bottom: 12px; }
+    .lead-row { display: flex; gap: 8px; }
+    .lead-row input { flex: 1; padding: 10px 12px; border: 1px solid var(--gray-200); border-radius: 6px; font-family: inherit; font-size: 14px; }
+    .lead-row button { padding: 10px 20px; background: var(--black); color: var(--white); border: none; border-radius: 6px; font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; }
+    .lead-row button:hover { background: var(--gray-800); }
+    .lead-success { font-size: 13px; color: var(--accent); margin-top: 8px; display: none; }
+
+    /* FOOTER */
+    footer { padding: 40px 0; border-top: 1px solid var(--gray-200); }
+    footer .container { display: flex; justify-content: space-between; align-items: center; }
+    .footer-left { font-size: 13px; color: var(--gray-500); }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 13px; color: var(--gray-500); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--black); }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .calc-grid { grid-template-columns: 1fr; }
+      .total-rate { font-size: 42px; }
+    }
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 28px; }
+      .form-row { grid-template-columns: 1fr; }
+      footer .container { flex-direction: column; gap: 16px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="container">
+      <div class="nav-brand">
+        <div class="nav-logo">
+          <span class="logo-glass">Glass</span><span class="logo-energy">Energy</span>
+        </div>
+        <div class="nav-byline">by <a href="https://prospectorlabs.com">Prospector Labs</a></div>
+      </div>
+      <div class="nav-links">
+        <a href="../api/getting-started.html" class="nav-link">Getting Started</a>
+        <a href="https://prospector-platform-production.up.railway.app/docs" class="nav-link">Documentation</a>
+        <a href="../api/" class="nav-link">API</a>
+        <a href="https://prospector-platform-production.up.railway.app/register" class="nav-cta">Get API Key</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-label">Tax Credit Calculator</div>
+      <h1>Calculate ITC & PTC credits<br>under the Inflation Reduction Act</h1>
+      <p>Estimate base credits plus IRA bonus adders for energy community, domestic content, and low-income eligibility. Covers solar, wind, storage, and hybrid projects.</p>
+    </div>
+  </section>
+
+  <!-- CALCULATOR -->
+  <section class="calc-section">
+    <div class="container">
+      <div class="calc-grid">
+        <!-- FORM -->
+        <div class="calc-form">
+          <form id="calc-form">
+            <div class="form-group">
+              <label for="technology">Technology</label>
+              <select id="technology" required>
+                <option value="">Select technology...</option>
+                <option value="Solar">Solar</option>
+                <option value="Wind">Wind (Onshore)</option>
+                <option value="Offshore Wind">Wind (Offshore)</option>
+                <option value="Storage">Battery Storage</option>
+                <option value="Solar+Storage">Solar + Storage (Hybrid)</option>
+                <option value="Geothermal">Geothermal</option>
+                <option value="Nuclear">Nuclear</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="capacity">Capacity (MW)</label>
+                <input id="capacity" type="number" step="0.1" min="0.01" required placeholder="e.g. 5.0">
+              </div>
+              <div class="form-group">
+                <label for="cod_year">Expected COD Year</label>
+                <select id="cod_year">
+                  <option value="">Not specified</option>
+                  <option value="2025">2025</option>
+                  <option value="2026" selected>2026</option>
+                  <option value="2027">2027</option>
+                  <option value="2028">2028</option>
+                  <option value="2029">2029</option>
+                  <option value="2030">2030</option>
+                  <option value="2031">2031</option>
+                  <option value="2032">2032</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="state">State</label>
+                <select id="state" required>
+                  <option value="">Select state...</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="county">County (optional)</label>
+                <input id="county" type="text" placeholder="e.g. Lancaster">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Domestic Content</label>
+              <div class="toggle-group">
+                <div class="toggle-btn" data-val="true" onclick="setToggle(this)">Yes</div>
+                <div class="toggle-btn active" data-val="" onclick="setToggle(this)">Unknown</div>
+                <div class="toggle-btn" data-val="false" onclick="setToggle(this)">No</div>
+              </div>
+            </div>
+
+            <button type="submit" class="calc-submit" id="submit-btn">Calculate Tax Credits</button>
+          </form>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="results-panel" id="results">
+          <div class="results-empty" id="empty-state">
+            Enter project details and click Calculate to see ITC/PTC estimates, bonus eligibility, and estimated credit value.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-left">Prospector Labs &copy; 2026</div>
+      <div class="footer-links">
+        <a href="../api/">API</a>
+        <a href="https://prospector-platform-production.up.railway.app/docs">API Docs</a>
+        <a href="https://github.com/OwenCoonahan">GitHub</a>
+        <a href="https://prospectorlabs.com">Home</a>
+        <a href="mailto:owen@prospectorlabs.com">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+<script>
+const API_BASE = 'https://prospector-platform-production.up.railway.app';
+const STATES = [
+  'AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA',
+  'KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ',
+  'NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT',
+  'VA','WA','WV','WI','WY','DC'
+];
+const STATE_NAMES = {
+  AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',
+  CT:'Connecticut',DE:'Delaware',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',
+  IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',
+  ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',
+  MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',
+  NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',
+  OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',
+  TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',
+  WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming',DC:'District of Columbia'
+};
+
+// Populate state dropdown
+const stateSelect = document.getElementById('state');
+STATES.forEach(s => {
+  const opt = document.createElement('option');
+  opt.value = s;
+  opt.textContent = STATE_NAMES[s] + ' (' + s + ')';
+  stateSelect.appendChild(opt);
+});
+
+// Toggle buttons
+function setToggle(el) {
+  el.parentElement.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function getDomesticContent() {
+  const active = document.querySelector('.toggle-group .toggle-btn.active');
+  if (!active || active.dataset.val === '') return null;
+  return active.dataset.val === 'true';
+}
+
+function fmtMoney(n) {
+  if (n === null || n === undefined) return '--';
+  if (n >= 1e9) return '$' + (n / 1e9).toFixed(1) + 'B';
+  if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + 'M';
+  if (n >= 1e3) return '$' + (n / 1e3).toFixed(0) + 'K';
+  return '$' + n.toLocaleString();
+}
+
+function fmtPct(n) {
+  if (n === null || n === undefined) return '--';
+  return (n * 100).toFixed(0) + '%';
+}
+
+// Form submit
+document.getElementById('calc-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  const resultsEl = document.getElementById('results');
+  btn.disabled = true;
+  btn.textContent = 'Calculating...';
+
+  const params = new URLSearchParams();
+  params.set('technology', document.getElementById('technology').value);
+  params.set('capacity_mw', document.getElementById('capacity').value);
+  params.set('state', document.getElementById('state').value);
+  const county = document.getElementById('county').value.trim();
+  if (county) params.set('county', county);
+  const codYear = document.getElementById('cod_year').value;
+  if (codYear) params.set('cod_year', codYear);
+  const dc = getDomesticContent();
+  if (dc !== null) params.set('domestic_content', dc);
+
+  try {
+    const resp = await fetch(API_BASE + '/tax-credits/calculate?' + params.toString());
+    const json = await resp.json();
+    if (!resp.ok) {
+      resultsEl.innerHTML = '<div class="results-error">' + (json.detail || 'Calculation failed. Please check inputs.') + '</div>';
+      btn.disabled = false;
+      btn.textContent = 'Calculate Tax Credits';
+      return;
+    }
+    renderResults(json.data, params);
+  } catch (err) {
+    resultsEl.innerHTML = '<div class="results-error">Network error: ' + err.message + '</div>';
+  }
+  btn.disabled = false;
+  btn.textContent = 'Calculate Tax Credits';
+});
+
+function renderResults(d, params) {
+  const resultsEl = document.getElementById('results');
+  const rec = d.recommended_credit || 'ITC';
+  const isITC = rec === 'ITC';
+  const effectiveRate = isITC ? d.effective_itc_rate : d.effective_ptc_rate;
+  const maxRate = isITC ? d.max_itc_rate : d.effective_ptc_rate;
+  const recValue = d.recommended_value;
+  const tech = params.get('technology');
+  const state = params.get('state');
+  const cap = parseFloat(params.get('capacity_mw'));
+
+  const ec = d.bonuses.energy_community;
+  const dc = d.bonuses.domestic_content;
+  const li = d.bonuses.low_income;
+
+  let html = '';
+
+  // Header — total rate
+  html += '<div class="result-header">';
+  html += '<h2>Effective Credit Rate</h2>';
+  html += '<div class="total-rate">' + fmtPct(effectiveRate) + '</div>';
+  html += '<div class="total-rate-label">' + rec + ' &mdash; ' + tech + ', ' + cap + ' MW in ' + (STATE_NAMES[state] || state) + '</div>';
+  if (d.can_elect_itc && d.can_elect_ptc) {
+    html += '<div class="recommended-badge">Recommended: ' + rec + '</div>';
+  }
+  html += '</div>';
+
+  // Value estimates
+  html += '<div class="result-section"><h3>Estimated Value</h3>';
+  if (d.can_elect_itc) {
+    html += '<div class="result-value-row"><span class="rv-label">ITC Value (one-time)</span><span class="rv-value large green">' + fmtMoney(d.estimated_itc_value) + '</span></div>';
+  }
+  if (d.can_elect_ptc && d.estimated_annual_ptc_value) {
+    html += '<div class="result-value-row"><span class="rv-label">PTC Value (per year)</span><span class="rv-value">' + fmtMoney(d.estimated_annual_ptc_value) + '</span></div>';
+    html += '<div class="result-value-row"><span class="rv-label">PTC Value (10-year)</span><span class="rv-value">' + fmtMoney(d.estimated_10yr_ptc_value) + '</span></div>';
+  }
+  html += '</div>';
+
+  // Bonus breakdown
+  html += '<div class="result-section"><h3>IRA Bonus Adders</h3>';
+
+  // Base rate
+  html += '<div class="bonus-card eligible"><div class="bonus-header"><span class="bonus-name">Base Credit</span><span class="bonus-rate green">30%</span></div>';
+  html += '<div class="bonus-detail">Investment Tax Credit base rate for ' + tech + '</div></div>';
+
+  // Energy community
+  html += '<div class="bonus-card ' + (ec.eligible ? 'eligible' : 'not-eligible') + '">';
+  html += '<div class="bonus-header"><span class="bonus-name">Energy Community</span>';
+  html += '<span class="bonus-rate ' + (ec.eligible ? 'green' : '') + '">' + (ec.eligible ? '+' + fmtPct(ec.bonus) : 'Not eligible') + '</span></div>';
+  html += '<div class="bonus-detail">' + (ec.type || (ec.eligible ? 'Qualifies for energy community bonus' : 'Location does not qualify as an energy community')) + '</div></div>';
+
+  // Domestic content
+  html += '<div class="bonus-card ' + (dc.eligible ? 'eligible' : 'not-eligible') + '">';
+  html += '<div class="bonus-header"><span class="bonus-name">Domestic Content</span>';
+  html += '<span class="bonus-rate ' + (dc.eligible ? 'green' : '') + '">' + (dc.eligible ? '+' + fmtPct(dc.bonus) : 'Not eligible') + '</span></div>';
+  html += '<div class="bonus-detail">' + (dc.eligible ? 'Meets domestic content requirements' : 'Domestic content requirements not met or unknown') + '</div></div>';
+
+  // Low income
+  html += '<div class="bonus-card ' + (li.eligible ? 'eligible' : 'not-eligible') + '">';
+  html += '<div class="bonus-header"><span class="bonus-name">Low-Income Community</span>';
+  html += '<span class="bonus-rate ' + (li.eligible ? 'green' : '') + '">' + (li.eligible ? '+' + fmtPct(li.bonus) : 'Not eligible') + '</span></div>';
+  html += '<div class="bonus-detail">' + (li.tier || (li.eligible ? 'Qualifies for low-income bonus' : 'Location not in a qualified low-income census tract')) + '</div></div>';
+
+  html += '</div>'; // end bonuses
+
+  // Notes
+  if (d.notes && d.notes.length > 0) {
+    html += '<div class="result-section"><h3>Notes</h3><ul class="notes-list">';
+    d.notes.forEach(function(n) { html += '<li>' + n + '</li>'; });
+    html += '</ul></div>';
+  }
+
+  // Lead capture
+  html += '<div class="lead-capture">';
+  html += '<h3>Want a deal sheet for a real project like this?</h3>';
+  html += '<p>We have 124 investable projects matching criteria like these. Get a one-page deal sheet with developer info, risk analysis, and full credit breakdown.</p>';
+  html += '<div class="lead-row"><input type="email" id="lead-email" placeholder="your@email.com"><button onclick="captureLead()">Send Me Projects</button></div>';
+  html += '<div class="lead-success" id="lead-success">Thanks! We\'ll send relevant projects to your inbox.</div>';
+  html += '</div>';
+
+  resultsEl.innerHTML = html;
+}
+
+function captureLead() {
+  const email = document.getElementById('lead-email').value.trim();
+  if (!email || !email.includes('@')) return;
+  // Store locally + show success
+  const leads = JSON.parse(localStorage.getItem('pl_leads') || '[]');
+  leads.push({ email: email, source: 'calculator', ts: new Date().toISOString() });
+  localStorage.setItem('pl_leads', JSON.stringify(leads));
+  document.getElementById('lead-success').style.display = 'block';
+  document.getElementById('lead-email').value = '';
+}
+</script>
+</body>
+</html>
