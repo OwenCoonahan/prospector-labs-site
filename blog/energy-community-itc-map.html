@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>37% of US Interconnection Projects Qualify for Energy Community Bonuses | Prospector Labs</title>
+  <meta name="description" content="Analysis of energy community eligibility across 47,567 interconnection projects in 9 US ISOs. CAISO leads at 65.1%, ISO-NE at 0%. Data on the IRA's +10% ITC bonus.">
+  <link rel="canonical" href="https://www.prospectorlabs.io/blog/energy-community-itc-map.html">
+
+  <!-- OG -->
+  <meta property="og:title" content="37% of US Interconnection Projects Qualify for Energy Community Bonuses">
+  <meta property="og:description" content="We mapped EC eligibility across 47,567 projects and 9 ISOs. Where the +10% ITC bonus actually applies.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://www.prospectorlabs.io/blog/energy-community-itc-map.html">
+  <meta property="og:site_name" content="Prospector Labs">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "37% of US Interconnection Projects Qualify for Energy Community Bonuses",
+    "datePublished": "2026-03-30",
+    "author": { "@type": "Organization", "name": "Prospector Labs" },
+    "publisher": { "@type": "Organization", "name": "Prospector Labs", "url": "https://www.prospectorlabs.io" },
+    "description": "Analysis of energy community eligibility across 47,567 interconnection projects in 9 US ISOs."
+  }
+  </script>
+
+  <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+  <style>
+    :root {
+      --white: #ffffff;
+      --black: #0a0a0a;
+      --gray-50: #fafafa;
+      --gray-100: #f5f5f5;
+      --gray-200: #e5e5e5;
+      --gray-300: #d4d4d4;
+      --gray-400: #a3a3a3;
+      --gray-500: #737373;
+      --gray-600: #525252;
+      --gray-700: #404040;
+      --gray-800: #262626;
+      --gray-900: #171717;
+      --accent: #16a34a;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Geist', system-ui, sans-serif;
+      background: var(--white);
+      color: var(--black);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.7;
+    }
+    a { color: inherit; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* NAV */
+    nav { padding: 20px 0; border-bottom: 1px solid var(--gray-200); }
+    nav .container { display: flex; justify-content: space-between; align-items: center; }
+    .nav-brand { display: flex; align-items: center; gap: 12px; }
+    .nav-logo { font-size: 15px; letter-spacing: -0.02em; text-decoration: none; }
+    .logo-glass { font-weight: 600; }
+    .logo-energy { font-weight: 400; color: var(--gray-500); }
+    .nav-byline { font-size: 12px; color: var(--gray-400); padding-left: 12px; border-left: 1px solid var(--gray-200); }
+    .nav-byline a { color: var(--gray-500); text-decoration: none; }
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+    .nav-link { font-size: 14px; color: var(--gray-600); text-decoration: none; transition: color 0.2s; }
+    .nav-link:hover { color: var(--black); }
+    .nav-cta { font-size: 14px; font-weight: 500; padding: 10px 20px; background: var(--black); color: var(--white); border-radius: 6px; text-decoration: none; }
+
+    /* ARTICLE */
+    .article-header { padding: 60px 0 40px; max-width: 720px; margin: 0 auto; }
+    .article-header .tag {
+      display: inline-block; font-size: 11px; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent);
+      background: rgba(22,163,74,0.08); padding: 4px 10px; border-radius: 4px; margin-bottom: 16px;
+    }
+    .article-header h1 { font-size: 36px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 16px; }
+    .article-header .subtitle { font-size: 18px; color: var(--gray-600); margin-bottom: 12px; }
+    .article-header .meta { font-size: 13px; color: var(--gray-400); }
+
+    .article-body { max-width: 720px; margin: 0 auto; padding-bottom: 80px; }
+    .article-body h2 { font-size: 24px; font-weight: 600; letter-spacing: -0.02em; margin: 48px 0 16px; }
+    .article-body h3 { font-size: 18px; font-weight: 600; margin: 32px 0 12px; }
+    .article-body p { margin-bottom: 20px; color: var(--gray-700); }
+    .article-body strong { color: var(--black); }
+
+    .chart-container { margin: 32px 0; border: 1px solid var(--gray-200); border-radius: 8px; overflow: hidden; }
+
+    .data-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 14px; }
+    .data-table th { text-align: left; padding: 10px 16px; background: var(--gray-50); border-bottom: 2px solid var(--gray-200); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--gray-600); }
+    .data-table td { padding: 10px 16px; border-bottom: 1px solid var(--gray-100); }
+    .data-table tr:hover { background: var(--gray-50); }
+    .highlight { color: var(--accent); font-weight: 600; }
+    .mono { font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+
+    .callout {
+      background: var(--gray-50); border-left: 3px solid var(--accent);
+      padding: 20px 24px; margin: 32px 0; border-radius: 0 8px 8px 0;
+    }
+    .callout p { margin-bottom: 0; }
+
+    .cta-box {
+      background: var(--gray-900); color: var(--white); padding: 32px;
+      border-radius: 12px; margin: 48px 0; text-align: center;
+    }
+    .cta-box h3 { font-size: 20px; margin-bottom: 8px; color: var(--white); }
+    .cta-box p { color: var(--gray-400); margin-bottom: 20px; }
+    .cta-box a {
+      display: inline-block; background: var(--accent); color: var(--white);
+      padding: 12px 28px; border-radius: 6px; font-weight: 500;
+      text-decoration: none; transition: background 0.2s;
+    }
+    .cta-box a:hover { background: #15803d; }
+
+    footer { padding: 40px 0; border-top: 1px solid var(--gray-200); }
+    footer .container { display: flex; justify-content: space-between; align-items: center; }
+    .footer-text { font-size: 13px; color: var(--gray-400); }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 13px; color: var(--gray-500); text-decoration: none; }
+
+    @media (max-width: 768px) {
+      .article-header h1 { font-size: 28px; }
+      .nav-links { gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center;">
+    <div class="nav-brand">
+      <a href="/" class="nav-logo"><span class="logo-glass">Glass</span> <span class="logo-energy">Energy</span></a>
+      <span class="nav-byline">by <a href="/">Prospector Labs</a></span>
+    </div>
+    <div class="nav-links">
+      <a href="/api/" class="nav-link">API</a>
+      <a href="/api/getting-started.html" class="nav-link">Docs</a>
+      <a href="/blog/" class="nav-link">Blog</a>
+      <a href="https://prospector-platform-production.up.railway.app/register" class="nav-cta">Get API Key</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <header class="article-header">
+    <span class="tag">Tax Credits</span>
+    <h1>37% of US Interconnection Projects Qualify for IRA Energy Community Bonuses</h1>
+    <p class="subtitle">We mapped energy community eligibility across 47,567 utility-scale projects in 9 ISOs. CAISO leads at 65%. ISO-NE sits at 0%.</p>
+    <p class="meta">March 30, 2026 &middot; Prospector Labs &middot; 5 min read</p>
+  </header>
+
+  <article class="article-body">
+    <p>The Inflation Reduction Act's energy community bonus adds <strong>+10% to ITC</strong> (or +10% to PTC) for projects sited in communities with closed coal mines, retired coal plants, or fossil fuel employment above national thresholds. It's one of the most valuable IRA adders &mdash; but the eligibility map is uneven.</p>
+
+    <p>We checked every project in the Glass Energy database against the IRS energy community census tract and MSA/non-MSA designations. Here's what we found.</p>
+
+    <h2>The map: 17,710 projects qualify</h2>
+
+    <p>Out of 47,567 utility-scale projects across 9 ISO/RTO regions, <strong>17,710 (37.2%)</strong> sit in designated energy communities. That's <strong>1.88 million MW</strong> of capacity eligible for the bonus.</p>
+
+    <div class="chart-container" id="chart-iso" style="height: 400px;"></div>
+
+    <p>The spread is dramatic. <strong>CAISO leads at 65.1%</strong> &mdash; driven by California's combination of former fossil fuel employment zones and coal closure areas. Meanwhile, <strong>ISO-NE has zero eligible projects</strong>, because New England has neither significant coal history nor qualifying fossil fuel employment thresholds.</p>
+
+    <h2>Eligibility by ISO/RTO</h2>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>ISO/RTO</th><th>Total Projects</th><th>EC Eligible</th><th>Eligible %</th><th>EC Capacity (MW)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>CAISO</td><td class="mono">10,388</td><td class="mono">6,762</td><td class="highlight">65.1%</td><td class="mono">421,224</td></tr>
+        <tr><td>MISO</td><td class="mono">5,506</td><td class="mono">2,094</td><td class="highlight">38.0%</td><td class="mono">345,828</td></tr>
+        <tr><td>PJM</td><td class="mono">10,242</td><td class="mono">3,687</td><td class="highlight">36.0%</td><td class="mono">158,521</td></tr>
+        <tr><td>West</td><td class="mono">6,628</td><td class="mono">2,358</td><td>35.6%</td><td class="mono">504,844</td></tr>
+        <tr><td>Southeast</td><td class="mono">3,175</td><td class="mono">838</td><td>26.4%</td><td class="mono">112,370</td></tr>
+        <tr><td>SPP</td><td class="mono">2,842</td><td class="mono">618</td><td>21.7%</td><td class="mono">117,212</td></tr>
+        <tr><td>ERCOT</td><td class="mono">3,866</td><td class="mono">822</td><td>21.3%</td><td class="mono">157,340</td></tr>
+        <tr><td>NYISO</td><td class="mono">3,009</td><td class="mono">531</td><td>17.6%</td><td class="mono">59,076</td></tr>
+        <tr><td>ISO-NE</td><td class="mono">1,911</td><td class="mono">0</td><td>0.0%</td><td class="mono">0</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Top states by eligible project count</h2>
+
+    <div class="chart-container" id="chart-states" style="height: 420px;"></div>
+
+    <p><strong>California dominates</strong> with 6,815 eligible projects and 431 GW of capacity. Pennsylvania (1,260), Texas (960), and Illinois (927) follow &mdash; all states with significant coal and fossil fuel heritage that triggers EC designation.</p>
+
+    <h2>Why this matters for investors</h2>
+
+    <div class="callout">
+      <p><strong>The 10% EC bonus is additive.</strong> A solar project in an energy community with base 30% ITC goes to 40%. Stack with low-income (+10-20%) and domestic content (+10%), and you're looking at 50-70% effective ITC. On a $5M project, that's the difference between $1.5M and $3.5M in tax credits.</p>
+    </div>
+
+    <p>For ITC investors, energy community eligibility is one of the first screens. Our <a href="/api/" style="color: var(--accent); text-decoration: underline;">API</a> includes EC eligibility as a field on every project, so you can filter the entire 47,000+ project database to only EC-eligible deals.</p>
+
+    <h3>What qualifies as an energy community?</h3>
+
+    <p>The IRS defines three categories:</p>
+
+    <p><strong>1. Brownfield sites</strong> &mdash; previously developed, contaminated land (EPA Brownfields registry).</p>
+    <p><strong>2. Coal closure communities</strong> &mdash; census tracts with a coal mine that closed after 1999 or a coal plant that closed after 2009, plus adjoining tracts.</p>
+    <p><strong>3. Fossil fuel employment (FFE) communities</strong> &mdash; MSAs or non-MSA counties where fossil fuel jobs + tax revenue exceed national thresholds, AND the unemployment rate is at or above the national average.</p>
+
+    <p>The FFE category is the largest driver, especially in states like California, Pennsylvania, and Texas where oil &amp; gas employment is concentrated.</p>
+
+    <h2>Methodology</h2>
+
+    <p>We matched each project's county against the IRS energy community designations (2023 update) using both the coal closure census tract list and the FFE MSA/non-MSA county list. Projects were geocoded to county using census data for county centroid matching. Coverage: 100% of 47,567 projects checked.</p>
+
+    <p>All data is available via the <a href="/api/" style="color: var(--accent); text-decoration: underline;">Glass Energy API</a>. Filter by <code style="background:var(--gray-100);padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:13px;">energy_community_eligible=true</code> on the <code style="background:var(--gray-100);padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:13px;">/projects</code> or <code style="background:var(--gray-100);padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:13px;">/deals/itc</code> endpoints.</p>
+
+    <div class="cta-box">
+      <h3>Explore the full dataset</h3>
+      <p>47,000+ projects with energy community eligibility, tax credit calculations, and developer intelligence.</p>
+      <a href="/api/">Try the API</a>
+    </div>
+  </article>
+</div>
+
+<footer>
+  <div class="container">
+    <span class="footer-text">&copy; 2026 Prospector Labs</span>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/api/">API</a>
+      <a href="/blog/">Blog</a>
+      <a href="/contact.html">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Chart 1: EC eligibility by ISO (horizontal bar)
+const isos = ['ISO-NE', 'NYISO', 'ERCOT', 'SPP', 'Southeast', 'West', 'PJM', 'MISO', 'CAISO'];
+const pcts = [0, 17.6, 21.3, 21.7, 26.4, 35.6, 36.0, 38.0, 65.1];
+const colors = pcts.map(p => p >= 35 ? '#16a34a' : p >= 20 ? '#65a30d' : '#a3a3a3');
+
+Plotly.newPlot('chart-iso', [{
+  type: 'bar',
+  orientation: 'h',
+  y: isos,
+  x: pcts,
+  text: pcts.map(p => p + '%'),
+  textposition: 'outside',
+  marker: { color: colors, borderRadius: 4 },
+  hovertemplate: '%{y}: %{x}% eligible<extra></extra>'
+}], {
+  title: { text: 'Energy Community Eligibility by ISO/RTO', font: { family: 'Geist, system-ui', size: 16 } },
+  xaxis: { title: '% of Projects Eligible', range: [0, 75], ticksuffix: '%' },
+  yaxis: { automargin: true },
+  margin: { l: 100, r: 60, t: 50, b: 50 },
+  plot_bgcolor: '#fff',
+  paper_bgcolor: '#fff',
+  font: { family: 'Geist, system-ui', color: '#404040' }
+}, { responsive: true, displayModeBar: false });
+
+// Chart 2: Top states
+const states = ['CA', 'PA', 'TX', 'IL', 'NY', 'NJ', 'UT', 'NV', 'OH', 'MI', 'NM', 'AR', 'KY', 'IN', 'VA'];
+const counts = [6815, 1260, 960, 927, 485, 479, 453, 452, 443, 365, 364, 356, 355, 315, 308];
+
+Plotly.newPlot('chart-states', [{
+  type: 'bar',
+  x: states,
+  y: counts,
+  text: counts.map(c => c.toLocaleString()),
+  textposition: 'outside',
+  marker: { color: '#16a34a' },
+  hovertemplate: '%{x}: %{y} projects<extra></extra>'
+}], {
+  title: { text: 'EC-Eligible Projects by State (Top 15)', font: { family: 'Geist, system-ui', size: 16 } },
+  yaxis: { title: 'Projects' },
+  margin: { l: 60, r: 20, t: 50, b: 40 },
+  plot_bgcolor: '#fff',
+  paper_bgcolor: '#fff',
+  font: { family: 'Geist, system-ui', color: '#404040' }
+}, { responsive: true, displayModeBar: false });
+</script>
+
+</body>
+</html>

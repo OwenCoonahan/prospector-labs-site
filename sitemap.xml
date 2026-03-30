@@ -29,6 +29,35 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- Tools -->
+  <url>
+    <loc>https://www.prospectorlabs.io/calculator/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Blog -->
+  <url>
+    <loc>https://www.prospectorlabs.io/blog/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.prospectorlabs.io/blog/energy-community-itc-map.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.prospectorlabs.io/blog/itc-credit-stacking-guide.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.prospectorlabs.io/blog/developer-track-record-rankings.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
   <!-- Live Dashboards (real data) -->
   <url>
     <loc>https://www.prospectorlabs.io/queue-lookup/</loc>

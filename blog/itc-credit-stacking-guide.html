@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How Investors Stack ITC Credits to 50-70% on Sub-1MW Solar | Prospector Labs</title>
+  <meta name="description" content="Guide to stacking IRA tax credits: base ITC 30% + energy community 10% + low-income 10-20% + domestic content 10% = 50-70% effective credit. Real project examples.">
+  <link rel="canonical" href="https://www.prospectorlabs.io/blog/itc-credit-stacking-guide.html">
+
+  <meta property="og:title" content="How Investors Stack ITC Credits to 50-70% on Sub-1MW Solar">
+  <meta property="og:description" content="The IRA allows stacking base ITC (30%) + energy community (10%) + low-income (10-20%) + domestic content (10%). Here's exactly how.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://www.prospectorlabs.io/blog/itc-credit-stacking-guide.html">
+  <meta property="og:site_name" content="Prospector Labs">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "How Investors Stack ITC Credits to 50-70% on Sub-1MW Solar Projects",
+    "datePublished": "2026-03-30",
+    "author": { "@type": "Organization", "name": "Prospector Labs" },
+    "publisher": { "@type": "Organization", "name": "Prospector Labs", "url": "https://www.prospectorlabs.io" },
+    "description": "Guide to stacking IRA tax credits on sub-1MW solar projects for maximum effective credit rate."
+  }
+  </script>
+
+  <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --white: #ffffff; --black: #0a0a0a; --gray-50: #fafafa; --gray-100: #f5f5f5;
+      --gray-200: #e5e5e5; --gray-300: #d4d4d4; --gray-400: #a3a3a3; --gray-500: #737373;
+      --gray-600: #525252; --gray-700: #404040; --gray-800: #262626; --gray-900: #171717;
+      --accent: #16a34a;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Geist', system-ui, sans-serif; background: var(--white); color: var(--black); -webkit-font-smoothing: antialiased; line-height: 1.7; }
+    a { color: inherit; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    nav { padding: 20px 0; border-bottom: 1px solid var(--gray-200); }
+    nav .container { display: flex; justify-content: space-between; align-items: center; }
+    .nav-brand { display: flex; align-items: center; gap: 12px; }
+    .nav-logo { font-size: 15px; letter-spacing: -0.02em; text-decoration: none; }
+    .logo-glass { font-weight: 600; }
+    .logo-energy { font-weight: 400; color: var(--gray-500); }
+    .nav-byline { font-size: 12px; color: var(--gray-400); padding-left: 12px; border-left: 1px solid var(--gray-200); }
+    .nav-byline a { color: var(--gray-500); text-decoration: none; }
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+    .nav-link { font-size: 14px; color: var(--gray-600); text-decoration: none; transition: color 0.2s; }
+    .nav-link:hover { color: var(--black); }
+    .nav-cta { font-size: 14px; font-weight: 500; padding: 10px 20px; background: var(--black); color: var(--white); border-radius: 6px; text-decoration: none; }
+
+    .article-header { padding: 60px 0 40px; max-width: 720px; margin: 0 auto; }
+    .article-header .tag { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); background: rgba(22,163,74,0.08); padding: 4px 10px; border-radius: 4px; margin-bottom: 16px; }
+    .article-header h1 { font-size: 36px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 16px; }
+    .article-header .subtitle { font-size: 18px; color: var(--gray-600); margin-bottom: 12px; }
+    .article-header .meta { font-size: 13px; color: var(--gray-400); }
+
+    .article-body { max-width: 720px; margin: 0 auto; padding-bottom: 80px; }
+    .article-body h2 { font-size: 24px; font-weight: 600; letter-spacing: -0.02em; margin: 48px 0 16px; }
+    .article-body h3 { font-size: 18px; font-weight: 600; margin: 32px 0 12px; }
+    .article-body p { margin-bottom: 20px; color: var(--gray-700); }
+    .article-body strong { color: var(--black); }
+    .article-body ul, .article-body ol { margin: 0 0 20px 24px; color: var(--gray-700); }
+    .article-body li { margin-bottom: 8px; }
+
+    .stack-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 14px; }
+    .stack-table th { text-align: left; padding: 12px 16px; background: var(--gray-900); color: var(--white); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .stack-table td { padding: 12px 16px; border-bottom: 1px solid var(--gray-100); }
+    .stack-table tr:hover { background: var(--gray-50); }
+    .stack-table .total-row { background: rgba(22,163,74,0.06); font-weight: 600; }
+    .stack-table .total-row td { border-bottom: 2px solid var(--accent); }
+    .mono { font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+    .highlight { color: var(--accent); font-weight: 600; }
+
+    .example-box {
+      background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 12px;
+      padding: 28px; margin: 32px 0;
+    }
+    .example-box h4 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+    .example-box .subtitle { font-size: 13px; color: var(--gray-500); margin-bottom: 16px; }
+
+    .callout {
+      background: var(--gray-50); border-left: 3px solid var(--accent);
+      padding: 20px 24px; margin: 32px 0; border-radius: 0 8px 8px 0;
+    }
+    .callout p { margin-bottom: 0; }
+
+    .credit-visual {
+      display: flex; height: 48px; border-radius: 8px; overflow: hidden;
+      margin: 16px 0 8px; font-size: 12px; font-weight: 600; color: white;
+    }
+    .credit-visual > div { display: flex; align-items: center; justify-content: center; }
+    .cv-base { background: #16a34a; }
+    .cv-ec { background: #2563eb; }
+    .cv-li { background: #9333ea; }
+    .cv-dc { background: #ea580c; }
+    .credit-legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; font-size: 12px; color: var(--gray-600); }
+    .credit-legend span::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: middle; }
+    .legend-base::before { background: #16a34a; }
+    .legend-ec::before { background: #2563eb; }
+    .legend-li::before { background: #9333ea; }
+    .legend-dc::before { background: #ea580c; }
+
+    .cta-box {
+      background: var(--gray-900); color: var(--white); padding: 32px;
+      border-radius: 12px; margin: 48px 0; text-align: center;
+    }
+    .cta-box h3 { font-size: 20px; margin-bottom: 8px; color: var(--white); }
+    .cta-box p { color: var(--gray-400); margin-bottom: 20px; }
+    .cta-box a { display: inline-block; background: var(--accent); color: var(--white); padding: 12px 28px; border-radius: 6px; font-weight: 500; text-decoration: none; }
+
+    footer { padding: 40px 0; border-top: 1px solid var(--gray-200); }
+    footer .container { display: flex; justify-content: space-between; align-items: center; }
+    .footer-text { font-size: 13px; color: var(--gray-400); }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 13px; color: var(--gray-500); text-decoration: none; }
+
+    @media (max-width: 768px) {
+      .article-header h1 { font-size: 28px; }
+      .nav-links { gap: 16px; }
+      .credit-visual { font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center;">
+    <div class="nav-brand">
+      <a href="/" class="nav-logo"><span class="logo-glass">Glass</span> <span class="logo-energy">Energy</span></a>
+      <span class="nav-byline">by <a href="/">Prospector Labs</a></span>
+    </div>
+    <div class="nav-links">
+      <a href="/api/" class="nav-link">API</a>
+      <a href="/api/getting-started.html" class="nav-link">Docs</a>
+      <a href="/blog/" class="nav-link">Blog</a>
+      <a href="https://prospector-platform-production.up.railway.app/register" class="nav-cta">Get API Key</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <header class="article-header">
+    <span class="tag">Investor Guide</span>
+    <h1>How Investors Stack ITC Credits to 50-70% on Sub-1MW Solar Projects</h1>
+    <p class="subtitle">The IRA created the most generous solar tax credit in US history. But you have to know how to stack the bonuses. Here's the playbook.</p>
+    <p class="meta">March 30, 2026 &middot; Prospector Labs &middot; 7 min read</p>
+  </header>
+
+  <article class="article-body">
+
+    <p>Most people know the solar ITC is 30%. What fewer realize is that the Inflation Reduction Act created <strong>three stackable bonus adders</strong> that can push the effective credit to <strong>50%, 60%, or even 70%</strong> of project cost. For a $3M community solar project, that's the difference between a $900K credit and a $2.1M credit.</p>
+
+    <p>Here's exactly how it works, with real numbers from projects in our database.</p>
+
+    <h2>The ITC stacking formula</h2>
+
+    <table class="stack-table">
+      <thead>
+        <tr><th>Credit Component</th><th>Rate</th><th>Requirement</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Base ITC</strong></td><td class="mono highlight">30%</td><td>Solar, storage, or wind &lt;1MW (or meets prevailing wage + apprenticeship)</td></tr>
+        <tr><td><strong>Energy Community Bonus</strong></td><td class="mono">+10%</td><td>Project in coal closure tract or fossil fuel employment MSA</td></tr>
+        <tr><td><strong>Low-Income Community Bonus</strong></td><td class="mono">+10%</td><td>Project in qualifying low-income census tract (Category 1)</td></tr>
+        <tr><td><strong>Low-Income Residential Bonus</strong></td><td class="mono">+20%</td><td>Qualifying low-income residential or Indian land (Category 2-4)</td></tr>
+        <tr><td><strong>Domestic Content Bonus</strong></td><td class="mono">+10%</td><td>Steel/iron manufactured in US, 40%+ of components domestic</td></tr>
+        <tr class="total-row"><td><strong>Maximum Effective ITC</strong></td><td class="mono highlight">70%</td><td>All bonuses stacked</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Example 1: Community solar in Pennsylvania coal country</h2>
+
+    <div class="example-box">
+      <h4>750 kW Solar &mdash; Cambria County, PA</h4>
+      <p class="subtitle">Energy community (coal closure) + low-income census tract</p>
+
+      <div class="credit-visual">
+        <div class="cv-base" style="width:42.8%">30%</div>
+        <div class="cv-ec" style="width:14.3%">+10%</div>
+        <div class="cv-li" style="width:28.6%">+20%</div>
+        <div class="cv-dc" style="width:14.3%">+10%</div>
+      </div>
+      <div class="credit-legend">
+        <span class="legend-base">Base ITC</span>
+        <span class="legend-ec">Energy Community</span>
+        <span class="legend-li">Low-Income (Cat 2-4)</span>
+        <span class="legend-dc">Domestic Content</span>
+      </div>
+
+      <table class="stack-table" style="margin-top: 12px;">
+        <tr><td>Estimated project cost</td><td class="mono">$2,250,000</td></tr>
+        <tr><td>Effective ITC rate</td><td class="mono highlight">70%</td></tr>
+        <tr><td><strong>Estimated ITC value</strong></td><td class="mono highlight"><strong>$1,575,000</strong></td></tr>
+      </table>
+
+      <p style="font-size: 13px; color: var(--gray-500); margin-top: 8px;">Cambria County qualifies for EC (coal closure) and has qualifying low-income census tracts. Using domestic-sourced panels meets DC bonus.</p>
+    </div>
+
+    <h2>Example 2: Rooftop solar in Texas oil country</h2>
+
+    <div class="example-box">
+      <h4>500 kW Solar &mdash; Midland, TX</h4>
+      <p class="subtitle">Energy community (FFE) + low-income eligible</p>
+
+      <div class="credit-visual">
+        <div class="cv-base" style="width:60%">30%</div>
+        <div class="cv-ec" style="width:20%">+10%</div>
+        <div class="cv-li" style="width:20%">+10%</div>
+      </div>
+      <div class="credit-legend">
+        <span class="legend-base">Base ITC</span>
+        <span class="legend-ec">Energy Community</span>
+        <span class="legend-li">Low-Income (Cat 1)</span>
+      </div>
+
+      <table class="stack-table" style="margin-top: 12px;">
+        <tr><td>Estimated project cost</td><td class="mono">$1,500,000</td></tr>
+        <tr><td>Effective ITC rate</td><td class="mono highlight">50%</td></tr>
+        <tr><td><strong>Estimated ITC value</strong></td><td class="mono highlight"><strong>$750,000</strong></td></tr>
+      </table>
+
+      <p style="font-size: 13px; color: var(--gray-500); margin-top: 8px;">Midland MSA qualifies for EC via fossil fuel employment. Low-income Category 1 adds 10%. No domestic content claimed in this scenario.</p>
+    </div>
+
+    <h2>Why sub-1MW matters</h2>
+
+    <p>Projects under 1 MW AC automatically qualify for the <strong>full 30% base ITC</strong> without meeting prevailing wage and apprenticeship (PW&A) requirements. Larger projects must pay prevailing wages during construction and use registered apprentices &mdash; a compliance burden that adds cost and complexity.</p>
+
+    <p>This makes sub-1MW solar the sweet spot for individual investors:</p>
+
+    <ul>
+      <li><strong>Lower total capital</strong> ($1-5M vs. $50-500M for utility-scale)</li>
+      <li><strong>No PW&A compliance</strong> needed for base 30% rate</li>
+      <li><strong>Higher bonus stacking probability</strong> (community solar projects are more likely to be in qualifying census tracts)</li>
+      <li><strong>Direct transfer eligible</strong> under IRA Section 6418</li>
+    </ul>
+
+    <h2>How to find stackable projects</h2>
+
+    <div class="callout">
+      <p><strong>Our database scores every project for ITC eligibility.</strong> The <code style="background:var(--gray-200);padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:13px;">/deals/itc</code> endpoint returns projects filtered by investability score, with energy community eligibility, low-income eligibility, domestic content eligibility, and effective credit rate pre-calculated. 124 projects currently score as investable.</p>
+    </div>
+
+    <p>Key fields to filter on:</p>
+
+    <table class="stack-table">
+      <thead>
+        <tr><th>API Field</th><th>What It Tells You</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="mono">energy_community_eligible</td><td>Whether the project qualifies for +10% EC bonus</td></tr>
+        <tr><td class="mono">low_income_eligible</td><td>Whether the project is in a qualifying census tract</td></tr>
+        <tr><td class="mono">domestic_content_eligible</td><td>Whether DC bonus criteria are likely met</td></tr>
+        <tr><td class="mono">effective_credit_rate</td><td>Pre-calculated total ITC rate with all applicable bonuses</td></tr>
+        <tr><td class="mono">investability_score</td><td>0-100 score combining ITC eligibility, size, stage, developer quality</td></tr>
+      </tbody>
+    </table>
+
+    <h2>The math: why credit stacking changes project economics</h2>
+
+    <p>Consider two identical 800 kW solar projects at $3/W ($2.4M total cost):</p>
+
+    <table class="stack-table">
+      <thead>
+        <tr><th></th><th>Project A (base only)</th><th>Project B (fully stacked)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Base ITC</td><td class="mono">30% = $720K</td><td class="mono">30% = $720K</td></tr>
+        <tr><td>EC bonus</td><td class="mono">&mdash;</td><td class="mono">+10% = $240K</td></tr>
+        <tr><td>Low-income</td><td class="mono">&mdash;</td><td class="mono">+20% = $480K</td></tr>
+        <tr><td>Domestic content</td><td class="mono">&mdash;</td><td class="mono">+10% = $240K</td></tr>
+        <tr class="total-row"><td><strong>Total credit</strong></td><td class="mono">$720,000</td><td class="mono highlight"><strong>$1,680,000</strong></td></tr>
+        <tr><td>Net cost after credit</td><td class="mono">$1,680,000</td><td class="mono">$720,000</td></tr>
+      </tbody>
+    </table>
+
+    <p>Project B's investor recovers <strong>70% of the project cost in year one</strong> through the tax credit alone, before any electricity revenue. That's the power of stacking.</p>
+
+    <h2>Risks and caveats</h2>
+
+    <p><strong>Low-income bonus requires application.</strong> Unlike EC and DC, the low-income bonus (Categories 1-4) requires a DOE allocation. There's an annual 1.8 GW cap, with separate allocations for each category. Demand exceeds supply.</p>
+
+    <p><strong>Domestic content requirements tighten over time.</strong> The manufactured components threshold starts at 40% (2024-2026) and increases to 55% (2027+). This is manageable now but will get harder.</p>
+
+    <p><strong>PW&A matters for >1MW.</strong> If the project is over 1 MW and doesn't meet PW&A, the base rate drops to 6% (not 30%). The bonuses scale proportionally. Don't miss this.</p>
+
+    <div class="cta-box">
+      <h3>Calculate credits for any project</h3>
+      <p>Use our tax credit calculator API to model ITC stacking for any technology, location, and capacity.</p>
+      <a href="/api/">Explore the API</a>
+    </div>
+
+  </article>
+</div>
+
+<footer>
+  <div class="container">
+    <span class="footer-text">&copy; 2026 Prospector Labs</span>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/api/">API</a>
+      <a href="/blog/">Blog</a>
+      <a href="/contact.html">Contact</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
