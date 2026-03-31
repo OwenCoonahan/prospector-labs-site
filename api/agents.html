@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agent Integration | Prospector Labs Energy API</title>
   <link rel="canonical" href="https://www.prospectorlabs.io/api/agents.html">
-  <meta name="description" content="Connect AI agents to US energy infrastructure data. 31 MCP tools for Claude, GPT, and custom agents. OpenAPI spec for any framework.">
+  <meta name="description" content="Connect AI agents to US energy infrastructure data. 34 MCP tools for Claude, GPT, and custom agents. OpenAPI spec for any framework.">
   <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -175,7 +175,7 @@
     <div class="container">
       <div class="hero-label">Agent Integration</div>
       <h1>Give your AI agent<br>energy market intelligence.</h1>
-      <p>31 MCP tools for Claude, GPT, and custom agents. Or use the OpenAPI spec with any framework. Your agent gets access to 47,000 interconnection projects, 5.4M DG installations, tax credit calculations, and developer intelligence.</p>
+      <p>34 MCP tools for Claude, GPT, and custom agents. Or use the OpenAPI spec with any framework. Your agent gets access to 47,000 interconnection projects, 5.4M DG installations, tax credit calculations, and developer intelligence.</p>
       <div class="hero-actions">
         <a href="https://github.com/OwenCoonahan/prospector-energy-mcp" class="btn-primary">View on GitHub</a>
         <a href="https://prospector-platform-production.up.railway.app/openapi.json" class="btn-secondary">OpenAPI Spec</a>
@@ -337,7 +337,7 @@ prospector-energy-mcp</pre></div>
   <section class="tools" id="tools">
     <div class="container">
       <div class="section-label">MCP Tools</div>
-      <div class="section-title">31 tools your agent can call.</div>
+      <div class="section-title">34 tools your agent can call.</div>
       <div class="section-desc">Each tool has a detailed description so agents know exactly when and how to use it. Tools map 1:1 to REST API endpoints.</div>
 
       <div class="tools-grid">
@@ -437,6 +437,24 @@ prospector-energy-mcp</pre></div>
           <div class="tool-name">search_dg_projects</div>
           <div class="tool-desc">Search 5.4 million distributed generation installations from 16 state programs. Filter by state, technology, status, and capacity range.</div>
           <div class="tool-example">"How many rooftop solar installations are there in California?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_investable_dg_projects</div>
+          <div class="tool-desc">55,000+ pre-screened investable DG projects scored for small ITC investor fit. Filter by state, stage (approved/construction/inspection), score, capacity, and source.</div>
+          <div class="tool-example">"Find investable DG projects in New Jersey under 500 kW"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_dg_investable_summary</div>
+          <div class="tool-desc">Aggregate investable DG statistics: total count, breakdown by state, development stage, data source, and score distribution.</div>
+          <div class="tool-example">"How many DG projects are investable in New York?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_milestone_summary</div>
+          <div class="tool-desc">Construction stage and milestone statistics: stage distribution (early/mid/late/construction), study phase breakdown, IA status counts, confidence scores, and field fill rates.</div>
+          <div class="tool-example">"How many projects have reached IA Executed status?"</div>
         </div>
 
         <div class="tool-section-header">Market, Grid &amp; Reference Tools</div>
