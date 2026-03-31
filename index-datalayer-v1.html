@@ -272,23 +272,33 @@
 
     /* INTRO */
     .intro {
-      padding: 100px 64px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       border-bottom: 1px solid var(--gray-200);
-      max-width: 900px;
-      margin: 0 auto;
     }
 
-    .intro h2 {
+    .intro-left {
+      padding: 80px 64px;
+      border-right: 1px solid var(--gray-200);
+    }
+
+    .intro-left h2 {
       font-size: 14px;
       font-weight: 500;
       color: var(--gray-400);
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      margin-bottom: 24px;
     }
 
-    .intro p {
-      font-size: 26px;
+    .intro-right {
+      padding: 80px 64px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .intro-right p {
+      font-size: 28px;
       font-weight: 400;
       line-height: 1.5;
       letter-spacing: -0.02em;
@@ -302,7 +312,10 @@
     }
 
     .cap-header {
-      margin-bottom: 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 80px;
     }
 
     .cap-header h2 {
@@ -311,10 +324,10 @@
       color: var(--gray-400);
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      margin-bottom: 12px;
     }
 
     .cap-header p {
+      max-width: 400px;
       font-size: 16px;
       color: var(--gray-500);
       line-height: 1.6;
@@ -1036,8 +1049,10 @@
 
     /* RESPONSIVE */
     @media (max-width: 1024px) {
-      .intro { padding: 80px 48px; }
-      .intro p { font-size: 22px; }
+      .intro { grid-template-columns: 1fr; }
+      .intro-left { border-right: none; border-bottom: 1px solid var(--gray-200); padding: 48px; }
+      .intro-right { padding: 48px; }
+      .intro-right p { font-size: 22px; }
       .cap-list { grid-template-columns: 1fr; }
       .verticals-grid { grid-template-columns: 1fr; }
       .verticals { padding: 80px 48px; }
@@ -1075,8 +1090,7 @@
       }
       .hero { padding: 32px; min-height: 500px; }
       .hero h1 { font-size: 28px; }
-      .intro { padding: 48px 32px; }
-      .intro p { font-size: 20px; }
+      .intro-left, .intro-right { padding: 32px; }
       .capabilities { padding: 48px 32px; }
       .cap-header { flex-direction: column; gap: 24px; }
       .cap-item { padding: 32px; grid-template-columns: 40px 1fr; gap: 16px; }
@@ -1123,19 +1137,19 @@
       <div class="hero-video-fallback"></div>
     </div>
     <div class="hero-content">
-      <h1>Find, evaluate, and qualify US energy projects.</h1>
-      <p class="hero-subtitle">Source ITC deals, run project diligence, and screen FEOC compliance — backed by 47,000+ interconnection projects, 5.4M DG installations, and 20+ enriched public data sources. Query it all via API.</p>
-      <div style="display: flex; gap: 16px; margin-top: 28px; opacity: 0; animation: heroFadeIn 1s ease 0.6s forwards;">
-        <a href="/contact.html" style="background: var(--white); color: var(--black); padding: 14px 28px; border-radius: 8px; text-decoration: none; font-size: 15px; font-weight: 500; transition: background 0.2s;">Book a Call</a>
-        <a href="/api" style="border: 1px solid rgba(255,255,255,0.3); color: var(--white); padding: 14px 28px; border-radius: 8px; text-decoration: none; font-size: 15px; font-weight: 500; transition: all 0.2s;">Explore the API</a>
-      </div>
+      <h1>The data layer for US energy infrastructure</h1>
+      <p class="hero-subtitle">47,000+ interconnection queue projects. 5.4 million DG installations. 6,593 developer profiles. 9 ISOs. Aggregated, enriched, and queryable — for investors, developers, and analysts.</p>
     </div>
   </section>
 
   <!-- Mission -->
-  <section class="intro animate-on-scroll">
-    <h2>The problem</h2>
-    <p>US energy project data is scattered across 9 ISOs, dozens of state programs, and hundreds of government filings. Nobody has unified it. We aggregate 20+ public data sources into one system — then enrich it with tax credit eligibility, developer track records, and compliance screening so you can actually make decisions with it.</p>
+  <section class="intro">
+    <div class="intro-left animate-on-scroll">
+      <h2>The problem</h2>
+    </div>
+    <div class="intro-right animate-on-scroll">
+      <p>US energy project data is scattered across 9 ISOs, dozens of state programs, and hundreds of government filings. Nobody has unified it. We aggregate 20+ public data sources into one system — then enrich it with tax credit eligibility, developer track records, and compliance screening so you can actually make decisions with it.</p>
+    </div>
   </section>
 
   <!-- Capabilities -->
@@ -1269,24 +1283,22 @@
         <p>Queue risk analysis, developer benchmarks, timeline scenarios, and ITC credit stacking analysis. Project assessments for energy infrastructure investors — delivered in days.</p>
         <span class="product-link">Learn more →</span>
       </a>
-      <a href="/api" class="product-card animate-on-scroll" style="text-decoration: none; color: inherit;">
+      <a href="/api" class="product-card animate-on-scroll">
         <div class="product-badge">Live</div>
         <h3>Energy Data API</h3>
         <p>66 REST endpoints and 31 MCP tools. Projects, tax credits, developers, market data, grid infrastructure. Free tier available.</p>
         <span class="product-link">View API docs →</span>
       </a>
-      <a href="/contact.html" class="product-card animate-on-scroll" style="text-decoration: none; color: inherit;">
+      <div class="product-card animate-on-scroll">
         <div class="product-badge">Live</div>
         <h3>ITC Deal Sourcing</h3>
         <p>Pre-screened project packages for investors deploying capital into IRA tax credits. Credit analysis, developer profiles, and diligence checklists — filtered to your preferences.</p>
-        <span class="product-link">Get started →</span>
-      </a>
-      <a href="/contact.html" class="product-card animate-on-scroll" style="text-decoration: none; color: inherit;">
+      </div>
+      <div class="product-card animate-on-scroll">
         <div class="product-badge">Live</div>
         <h3>FEOC Compliance Tools</h3>
         <p>Energy community screening (37% eligible), low-income bonus qualification (70% eligible), domestic content checks, and equipment manufacturer FEOC mapping.</p>
-        <span class="product-link">Get started →</span>
-      </a>
+      </div>
     </div>
   </section>
 
@@ -1341,39 +1353,33 @@
   </section>
 
 
-  <!-- The Data Layer -->
-  <section class="stats">
-    <div class="stat animate-on-scroll">
-      <div class="stat-value">47,594</div>
-      <div class="stat-label">Interconnection Projects</div>
-    </div>
-    <div class="stat animate-on-scroll">
-      <div class="stat-value">5.4M</div>
-      <div class="stat-label">DG Installations</div>
-    </div>
-    <div class="stat animate-on-scroll">
-      <div class="stat-value">6,593</div>
-      <div class="stat-label">Developer Profiles</div>
-    </div>
-    <div class="stat animate-on-scroll">
-      <div class="stat-value">66</div>
-      <div class="stat-label">API Endpoints</div>
-    </div>
-    <div class="stat animate-on-scroll">
-      <div class="stat-value">9</div>
-      <div class="stat-label">ISOs Covered</div>
+  <!-- Past Client Work -->
+  <section class="clients">
+    <h2 class="animate-on-scroll">The Platform</h2>
+    <div class="client-list animate-on-scroll">
+      <span class="client-tag">47,594 interconnection queue projects across 9 ISOs</span>
+      <span class="client-tag">5.4 million distributed generation installations</span>
+      <span class="client-tag">6,593 developer profiles with track records</span>
+      <span class="client-tag">ITC/PTC tax credit calculations with IRA bonus stacking</span>
+      <span class="client-tag">Energy community + low-income eligibility screening</span>
+      <span class="client-tag">66 API endpoints + 31 MCP tools for AI agents</span>
+      <span class="client-tag">25 auto-refreshing data pipelines</span>
+      <span class="client-tag">16.8M+ reference rows (EIA, FERC, EPA, NREL)</span>
     </div>
   </section>
 
-  <section class="clients">
-    <h2 class="animate-on-scroll">How it works</h2>
-    <p class="animate-on-scroll" style="font-size: 18px; color: var(--gray-600); line-height: 1.6; max-width: 720px; margin-bottom: 32px;">We aggregate raw project records from 20+ public sources — ISO queues, state DG programs, EIA filings, DOE databases — deduplicate them, and enrich every row with tax credit calculations, developer intelligence, investability scores, and compliance flags. The result is three databases that power everything above.</p>
+  <!-- Industries -->
+  <section class="clients" style="border-top: 1px solid var(--gray-200);">
+    <h2 class="animate-on-scroll">Who Uses This</h2>
     <div class="client-list animate-on-scroll">
-      <span class="client-tag" style="background: var(--gray-900); color: var(--white);">Interconnection Queue — 47,594 projects, ~120 enriched columns, 9 ISOs, daily refresh</span>
-      <span class="client-tag" style="background: var(--gray-900); color: var(--white);">Distributed Generation — 5.4M installations from 16 state programs</span>
-      <span class="client-tag" style="background: var(--gray-900); color: var(--white);">Developer Intelligence — 6,593 profiles with track records, tier classification, completion rates</span>
+      <span class="client-tag">Tax Credit Investors</span>
+      <span class="client-tag">Wealth Managers</span>
+      <span class="client-tag">Family Offices</span>
+      <span class="client-tag">Energy Developers</span>
+      <span class="client-tag">Project Finance Analysts</span>
+      <span class="client-tag">Compliance Teams</span>
+      <span class="client-tag">AI Agent Builders</span>
     </div>
-    <p class="animate-on-scroll" style="font-size: 14px; color: var(--gray-400); margin-top: 20px;">Plus 16.8M+ reference rows from EIA, FERC, EPA, NREL, USGS, Census Bureau, and more.</p>
   </section>
 
   <!-- Data Sources -->
