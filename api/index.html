@@ -72,18 +72,30 @@
     .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 600; letter-spacing: -0.02em; }
     .stat-label { font-size: 13px; color: var(--gray-500); margin-top: 4px; }
 
-    /* FEATURES */
-    .features { padding: 80px 0; }
+    /* DATABASES */
+    .databases { padding: 80px 0; }
     .section-label { font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
-    .section-title { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 48px; }
-    .features-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
-    .feature-card { border: 1px solid var(--gray-200); border-radius: 8px; padding: 24px; transition: border-color 0.2s; }
-    .feature-card:hover { border-color: var(--gray-400); }
-    .feature-icon { margin-bottom: 12px; color: var(--gray-400); }
-    .feature-icon svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-    .feature-name { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
-    .feature-desc { font-size: 13px; color: var(--gray-500); line-height: 1.5; }
-    .feature-stat { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); margin-top: 8px; }
+    .section-title { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 16px; }
+    .section-subtitle { font-size: 16px; color: var(--gray-500); margin-bottom: 48px; max-width: 640px; line-height: 1.6; }
+    .db-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .db-card { border: 1px solid var(--gray-200); border-radius: 8px; padding: 32px; transition: border-color 0.2s; }
+    .db-card:hover { border-color: var(--gray-400); }
+    .db-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .db-icon { color: var(--gray-400); flex-shrink: 0; }
+    .db-icon svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .db-name { font-size: 17px; font-weight: 600; }
+    .db-stat { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent); margin-bottom: 16px; }
+    .db-desc { font-size: 14px; color: var(--gray-500); line-height: 1.6; margin-bottom: 16px; }
+    .db-fields { list-style: none; padding: 0; margin: 0; }
+    .db-fields li { font-size: 13px; color: var(--gray-600); padding: 4px 0; padding-left: 16px; position: relative; }
+    .db-fields li::before { content: ''; position: absolute; left: 0; top: 11px; width: 4px; height: 4px; border-radius: 50%; background: var(--gray-300); }
+
+    /* ENRICHMENT */
+    .enrichment { padding: 60px 0; border-top: 1px solid var(--gray-200); }
+    .enrichment-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    .enrichment-card { padding: 20px; }
+    .enrichment-name { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+    .enrichment-desc { font-size: 13px; color: var(--gray-500); line-height: 1.5; }
 
     /* CODE EXAMPLES */
     .code-section { padding: 80px 0; background: var(--gray-50); }
@@ -105,7 +117,7 @@
 
     /* PRICING */
     .pricing { padding: 80px 0; }
-    .pricing-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 900px; }
     .price-card { border: 1px solid var(--gray-200); border-radius: 8px; padding: 24px; text-align: center; transition: all 0.2s; }
     .price-card:hover { border-color: var(--gray-400); }
     .price-card.featured { border-color: var(--accent); background: var(--gray-50); }
@@ -136,14 +148,15 @@
 
     /* RESPONSIVE */
     @media (max-width: 1024px) {
-      .features-grid { grid-template-columns: repeat(2, 1fr); }
-      .pricing-grid { grid-template-columns: repeat(3, 1fr); }
+      .db-grid { grid-template-columns: 1fr; }
+      .enrichment-grid { grid-template-columns: repeat(2, 1fr); }
       .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
     }
     @media (max-width: 768px) {
       .hero h1 { font-size: 32px; }
       .hero-actions { flex-direction: column; }
-      .features-grid { grid-template-columns: 1fr; }
+      .db-grid { grid-template-columns: 1fr; }
+      .enrichment-grid { grid-template-columns: 1fr; }
       .pricing-grid { grid-template-columns: 1fr; }
       .code-grid { grid-template-columns: 1fr; }
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
@@ -179,7 +192,7 @@
     <div class="container">
       <div class="hero-label">Energy Data API</div>
       <h1>The complete US energy<br>infrastructure dataset.</h1>
-      <p>47,000 interconnection projects. 5.4 million distributed generation installations. Tax credits, developer intelligence, market pricing, grid infrastructure. 63 endpoints. One API key.</p>
+      <p>47,000 interconnection projects. 5.4 million distributed generation installations. 6,593 developer profiles. Tax credits, investability scores, FEOC compliance. 66 endpoints. One API key.</p>
       <div class="hero-actions">
         <a href="getting-started.html" class="btn-primary">Getting Started</a>
         <a href="https://prospector-platform-production.up.railway.app/docs" class="btn-secondary">View Documentation</a>
@@ -211,59 +224,89 @@
     </div>
   </section>
 
-  <!-- FEATURES -->
-  <section class="features">
+  <!-- DATABASES -->
+  <section class="databases">
     <div class="container">
-      <div class="section-label">What you get</div>
-      <div class="section-title">Eight data domains, one API.</div>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
-          <div class="feature-name">Interconnection Queue</div>
-          <div class="feature-desc">Every utility-scale project across all US ISOs. Status, capacity, developer, POI, and queue position.</div>
-          <div class="feature-stat">47,610 projects / 9 ISOs</div>
+      <div class="section-label">The data</div>
+      <div class="section-title">Three databases. Every query returns the full enriched row.</div>
+      <div class="section-subtitle">Raw project records from 20+ public sources, deduplicated and enriched with tax credit calculations, developer intelligence, investability scores, and compliance flags. No field gating — every tier gets the complete dataset.</div>
+      <div class="db-grid">
+        <div class="db-card">
+          <div class="db-header">
+            <div class="db-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+            <div class="db-name">Interconnection Queue</div>
+          </div>
+          <div class="db-stat">47,594 projects across 9 ISOs</div>
+          <div class="db-desc">Every utility-scale energy project in the US interconnection queue. Aggregated from MISO, PJM, ERCOT, CAISO, SPP, NYISO, ISO-NE, and LBNL. ~120 enriched columns per project.</div>
+          <ul class="db-fields">
+            <li>Project status, capacity (MW), fuel type, technology</li>
+            <li>Developer name, tier classification, track record</li>
+            <li>Point of interconnection, county, state, ISO region</li>
+            <li>Queue position, request date, milestone dates</li>
+            <li>ITC/PTC eligibility and credit stacking (energy community, low-income, domestic content)</li>
+            <li>Investability score and independent developer flags</li>
+            <li>FEOC compliance screening</li>
+            <li>Energy community designation and census tract</li>
+          </ul>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
-          <div class="feature-name">Tax Credit Calculator</div>
-          <div class="feature-desc">ITC/PTC eligibility with all IRA bonuses: energy community, low-income, domestic content. Per-project credit stacking.</div>
-          <div class="feature-stat">30-70% effective rates</div>
+        <div class="db-card">
+          <div class="db-header">
+            <div class="db-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></div>
+            <div class="db-name">Distributed Generation</div>
+          </div>
+          <div class="db-stat">5.4 million installations from 16 state programs</div>
+          <div class="db-desc">Residential and commercial solar, storage, and wind installations across the US. Sourced from state interconnection programs, net metering registries, and incentive databases.</div>
+          <ul class="db-fields">
+            <li>System size (kW), technology type, installer</li>
+            <li>Installation date, approval date, operational status</li>
+            <li>Address, city, county, state, zip code</li>
+            <li>Utility, rate schedule, program type</li>
+            <li>Cost data (where reported by state programs)</li>
+            <li>Battery storage and paired system flags</li>
+          </ul>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
-          <div class="feature-name">Developer Intelligence</div>
-          <div class="feature-desc">Track records, tier classification, completion rates, portfolio analysis. Know who builds what and where.</div>
-          <div class="feature-stat">6,593 developers</div>
+        <div class="db-card">
+          <div class="db-header">
+            <div class="db-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+            <div class="db-name">Developer Intelligence</div>
+          </div>
+          <div class="db-stat">6,593 developer profiles</div>
+          <div class="db-desc">Every energy project developer operating in US interconnection queues. Built by entity resolution across all ISOs — the same developer appears once, not nine times.</div>
+          <ul class="db-fields">
+            <li>Developer name, normalized aliases, parent company</li>
+            <li>Tier classification (Tier 1-4 based on portfolio)</li>
+            <li>Total projects, total capacity (MW), active vs. withdrawn</li>
+            <li>Completion rate and historical track record</li>
+            <li>Geographic footprint (states and ISOs)</li>
+            <li>Technology mix (solar, wind, storage, hybrid)</li>
+            <li>Capital needs assessment and independent developer flag</li>
+          </ul>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
-          <div class="feature-name">ITC Deal Sourcing</div>
-          <div class="feature-desc">Pre-screened investable projects. Investability scores, independent developer flags, capital needs assessment.</div>
-          <div class="feature-stat">124 investable projects</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ENRICHMENT LAYERS -->
+  <section class="enrichment">
+    <div class="container">
+      <div class="section-label">Enrichment layers</div>
+      <div class="section-title" style="margin-bottom: 32px;">Raw data in, intelligence out.</div>
+      <div class="enrichment-grid">
+        <div class="enrichment-card">
+          <div class="enrichment-name">Tax Credit Stacking</div>
+          <div class="enrichment-desc">ITC/PTC base rates plus all IRA adders: energy community, low-income, domestic content. Per-project effective rates from 30-70%.</div>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></div>
-          <div class="feature-name">Distributed Generation</div>
-          <div class="feature-desc">Residential and commercial solar, storage, and wind from 16 state programs. Installer data, system sizes, dates.</div>
-          <div class="feature-stat">5.4M installations</div>
+        <div class="enrichment-card">
+          <div class="enrichment-name">Investability Scoring</div>
+          <div class="enrichment-desc">Composite score based on developer track record, project stage, technology, location, and credit eligibility. Flags high-potential ITC deals.</div>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></div>
-          <div class="feature-name">Market Data</div>
-          <div class="feature-desc">Day-ahead LMP pricing across 6 ISOs. Capacity auction results. NREL ATB technology cost projections through 2050.</div>
-          <div class="feature-stat">8,600+ daily LMP rows</div>
+        <div class="enrichment-card">
+          <div class="enrichment-name">FEOC Compliance</div>
+          <div class="enrichment-desc">Foreign Entity of Concern screening for equipment manufacturers and supply chain. Required for IRA domestic content and bonus credits.</div>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon"><svg viewBox="0 0 24 24"><rect x="1" y="6" width="22" height="12" rx="2"/><path d="M1 10h22M6 6v12M12 6v12M18 6v12"/></svg></div>
-          <div class="feature-name">Grid Infrastructure</div>
-          <div class="feature-desc">Wind turbines from USWTDB, transmission lines, and substations from HIFLD. Manufacturer, capacity, voltage.</div>
-          <div class="feature-stat">234K grid assets</div>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/></svg></div>
-          <div class="feature-name">Corporate & Financial</div>
-          <div class="feature-desc">FERC Form 1 financials, SEC 10-K filings, corporate ownership chains. Utility cost structures and rate cases.</div>
-          <div class="feature-stat">FERC + SEC + EPA</div>
+        <div class="enrichment-card">
+          <div class="enrichment-name">Reference Data</div>
+          <div class="enrichment-desc">Grid infrastructure (234K assets from HIFLD/USWTDB), market pricing (LMPs across 6 ISOs), NREL cost projections, FERC financials, and census data.</div>
         </div>
       </div>
     </div>
@@ -338,42 +381,27 @@ curl "<span class="string">https://prospector-platform-production.up.railway.app
           <div class="price-amount">$0</div>
           <div class="price-unit">forever</div>
           <div class="price-detail">50 queries / month</div>
+          <div class="price-detail">Full enriched rows</div>
           <div class="price-detail">All endpoints</div>
           <div class="price-detail">10 req/min</div>
           <a href="https://prospector-platform-production.up.railway.app/register" class="price-cta">Get free key</a>
         </div>
-        <div class="price-card">
-          <div class="price-tier">Pay as you go</div>
-          <div class="price-amount">$0.05</div>
-          <div class="price-unit">per query</div>
-          <div class="price-detail">No monthly commitment</div>
-          <div class="price-detail">All endpoints</div>
-          <div class="price-detail">30 req/min</div>
-          <a href="https://prospector-platform-production.up.railway.app/register" class="price-cta">Get started</a>
-        </div>
         <div class="price-card featured">
-          <div class="price-tier">Growth</div>
-          <div class="price-amount">$49</div>
+          <div class="price-tier">Pro</div>
+          <div class="price-amount">$99</div>
           <div class="price-unit">per month</div>
-          <div class="price-detail">2,500 queries included</div>
-          <div class="price-detail">$0.02/query overage</div>
+          <div class="price-detail">500 queries / month</div>
+          <div class="price-detail">Full enriched rows</div>
+          <div class="price-detail">All endpoints</div>
           <div class="price-detail">60 req/min</div>
-          <a href="mailto:owen@prospectorlabs.io?subject=Growth Plan — Prospector API" class="price-cta">Get started</a>
-        </div>
-        <div class="price-card">
-          <div class="price-tier">Scale</div>
-          <div class="price-amount">$199</div>
-          <div class="price-unit">per month</div>
-          <div class="price-detail">20,000 queries included</div>
-          <div class="price-detail">$0.01/query overage</div>
-          <div class="price-detail">200 req/min</div>
-          <a href="mailto:owen@prospectorlabs.io?subject=Scale Plan — Prospector API" class="price-cta">Get started</a>
+          <a href="mailto:owen@prospectorlabs.io?subject=Pro Plan — Prospector API" class="price-cta">Get started</a>
         </div>
         <div class="price-card">
           <div class="price-tier">Enterprise</div>
           <div class="price-amount">Custom</div>
           <div class="price-unit">monthly</div>
           <div class="price-detail">Unlimited queries</div>
+          <div class="price-detail">Full enriched rows</div>
           <div class="price-detail">Dedicated support</div>
           <div class="price-detail">Custom SLA</div>
           <a href="mailto:owen@prospectorlabs.io?subject=Enterprise API" class="price-cta">Contact us</a>
