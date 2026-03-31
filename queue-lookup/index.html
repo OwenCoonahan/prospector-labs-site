@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Queue Lookup | US Interconnection Queue Search</title>
+  <title>Queue Lookup | US Interconnection Queue Search — Live Data</title>
+  <meta name="description" content="Search 47,000+ US interconnection queue projects with real-time data from all major ISOs. Filter by region, state, technology, status, and capacity.">
+  <meta property="og:title" content="Queue Lookup — US Interconnection Queue Search">
+  <meta property="og:description" content="Search 47,000+ US interconnection queue projects with real-time data from CAISO, PJM, MISO, ERCOT, NYISO, SPP, and ISO-NE.">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://prospector-labs-site.vercel.app/queue-lookup/">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Queue Lookup","description":"Search US interconnection queue projects with real-time data","url":"https://prospector-labs-site.vercel.app/queue-lookup/","applicationCategory":"BusinessApplication","potentialAction":{"@type":"SearchAction","target":"https://prospector-labs-site.vercel.app/queue-lookup/?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -657,7 +663,7 @@
     <div id="content">
       <div class="loading">
         <div class="loading-spinner"></div>
-        <div>Loading 47,000+ interconnection projects...</div>
+        <div>Connecting to live API...</div>
       </div>
     </div>
 
@@ -668,7 +674,7 @@
     </div>
 
     <footer>
-      Data sourced from public ISO interconnection queues. Updated Feb 2026.<br>
+      Data sourced from public ISO interconnection queues. <span id="freshnessBadge" style="display:inline-block;font-family:var(--font-mono);font-size:0.7rem;padding:0.15rem 0.5rem;background:rgba(16,185,129,0.12);color:#059669;border-radius:4px;margin-left:0.5rem;">LIVE API</span><br>
       Built by <a href="https://prospectorlabs.io" target="_blank">Prospector Labs</a>
     </footer>
   </div>
@@ -711,45 +717,104 @@
   </div>
 
   <script>
-    let projects = [];
-    let filtered = [];
+    const API_BASE = 'https://prospector-platform-production.up.railway.app';
+    let projects = [];      // current page data (from API)
+    let allProjects = [];   // fallback static data
+    let totalResults = 0;
     let currentPage = 1;
-    let sortCol = 'mw';
-    let sortAsc = false;
+    let sortCol = 'capacity_mw';
+    let sortOrder = 'desc';
     const pageSize = 100;
+    let usingAPI = false;
+    let loading = false;
 
     const columns = [
-      { key: 'id', label: 'Queue ID' },
-      { key: 'r', label: 'Region' },
-      { key: 'n', label: 'Project Name' },
-      { key: 'd', label: 'Developer' },
-      { key: 'mw', label: 'Capacity' },
-      { key: 't', label: 'Type' },
-      { key: 's', label: 'Status' },
-      { key: 'st', label: 'State' },
-      { key: 'qd', label: 'Queue Date' },
-      { key: 'cd', label: 'COD' }
+      { key: 'queue_id', label: 'Queue ID' },
+      { key: 'region', label: 'Region' },
+      { key: 'name', label: 'Project Name' },
+      { key: 'developer', label: 'Developer' },
+      { key: 'capacity_mw', label: 'Capacity' },
+      { key: 'type', label: 'Type' },
+      { key: 'status', label: 'Status' },
+      { key: 'state', label: 'State' },
+      { key: 'queue_date', label: 'Queue Date' },
+      { key: 'cod', label: 'COD' }
     ];
 
-    // Load data
+    // Normalize API project to display format (also handles static JSON format)
+    function norm(p) {
+      if (p.queue_id) return p; // Already API format
+      return { queue_id: p.id, region: p.r, name: p.n, developer: p.d, capacity_mw: p.mw,
+               type: p.t, status: p.s, state: p.st, queue_date: p.qd, cod: p.cd, poi: p.p };
+    }
+
+    // ─── API fetch with fallback ───
+    async function fetchFromAPI(params) {
+      const url = new URL(`${API_BASE}/projects`);
+      Object.entries(params).forEach(([k, v]) => { if (v) url.searchParams.set(k, v); });
+      const resp = await fetch(url, { headers: { 'Accept': 'application/json' } });
+      if (!resp.ok) throw new Error(`API ${resp.status}`);
+      return resp.json();
+    }
+
+    async function searchAPI(query, limit = 100) {
+      const url = `${API_BASE}/search?q=${encodeURIComponent(query)}&limit=${limit}`;
+      const resp = await fetch(url, { headers: { 'Accept': 'application/json' } });
+      if (!resp.ok) throw new Error(`Search API ${resp.status}`);
+      return resp.json();
+    }
+
+    async function fetchStats() {
+      const resp = await fetch(`${API_BASE}/stats`, { headers: { 'Accept': 'application/json' } });
+      if (!resp.ok) throw new Error(`Stats API ${resp.status}`);
+      return resp.json();
+    }
+
+    // ─── Init ───
     async function loadData() {
       try {
-        const response = await fetch('data/projects.min.json');
-        projects = await response.json();
-        initFilters();
+        // Try API first — populate filters from /stats
+        const stats = await fetchStats();
+        const isos = stats.data.by_iso.map(x => x.iso).sort();
+        const types = stats.data.by_fuel_type.map(x => x.fuel_type).sort();
+        populateSelect('filterRegion', isos);
+        populateSelect('filterType', types);
+        populateSelect('filterStatus', ['active', 'operational', 'withdrawn', 'suspended', 'Planned']);
+        populateStates();
+        usingAPI = true;
+        document.getElementById('freshnessBadge').style.display = 'inline-block';
         readUrlParams();
-        applyFilters();
+        await applyFilters();
       } catch (err) {
-        document.getElementById('content').innerHTML = `<div class="empty-state"><h3>Failed to load data</h3><p>Please check that the data file exists.</p></div>`;
+        console.warn('API unavailable, falling back to static data:', err.message);
+        try {
+          const response = await fetch('data/projects.min.json');
+          allProjects = (await response.json()).map(norm);
+          initFiltersFromStatic();
+          usingAPI = false;
+          document.getElementById('freshnessBadge').textContent = 'CACHED DATA';
+          document.getElementById('freshnessBadge').style.background = 'rgba(245,158,11,0.12)';
+          document.getElementById('freshnessBadge').style.color = '#D97706';
+          readUrlParams();
+          await applyFilters();
+        } catch (err2) {
+          document.getElementById('content').innerHTML = `<div class="empty-state"><h3>Failed to load data</h3><p>API unavailable and no cached data found.</p></div>`;
+        }
       }
     }
 
-    function initFilters() {
-      const regions = [...new Set(projects.map(p => p.r).filter(Boolean))].sort();
-      const types = [...new Set(projects.map(p => p.t).filter(Boolean))].sort();
-      const statuses = [...new Set(projects.map(p => p.s).filter(Boolean))].sort();
-      const states = [...new Set(projects.map(p => p.st).filter(Boolean))].sort();
+    function populateStates() {
+      const states = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA',
+        'KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY',
+        'NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'];
+      populateSelect('filterState', states);
+    }
 
+    function initFiltersFromStatic() {
+      const regions = [...new Set(allProjects.map(p => p.region).filter(Boolean))].sort();
+      const types = [...new Set(allProjects.map(p => p.type).filter(Boolean))].sort();
+      const statuses = [...new Set(allProjects.map(p => p.status).filter(Boolean))].sort();
+      const states = [...new Set(allProjects.map(p => p.state).filter(Boolean))].sort();
       populateSelect('filterRegion', regions);
       populateSelect('filterType', types);
       populateSelect('filterStatus', statuses);
@@ -787,91 +852,134 @@
       const status = document.getElementById('filterStatus').value;
       const state = document.getElementById('filterState').value;
       const minMW = document.getElementById('filterMinMW').value;
-
       if (q) params.set('q', q);
       if (region) params.set('region', region);
       if (type) params.set('type', type);
       if (status) params.set('status', status);
       if (state) params.set('state', state);
       if (minMW) params.set('minMW', minMW);
-
       const url = params.toString() ? `?${params.toString()}` : window.location.pathname;
       history.replaceState(null, '', url);
     }
 
-    function applyFilters() {
-      const search = document.getElementById('searchInput').value.toLowerCase();
+    async function applyFilters() {
+      if (loading) return;
+      loading = true;
+      const search = document.getElementById('searchInput').value.trim();
       const region = document.getElementById('filterRegion').value;
       const type = document.getElementById('filterType').value;
       const status = document.getElementById('filterStatus').value;
       const state = document.getElementById('filterState').value;
-      const minMW = parseInt(document.getElementById('filterMinMW').value) || 0;
+      const minMW = document.getElementById('filterMinMW').value;
 
-      filtered = projects.filter(p => {
-        if (region && p.r !== region) return false;
-        if (type && p.t !== type) return false;
-        if (status && p.s !== status) return false;
-        if (state && p.st !== state) return false;
-        if (minMW && (!p.mw || p.mw < minMW)) return false;
-        if (search) {
-          const str = [p.id, p.n, p.d, p.p].filter(Boolean).join(' ').toLowerCase();
-          if (!str.includes(search)) return false;
-        }
-        return true;
-      });
-
-      sortData();
-      currentPage = 1;
       updateUrl();
-      render();
+
+      if (usingAPI) {
+        // Show loading skeleton
+        document.getElementById('content').innerHTML = renderSkeleton();
+        try {
+          let result;
+          if (search && search.length >= 2) {
+            // Use search endpoint for free-text
+            result = await searchAPI(search, 500);
+            let data = result.data || [];
+            // Apply additional filters client-side on search results
+            if (region) data = data.filter(p => p.region === region);
+            if (type) data = data.filter(p => p.type === type);
+            if (status) data = data.filter(p => p.status === status);
+            if (state) data = data.filter(p => p.state === state);
+            if (minMW) data = data.filter(p => p.capacity_mw >= parseInt(minMW));
+            projects = data;
+            totalResults = data.length;
+          } else {
+            // Use /projects with server-side filters
+            const apiParams = { page: currentPage, per_page: pageSize, sort: sortCol, order: sortOrder };
+            if (region) apiParams.iso = region;
+            if (type) apiParams.fuel_type = type;
+            if (status) apiParams.status = status;
+            if (state) apiParams.state = state;
+            if (minMW) apiParams.capacity_min = minMW;
+            result = await fetchFromAPI(apiParams);
+            projects = result.data || [];
+            totalResults = result.meta?.total || projects.length;
+          }
+          render();
+        } catch (err) {
+          console.error('API fetch error:', err);
+          document.getElementById('content').innerHTML = `<div class="empty-state"><h3>Error loading data</h3><p>${err.message}. Try refreshing.</p></div>`;
+        }
+      } else {
+        // Static fallback: client-side filtering
+        let filtered = allProjects.filter(p => {
+          if (region && p.region !== region) return false;
+          if (type && p.type !== type) return false;
+          if (status && p.status !== status) return false;
+          if (state && p.state !== state) return false;
+          if (minMW && (!p.capacity_mw || p.capacity_mw < parseInt(minMW))) return false;
+          if (search) {
+            const str = [p.queue_id, p.name, p.developer, p.poi].filter(Boolean).join(' ').toLowerCase();
+            if (!str.includes(search.toLowerCase())) return false;
+          }
+          return true;
+        });
+        // Client-side sort
+        filtered.sort((a, b) => {
+          let av = a[sortCol], bv = b[sortCol];
+          if (av == null) av = sortCol === 'capacity_mw' ? -Infinity : '';
+          if (bv == null) bv = sortCol === 'capacity_mw' ? -Infinity : '';
+          if (sortCol === 'capacity_mw') return sortOrder === 'asc' ? av - bv : bv - av;
+          return sortOrder === 'asc' ? String(av).localeCompare(String(bv)) : String(bv).localeCompare(String(av));
+        });
+        totalResults = filtered.length;
+        const start = (currentPage - 1) * pageSize;
+        projects = filtered.slice(start, start + pageSize);
+        render();
+      }
+      loading = false;
     }
 
-    function sortData() {
-      filtered.sort((a, b) => {
-        let aVal = a[sortCol], bVal = b[sortCol];
-        if (aVal == null) aVal = sortCol === 'mw' ? -Infinity : '';
-        if (bVal == null) bVal = sortCol === 'mw' ? -Infinity : '';
-        if (sortCol === 'mw') return sortAsc ? aVal - bVal : bVal - aVal;
-        return sortAsc ? String(aVal).localeCompare(String(bVal)) : String(bVal).localeCompare(String(aVal));
-      });
+    function renderSkeleton() {
+      const rows = Array(8).fill(0).map(() =>
+        `<tr>${Array(10).fill(0).map(() => `<td><div style="height:14px;background:var(--bg-tertiary);border-radius:4px;width:${40+Math.random()*60}%;animation:pulse 1.5s infinite;"></div></td>`).join('')}</tr>`
+      ).join('');
+      return `<style>@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}</style>
+        <div class="table-container"><table><thead><tr>${columns.map(c => `<th>${c.label}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>`;
     }
 
     function handleSort(col) {
-      if (sortCol === col) { sortAsc = !sortAsc; }
-      else { sortCol = col; sortAsc = col === 'mw' ? false : true; }
-      sortData();
-      render();
+      if (sortCol === col) { sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'; }
+      else { sortCol = col; sortOrder = col === 'capacity_mw' ? 'desc' : 'asc'; }
+      currentPage = 1;
+      applyFilters();
     }
 
     function render() {
-      const totalPages = Math.ceil(filtered.length / pageSize);
-      const start = (currentPage - 1) * pageSize;
-      const pageData = filtered.slice(start, start + pageSize);
+      const totalPages = Math.ceil(totalResults / pageSize);
 
-      document.getElementById('resultCount').textContent = filtered.length.toLocaleString();
-      const totalMW = filtered.reduce((sum, p) => sum + (p.mw || 0), 0);
-      document.getElementById('totalCapacity').textContent = totalMW >= 1000 ? `${(totalMW / 1000).toFixed(1)} GW total capacity` : `${totalMW.toLocaleString()} MW total capacity`;
+      document.getElementById('resultCount').textContent = totalResults.toLocaleString();
+      const pageMW = projects.reduce((sum, p) => sum + (p.capacity_mw || 0), 0);
+      document.getElementById('totalCapacity').textContent = pageMW >= 1000 ? `${(pageMW / 1000).toFixed(1)} GW on page` : `${pageMW.toLocaleString()} MW on page`;
 
-      if (filtered.length === 0) {
+      if (projects.length === 0) {
         document.getElementById('content').innerHTML = `<div class="empty-state"><h3>No projects found</h3><p>Try adjusting your search or filters.</p></div>`;
         document.getElementById('pagination').style.display = 'none';
         return;
       }
 
       let html = `<div class="table-container"><table><thead><tr>
-        ${columns.map(c => `<th class="${sortCol === c.key ? 'sorted' : ''}" onclick="handleSort('${c.key}')">${c.label}<span class="sort-icon">${sortCol === c.key ? (sortAsc ? '↑' : '↓') : ''}</span></th>`).join('')}
+        ${columns.map(c => `<th class="${sortCol === c.key ? 'sorted' : ''}" onclick="handleSort('${c.key}')">${c.label}<span class="sort-icon">${sortCol === c.key ? (sortOrder === 'asc' ? '↑' : '↓') : ''}</span></th>`).join('')}
       </tr></thead><tbody>
-        ${pageData.map(p => `<tr onclick="openModal('${escapeAttr(p.id)}')">
-          <td class="cell-id">${p.id || '—'}</td>
-          <td><span class="cell-region">${p.r || '—'}</span></td>
-          <td class="cell-name" title="${escapeAttr(p.n || '')}">${p.n || '—'}</td>
-          <td class="cell-developer" title="${escapeAttr(p.d || '')}">${p.d || '—'}</td>
-          <td class="cell-mw">${p.mw ? p.mw.toLocaleString() : '—'}</td>
-          <td>${p.t || '—'}</td>
-          <td><span class="cell-status ${getStatusClass(p.s)}">${p.s || '—'}</span></td>
-          <td>${p.st || '—'}</td>
-          <td class="cell-date">${formatDate(p.qd)}</td>
-          <td class="cell-date">${formatDate(p.cd)}</td>
+        ${projects.map(p => `<tr onclick="openModal('${escapeAttr(p.queue_id)}')">
+          <td class="cell-id">${p.queue_id || '—'}</td>
+          <td><span class="cell-region">${p.region || '—'}</span></td>
+          <td class="cell-name" title="${escapeAttr(p.name || '')}">${p.name || '—'}</td>
+          <td class="cell-developer" title="${escapeAttr(p.developer_canonical || p.developer || '')}">${p.developer_canonical || p.developer || '—'}</td>
+          <td class="cell-mw">${p.capacity_mw ? Number(p.capacity_mw).toLocaleString() : '—'}</td>
+          <td>${p.type || '—'}</td>
+          <td><span class="cell-status ${getStatusClass(p.status)}">${p.status || '—'}</span></td>
+          <td>${p.state || '—'}</td>
+          <td class="cell-date">${formatDate(p.queue_date)}</td>
+          <td class="cell-date">${formatDate(p.cod)}</td>
         </tr>`).join('')}
       </tbody></table></div>`;
 
@@ -880,7 +988,7 @@
       const pagination = document.getElementById('pagination');
       if (totalPages > 1) {
         pagination.style.display = 'flex';
-        document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+        document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages.toLocaleString()}`;
         document.getElementById('prevPage').disabled = currentPage === 1;
         document.getElementById('nextPage').disabled = currentPage === totalPages;
       } else {
@@ -906,30 +1014,44 @@
 
     function formatDate(dateStr) {
       if (!dateStr) return '—';
+      // Handle Excel serial numbers (e.g. "41605.0")
+      if (/^\d{4,6}(\.\d+)?$/.test(dateStr) && !dateStr.includes('-')) {
+        const serial = parseFloat(dateStr);
+        if (serial > 30000 && serial < 60000) {
+          const d = new Date((serial - 25569) * 86400000);
+          if (!isNaN(d)) return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        }
+      }
       const d = new Date(dateStr);
       if (isNaN(d)) return dateStr;
       return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
     }
 
-    function openModal(id) {
-      const p = projects.find(x => x.id === id);
+    function openModal(queueId) {
+      const p = projects.find(x => x.queue_id === queueId);
       if (!p) return;
 
-      document.getElementById('modalTitle').textContent = p.n || p.id;
-      document.getElementById('modalSubtitle').textContent = `${p.r} • ${p.id}`;
+      document.getElementById('modalTitle').textContent = p.name || p.queue_id;
+      document.getElementById('modalSubtitle').textContent = `${p.region} • ${p.queue_id}`;
+
+      const dev = p.developer_canonical || p.developer || '—';
+      const stage = p.construction_stage ? `<div class="detail-item"><div class="detail-label">Construction Stage</div><div class="detail-value">${p.construction_stage}${p.construction_stage_confidence ? ` (${(p.construction_stage_confidence * 100).toFixed(0)}% conf)` : ''}</div></div>` : '';
+      const itc = p.effective_credit_rate ? `<div class="detail-item"><div class="detail-label">ITC Rate</div><div class="detail-value">${(p.effective_credit_rate * 100).toFixed(0)}%${p.energy_community_eligible ? ' (EC bonus)' : ''}</div></div>` : '';
 
       document.getElementById('modalContent').innerHTML = `
-        <div class="detail-item"><div class="detail-label">Capacity</div><div class="detail-value large">${p.mw ? p.mw.toLocaleString() + ' MW' : '—'}</div></div>
-        <div class="detail-item"><div class="detail-label">Status</div><div class="detail-value"><span class="cell-status ${getStatusClass(p.s)}">${p.s || '—'}</span></div></div>
-        <div class="detail-item"><div class="detail-label">Type</div><div class="detail-value">${p.t || '—'}</div></div>
-        <div class="detail-item"><div class="detail-label">State</div><div class="detail-value">${p.st || '—'}</div></div>
-        <div class="detail-item"><div class="detail-label">Developer</div><div class="detail-value">${p.d || '—'}</div></div>
-        <div class="detail-item"><div class="detail-label">Point of Interconnection</div><div class="detail-value">${p.p || '—'}</div></div>
-        <div class="detail-item"><div class="detail-label">Queue Date</div><div class="detail-value">${formatDate(p.qd)}</div></div>
-        <div class="detail-item"><div class="detail-label">Expected COD</div><div class="detail-value">${formatDate(p.cd)}</div></div>
+        <div class="detail-item"><div class="detail-label">Capacity</div><div class="detail-value large">${p.capacity_mw ? Number(p.capacity_mw).toLocaleString() + ' MW' : '—'}</div></div>
+        <div class="detail-item"><div class="detail-label">Status</div><div class="detail-value"><span class="cell-status ${getStatusClass(p.status)}">${p.status || '—'}</span></div></div>
+        <div class="detail-item"><div class="detail-label">Type</div><div class="detail-value">${p.type || '—'}</div></div>
+        <div class="detail-item"><div class="detail-label">State</div><div class="detail-value">${p.state}${p.county ? ', ' + p.county : ''}</div></div>
+        <div class="detail-item"><div class="detail-label">Developer</div><div class="detail-value">${dev}</div></div>
+        <div class="detail-item"><div class="detail-label">Point of Interconnection</div><div class="detail-value">${p.poi || '—'}</div></div>
+        <div class="detail-item"><div class="detail-label">Queue Date</div><div class="detail-value">${formatDate(p.queue_date)}</div></div>
+        <div class="detail-item"><div class="detail-label">Expected COD</div><div class="detail-value">${formatDate(p.cod)}</div></div>
+        ${stage}${itc}
       `;
 
-      document.getElementById('modalFooter').innerHTML = p.d ? `<button class="btn btn-secondary" onclick="openDeveloperPanel('${escapeAttr(p.d)}')">View Developer Scorecard →</button>` : '';
+      const devName = p.developer_canonical || p.developer;
+      document.getElementById('modalFooter').innerHTML = devName ? `<button class="btn btn-secondary" onclick="openDeveloperPanel('${escapeAttr(devName)}')">View Developer Scorecard →</button>` : '';
 
       document.getElementById('modalOverlay').classList.add('active');
     }
@@ -938,135 +1060,139 @@
       document.getElementById('modalOverlay').classList.remove('active');
     }
 
-    function openDeveloperPanel(developerName) {
+    async function openDeveloperPanel(developerName) {
       const panel = document.getElementById('sidePanelOverlay');
       document.getElementById('sidePanelTitle').textContent = developerName;
       panel.classList.add('active');
-      
-      // Compute developer stats from projects
-      const devProjects = projects.filter(p => p.d === developerName);
-      
+      document.getElementById('sidePanelBody').innerHTML = `<div class="side-panel-loading"><div class="loading-spinner"></div><div>Loading developer data...</div></div>`;
+
+      try {
+        // Try API first for developer data
+        const resp = await fetch(`${API_BASE}/developers?q=${encodeURIComponent(developerName)}&per_page=1`, { headers: { 'Accept': 'application/json' } });
+        if (resp.ok) {
+          const result = await resp.json();
+          const dev = (result.data || [])[0];
+          if (dev) {
+            renderDeveloperPanelFromAPI(dev, developerName);
+            return;
+          }
+        }
+      } catch (e) { /* fall through to project-based stats */ }
+
+      // Fallback: compute from current projects or static data
+      const pool = usingAPI ? projects : allProjects;
+      const devProjects = pool.filter(p => (p.developer_canonical || p.developer) === developerName);
       if (devProjects.length === 0) {
         document.getElementById('sidePanelBody').innerHTML = `<div class="side-panel-loading"><div>No data found for this developer.</div></div>`;
         return;
       }
+      renderDeveloperPanelFromProjects(devProjects, developerName);
+    }
 
-      // Calculate stats
-      const totalMW = devProjects.reduce((sum, p) => sum + (p.mw || 0), 0);
-      const regions = [...new Set(devProjects.map(p => p.r).filter(Boolean))];
-      const types = [...new Set(devProjects.map(p => p.t).filter(Boolean))];
-      const states = [...new Set(devProjects.map(p => p.st).filter(Boolean))];
-      
-      // Status breakdown
+    function renderDeveloperPanelFromAPI(dev, developerName) {
+      const totalMW = dev.total_capacity_mw || 0;
+      const cr = dev.completion_rate != null ? (dev.completion_rate * 100).toFixed(1) : '—';
+      const wr = dev.withdrawn_projects && dev.total_projects ? ((dev.withdrawn_projects / dev.total_projects) * 100).toFixed(1) : '0';
+      const opMW = dev.operational_capacity_mw || 0;
+      const actMW = dev.active_capacity_mw || 0;
+
+      let html = `
+        <div class="dev-stat-card">
+          <div class="dev-stat-big">${formatMW(totalMW)}</div>
+          <div class="dev-stat-subtitle">Total Portfolio Capacity</div>
+        </div>
+        <div class="dev-stat-card">
+          <div class="dev-stat-row"><span class="dev-stat-label">Total Projects</span><span class="dev-stat-value">${dev.total_projects}</span></div>
+          <div class="dev-stat-row"><span class="dev-stat-label">Tier</span><span class="dev-stat-value">${(dev.tier || '').replace(/_/g, ' ')}</span></div>
+          <div class="dev-stat-row"><span class="dev-stat-label">Regions</span><span class="dev-stat-value">${dev.region_count} region${dev.region_count !== 1 ? 's' : ''}</span></div>
+          <div class="dev-stat-row"><span class="dev-stat-label">States</span><span class="dev-stat-value">${dev.state_count} state${dev.state_count !== 1 ? 's' : ''}</span></div>
+          ${dev.parent_company ? `<div class="dev-stat-row"><span class="dev-stat-label">Parent</span><span class="dev-stat-value">${dev.parent_company}</span></div>` : ''}
+        </div>
+        <div class="dev-stat-card">
+          <div class="dev-stat-row"><span class="dev-stat-label">Completion Rate</span><span class="dev-stat-value" style="color: #10b981;">${cr}%</span></div>
+          <div class="dev-stat-row"><span class="dev-stat-label">Withdrawn Rate</span><span class="dev-stat-value" style="color: #ef4444;">${wr}%</span></div>
+          <div class="dev-breakdown">
+            ${opMW > 0 ? `<div class="dev-breakdown-seg" style="flex:${opMW};background:#10b981;" title="Operational: ${formatMW(opMW)}"></div>` : ''}
+            ${actMW > 0 ? `<div class="dev-breakdown-seg" style="flex:${actMW};background:#3b82f6;" title="Active: ${formatMW(actMW)}"></div>` : ''}
+          </div>
+          <div class="dev-legend">
+            <div class="dev-legend-item"><div class="dev-legend-dot" style="background:#10b981;"></div>Operational (${dev.operational_projects || 0})</div>
+            <div class="dev-legend-item"><div class="dev-legend-dot" style="background:#3b82f6;"></div>Active (${dev.active_projects || 0})</div>
+            <div class="dev-legend-item"><div class="dev-legend-dot" style="background:#ef4444;"></div>Withdrawn (${dev.withdrawn_projects || 0})</div>
+          </div>
+        </div>
+        <div class="dev-stat-card">
+          <div class="dev-stat-row"><span class="dev-stat-label">Primary Technology</span><span class="dev-stat-value">${dev.primary_technology || '—'}</span></div>
+          <div class="dev-stat-row"><span class="dev-stat-label">Avg Project Size</span><span class="dev-stat-value">${dev.avg_project_size_mw ? dev.avg_project_size_mw.toFixed(0) + ' MW' : '—'}</span></div>
+          ${dev.needs_capital != null ? `<div class="dev-stat-row"><span class="dev-stat-label">Needs Capital</span><span class="dev-stat-value">${dev.needs_capital ? 'Yes' : 'No'}</span></div>` : ''}
+        </div>
+      `;
+      document.getElementById('sidePanelBody').innerHTML = html;
+      const devParam = encodeURIComponent(developerName);
+      document.getElementById('sidePanelFooter').innerHTML = `<a href="../developer-scorecard/?q=${devParam}" class="btn btn-secondary" style="width:100%;justify-content:center;">Open Full Scorecard →</a>`;
+    }
+
+    function renderDeveloperPanelFromProjects(devProjects, developerName) {
+      const totalMW = devProjects.reduce((sum, p) => sum + (p.capacity_mw || 0), 0);
+      const regions = [...new Set(devProjects.map(p => p.region).filter(Boolean))];
+      const states = [...new Set(devProjects.map(p => p.state).filter(Boolean))];
       const statusCounts = { operational: 0, active: 0, withdrawn: 0, other: 0 };
       const statusMW = { operational: 0, active: 0, withdrawn: 0, other: 0 };
       devProjects.forEach(p => {
-        const status = (p.s || '').toLowerCase();
-        const mw = p.mw || 0;
-        if (status.includes('operational') || status.includes('complete')) {
-          statusCounts.operational++;
-          statusMW.operational += mw;
-        } else if (status.includes('active')) {
-          statusCounts.active++;
-          statusMW.active += mw;
-        } else if (status.includes('withdrawn') || status.includes('cancelled') || status.includes('terminated')) {
-          statusCounts.withdrawn++;
-          statusMW.withdrawn += mw;
-        } else {
-          statusCounts.other++;
-          statusMW.other += mw;
-        }
+        const s = (p.status || '').toLowerCase();
+        const mw = p.capacity_mw || 0;
+        if (s.includes('operational') || s.includes('complete')) { statusCounts.operational++; statusMW.operational += mw; }
+        else if (s.includes('active')) { statusCounts.active++; statusMW.active += mw; }
+        else if (s.includes('withdrawn') || s.includes('cancelled')) { statusCounts.withdrawn++; statusMW.withdrawn += mw; }
+        else { statusCounts.other++; statusMW.other += mw; }
       });
-
-      const successRate = devProjects.length > 0 ? ((statusCounts.operational / devProjects.length) * 100).toFixed(1) : 0;
-      const withdrawnRate = devProjects.length > 0 ? ((statusCounts.withdrawn / devProjects.length) * 100).toFixed(1) : 0;
-
-      // Type breakdown
+      const successRate = ((statusCounts.operational / devProjects.length) * 100).toFixed(1);
+      const withdrawnRate = ((statusCounts.withdrawn / devProjects.length) * 100).toFixed(1);
       const typeBreakdown = {};
       devProjects.forEach(p => {
-        const t = p.t || 'Unknown';
+        const t = p.type || 'Unknown';
         if (!typeBreakdown[t]) typeBreakdown[t] = { count: 0, mw: 0 };
         typeBreakdown[t].count++;
-        typeBreakdown[t].mw += (p.mw || 0);
+        typeBreakdown[t].mw += (p.capacity_mw || 0);
       });
+      const typeColors = { 'Solar': '#f59e0b', 'Wind': '#06b6d4', 'Storage': '#8b5cf6', 'Gas': '#6b7280', 'Solar + Storage': '#10b981', 'Hybrid': '#10b981' };
 
-      const typeColors = {
-        'Solar': '#f59e0b',
-        'Wind': '#06b6d4',
-        'Storage': '#8b5cf6',
-        'Gas': '#6b7280',
-        'Solar + Storage': '#10b981',
-        'Hybrid': '#10b981'
-      };
-
-      // Build HTML
       let html = `
+        <div class="dev-stat-card"><div class="dev-stat-big">${formatMW(totalMW)}</div><div class="dev-stat-subtitle">Total Portfolio Capacity</div></div>
         <div class="dev-stat-card">
-          <div class="dev-stat-big">${totalMW >= 1000 ? (totalMW / 1000).toFixed(1) + ' GW' : totalMW.toLocaleString() + ' MW'}</div>
-          <div class="dev-stat-subtitle">Total Portfolio Capacity</div>
+          <div class="dev-stat-row"><span class="dev-stat-label">Total Projects</span><span class="dev-stat-value">${devProjects.length}</span></div>
+          <div class="dev-stat-row"><span class="dev-stat-label">Regions</span><span class="dev-stat-value">${regions.join(', ') || '—'}</span></div>
+          <div class="dev-stat-row"><span class="dev-stat-label">States</span><span class="dev-stat-value">${states.length} state${states.length !== 1 ? 's' : ''}</span></div>
         </div>
-
         <div class="dev-stat-card">
-          <div class="dev-stat-row">
-            <span class="dev-stat-label">Total Projects</span>
-            <span class="dev-stat-value">${devProjects.length}</span>
-          </div>
-          <div class="dev-stat-row">
-            <span class="dev-stat-label">Regions</span>
-            <span class="dev-stat-value">${regions.join(', ') || '—'}</span>
-          </div>
-          <div class="dev-stat-row">
-            <span class="dev-stat-label">States</span>
-            <span class="dev-stat-value">${states.length} state${states.length !== 1 ? 's' : ''}</span>
-          </div>
-        </div>
-
-        <div class="dev-stat-card">
-          <div class="dev-stat-row">
-            <span class="dev-stat-label">Success Rate</span>
-            <span class="dev-stat-value" style="color: #10b981;">${successRate}%</span>
-          </div>
-          <div class="dev-stat-row">
-            <span class="dev-stat-label">Withdrawn Rate</span>
-            <span class="dev-stat-value" style="color: #ef4444;">${withdrawnRate}%</span>
-          </div>
+          <div class="dev-stat-row"><span class="dev-stat-label">Success Rate</span><span class="dev-stat-value" style="color:#10b981;">${successRate}%</span></div>
+          <div class="dev-stat-row"><span class="dev-stat-label">Withdrawn Rate</span><span class="dev-stat-value" style="color:#ef4444;">${withdrawnRate}%</span></div>
           <div class="dev-breakdown">
-            ${statusMW.operational > 0 ? `<div class="dev-breakdown-seg" style="flex: ${statusMW.operational}; background: #10b981;" title="Operational: ${formatMW(statusMW.operational)}"></div>` : ''}
-            ${statusMW.active > 0 ? `<div class="dev-breakdown-seg" style="flex: ${statusMW.active}; background: #3b82f6;" title="Active: ${formatMW(statusMW.active)}"></div>` : ''}
-            ${statusMW.other > 0 ? `<div class="dev-breakdown-seg" style="flex: ${statusMW.other}; background: #a1a1aa;" title="Other: ${formatMW(statusMW.other)}"></div>` : ''}
-            ${statusMW.withdrawn > 0 ? `<div class="dev-breakdown-seg" style="flex: ${statusMW.withdrawn}; background: #ef4444;" title="Withdrawn: ${formatMW(statusMW.withdrawn)}"></div>` : ''}
+            ${statusMW.operational > 0 ? `<div class="dev-breakdown-seg" style="flex:${statusMW.operational};background:#10b981;"></div>` : ''}
+            ${statusMW.active > 0 ? `<div class="dev-breakdown-seg" style="flex:${statusMW.active};background:#3b82f6;"></div>` : ''}
+            ${statusMW.withdrawn > 0 ? `<div class="dev-breakdown-seg" style="flex:${statusMW.withdrawn};background:#ef4444;"></div>` : ''}
           </div>
           <div class="dev-legend">
-            <div class="dev-legend-item"><div class="dev-legend-dot" style="background: #10b981;"></div>Operational (${statusCounts.operational})</div>
-            <div class="dev-legend-item"><div class="dev-legend-dot" style="background: #3b82f6;"></div>Active (${statusCounts.active})</div>
-            <div class="dev-legend-item"><div class="dev-legend-dot" style="background: #ef4444;"></div>Withdrawn (${statusCounts.withdrawn})</div>
+            <div class="dev-legend-item"><div class="dev-legend-dot" style="background:#10b981;"></div>Operational (${statusCounts.operational})</div>
+            <div class="dev-legend-item"><div class="dev-legend-dot" style="background:#3b82f6;"></div>Active (${statusCounts.active})</div>
+            <div class="dev-legend-item"><div class="dev-legend-dot" style="background:#ef4444;"></div>Withdrawn (${statusCounts.withdrawn})</div>
           </div>
         </div>
-
         <div class="dev-stat-card">
-          <div style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.75rem;">Technology Mix</div>
-          ${Object.entries(typeBreakdown).sort((a, b) => b[1].mw - a[1].mw).slice(0, 5).map(([type, data]) => `
-            <div class="dev-stat-row">
-              <span class="dev-stat-label" style="display: flex; align-items: center; gap: 6px;">
-                <div class="dev-legend-dot" style="background: ${typeColors[type] || '#94a3b8'};"></div>
-                ${type}
-              </span>
-              <span class="dev-stat-value">${formatMW(data.mw)}</span>
-            </div>
+          <div style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);margin-bottom:0.75rem;">Technology Mix</div>
+          ${Object.entries(typeBreakdown).sort((a,b) => b[1].mw - a[1].mw).slice(0,5).map(([type, data]) => `
+            <div class="dev-stat-row"><span class="dev-stat-label" style="display:flex;align-items:center;gap:6px;"><div class="dev-legend-dot" style="background:${typeColors[type]||'#94a3b8'};"></div>${type}</span><span class="dev-stat-value">${formatMW(data.mw)}</span></div>
           `).join('')}
         </div>
       `;
-
       document.getElementById('sidePanelBody').innerHTML = html;
-
-      // Footer with link to full scorecard
       const devParam = encodeURIComponent(developerName);
-      document.getElementById('sidePanelFooter').innerHTML = `<a href="../developer-scorecard/?q=${devParam}" class="btn btn-secondary" style="width: 100%; justify-content: center;">Open Full Scorecard →</a>`;
+      document.getElementById('sidePanelFooter').innerHTML = `<a href="../developer-scorecard/?q=${devParam}" class="btn btn-secondary" style="width:100%;justify-content:center;">Open Full Scorecard →</a>`;
     }
 
     function formatMW(mw) {
       if (mw >= 1000) return (mw / 1000).toFixed(1) + ' GW';
-      return mw.toLocaleString() + ' MW';
+      return Math.round(mw).toLocaleString() + ' MW';
     }
 
     function closeSidePanel() {
@@ -1074,18 +1200,18 @@
     }
 
     // Events
-    document.getElementById('searchInput').addEventListener('input', debounce(applyFilters, 200));
+    document.getElementById('searchInput').addEventListener('input', debounce(() => { currentPage = 1; applyFilters(); }, 300));
     ['filterRegion', 'filterType', 'filterStatus', 'filterState', 'filterMinMW'].forEach(id => {
-      document.getElementById(id).addEventListener('change', applyFilters);
+      document.getElementById(id).addEventListener('change', () => { currentPage = 1; applyFilters(); });
     });
 
     document.getElementById('prevPage').addEventListener('click', () => {
-      if (currentPage > 1) { currentPage--; render(); window.scrollTo(0, 0); }
+      if (currentPage > 1) { currentPage--; applyFilters(); window.scrollTo(0, 0); }
     });
 
     document.getElementById('nextPage').addEventListener('click', () => {
-      const totalPages = Math.ceil(filtered.length / pageSize);
-      if (currentPage < totalPages) { currentPage++; render(); window.scrollTo(0, 0); }
+      const totalPages = Math.ceil(totalResults / pageSize);
+      if (currentPage < totalPages) { currentPage++; applyFilters(); window.scrollTo(0, 0); }
     });
 
     document.getElementById('modalOverlay').addEventListener('click', (e) => {
@@ -1097,10 +1223,7 @@
     });
 
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeModal();
-        closeSidePanel();
-      }
+      if (e.key === 'Escape') { closeModal(); closeSidePanel(); }
     });
 
     function debounce(fn, ms) {

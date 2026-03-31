@@ -3,7 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Developer Reliability Score — Prospector Labs</title>
+<title>Developer Reliability Score — Live Data | Prospector Labs</title>
+<meta name="description" content="FICO-like reliability scores for 5,600+ energy project developers. Search, compare, and evaluate developer track records across all US interconnection queues.">
+<meta property="og:title" content="Developer Reliability Score — Prospector Labs">
+<meta property="og:description" content="FICO-like reliability scoring for energy project developers. Track records across 9 US ISOs.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://prospector-labs-site.vercel.app/developer-scorecard/">
+<link rel="canonical" href="https://prospector-labs-site.vercel.app/developer-scorecard/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Developer Reliability Score",
+  "description": "FICO-like reliability scores for energy project developers",
+  "url": "https://prospector-labs-site.vercel.app/developer-scorecard/",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://prospector-labs-site.vercel.app/developer-scorecard/?q={search_term}",
+    "query-input": "required name=search_term"
+  }
+}
+</script>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -67,6 +90,8 @@ tailwind.config = {
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 3px; }
   .compare-check { width: 16px; height: 16px; accent-color: hsl(0 0% 63.9%); }
+  .skeleton { background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--accent)) 50%, hsl(var(--muted)) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 0.375rem; }
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 </style>
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"></head>
 <body class="min-h-screen">
@@ -79,9 +104,10 @@ tailwind.config = {
         <h1 class="text-lg font-semibold tracking-tight">Developer Reliability Score</h1>
         <span class="text-xs font-mono px-2 py-0.5 rounded" style="background:hsl(var(--muted));color:hsl(var(--muted-fg))">BETA</span>
       </div>
-      <p class="text-sm" style="color:hsl(var(--muted-fg))">FICO-like scoring for energy project developers · 5,683 developers · 31,889 projects</p>
+      <p id="subtitle" class="text-sm" style="color:hsl(var(--muted-fg))">FICO-like scoring for energy project developers · Connecting to live API...</p>
     </div>
     <div class="flex items-center gap-4">
+      <span id="data-badge" class="text-xs font-mono px-2 py-0.5 rounded" style="background:hsl(var(--muted));color:hsl(var(--muted-fg))">LOADING</span>
       <span class="text-xs font-mono" style="color:hsl(var(--muted-fg))">Prospector Labs</span>
       <button onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-[hsl(var(--muted))] transition-colors" title="Toggle theme">
         <svg id="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -103,23 +129,125 @@ tailwind.config = {
 
 <script src="data.js"></script>
 <script>
+// ── Config ──
+const API_BASE = 'https://prospector-platform-production.up.railway.app';
+
 // ── State ──
 let currentTab = 'rankings';
 let selectedDev = null;
+let selectedDevId = null;
 let compareList = [];
 let sortCol = 'score';
 let sortDir = 'desc';
-let filterRegion = '';
-let filterTech = '';
+let filterTier = '';
+let filterState = '';
 let filterMinProjects = 3;
 let searchQuery = '';
 let rankPage = 0;
 const PAGE_SIZE = 50;
 
-// ── Helpers ──
-const regions = [...new Set(DEVELOPERS.map(d => d.primary_region).filter(Boolean))].sort();
-const techs = [...new Set(DEVELOPERS.map(d => d.primary_technology).filter(Boolean))].sort();
+let useAPI = false;
+let apiDevCache = new Map();    // id → enriched developer object
+let staticDevs = [];            // normalized from data.js
+let devCount = 0;
+let projectCount = 0;
+let loading = false;
+let searchDebounce = null;
 
+// API sort field mapping (API doesn't support 'score' sort)
+const API_SORT_MAP = {
+  score: 'total_projects',       // fallback — we re-sort client-side
+  completion_rate: 'completion_rate',
+  total_projects: 'total_projects',
+  total_capacity_mw: 'total_capacity_mw',
+  active_capacity_mw: 'active_capacity_mw',
+  operational_capacity_mw: 'operational_capacity_mw',
+};
+
+// ── Scoring (client-side, mirrors data.js pre-computed scores) ──
+function computeScore(d) {
+  const cr = d.completion_rate ?? 0;
+  const wr = d.withdrawal_rate ?? 0;
+  const opMW = d.operational_capacity_mw ?? d.completed_capacity_mw ?? 0;
+  const regions = d.region_count ?? (d.regions ? d.regions.split(',').length : 0);
+  const tp = d.total_projects ?? 0;
+
+  // Dimension scores (0-100)
+  const s_completion = Math.min(cr * 100, 100);
+  const s_withdrawal = Math.min((1 - wr) * 100, 100);
+  const s_timeline = 50; // no timeline data from API — neutral default
+  const s_capacity = opMW > 0 ? Math.min((Math.log10(opMW + 1) / Math.log10(10000)) * 100, 100) : 0;
+  const s_regional = Math.min((regions / 5) * 100, 100);
+  const s_experience = Math.min((tp / 50) * 100, 100);
+
+  // Weighted score (0-1000)
+  const raw = (s_completion * 0.30 + s_withdrawal * 0.20 + s_timeline * 0.20 +
+               s_capacity * 0.15 + s_regional * 0.10 + s_experience * 0.05) * 10;
+  const score = Math.round(Math.max(0, Math.min(1000, raw)));
+
+  // Grade
+  let grade;
+  if (score >= 900) grade = 'A+';
+  else if (score >= 800) grade = 'A';
+  else if (score >= 750) grade = 'A-';
+  else if (score >= 700) grade = 'B+';
+  else if (score >= 650) grade = 'B';
+  else if (score >= 600) grade = 'B-';
+  else if (score >= 550) grade = 'C+';
+  else if (score >= 500) grade = 'C';
+  else if (score >= 450) grade = 'C-';
+  else if (score >= 400) grade = 'D+';
+  else if (score >= 350) grade = 'D';
+  else if (score >= 300) grade = 'D-';
+  else grade = 'F';
+
+  // Confidence
+  let confidence;
+  if (tp >= 20) confidence = 'High';
+  else if (tp >= 5) confidence = 'Medium';
+  else confidence = 'Low';
+
+  return {
+    score, grade, confidence,
+    s_completion_rate: s_completion,
+    s_withdrawal_rate: s_withdrawal,
+    s_timeline_adherence: s_timeline,
+    s_capacity_delivered: s_capacity,
+    s_regional_diversity: s_regional,
+    s_experience_depth: s_experience,
+  };
+}
+
+function enrichDev(d) {
+  // Normalize API developer to match data.js shape
+  const name = d.display_name || d.canonical_name || d.name || 'Unknown';
+  const tp = d.total_projects ?? 0;
+  const opMW = d.operational_capacity_mw ?? d.completed_capacity_mw ?? 0;
+  const scores = computeScore(d);
+  return {
+    ...d,
+    name: name,
+    total_projects: tp,
+    completed_projects: d.operational_projects ?? d.completed_projects ?? 0,
+    active_projects: d.active_projects ?? 0,
+    withdrawn_projects: d.withdrawn_projects ?? 0,
+    total_capacity_mw: d.total_capacity_mw ?? 0,
+    completed_capacity_mw: opMW,
+    completion_rate: d.completion_rate ?? 0,
+    withdrawal_rate: d.withdrawal_rate ?? 0,
+    primary_region: d.primary_region || (d.regions ? (typeof d.regions === 'string' ? d.regions.split(',')[0] : '') : ''),
+    primary_technology: d.primary_technology || '',
+    regions: typeof d.regions === 'string' ? d.regions : (Array.isArray(d.regions) ? d.regions.join(',') : ''),
+    states: typeof d.states === 'string' ? d.states : (Array.isArray(d.states) ? d.states.join(',') : ''),
+    technologies: typeof d.technologies === 'string' ? d.technologies : (d.technology_mix ? (typeof d.technology_mix === 'string' ? d.technology_mix : '') : ''),
+    needs_capital: d.needs_capital ?? false,
+    parent_company: d.parent_company || '',
+    tier: d.tier || 'unknown',
+    ...scores,
+  };
+}
+
+// ── Helpers ──
 function scoreClass(s) {
   if (s >= 700) return 'score-excellent';
   if (s >= 600) return 'score-good';
@@ -127,7 +255,6 @@ function scoreClass(s) {
   if (s >= 400) return 'score-poor';
   return 'score-bad';
 }
-
 function gradeColor(g) {
   if (g.startsWith('A')) return '#22c55e';
   if (g.startsWith('B')) return '#84cc16';
@@ -135,21 +262,131 @@ function gradeColor(g) {
   if (g.startsWith('D')) return '#f97316';
   return '#ef4444';
 }
-
 function fmt(n, d=0) { return n != null ? n.toLocaleString(undefined, {maximumFractionDigits:d}) : '—'; }
 function pct(n) { return n != null ? (n * 100).toFixed(1) + '%' : '—'; }
+function esc(s) { return (s||'').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
 
-function filterDevs() {
-  return DEVELOPERS.filter(d => {
-    if (filterRegion && d.primary_region !== filterRegion) return false;
-    if (filterTech && d.primary_technology !== filterTech) return false;
+function tierLabel(t) {
+  const map = { major_utility: 'Major Utility', major_ipp: 'Major IPP', mid_platform: 'Mid Platform', pe_fund: 'PE Fund', independent: 'Independent', unknown: 'Unknown' };
+  return map[t] || t || '—';
+}
+
+function renderSkeleton(rows = 8) {
+  let html = '<div class="card overflow-hidden"><table class="w-full text-sm"><tbody>';
+  for (let i = 0; i < rows; i++) {
+    html += `<tr><td class="px-3 py-3"><div class="skeleton" style="width:${30+Math.random()*60}%;height:14px"></div></td>
+      <td class="px-3 py-3"><div class="skeleton" style="width:${40+Math.random()*40}%;height:14px"></div></td>
+      <td class="px-3 py-3"><div class="skeleton" style="width:50%;height:14px"></div></td></tr>`;
+  }
+  return html + '</tbody></table></div>';
+}
+
+// ── Data source badge ──
+function updateBadge() {
+  const badge = document.getElementById('data-badge');
+  const sub = document.getElementById('subtitle');
+  if (useAPI) {
+    badge.textContent = 'LIVE API';
+    badge.style.background = '#166534';
+    badge.style.color = '#4ade80';
+    sub.textContent = `FICO-like scoring for energy project developers · ${fmt(devCount)} developers · Live data`;
+  } else {
+    badge.textContent = 'CACHED DATA';
+    badge.style.background = '#78350f';
+    badge.style.color = '#fbbf24';
+    sub.textContent = `FICO-like scoring for energy project developers · ${fmt(devCount)} developers · ${fmt(projectCount)} projects`;
+  }
+}
+
+// ── API fetching ──
+async function apiFetch(path, params = {}) {
+  const url = new URL(`${API_BASE}${path}`);
+  Object.entries(params).forEach(([k, v]) => { if (v != null && v !== '') url.searchParams.set(k, v); });
+  const resp = await fetch(url.toString(), { headers: { 'Accept': 'application/json' } });
+  if (!resp.ok) throw new Error(`API ${resp.status}`);
+  return resp.json();
+}
+
+async function fetchRankingsFromAPI(page, perPage, sort, order, filters) {
+  const apiSort = API_SORT_MAP[sort] || 'total_projects';
+  const params = { page: page + 1, per_page: perPage, sort: apiSort, order };
+  if (filters.tier) params.tier = filters.tier;
+  if (filters.state) params.state = filters.state;
+  if (filters.min_projects) params.min_projects = filters.min_projects;
+  if (filters.q) params.q = filters.q;
+  const json = await apiFetch('/developers', params);
+  const devs = (json.data || []).map(enrichDev);
+  // If sorting by score (not natively supported), re-sort client-side
+  if (sort === 'score' || sort === 'completion_rate') {
+    devs.sort((a, b) => order === 'desc' ? b[sort] - a[sort] : a[sort] - b[sort]);
+  }
+  return { devs, total: json.meta?.total || devs.length, totalPages: json.meta?.total_pages || 1 };
+}
+
+async function fetchDevDetail(devId) {
+  if (apiDevCache.has(devId)) return apiDevCache.get(devId);
+  const json = await apiFetch(`/developers/${devId}`);
+  const d = enrichDev(json.data || json);
+  apiDevCache.set(devId, d);
+  return d;
+}
+
+async function searchDevsAPI(query) {
+  const json = await apiFetch('/developers', { q: query, per_page: 30 });
+  return (json.data || []).map(enrichDev);
+}
+
+// ── Init ──
+async function init() {
+  const el = document.getElementById('content');
+  el.innerHTML = renderSkeleton();
+
+  // Try API first
+  try {
+    const json = await apiFetch('/developers', { per_page: 1 });
+    if (json.data && json.meta) {
+      useAPI = true;
+      devCount = json.meta.total || 0;
+      projectCount = 0; // not available from this endpoint
+    }
+  } catch (e) {
+    useAPI = false;
+  }
+
+  // Fall back to static data.js
+  if (!useAPI && typeof DEVELOPERS !== 'undefined') {
+    staticDevs = DEVELOPERS;
+    devCount = staticDevs.length;
+    projectCount = staticDevs.reduce((s, d) => s + (d.total_projects || 0), 0);
+  }
+
+  updateBadge();
+
+  // Check URL for ?q= search param
+  const urlQ = new URLSearchParams(window.location.search).get('q');
+  if (urlQ) {
+    searchQuery = urlQ;
+    currentTab = 'search';
+  }
+
+  render();
+}
+
+// ── Static data helpers (fallback mode) ──
+function getStaticRegions() { return [...new Set(staticDevs.map(d => d.primary_region).filter(Boolean))].sort(); }
+function getStaticTechs() { return [...new Set(staticDevs.map(d => d.primary_technology).filter(Boolean))].sort(); }
+
+function filterStaticDevs() {
+  return staticDevs.filter(d => {
+    if (filterTier && d.tier !== filterTier) return false;
+    if (filterState && !(d.states || '').includes(filterState) && d.headquarters_state !== filterState) return false;
     if (d.total_projects < filterMinProjects) return false;
-    if (searchQuery && !d.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    if (searchQuery && !(d.name || '').toLowerCase().includes(searchQuery.toLowerCase())) return false;
     return true;
   });
 }
 
-function sortDevs(arr) {
+function sortStaticDevs(arr) {
   const dir = sortDir === 'desc' ? -1 : 1;
   return [...arr].sort((a, b) => {
     const av = a[sortCol] ?? 0, bv = b[sortCol] ?? 0;
@@ -157,22 +394,18 @@ function sortDevs(arr) {
   });
 }
 
-function optionsHtml(items, selected, label) {
-  return `<option value="">${label}</option>` + items.map(i => 
-    `<option value="${i}" ${i===selected?'selected':''}>${i}</option>`
-  ).join('');
-}
-
 // ── Filters bar ──
 function filtersHtml() {
+  const tiers = ['major_utility', 'major_ipp', 'mid_platform', 'pe_fund', 'independent'];
   return `
     <div class="flex flex-wrap gap-3 mb-5">
-      <select onchange="filterRegion=this.value;rankPage=0;render()" class="px-3 py-1.5 rounded-lg text-sm">
-        ${optionsHtml(regions, filterRegion, 'All Regions')}
+      <select onchange="filterTier=this.value;rankPage=0;render()" class="px-3 py-1.5 rounded-lg text-sm">
+        <option value="">All Tiers</option>
+        ${tiers.map(t => `<option value="${t}" ${t===filterTier?'selected':''}>${tierLabel(t)}</option>`).join('')}
       </select>
-      <select onchange="filterTech=this.value;rankPage=0;render()" class="px-3 py-1.5 rounded-lg text-sm">
-        ${optionsHtml(techs, filterTech, 'All Technologies')}
-      </select>
+      <input type="text" placeholder="Filter by state..." value="${filterState}"
+        oninput="filterState=this.value;rankPage=0;render()"
+        class="px-3 py-1.5 rounded-lg text-sm w-32">
       <select onchange="filterMinProjects=+this.value;rankPage=0;render()" class="px-3 py-1.5 rounded-lg text-sm">
         <option value="1" ${filterMinProjects===1?'selected':''}>Min 1 project</option>
         <option value="3" ${filterMinProjects===3?'selected':''}>Min 3 projects</option>
@@ -195,13 +428,35 @@ function toggleSort(col) {
 }
 
 // ── Rankings Tab ──
-function renderRankings() {
-  const filtered = sortDevs(filterDevs());
+async function renderRankingsAsync() {
+  const el = document.getElementById('content');
+
+  if (useAPI) {
+    el.innerHTML = filtersHtml() + renderSkeleton();
+    try {
+      const filters = { tier: filterTier, state: filterState, min_projects: filterMinProjects > 1 ? filterMinProjects : null };
+      const { devs, total, totalPages } = await fetchRankingsFromAPI(rankPage, PAGE_SIZE, sortCol, sortDir, filters);
+      el.innerHTML = filtersHtml() + renderRankingsTable(devs, total, totalPages);
+    } catch (e) {
+      // Fall back to static
+      useAPI = false;
+      updateBadge();
+      renderRankingsStatic();
+    }
+  } else {
+    renderRankingsStatic();
+  }
+}
+
+function renderRankingsStatic() {
+  const filtered = sortStaticDevs(filterStaticDevs());
   const page = filtered.slice(rankPage * PAGE_SIZE, (rankPage + 1) * PAGE_SIZE);
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  document.getElementById('content').innerHTML = filtersHtml() + renderRankingsTable(page, filtered.length, totalPages);
+}
 
+function renderRankingsTable(devs, total, totalPages) {
   return `
-    ${filtersHtml()}
     <div class="card overflow-hidden">
       <div class="overflow-x-auto">
         <table class="w-full text-sm">
@@ -212,26 +467,24 @@ function renderRankings() {
               ${sortHeader('score', 'Score')}
               <th class="px-3 py-2">Grade</th>
               ${sortHeader('completion_rate', 'Completion')}
-              ${sortHeader('withdrawal_rate', 'Withdrawal')}
+              <th class="px-3 py-2">Tier</th>
               ${sortHeader('total_projects', 'Projects')}
-              ${sortHeader('completed_capacity_mw', 'MW Online')}
-              <th class="px-3 py-2">Region</th>
+              ${sortHeader('total_capacity_mw', 'Total MW')}
               <th class="px-3 py-2">Tech</th>
               <th class="px-3 py-2">Confidence</th>
             </tr>
           </thead>
           <tbody>
-            ${page.map((d, i) => `
-              <tr class="hover:bg-[hsl(var(--muted))] cursor-pointer transition-colors" onclick="viewDev('${d.name.replace(/'/g,"\\'")}')">
+            ${devs.map((d, i) => `
+              <tr class="hover:bg-[hsl(var(--muted))] cursor-pointer transition-colors" onclick="viewDev('${esc(d.name)}', ${d.id || 'null'})">
                 <td class="px-3 py-2.5 font-mono text-xs" style="color:hsl(var(--muted-fg))">${rankPage * PAGE_SIZE + i + 1}</td>
-                <td class="px-3 py-2.5 font-medium">${d.name}</td>
+                <td class="px-3 py-2.5 font-medium">${d.name}${d.parent_company ? `<span class="text-xs ml-1" style="color:hsl(var(--muted-fg))">· ${d.parent_company}</span>` : ''}</td>
                 <td class="px-3 py-2.5 font-mono font-semibold ${scoreClass(d.score)}">${d.score}</td>
                 <td class="px-3 py-2.5 font-mono" style="color:${gradeColor(d.grade)}">${d.grade}</td>
                 <td class="px-3 py-2.5 font-mono">${pct(d.completion_rate)}</td>
-                <td class="px-3 py-2.5 font-mono">${pct(d.withdrawal_rate)}</td>
+                <td class="px-3 py-2.5 text-xs">${tierLabel(d.tier)}</td>
                 <td class="px-3 py-2.5 font-mono">${d.total_projects}</td>
-                <td class="px-3 py-2.5 font-mono">${fmt(d.completed_capacity_mw, 0)}</td>
-                <td class="px-3 py-2.5 text-xs">${d.primary_region || '—'}</td>
+                <td class="px-3 py-2.5 font-mono">${fmt(d.total_capacity_mw, 0)}</td>
                 <td class="px-3 py-2.5 text-xs">${d.primary_technology || '—'}</td>
                 <td class="px-3 py-2.5 text-xs">${d.confidence}</td>
               </tr>
@@ -240,68 +493,138 @@ function renderRankings() {
         </table>
       </div>
       <div class="flex items-center justify-between px-4 py-3 border-t" style="border-color:hsl(var(--border))">
-        <span class="text-xs" style="color:hsl(var(--muted-fg))">${filtered.length} developers</span>
+        <span class="text-xs" style="color:hsl(var(--muted-fg))">${fmt(total)} developers</span>
         <div class="flex gap-2">
           <button onclick="rankPage=Math.max(0,rankPage-1);render()" class="px-3 py-1 text-xs rounded-lg" style="background:hsl(var(--muted))" ${rankPage===0?'disabled':''}>← Prev</button>
-          <span class="text-xs font-mono py-1" style="color:hsl(var(--muted-fg))">${rankPage+1}/${totalPages}</span>
-          <button onclick="rankPage=Math.min(${totalPages-1},rankPage+1);render()" class="px-3 py-1 text-xs rounded-lg" style="background:hsl(var(--muted))" ${rankPage>=totalPages-1?'disabled':''}>Next →</button>
+          <span class="text-xs font-mono py-1" style="color:hsl(var(--muted-fg))">${rankPage+1}/${totalPages || 1}</span>
+          <button onclick="rankPage=Math.min(${(totalPages||1)-1},rankPage+1);render()" class="px-3 py-1 text-xs rounded-lg" style="background:hsl(var(--muted))" ${rankPage>=(totalPages||1)-1?'disabled':''}>Next →</button>
         </div>
       </div>
     </div>`;
 }
 
 // ── Search Tab ──
-function renderSearch() {
-  const results = searchQuery ? sortDevs(filterDevs()).slice(0, 30) : [];
-  return `
+let searchResults = [];
+let searchLoading = false;
+
+async function renderSearchAsync() {
+  const el = document.getElementById('content');
+
+  const inputHtml = `
     <div class="mb-5">
       <input type="text" placeholder="Search developer name..." value="${searchQuery}"
-        oninput="searchQuery=this.value;render()"
+        oninput="handleSearchInput(this.value)"
         class="w-full max-w-lg px-4 py-2.5 rounded-lg text-sm" autofocus>
     </div>
-    ${filtersHtml()}
-    ${results.length ? `
-      <div class="grid gap-3">
-        ${results.map(d => `
-          <div class="card px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-[hsl(var(--muted))] transition-colors" onclick="viewDev('${d.name.replace(/'/g,"\\'")}')">
-            <div>
-              <div class="font-medium">${d.name}</div>
-              <div class="text-xs mt-1" style="color:hsl(var(--muted-fg))">${d.primary_region || '—'} · ${d.primary_technology || '—'} · ${d.total_projects} projects</div>
-            </div>
-            <div class="text-right">
-              <div class="font-mono text-2xl font-semibold ${scoreClass(d.score)}">${d.score}</div>
-              <div class="font-mono text-xs" style="color:${gradeColor(d.grade)}">${d.grade} · ${d.confidence}</div>
-            </div>
-          </div>
-        `).join('')}
+    ${filtersHtml()}`;
+
+  if (!searchQuery) {
+    el.innerHTML = inputHtml + '<p class="text-sm" style="color:hsl(var(--muted-fg))">Start typing to search developers.</p>';
+    return;
+  }
+
+  if (useAPI) {
+    el.innerHTML = inputHtml + '<div class="grid gap-3">' + renderSkeleton(4) + '</div>';
+    try {
+      searchResults = await searchDevsAPI(searchQuery);
+      el.innerHTML = inputHtml + renderSearchResults(searchResults);
+    } catch (e) {
+      useAPI = false;
+      updateBadge();
+      renderSearchStatic();
+    }
+  } else {
+    renderSearchStatic();
+  }
+}
+
+function renderSearchStatic() {
+  const el = document.getElementById('content');
+  searchResults = searchQuery ? sortStaticDevs(filterStaticDevs()).slice(0, 30) : [];
+  const inputHtml = `
+    <div class="mb-5">
+      <input type="text" placeholder="Search developer name..." value="${searchQuery}"
+        oninput="handleSearchInput(this.value)"
+        class="w-full max-w-lg px-4 py-2.5 rounded-lg text-sm" autofocus>
+    </div>
+    ${filtersHtml()}`;
+  el.innerHTML = inputHtml + renderSearchResults(searchResults);
+}
+
+function renderSearchResults(results) {
+  if (!results.length) return '<p class="text-sm" style="color:hsl(var(--muted-fg))">No results found.</p>';
+  return `<div class="grid gap-3">
+    ${results.map(d => `
+      <div class="card px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-[hsl(var(--muted))] transition-colors" onclick="viewDev('${esc(d.name)}', ${d.id || 'null'})">
+        <div>
+          <div class="font-medium">${d.name}</div>
+          <div class="text-xs mt-1" style="color:hsl(var(--muted-fg))">${tierLabel(d.tier)} · ${d.primary_technology || '—'} · ${d.total_projects} projects${d.needs_capital ? ' · <span style="color:#22c55e">Seeking Capital</span>' : ''}</div>
+        </div>
+        <div class="text-right">
+          <div class="font-mono text-2xl font-semibold ${scoreClass(d.score)}">${d.score}</div>
+          <div class="font-mono text-xs" style="color:${gradeColor(d.grade)}">${d.grade} · ${d.confidence}</div>
+        </div>
       </div>
-    ` : searchQuery ? '<p class="text-sm" style="color:hsl(var(--muted-fg))">No results found.</p>' : '<p class="text-sm" style="color:hsl(var(--muted-fg))">Start typing to search developers.</p>'}
-  `;
+    `).join('')}
+  </div>`;
+}
+
+function handleSearchInput(val) {
+  searchQuery = val;
+  // Update URL
+  const url = new URL(window.location);
+  if (val) url.searchParams.set('q', val);
+  else url.searchParams.delete('q');
+  history.replaceState(null, '', url);
+
+  clearTimeout(searchDebounce);
+  searchDebounce = setTimeout(() => render(), useAPI ? 300 : 100);
 }
 
 // ── Scorecard Tab ──
-function renderScorecard() {
-  if (!selectedDev) return '<p class="text-sm" style="color:hsl(var(--muted-fg))">Select a developer from Rankings or Search to view their scorecard.</p>';
-  const d = DEVELOPERS.find(x => x.name === selectedDev);
-  if (!d) return '<p>Developer not found.</p>';
+async function renderScorecardAsync() {
+  const el = document.getElementById('content');
+  if (!selectedDev) {
+    el.innerHTML = '<p class="text-sm" style="color:hsl(var(--muted-fg))">Select a developer from Rankings or Search to view their scorecard.</p>';
+    return;
+  }
+
+  el.innerHTML = renderSkeleton(6);
+
+  let d = null;
+
+  // Try API detail first
+  if (useAPI && selectedDevId) {
+    try {
+      d = await fetchDevDetail(selectedDevId);
+    } catch (e) { /* fall through */ }
+  }
+
+  // Fall back to static data or cached search results
+  if (!d) {
+    d = staticDevs.find(x => x.name === selectedDev) || searchResults.find(x => x.name === selectedDev);
+  }
+
+  if (!d) {
+    el.innerHTML = '<p class="text-sm" style="color:hsl(var(--muted-fg))">Developer not found. Try searching again.</p>';
+    return;
+  }
 
   const dims = [
     { name: 'Completion Rate', weight: 30, score: d.s_completion_rate, raw: pct(d.completion_rate), desc: `${pct(d.completion_rate)} of projects reached COD` },
     { name: 'Withdrawal Rate', weight: 20, score: d.s_withdrawal_rate, raw: pct(d.withdrawal_rate), desc: `${pct(d.withdrawal_rate)} of projects withdrawn (lower is better)` },
     { name: 'Timeline Adherence', weight: 20, score: d.s_timeline_adherence, raw: d.avg_timeline_months ? d.avg_timeline_months.toFixed(0) + ' mo' : 'N/A', desc: d.avg_timeline_months ? `Avg ${d.avg_timeline_months.toFixed(0)} months queue-to-COD` : 'Insufficient data' },
     { name: 'Capacity Delivered', weight: 15, score: d.s_capacity_delivered, raw: fmt(d.completed_capacity_mw, 0) + ' MW', desc: `${fmt(d.completed_capacity_mw, 0)} MW brought online` },
-    { name: 'Regional Diversity', weight: 10, score: d.s_regional_diversity, raw: d.regions ? d.regions.split(',').length + ' regions' : '0', desc: `Active in ${d.regions ? d.regions.split(',').length : 0} ISO regions` },
-    { name: 'Experience Depth', weight: 5, score: d.s_experience_depth, raw: (d.years_active||0) + ' yrs', desc: `${d.years_active||0} years active, ${d.total_projects} projects` },
+    { name: 'Regional Diversity', weight: 10, score: d.s_regional_diversity, raw: (d.region_count || (d.regions ? d.regions.split(',').length : 0)) + ' regions', desc: `Active in ${d.region_count || (d.regions ? d.regions.split(',').length : 0)} ISO regions` },
+    { name: 'Experience Depth', weight: 5, score: d.s_experience_depth, raw: (d.years_active||0) + ' yrs / ' + d.total_projects + ' proj', desc: `${d.years_active||'—'} years active, ${d.total_projects} projects` },
   ];
 
-  setTimeout(() => drawRadar('radar-canvas', dims), 50);
+  const rList = d.regions ? d.regions.split(',').filter(Boolean) : [];
+  const tList = d.technologies ? d.technologies.split(',').filter(Boolean) : (d.primary_technology ? [d.primary_technology] : []);
+  const sList = d.states ? d.states.split(',').filter(Boolean) : (d.headquarters_state ? [d.headquarters_state] : []);
 
-  const rList = d.regions ? d.regions.split(',') : [];
-  const tList = d.technologies ? d.technologies.split(',') : [];
-  const sList = d.states ? d.states.split(',') : [];
-
-  return `
-    <button onclick="selectedDev=null;switchTab('rankings')" class="text-xs mb-4 px-3 py-1 rounded-lg" style="background:hsl(var(--muted));color:hsl(var(--muted-fg))">← Back to Rankings</button>
+  el.innerHTML = `
+    <button onclick="selectedDev=null;selectedDevId=null;switchTab('rankings')" class="text-xs mb-4 px-3 py-1 rounded-lg" style="background:hsl(var(--muted));color:hsl(var(--muted-fg))">← Back to Rankings</button>
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Score hero -->
       <div class="card p-8 flex flex-col items-center justify-center">
@@ -309,7 +632,9 @@ function renderScorecard() {
         <div class="font-mono text-lg mt-1" style="color:${gradeColor(d.grade)}">${d.grade}</div>
         <div class="text-xs mt-2" style="color:hsl(var(--muted-fg))">Confidence: ${d.confidence}</div>
         <div class="text-sm font-medium mt-4">${d.name}</div>
-        <div class="text-xs mt-1" style="color:hsl(var(--muted-fg))">${d.primary_region || '—'} · ${d.primary_technology || '—'}</div>
+        <div class="text-xs mt-1" style="color:hsl(var(--muted-fg))">${tierLabel(d.tier)}${d.parent_company ? ' · ' + d.parent_company : ''}</div>
+        <div class="text-xs mt-1" style="color:hsl(var(--muted-fg))">${d.primary_technology || '—'}${d.headquarters_state ? ' · HQ: ' + d.headquarters_state : ''}</div>
+        ${d.needs_capital ? '<div class="text-xs mt-2 px-2 py-0.5 rounded" style="background:#166534;color:#4ade80">Seeking Capital</div>' : ''}
       </div>
 
       <!-- Radar chart -->
@@ -328,8 +653,8 @@ function renderScorecard() {
           <div class="flex justify-between"><span style="color:hsl(var(--muted-fg))">Withdrawn</span><span class="font-mono">${d.withdrawn_projects}</span></div>
           <div class="flex justify-between"><span style="color:hsl(var(--muted-fg))">Total Capacity</span><span class="font-mono">${fmt(d.total_capacity_mw, 0)} MW</span></div>
           <div class="flex justify-between"><span style="color:hsl(var(--muted-fg))">Online Capacity</span><span class="font-mono">${fmt(d.completed_capacity_mw, 0)} MW</span></div>
+          <div class="flex justify-between"><span style="color:hsl(var(--muted-fg))">Avg Project Size</span><span class="font-mono">${d.avg_project_size_mw ? fmt(d.avg_project_size_mw, 1) + ' MW' : '—'}</span></div>
           <div class="flex justify-between"><span style="color:hsl(var(--muted-fg))">Years Active</span><span class="font-mono">${d.years_active || '—'}</span></div>
-          <div class="flex justify-between"><span style="color:hsl(var(--muted-fg))">First Project</span><span class="font-mono">${d.first_project_year || '—'}</span></div>
         </div>
       </div>
     </div>
@@ -357,24 +682,28 @@ function renderScorecard() {
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
       <div class="card p-6">
         <h3 class="text-xs font-medium mb-3" style="color:hsl(var(--muted-fg))">REGIONS</h3>
-        <div class="flex flex-wrap gap-1.5">${rList.map(r => `<span class="px-2 py-0.5 rounded text-xs font-mono" style="background:hsl(var(--muted))">${r}</span>`).join('')}</div>
+        <div class="flex flex-wrap gap-1.5">${rList.length ? rList.map(r => `<span class="px-2 py-0.5 rounded text-xs font-mono" style="background:hsl(var(--muted))">${r}</span>`).join('') : '<span class="text-xs" style="color:hsl(var(--muted-fg))">—</span>'}</div>
       </div>
       <div class="card p-6">
         <h3 class="text-xs font-medium mb-3" style="color:hsl(var(--muted-fg))">TECHNOLOGIES</h3>
-        <div class="flex flex-wrap gap-1.5">${tList.map(t => `<span class="px-2 py-0.5 rounded text-xs font-mono" style="background:hsl(var(--muted))">${t}</span>`).join('')}</div>
+        <div class="flex flex-wrap gap-1.5">${tList.length ? tList.map(t => `<span class="px-2 py-0.5 rounded text-xs font-mono" style="background:hsl(var(--muted))">${t}</span>`).join('') : '<span class="text-xs" style="color:hsl(var(--muted-fg))">—</span>'}</div>
       </div>
       <div class="card p-6">
         <h3 class="text-xs font-medium mb-3" style="color:hsl(var(--muted-fg))">STATES</h3>
-        <div class="flex flex-wrap gap-1.5">${sList.slice(0,15).map(s => `<span class="px-2 py-0.5 rounded text-xs font-mono" style="background:hsl(var(--muted))">${s}</span>`).join('')}${sList.length>15?`<span class="text-xs" style="color:hsl(var(--muted-fg))">+${sList.length-15} more</span>`:''}</div>
+        <div class="flex flex-wrap gap-1.5">${sList.length ? sList.slice(0,15).map(s => `<span class="px-2 py-0.5 rounded text-xs font-mono" style="background:hsl(var(--muted))">${s}</span>`).join('') + (sList.length>15?`<span class="text-xs" style="color:hsl(var(--muted-fg))">+${sList.length-15} more</span>`:'') : '<span class="text-xs" style="color:hsl(var(--muted-fg))">—</span>'}</div>
       </div>
     </div>
   `;
+
+  setTimeout(() => drawRadar('radar-canvas', dims), 50);
 }
 
 // ── Compare Tab ──
 function renderCompare() {
-  const searchResults = searchQuery ? DEVELOPERS.filter(d => d.name.toLowerCase().includes(searchQuery.toLowerCase())).slice(0, 10) : [];
-  const selected = DEVELOPERS.filter(d => compareList.includes(d.name));
+  // Compare uses cached data from search/rankings — works in both modes
+  const allDevs = useAPI ? [...apiDevCache.values()] : staticDevs;
+  const searchRes = searchQuery ? allDevs.filter(d => (d.name||'').toLowerCase().includes(searchQuery.toLowerCase())).slice(0, 10) : [];
+  const selected = allDevs.filter(d => compareList.includes(d.name));
 
   if (selected.length >= 2) {
     const dims = ['s_completion_rate', 's_withdrawal_rate', 's_timeline_adherence', 's_capacity_delivered', 's_regional_diversity', 's_experience_depth'];
@@ -389,16 +718,16 @@ function renderCompare() {
         oninput="searchQuery=this.value;render()"
         class="w-full max-w-lg px-4 py-2.5 rounded-lg text-sm">
     </div>
-    ${searchResults.length && searchQuery ? `
+    ${searchRes.length && searchQuery ? `
       <div class="card mb-5 max-w-lg overflow-hidden">
-        ${searchResults.map(d => `
-          <div class="px-4 py-2 flex items-center justify-between hover:bg-[hsl(var(--muted))] cursor-pointer text-sm" onclick="addCompare('${d.name.replace(/'/g,"\\'")}')">
+        ${searchRes.map(d => `
+          <div class="px-4 py-2 flex items-center justify-between hover:bg-[hsl(var(--muted))] cursor-pointer text-sm" onclick="addCompare('${esc(d.name)}')">
             <span>${d.name}</span>
             <span class="font-mono ${scoreClass(d.score)}">${d.score}</span>
           </div>
         `).join('')}
       </div>
-    ` : ''}
+    ` : (searchQuery && useAPI ? '<p class="text-xs mb-4" style="color:hsl(var(--muted-fg))">Compare works with developers you\'ve already viewed. Search or browse Rankings first to populate the cache.</p>' : '')}
     ${compareList.length ? `
       <div class="flex gap-2 mb-5 flex-wrap">
         ${compareList.map((n, i) => `
@@ -424,7 +753,7 @@ function renderCompare() {
                 <div class="w-3 h-3 rounded-full" style="background:${['#22c55e','#3b82f6','#eab308','#f97316','#a855f7'][i]}"></div>
                 <div class="flex-1">
                   <div class="text-sm font-medium">${d.name}</div>
-                  <div class="text-xs" style="color:hsl(var(--muted-fg))">${d.primary_region||'—'} · ${d.primary_technology||'—'}</div>
+                  <div class="text-xs" style="color:hsl(var(--muted-fg))">${tierLabel(d.tier)} · ${d.primary_technology||'—'}</div>
                 </div>
                 <div class="font-mono text-2xl font-bold ${scoreClass(d.score)}">${d.score}</div>
               </div>
@@ -442,14 +771,14 @@ function renderCompare() {
             ${[
               ['Score', d => `<span class="font-mono font-bold ${scoreClass(d.score)}">${d.score}</span>`],
               ['Grade', d => `<span class="font-mono" style="color:${gradeColor(d.grade)}">${d.grade}</span>`],
+              ['Tier', d => `<span>${tierLabel(d.tier)}</span>`],
               ['Completion Rate', d => `<span class="font-mono">${pct(d.completion_rate)}</span>`],
               ['Withdrawal Rate', d => `<span class="font-mono">${pct(d.withdrawal_rate)}</span>`],
               ['Total Projects', d => `<span class="font-mono">${d.total_projects}</span>`],
               ['Completed', d => `<span class="font-mono">${d.completed_projects}</span>`],
               ['Total MW', d => `<span class="font-mono">${fmt(d.total_capacity_mw,0)}</span>`],
               ['MW Online', d => `<span class="font-mono">${fmt(d.completed_capacity_mw,0)}</span>`],
-              ['Regions', d => `<span class="font-mono">${d.regions?d.regions.split(',').length:0}</span>`],
-              ['Years Active', d => `<span class="font-mono">${d.years_active||'—'}</span>`],
+              ['Regions', d => `<span class="font-mono">${d.region_count || (d.regions?d.regions.split(',').length:0)}</span>`],
               ['Confidence', d => `<span>${d.confidence}</span>`],
             ].map(([label, fn]) => `
               <tr>
@@ -460,7 +789,7 @@ function renderCompare() {
           </tbody>
         </table>
       </div>
-    ` : '<p class="text-sm" style="color:hsl(var(--muted-fg))">Select at least 2 developers to compare.</p>'}
+    ` : '<p class="text-sm" style="color:hsl(var(--muted-fg))">Select at least 2 developers to compare.${useAPI ? ' Browse Rankings or Search first to populate developer cache.' : ''}</p>'}
   `;
 }
 
@@ -559,8 +888,9 @@ function switchTab(tab) {
   render();
 }
 
-function viewDev(name) {
+function viewDev(name, id) {
   selectedDev = name;
+  selectedDevId = id;
   switchTab('scorecard');
 }
 
@@ -573,14 +903,14 @@ function toggleTheme() {
 function render() {
   const el = document.getElementById('content');
   switch (currentTab) {
-    case 'rankings': el.innerHTML = renderRankings(); break;
-    case 'search': el.innerHTML = renderSearch(); break;
-    case 'scorecard': el.innerHTML = renderScorecard(); break;
+    case 'rankings': renderRankingsAsync(); break;
+    case 'search': renderSearchAsync(); break;
+    case 'scorecard': renderScorecardAsync(); break;
     case 'compare': el.innerHTML = renderCompare(); break;
   }
 }
 
-render();
+init();
 </script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>

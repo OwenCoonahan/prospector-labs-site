@@ -88,8 +88,8 @@
   <!-- Product Pages (concept/demo — still index for search traffic) -->
   <url>
     <loc>https://www.prospectorlabs.io/developer-scorecard/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.prospectorlabs.io/critical-minerals/</loc>
