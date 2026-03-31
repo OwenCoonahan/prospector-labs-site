@@ -79,7 +79,8 @@
     .features-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
     .feature-card { border: 1px solid var(--gray-200); border-radius: 8px; padding: 24px; transition: border-color 0.2s; }
     .feature-card:hover { border-color: var(--gray-400); }
-    .feature-icon { font-size: 20px; margin-bottom: 12px; }
+    .feature-icon { margin-bottom: 12px; color: var(--gray-400); }
+    .feature-icon svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
     .feature-name { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
     .feature-desc { font-size: 13px; color: var(--gray-500); line-height: 1.5; }
     .feature-stat { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); margin-top: 8px; }
@@ -157,9 +158,9 @@
     <div class="container">
       <div class="nav-brand">
         <div class="nav-logo">
-          <span class="logo-glass">Glass</span><span class="logo-energy">Energy</span>
+          <span class="logo-glass">Prospector</span><span class="logo-energy">Labs</span>
         </div>
-        <div class="nav-byline">by <a href="https://prospectorlabs.com">Prospector Labs</a></div>
+        <div class="nav-byline"><a href="/">Energy Data API</a></div>
       </div>
       <div class="nav-links">
         <a href="getting-started.html" class="nav-link">Getting Started</a>
@@ -217,49 +218,49 @@
       <div class="section-title">Eight data domains, one API.</div>
       <div class="features-grid">
         <div class="feature-card">
-          <div class="feature-icon">&#9889;</div>
+          <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
           <div class="feature-name">Interconnection Queue</div>
           <div class="feature-desc">Every utility-scale project across all US ISOs. Status, capacity, developer, POI, and queue position.</div>
           <div class="feature-stat">47,610 projects / 9 ISOs</div>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">&#128176;</div>
+          <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
           <div class="feature-name">Tax Credit Calculator</div>
           <div class="feature-desc">ITC/PTC eligibility with all IRA bonuses: energy community, low-income, domestic content. Per-project credit stacking.</div>
           <div class="feature-stat">30-70% effective rates</div>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">&#128101;</div>
+          <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
           <div class="feature-name">Developer Intelligence</div>
           <div class="feature-desc">Track records, tier classification, completion rates, portfolio analysis. Know who builds what and where.</div>
           <div class="feature-stat">6,593 developers</div>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">&#128200;</div>
+          <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
           <div class="feature-name">ITC Deal Sourcing</div>
           <div class="feature-desc">Pre-screened investable projects. Investability scores, independent developer flags, capital needs assessment.</div>
           <div class="feature-stat">124 investable projects</div>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">&#9728;</div>
+          <div class="feature-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></div>
           <div class="feature-name">Distributed Generation</div>
           <div class="feature-desc">Residential and commercial solar, storage, and wind from 16 state programs. Installer data, system sizes, dates.</div>
           <div class="feature-stat">5.4M installations</div>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">&#128202;</div>
+          <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></div>
           <div class="feature-name">Market Data</div>
           <div class="feature-desc">Day-ahead LMP pricing across 6 ISOs. Capacity auction results. NREL ATB technology cost projections through 2050.</div>
           <div class="feature-stat">8,600+ daily LMP rows</div>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">&#128268;</div>
+          <div class="feature-icon"><svg viewBox="0 0 24 24"><rect x="1" y="6" width="22" height="12" rx="2"/><path d="M1 10h22M6 6v12M12 6v12M18 6v12"/></svg></div>
           <div class="feature-name">Grid Infrastructure</div>
           <div class="feature-desc">Wind turbines from USWTDB, transmission lines, and substations from HIFLD. Manufacturer, capacity, voltage.</div>
           <div class="feature-stat">234K grid assets</div>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">&#127970;</div>
+          <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/></svg></div>
           <div class="feature-name">Corporate & Financial</div>
           <div class="feature-desc">FERC Form 1 financials, SEC 10-K filings, corporate ownership chains. Utility cost structures and rate cases.</div>
           <div class="feature-stat">FERC + SEC + EPA</div>
@@ -357,7 +358,7 @@ curl "<span class="string">https://prospector-platform-production.up.railway.app
           <div class="price-detail">2,500 queries included</div>
           <div class="price-detail">$0.02/query overage</div>
           <div class="price-detail">60 req/min</div>
-          <a href="mailto:owen@prospectorlabs.com?subject=Growth Plan — Prospector API" class="price-cta">Get started</a>
+          <a href="mailto:owen@prospectorlabs.io?subject=Growth Plan — Prospector API" class="price-cta">Get started</a>
         </div>
         <div class="price-card">
           <div class="price-tier">Scale</div>
@@ -366,7 +367,7 @@ curl "<span class="string">https://prospector-platform-production.up.railway.app
           <div class="price-detail">20,000 queries included</div>
           <div class="price-detail">$0.01/query overage</div>
           <div class="price-detail">200 req/min</div>
-          <a href="mailto:owen@prospectorlabs.com?subject=Scale Plan — Prospector API" class="price-cta">Get started</a>
+          <a href="mailto:owen@prospectorlabs.io?subject=Scale Plan — Prospector API" class="price-cta">Get started</a>
         </div>
         <div class="price-card">
           <div class="price-tier">Enterprise</div>
@@ -375,7 +376,7 @@ curl "<span class="string">https://prospector-platform-production.up.railway.app
           <div class="price-detail">Unlimited queries</div>
           <div class="price-detail">Dedicated support</div>
           <div class="price-detail">Custom SLA</div>
-          <a href="mailto:owen@prospectorlabs.com?subject=Enterprise API" class="price-cta">Contact us</a>
+          <a href="mailto:owen@prospectorlabs.io?subject=Enterprise API" class="price-cta">Contact us</a>
         </div>
       </div>
     </div>
@@ -410,8 +411,8 @@ curl "<span class="string">https://prospector-platform-production.up.railway.app
         <a href="https://prospector-platform-production.up.railway.app/docs">API Docs</a>
         <a href="https://prospector-platform-production.up.railway.app/redoc">ReDoc</a>
         <a href="https://github.com/OwenCoonahan">GitHub</a>
-        <a href="https://prospectorlabs.com">Home</a>
-        <a href="mailto:owen@prospectorlabs.com">Contact</a>
+        <a href="https://prospectorlabs.io">Home</a>
+        <a href="mailto:owen@prospectorlabs.io">Contact</a>
       </div>
     </div>
   </footer>
