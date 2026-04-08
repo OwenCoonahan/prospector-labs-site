@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Integration | Prospector Labs Energy API</title>
+  <link rel="canonical" href="https://www.prospectorlabs.io/api/agents/">
+  <meta name="description" content="Connect AI agents to US energy infrastructure data. 34 MCP tools for Claude, GPT, and custom agents. OpenAPI spec for any framework.">
+  <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --white: #ffffff;
+      --black: #0a0a0a;
+      --gray-50: #fafafa;
+      --gray-100: #f5f5f5;
+      --gray-200: #e5e5e5;
+      --gray-300: #d4d4d4;
+      --gray-400: #a3a3a3;
+      --gray-500: #737373;
+      --gray-600: #525252;
+      --gray-700: #404040;
+      --gray-800: #262626;
+      --gray-900: #171717;
+      --accent: #16a34a;
+      --blue: #2563eb;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Geist', system-ui, sans-serif;
+      background: var(--white);
+      color: var(--black);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* NAV */
+    nav { padding: 20px 0; border-bottom: 1px solid var(--gray-200); }
+    nav .container { display: flex; justify-content: space-between; align-items: center; }
+    .nav-brand { display: flex; align-items: center; gap: 12px; }
+    .nav-logo { font-size: 15px; letter-spacing: -0.02em; }
+    .logo-glass { font-weight: 600; }
+    .logo-energy { font-weight: 400; color: var(--gray-500); }
+    .nav-byline { font-size: 12px; color: var(--gray-400); padding-left: 12px; border-left: 1px solid var(--gray-200); }
+    .nav-byline a { color: var(--gray-500); transition: color 0.2s; }
+    .nav-byline a:hover { color: var(--black); }
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+    .nav-link { font-size: 14px; color: var(--gray-600); transition: color 0.2s; }
+    .nav-link:hover { color: var(--black); }
+    .nav-cta { font-size: 14px; font-weight: 500; padding: 10px 20px; background: var(--black); color: var(--white); border-radius: 6px; transition: background 0.2s; }
+    .nav-cta:hover { background: var(--gray-800); }
+
+    /* HERO */
+    .hero { padding: 80px 0 60px; }
+    .hero-label { font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
+    .hero h1 { font-size: 42px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 20px; }
+    .hero p { font-size: 18px; color: var(--gray-600); max-width: 640px; margin-bottom: 32px; }
+    .hero-actions { display: flex; gap: 12px; }
+    .btn-primary { font-size: 15px; font-weight: 500; padding: 12px 24px; background: var(--black); color: var(--white); border-radius: 6px; transition: background 0.2s; display: inline-block; }
+    .btn-primary:hover { background: var(--gray-800); }
+    .btn-secondary { font-size: 15px; font-weight: 500; padding: 12px 24px; border: 1px solid var(--gray-300); border-radius: 6px; transition: all 0.2s; display: inline-block; }
+    .btn-secondary:hover { border-color: var(--black); }
+
+    /* SECTION LABELS */
+    .section-label { font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+    .section-title { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 16px; }
+    .section-desc { font-size: 15px; color: var(--gray-600); max-width: 640px; margin-bottom: 48px; }
+
+    /* SETUP SECTION */
+    .setup { padding: 80px 0; background: var(--gray-50); }
+    .setup-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .setup-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 8px; padding: 28px; transition: border-color 0.2s; }
+    .setup-card:hover { border-color: var(--gray-400); }
+    .setup-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .setup-card p { font-size: 13px; color: var(--gray-500); margin-bottom: 16px; line-height: 1.5; }
+
+    /* CODE BLOCKS */
+    .code-block { background: var(--gray-900); border-radius: 8px; overflow: hidden; }
+    .code-header { padding: 10px 16px; background: var(--gray-800); display: flex; justify-content: space-between; align-items: center; }
+    .code-title { font-size: 12px; color: var(--gray-400); font-family: 'JetBrains Mono', monospace; }
+    .code-lang { font-size: 11px; color: var(--gray-500); background: var(--gray-700); padding: 2px 8px; border-radius: 4px; }
+    .code-body { padding: 14px 16px; overflow-x: auto; }
+    .code-body pre { font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.6; color: var(--gray-300); white-space: pre; }
+    .code-body .comment { color: var(--gray-600); }
+    .code-body .string { color: #a5d6ff; }
+    .code-body .key { color: #7ee787; }
+
+    /* TOOLS TABLE */
+    .tools { padding: 80px 0; }
+    .tools-grid { display: grid; grid-template-columns: 1fr; gap: 2px; }
+    .tool-row { display: grid; grid-template-columns: 200px 1fr 1fr; gap: 24px; padding: 16px 0; border-bottom: 1px solid var(--gray-100); align-items: start; }
+    .tool-row:first-child { border-top: 1px solid var(--gray-200); }
+    .tool-name { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; color: var(--accent); }
+    .tool-desc { font-size: 13px; color: var(--gray-600); line-height: 1.5; }
+    .tool-example { font-size: 12px; color: var(--gray-500); font-style: italic; line-height: 1.5; }
+    .tool-section-header { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gray-400); padding: 24px 0 8px; }
+
+    /* USE CASES */
+    .use-cases { padding: 80px 0; background: var(--gray-900); color: var(--white); }
+    .use-cases .section-label { color: var(--accent); }
+    .use-cases .section-title { color: var(--white); }
+    .use-cases .section-desc { color: var(--gray-400); }
+    .cases-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .case-card { border: 1px solid var(--gray-700); border-radius: 8px; padding: 24px; transition: border-color 0.2s; }
+    .case-card:hover { border-color: var(--gray-500); }
+    .case-icon { font-size: 24px; margin-bottom: 12px; }
+    .case-title { font-size: 15px; font-weight: 600; color: var(--white); margin-bottom: 8px; }
+    .case-desc { font-size: 13px; color: var(--gray-400); line-height: 1.5; }
+    .case-query { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); margin-top: 12px; padding: 8px 12px; background: var(--gray-800); border-radius: 4px; }
+
+    /* OPENAPI SECTION */
+    .openapi { padding: 80px 0; }
+    .openapi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+    .openapi-text h3 { font-size: 20px; font-weight: 600; margin-bottom: 12px; }
+    .openapi-text p { font-size: 14px; color: var(--gray-600); margin-bottom: 16px; line-height: 1.6; }
+    .openapi-text ul { list-style: none; padding: 0; }
+    .openapi-text li { font-size: 14px; color: var(--gray-600); padding: 6px 0; padding-left: 20px; position: relative; }
+    .openapi-text li::before { content: ''; position: absolute; left: 0; top: 14px; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+    /* FOOTER */
+    footer { padding: 40px 0; border-top: 1px solid var(--gray-200); }
+    footer .container { display: flex; justify-content: space-between; align-items: center; }
+    .footer-left { font-size: 13px; color: var(--gray-500); }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 13px; color: var(--gray-500); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--black); }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .setup-grid { grid-template-columns: repeat(2, 1fr); }
+      .cases-grid { grid-template-columns: repeat(2, 1fr); }
+      .tool-row { grid-template-columns: 160px 1fr; }
+      .tool-example { display: none; }
+      .openapi-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 32px; }
+      .hero-actions { flex-direction: column; }
+      .setup-grid { grid-template-columns: 1fr; }
+      .cases-grid { grid-template-columns: 1fr; }
+      .tool-row { grid-template-columns: 1fr; gap: 4px; }
+      footer .container { flex-direction: column; gap: 16px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="container">
+      <div class="nav-brand">
+        <div class="nav-logo">
+          <span class="logo-glass">Prospector</span><span class="logo-energy">Labs</span>
+        </div>
+        <div class="nav-byline"><a href="/api/">Energy Data API</a></div>
+      </div>
+      <div class="nav-links">
+        <a href="/api/getting-started/" class="nav-link">Getting Started</a>
+        <a href="https://prospector-platform-production.up.railway.app/docs" class="nav-link">Documentation</a>
+        <a href="/api/agents/" class="nav-link" style="color: var(--black); font-weight: 500;">Agent Docs</a>
+        <a href="/calculator/" class="nav-link">Calculator</a>
+        <a href="/blog/" class="nav-link">Blog</a>
+        <a href="/api/#pricing" class="nav-link">Pricing</a>
+        <a href="https://prospector-platform-production.up.railway.app/register" class="nav-cta">Get API Key</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-label">Agent Integration</div>
+      <h1>Give your AI agent<br>energy market intelligence.</h1>
+      <p>34 MCP tools for Claude, GPT, and custom agents. Or use the OpenAPI spec with any framework. Your agent gets access to 47,000 interconnection projects, 5.4M DG installations, tax credit calculations, and developer intelligence.</p>
+      <div class="hero-actions">
+        <a href="https://github.com/OwenCoonahan/prospector-energy-mcp" class="btn-primary">View on GitHub</a>
+        <a href="https://prospector-platform-production.up.railway.app/openapi.json" class="btn-secondary">OpenAPI Spec</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SETUP -->
+  <section class="setup" id="setup">
+    <div class="container">
+      <div class="section-label">Quick Setup</div>
+      <div class="section-title">Connect in under a minute.</div>
+      <div class="section-desc">The MCP server proxies requests to our live API. No API key required for the free tier (50 queries/month).</div>
+
+      <div class="setup-grid">
+        <!-- Claude Desktop -->
+        <div class="setup-card">
+          <h3>Claude Desktop</h3>
+          <p>Add to your <code>claude_desktop_config.json</code>:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-title">claude_desktop_config.json</span>
+              <span class="code-lang">JSON</span>
+            </div>
+            <div class="code-body"><pre>{
+  <span class="key">"mcpServers"</span>: {
+    <span class="key">"prospector-energy"</span>: {
+      <span class="key">"command"</span>: <span class="string">"uvx"</span>,
+      <span class="key">"args"</span>: [
+        <span class="string">"prospector-energy-mcp"</span>
+      ]
+    }
+  }
+}</pre></div>
+          </div>
+        </div>
+
+        <!-- Claude Code -->
+        <div class="setup-card">
+          <h3>Claude Code</h3>
+          <p>Add to your project's <code>.mcp.json</code>:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-title">.mcp.json</span>
+              <span class="code-lang">JSON</span>
+            </div>
+            <div class="code-body"><pre>{
+  <span class="key">"mcpServers"</span>: {
+    <span class="key">"prospector-energy"</span>: {
+      <span class="key">"command"</span>: <span class="string">"uvx"</span>,
+      <span class="key">"args"</span>: [
+        <span class="string">"prospector-energy-mcp"</span>
+      ]
+    }
+  }
+}</pre></div>
+          </div>
+        </div>
+
+        <!-- Cursor -->
+        <div class="setup-card">
+          <h3>Cursor</h3>
+          <p>Add to Cursor Settings &gt; MCP Servers:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-title">~/.cursor/mcp.json</span>
+              <span class="code-lang">JSON</span>
+            </div>
+            <div class="code-body"><pre>{
+  <span class="key">"mcpServers"</span>: {
+    <span class="key">"prospector-energy"</span>: {
+      <span class="key">"command"</span>: <span class="string">"uvx"</span>,
+      <span class="key">"args"</span>: [
+        <span class="string">"prospector-energy-mcp"</span>
+      ]
+    }
+  }
+}</pre></div>
+          </div>
+        </div>
+
+        <!-- pip install -->
+        <div class="setup-card">
+          <h3>pip install</h3>
+          <p>Install and run the server directly:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-title">Terminal</span>
+              <span class="code-lang">bash</span>
+            </div>
+            <div class="code-body"><pre><span class="comment"># Install from PyPI</span>
+pip install prospector-energy-mcp
+
+<span class="comment"># Or install from GitHub</span>
+pip install git+https://github.com/\
+  OwenCoonahan/prospector-energy-mcp.git
+
+<span class="comment"># Run the server</span>
+prospector-energy-mcp</pre></div>
+          </div>
+        </div>
+
+        <!-- Custom Agent (Python) -->
+        <div class="setup-card">
+          <h3>Custom Agent (Python)</h3>
+          <p>Use the MCP Python SDK to connect programmatically:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-title">agent.py</span>
+              <span class="code-lang">Python</span>
+            </div>
+            <div class="code-body"><pre><span class="comment"># pip install mcp</span>
+<span class="key">from</span> mcp <span class="key">import</span> ClientSession
+<span class="key">from</span> mcp.client.stdio <span class="key">import</span> (
+    stdio_client, StdioServerParameters
+)
+
+server = StdioServerParameters(
+    command=<span class="string">"uvx"</span>,
+    args=[<span class="string">"prospector-energy-mcp"</span>],
+)
+
+<span class="key">async with</span> stdio_client(server) <span class="key">as</span> (r, w):
+    <span class="key">async with</span> ClientSession(r, w) <span class="key">as</span> s:
+        <span class="key">await</span> s.initialize()
+        result = <span class="key">await</span> s.call_tool(
+            <span class="string">"search_projects"</span>,
+            {<span class="string">"state"</span>: <span class="string">"TX"</span>,
+             <span class="string">"type"</span>: <span class="string">"Solar"</span>}
+        )</pre></div>
+          </div>
+        </div>
+
+        <!-- With API Key -->
+        <div class="setup-card">
+          <h3>With API Key</h3>
+          <p>Set your key as an environment variable for higher limits:</p>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-title">Environment</span>
+              <span class="code-lang">bash</span>
+            </div>
+            <div class="code-body"><pre><span class="comment"># Set API key for auth</span>
+export PROSPECTOR_API_KEY=<span class="string">"pk_your_key"</span>
+
+<span class="comment"># Or custom API URL</span>
+export PROSPECTOR_API_URL=\
+  <span class="string">"https://your-instance.com"</span>
+
+<span class="comment"># Then run as normal</span>
+prospector-energy-mcp</pre></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOOLS -->
+  <section class="tools" id="tools">
+    <div class="container">
+      <div class="section-label">MCP Tools</div>
+      <div class="section-title">34 tools your agent can call.</div>
+      <div class="section-desc">Each tool has a detailed description so agents know exactly when and how to use it. Tools map 1:1 to REST API endpoints.</div>
+
+      <div class="tools-grid">
+        <div class="tool-section-header">Primary Tools</div>
+
+        <div class="tool-row">
+          <div class="tool-name">search_projects</div>
+          <div class="tool-desc">Search 47,000+ utility-scale interconnection projects across all US ISOs. Filter by state, region, technology, status, developer, and capacity range.</div>
+          <div class="tool-example">"Find solar projects in Texas over 100 MW"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_project</div>
+          <div class="tool-desc">Full details for a specific project including all enrichment: tax credits, developer track record, energy community status, investability score.</div>
+          <div class="tool-example">"Get all details for project AI2-322"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">calculate_tax_credits</div>
+          <div class="tool-desc">Calculate ITC/PTC eligibility with all IRA bonus adders: energy community (+10%), low-income (+10-20%), domestic content (+10%). Returns effective rate and estimated value.</div>
+          <div class="tool-example">"What tax credits does a 2 MW solar project in West Virginia qualify for?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">find_itc_deals</div>
+          <div class="tool-desc">Screen ITC-eligible investment opportunities. Filter by state, region, technology, minimum credit rate, and capacity. Projects are pre-scored for investability.</div>
+          <div class="tool-example">"Show me investable deals in NJ with at least 50% credit rate"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_itc_deal</div>
+          <div class="tool-desc">Detailed ITC deal profile for a specific project: full tax credit breakdown, developer info, investability scoring, and construction stage assessment.</div>
+          <div class="tool-example">"Pull the deal profile for project 26INR0726"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">search_developers</div>
+          <div class="tool-desc">Search 6,593 developer profiles with 6,332 aliases. Returns tier classification (major utility, IPP, mid-platform, independent), portfolio metrics, and capital needs.</div>
+          <div class="tool-example">"Tell me about NextEra Energy's project history"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_developer</div>
+          <div class="tool-desc">Full developer profile: tier, project counts, capacity totals, completion rate, regional breakdown, technology mix, and corporate relationships.</div>
+          <div class="tool-example">"Get the full profile for developer ID 42"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_developer_projects</div>
+          <div class="tool-desc">List all projects by a specific developer. Sortable by capacity, queue date, or status. Shows project status, type, and location.</div>
+          <div class="tool-example">"What projects does Invenergy have in the MISO queue?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_investable_projects</div>
+          <div class="tool-desc">Pre-screened investable projects scored on ITC eligibility, developer independence, construction stage, credit bonuses, and data completeness. Grades A-D.</div>
+          <div class="tool-example">"Find Grade A investable solar projects in the Southeast"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_investable_summary</div>
+          <div class="tool-desc">Aggregate investability statistics: total investable count, breakdown by grade, region, technology, and developer tier. Current deal pipeline status.</div>
+          <div class="tool-example">"How many investable projects are there right now?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_queue_stats</div>
+          <div class="tool-desc">Aggregate interconnection queue statistics: total projects and capacity by region, technology, and status. Includes data freshness timestamps.</div>
+          <div class="tool-example">"What's the total solar capacity in the US interconnection queue?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_itc_summary</div>
+          <div class="tool-desc">Aggregate ITC deal pipeline statistics: total eligible projects, estimated ITC value, breakdown by state, region, technology, and bonus eligibility.</div>
+          <div class="tool-example">"How much ITC deal flow is available nationally?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_deal_sheet</div>
+          <div class="tool-desc">Formatted 1-page deal sheet with project details, ITC credit breakdown, developer track record, investability score, and risk flags. Print to PDF.</div>
+          <div class="tool-example">"Generate a deal sheet for project AI2-322"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_project_score</div>
+          <div class="tool-desc">Investability score breakdown: ITC eligibility, size fit, construction stage, developer capital needs, bonus stacking, and data completeness.</div>
+          <div class="tool-example">"What's the investability score breakdown for project 563202?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">export_projects</div>
+          <div class="tool-desc">Export up to 50,000 projects as CSV. Filter by state, region, technology, and status.</div>
+          <div class="tool-example">"Export all active solar projects in PJM as CSV"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">search_dg_projects</div>
+          <div class="tool-desc">Search 5.4 million distributed generation installations from 16 state programs. Filter by state, technology, status, and capacity range.</div>
+          <div class="tool-example">"How many rooftop solar installations are there in California?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_investable_dg_projects</div>
+          <div class="tool-desc">55,000+ pre-screened investable DG projects scored for small ITC investor fit. Filter by state, stage (approved/construction/inspection), score, capacity, and source.</div>
+          <div class="tool-example">"Find investable DG projects in New Jersey under 500 kW"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_dg_investable_summary</div>
+          <div class="tool-desc">Aggregate investable DG statistics: total count, breakdown by state, development stage, data source, and score distribution.</div>
+          <div class="tool-example">"How many DG projects are investable in New York?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_milestone_summary</div>
+          <div class="tool-desc">Construction stage and milestone statistics: stage distribution (early/mid/late/construction), study phase breakdown, IA status counts, confidence scores, and field fill rates.</div>
+          <div class="tool-example">"How many projects have reached IA Executed status?"</div>
+        </div>
+
+        <div class="tool-section-header">Market, Grid &amp; Reference Tools</div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_lmp_daily</div>
+          <div class="tool-desc">Daily locational marginal prices across CAISO, ERCOT, ISO-NE, MISO, NYISO, and PJM. Filter by ISO and zone.</div>
+          <div class="tool-example">"What are the latest energy prices in ERCOT?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_lmp_monthly</div>
+          <div class="tool-desc">Monthly average LMP trends for long-term market analysis. Filter by ISO, zone, and number of months.</div>
+          <div class="tool-example">"Show me PJM monthly LMP trends over the past year"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_lmp_zones</div>
+          <div class="tool-desc">List available LMP pricing zones by ISO. Use to discover valid zone names before querying LMP data.</div>
+          <div class="tool-example">"What pricing zones are available in NYISO?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_capacity_prices</div>
+          <div class="tool-desc">Capacity market auction results by ISO and year. Covers PJM RPM, ISO-NE FCA, MISO PRA, and NYISO ICAP.</div>
+          <div class="tool-example">"What were the PJM capacity auction prices for 2025?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_fuel_prices</div>
+          <div class="tool-desc">Natural gas, coal, and other fuel prices by state and fuel type from EIA data.</div>
+          <div class="tool-example">"What are natural gas prices in Texas?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_rto_generation</div>
+          <div class="tool-desc">RTO-level electricity generation data by fuel type and balancing authority region from EIA.</div>
+          <div class="tool-example">"What's the fuel mix for PJM generation?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_generators</div>
+          <div class="tool-desc">26,000+ generators from the EIA-860 inventory. Search by state, fuel type, and minimum capacity.</div>
+          <div class="tool-example">"List all nuclear generators in Pennsylvania"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_technology_costs</div>
+          <div class="tool-desc">NREL Annual Technology Baseline cost projections through 2050. LCOE, capital costs, capacity factors for solar, wind, storage, nuclear, and more.</div>
+          <div class="tool-example">"What's the projected LCOE for utility-scale solar in 2030?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">check_domestic_content</div>
+          <div class="tool-desc">Check domestic content ITC bonus eligibility (+10%) for a specific project based on equipment manufacturer analysis.</div>
+          <div class="tool-example">"Does project Q12345 qualify for the domestic content bonus?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_grid_turbines</div>
+          <div class="tool-desc">75,000+ wind turbines from the US Wind Turbine Database. Search by state, manufacturer, and capacity. Includes location, model, and hub height.</div>
+          <div class="tool-example">"How many Vestas turbines are installed in Iowa?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_grid_transmission</div>
+          <div class="tool-desc">95,000+ US transmission lines from HIFLD. Search by state, owner, and minimum voltage.</div>
+          <div class="tool-example">"Find high-voltage transmission lines in California"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_grid_substations</div>
+          <div class="tool-desc">64,000+ US electrical substations from HIFLD. Search by state and owner.</div>
+          <div class="tool-example">"How many substations does Duke Energy operate in North Carolina?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_developer_stats</div>
+          <div class="tool-desc">Aggregate developer statistics: count by tier, average completion rates, capital needs breakdown, top headquarters states.</div>
+          <div class="tool-example">"What percentage of developers are classified as independent?"</div>
+        </div>
+
+        <div class="tool-row">
+          <div class="tool-name">get_dg_stats</div>
+          <div class="tool-desc">Distributed generation aggregate statistics: project counts and capacity by state, technology, and status across 16 state programs.</div>
+          <div class="tool-example">"Which state has the most distributed solar installations?"</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- USE CASES -->
+  <section class="use-cases" id="use-cases">
+    <div class="container">
+      <div class="section-label">Use Cases</div>
+      <div class="section-title">What agents build with our data.</div>
+      <div class="section-desc">Real workflows that AI agents execute using Prospector Labs tools.</div>
+
+      <div class="cases-grid">
+        <div class="case-card">
+          <div class="case-icon">&#128176;</div>
+          <div class="case-title">ITC Deal Sourcing</div>
+          <div class="case-desc">Screen investable projects by credit rate, developer independence, and construction stage. Generate deal sheets for investor review.</div>
+          <div class="case-query">"Find solar deals in NJ with 50%+ ITC rate from independent developers"</div>
+        </div>
+
+        <div class="case-card">
+          <div class="case-icon">&#128269;</div>
+          <div class="case-title">Developer Due Diligence</div>
+          <div class="case-desc">Profile developers with track records, completion rates, portfolio analysis, and capital needs assessment across regions.</div>
+          <div class="case-query">"Research Invenergy's track record in PJM and compare to Apex Clean Energy"</div>
+        </div>
+
+        <div class="case-card">
+          <div class="case-icon">&#128200;</div>
+          <div class="case-title">Market Intelligence</div>
+          <div class="case-desc">Track LMP pricing trends, capacity market results, technology cost projections, and queue statistics across ISOs.</div>
+          <div class="case-query">"Compare ERCOT and PJM energy prices over the last 30 days"</div>
+        </div>
+
+        <div class="case-card">
+          <div class="case-icon">&#127793;</div>
+          <div class="case-title">Tax Credit Optimization</div>
+          <div class="case-desc">Calculate ITC/PTC eligibility with full IRA bonus stacking. Identify energy community, low-income, and domestic content opportunities.</div>
+          <div class="case-query">"Which counties in West Virginia qualify for the maximum 60% ITC?"</div>
+        </div>
+
+        <div class="case-card">
+          <div class="case-icon">&#9889;</div>
+          <div class="case-title">Grid Infrastructure Analysis</div>
+          <div class="case-desc">Analyze wind turbine deployments, substation capacity, and transmission line coverage by region and manufacturer.</div>
+          <div class="case-query">"What's the total installed wind capacity in the Texas panhandle?"</div>
+        </div>
+
+        <div class="case-card">
+          <div class="case-icon">&#127968;</div>
+          <div class="case-title">DG Market Research</div>
+          <div class="case-desc">Explore 5.4 million distributed generation installations across 16 state programs. Track rooftop solar, community solar, and small-scale storage.</div>
+          <div class="case-query">"How many community solar projects are in New York state?"</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OPENAPI FOR NON-MCP AGENTS -->
+  <section class="openapi" id="openapi">
+    <div class="container">
+      <div class="section-label">Non-MCP Agents</div>
+      <div class="section-title">Works with any agent framework.</div>
+
+      <div class="openapi-grid">
+        <div class="openapi-text">
+          <h3>Use the OpenAPI spec directly</h3>
+          <p>Any agent framework that reads OpenAPI specs can use our API. No MCP required. The full spec is always available at:</p>
+          <div class="code-block" style="margin-bottom: 24px;">
+            <div class="code-body"><pre>https://prospector-platform-production.up.railway.app/openapi.json</pre></div>
+          </div>
+          <p>63 endpoints across 11 categories, fully documented with parameter descriptions, response schemas, and example values.</p>
+          <ul>
+            <li>Projects, Developers, Tax Credits, Deals</li>
+            <li>Market (LMP, capacity), DG (5.4M installations)</li>
+            <li>Grid (turbines, substations, transmission)</li>
+            <li>Reference (EIA generators, EPA emissions, FERC financials)</li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="code-block" style="margin-bottom: 16px;">
+            <div class="code-header">
+              <span class="code-title">LangChain</span>
+              <span class="code-lang">Python</span>
+            </div>
+            <div class="code-body"><pre><span class="key">from</span> langchain_community.tools <span class="key">import</span> (
+    OpenAPIToolkit
+)
+<span class="key">from</span> langchain_community.utilities <span class="key">import</span> (
+    OpenAPISpec
+)
+
+spec = OpenAPISpec.from_url(
+    <span class="string">"https://prospector-platform-</span>
+    <span class="string">production.up.railway.app/openapi.json"</span>
+)
+toolkit = OpenAPIToolkit.from_openapi_spec(
+    spec, llm=llm
+)</pre></div>
+          </div>
+
+          <div class="code-block" style="margin-bottom: 16px;">
+            <div class="code-header">
+              <span class="code-title">Direct REST API</span>
+              <span class="code-lang">curl</span>
+            </div>
+            <div class="code-body"><pre><span class="comment"># Any agent can call the API directly</span>
+curl <span class="string">"https://prospector-platform-\
+production.up.railway.app/projects\
+?state=TX&type=Solar&per_page=5"</span></pre></div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-title">Python requests</span>
+              <span class="code-lang">Python</span>
+            </div>
+            <div class="code-body"><pre><span class="key">import</span> requests
+
+BASE = <span class="string">"https://prospector-platform-"</span> \
+       <span class="string">"production.up.railway.app"</span>
+
+<span class="comment"># Search projects</span>
+r = requests.get(f<span class="string">"{BASE}/projects"</span>,
+    params={<span class="string">"state"</span>: <span class="string">"NJ"</span>,
+            <span class="string">"type"</span>: <span class="string">"Solar"</span>})
+projects = r.json()[<span class="string">"data"</span>]
+
+<span class="comment"># Calculate tax credits</span>
+r = requests.get(f<span class="string">"{BASE}/tax-credits/</span>
+    <span class="string">calculate"</span>,
+    params={<span class="string">"technology"</span>: <span class="string">"Solar"</span>,
+            <span class="string">"capacity_mw"</span>: 2,
+            <span class="string">"state"</span>: <span class="string">"WV"</span>})</pre></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-left">Prospector Labs &copy; 2026</div>
+      <div class="footer-links">
+        <a href="/api/">API Home</a>
+        <a href="https://prospector-platform-production.up.railway.app/docs">Documentation</a>
+        <a href="https://github.com/OwenCoonahan/prospector-energy-mcp">GitHub</a>
+        <a href="mailto:owen@prospectorlabs.io">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

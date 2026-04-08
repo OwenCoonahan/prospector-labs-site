@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Getting Started | Prospector Labs Energy Data API</title>
+  <link rel="canonical" href="https://www.prospectorlabs.io/api/getting-started/">
+  <meta name="description" content="Get started with the Prospector Labs Energy Data API in 5 minutes. Python, JavaScript, and curl examples.">
+  <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --white: #ffffff;
+      --black: #0a0a0a;
+      --gray-50: #fafafa;
+      --gray-100: #f5f5f5;
+      --gray-200: #e5e5e5;
+      --gray-300: #d4d4d4;
+      --gray-400: #a3a3a3;
+      --gray-500: #737373;
+      --gray-600: #525252;
+      --gray-700: #404040;
+      --gray-800: #262626;
+      --gray-900: #171717;
+      --accent: #16a34a;
+      --blue: #2563eb;
+      --orange: #ea580c;
+      --purple: #7c3aed;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Geist', system-ui, sans-serif;
+      background: var(--white);
+      color: var(--black);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+
+    /* NAV */
+    nav { padding: 20px 0; border-bottom: 1px solid var(--gray-200); }
+    nav .container { max-width: 1200px; display: flex; justify-content: space-between; align-items: center; }
+    .nav-brand { display: flex; align-items: center; gap: 12px; }
+    .nav-logo { font-size: 15px; letter-spacing: -0.02em; }
+    .nav-logo a { color: inherit; text-decoration: none; }
+    .logo-glass { font-weight: 600; }
+    .logo-energy { font-weight: 400; color: var(--gray-500); }
+    .nav-byline { font-size: 12px; color: var(--gray-400); padding-left: 12px; border-left: 1px solid var(--gray-200); }
+    .nav-byline a { color: var(--gray-500); text-decoration: none; }
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+    .nav-link { font-size: 14px; color: var(--gray-600); transition: color 0.2s; text-decoration: none; }
+    .nav-link:hover { color: var(--black); text-decoration: none; }
+    .nav-cta { font-size: 14px; font-weight: 500; padding: 10px 20px; background: var(--black); color: var(--white); border-radius: 6px; transition: background 0.2s; text-decoration: none; }
+    .nav-cta:hover { background: var(--gray-800); text-decoration: none; }
+
+    /* CONTENT */
+    .content { padding: 60px 0 80px; }
+    .content h1 { font-size: 36px; font-weight: 600; letter-spacing: -0.03em; margin-bottom: 12px; }
+    .content .subtitle { font-size: 18px; color: var(--gray-500); margin-bottom: 48px; }
+    .content h2 { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; margin-top: 56px; margin-bottom: 16px; padding-top: 24px; border-top: 1px solid var(--gray-200); }
+    .content h2:first-of-type { margin-top: 0; border-top: none; padding-top: 0; }
+    .content h3 { font-size: 16px; font-weight: 600; margin-top: 32px; margin-bottom: 12px; }
+    .content p { font-size: 15px; color: var(--gray-600); margin-bottom: 16px; line-height: 1.7; }
+    .content ul, .content ol { font-size: 15px; color: var(--gray-600); margin-bottom: 16px; padding-left: 24px; line-height: 1.7; }
+    .content li { margin-bottom: 6px; }
+    .content code { font-family: 'JetBrains Mono', monospace; font-size: 13px; background: var(--gray-100); padding: 2px 6px; border-radius: 4px; }
+
+    /* CODE BLOCKS */
+    .code-block { background: var(--gray-900); border-radius: 8px; overflow: hidden; margin-bottom: 24px; }
+    .code-header { padding: 10px 16px; background: var(--gray-800); display: flex; justify-content: space-between; align-items: center; }
+    .code-title { font-size: 13px; color: var(--gray-400); font-family: 'JetBrains Mono', monospace; }
+    .code-lang { font-size: 11px; color: var(--gray-500); background: var(--gray-700); padding: 2px 8px; border-radius: 4px; }
+    .code-body { padding: 16px; overflow-x: auto; }
+    .code-body pre { font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.7; color: var(--gray-300); white-space: pre; margin: 0; }
+    .cm { color: var(--gray-600); }
+    .s { color: #a5d6ff; }
+    .k { color: #ff7b72; }
+    .fn { color: #d2a8ff; }
+    .n { color: #ffa657; }
+    .kw { color: #7ee787; }
+
+    /* TABS */
+    .tabs { display: flex; gap: 0; margin-bottom: 0; }
+    .tab { font-size: 13px; font-family: 'JetBrains Mono', monospace; padding: 8px 16px; background: var(--gray-800); color: var(--gray-500); border: none; cursor: pointer; transition: all 0.2s; }
+    .tab:first-child { border-radius: 8px 0 0 0; }
+    .tab:last-child { border-radius: 0 8px 0 0; }
+    .tab.active { background: var(--gray-900); color: var(--gray-200); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .tabbed-code { margin-bottom: 24px; }
+    .tabbed-code .code-block { border-radius: 0 8px 8px 8px; margin-bottom: 0; }
+
+    /* INFO BOX */
+    .info { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 8px; padding: 16px 20px; margin-bottom: 24px; font-size: 14px; color: var(--gray-600); }
+    .info strong { color: var(--black); }
+
+    /* TABLE */
+    .ref-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 14px; }
+    .ref-table th { text-align: left; padding: 10px 12px; background: var(--gray-50); border-bottom: 2px solid var(--gray-200); font-weight: 600; font-size: 13px; }
+    .ref-table td { padding: 10px 12px; border-bottom: 1px solid var(--gray-100); color: var(--gray-600); }
+    .ref-table code { font-size: 12px; }
+
+    /* WORKFLOW CARDS */
+    .workflow { border: 1px solid var(--gray-200); border-radius: 8px; padding: 20px 24px; margin-bottom: 16px; }
+    .workflow-num { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); font-weight: 600; margin-bottom: 4px; }
+    .workflow h4 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+    .workflow p { font-size: 14px; margin-bottom: 12px; }
+
+    /* FOOTER */
+    footer { padding: 40px 0; border-top: 1px solid var(--gray-200); }
+    footer .container { max-width: 1200px; display: flex; justify-content: space-between; align-items: center; }
+    .footer-left { font-size: 13px; color: var(--gray-500); }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 13px; color: var(--gray-500); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--black); text-decoration: none; }
+
+    @media (max-width: 768px) {
+      .content h1 { font-size: 28px; }
+      .tabs { flex-wrap: wrap; }
+      footer .container { flex-direction: column; gap: 16px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="container">
+      <div class="nav-brand">
+        <div class="nav-logo">
+          <a href="/api/"><span class="logo-glass">Prospector</span><span class="logo-energy">Labs</span> API</a>
+        </div>
+        <div class="nav-byline"><a href="/api/">Energy Data API</a></div>
+      </div>
+      <div class="nav-links">
+        <a href="/api/" class="nav-link">Overview</a>
+        <a href="/api/getting-started/" class="nav-link" style="color: var(--black); font-weight: 500;">Getting Started</a>
+        <a href="https://prospector-platform-production.up.railway.app/docs" class="nav-link">Documentation</a>
+        <a href="/api/agents/" class="nav-link">Agent Docs</a>
+        <a href="/calculator/" class="nav-link">Calculator</a>
+        <a href="/blog/" class="nav-link">Blog</a>
+        <a href="/api/#pricing" class="nav-link">Pricing</a>
+        <a href="https://prospector-platform-production.up.railway.app/register" class="nav-cta">Get API Key</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <div class="container">
+
+      <h1>Getting Started</h1>
+      <p class="subtitle">Go from zero to your first API query in under 5 minutes.</p>
+
+      <!-- SECTION 1: API KEY -->
+      <h2>1. Get your API key</h2>
+
+      <p>Register for a free API key to start querying. The free tier includes 50 queries per month across all endpoints.</p>
+
+      <div class="info">
+        <strong>Self-serve:</strong> Register at <a href="https://prospector-platform-production.up.railway.app/register"><code>/register</code></a> to get your API key instantly. No approval needed.
+      </div>
+
+      <p>Include your key in every request via the <code>X-API-Key</code> header:</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-title">Authentication header</span>
+        </div>
+        <div class="code-body">
+<pre>X-API-Key: pk_your_key_here</pre>
+        </div>
+      </div>
+
+      <p>The API also works without a key when auth is not required, but authenticated requests get higher rate limits and usage tracking.</p>
+
+      <!-- SECTION 2: FIRST QUERY -->
+      <h2>2. Your first query</h2>
+
+      <p>Let's search for solar projects in New Jersey. Choose your language:</p>
+
+      <div class="tabbed-code">
+        <div class="tabs">
+          <button class="tab active" onclick="showTab(this, 'first-python')">Python</button>
+          <button class="tab" onclick="showTab(this, 'first-js')">JavaScript</button>
+          <button class="tab" onclick="showTab(this, 'first-curl')">curl</button>
+        </div>
+        <div id="first-python" class="tab-content active">
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-title">Search solar projects in NJ</span>
+              <span class="code-lang">python</span>
+            </div>
+            <div class="code-body">
+<pre><span class="k">import</span> requests
+
+BASE <span class="k">=</span> <span class="s">"https://prospector-platform-production.up.railway.app"</span>
+API_KEY <span class="k">=</span> <span class="s">"pk_your_key_here"</span>
+
+resp <span class="k">=</span> requests.<span class="fn">get</span>(<span class="s">f"{BASE}/projects"</span>, params<span class="k">=</span>{
+    <span class="s">"state"</span>: <span class="s">"NJ"</span>,
+    <span class="s">"fuel_type"</span>: <span class="s">"Solar"</span>,
+    <span class="s">"per_page"</span>: <span class="n">5</span>,
+}, headers<span class="k">=</span>{<span class="s">"X-API-Key"</span>: API_KEY})
+
+data <span class="k">=</span> resp.<span class="fn">json</span>()
+<span class="k">for</span> p <span class="k">in</span> data[<span class="s">"data"</span>]:
+    <span class="fn">print</span>(<span class="s">f"{p['queue_id']}: {p['name']} — {p['capacity_mw']} MW"</span>)</pre>
+            </div>
+          </div>
+        </div>
+        <div id="first-js" class="tab-content">
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-title">Search solar projects in NJ</span>
+              <span class="code-lang">javascript</span>
+            </div>
+            <div class="code-body">
+<pre><span class="k">const</span> BASE <span class="k">=</span> <span class="s">"https://prospector-platform-production.up.railway.app"</span>;
+<span class="k">const</span> API_KEY <span class="k">=</span> <span class="s">"pk_your_key_here"</span>;
+
+<span class="k">const</span> resp <span class="k">=</span> <span class="k">await</span> <span class="fn">fetch</span>(
+  <span class="s">`${BASE}/projects?state=NJ&fuel_type=Solar&per_page=5`</span>,
+  { headers: { <span class="s">"X-API-Key"</span>: API_KEY } }
+);
+<span class="k">const</span> { data } <span class="k">=</span> <span class="k">await</span> resp.<span class="fn">json</span>();
+
+data.<span class="fn">forEach</span>(p <span class="k">=></span>
+  console.<span class="fn">log</span>(<span class="s">`${p.queue_id}: ${p.name} — ${p.capacity_mw} MW`</span>)
+);</pre>
+            </div>
+          </div>
+        </div>
+        <div id="first-curl" class="tab-content">
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-title">Search solar projects in NJ</span>
+              <span class="code-lang">bash</span>
+            </div>
+            <div class="code-body">
+<pre>curl -H <span class="s">"X-API-Key: pk_your_key_here"</span> \
+  <span class="s">"https://prospector-platform-production.up.railway.app/projects?state=NJ&fuel_type=Solar&per_page=5"</span></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p>The response includes paginated results with a <code>meta</code> object:</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-title">Response format</span>
+          <span class="code-lang">json</span>
+        </div>
+        <div class="code-body">
+<pre>{
+  <span class="kw">"data"</span>: [
+    {
+      <span class="kw">"id"</span>: <span class="n">12345</span>,
+      <span class="kw">"queue_id"</span>: <span class="s">"AE2-123"</span>,
+      <span class="kw">"name"</span>: <span class="s">"Sunrise Solar Farm"</span>,
+      <span class="kw">"region"</span>: <span class="s">"PJM"</span>,
+      <span class="kw">"state"</span>: <span class="s">"NJ"</span>,
+      <span class="kw">"capacity_mw"</span>: <span class="n">25.0</span>,
+      <span class="kw">"type"</span>: <span class="s">"Solar"</span>,
+      <span class="kw">"status"</span>: <span class="s">"Active"</span>,
+      <span class="kw">"developer"</span>: <span class="s">"Sunrise Energy LLC"</span>,
+      ...
+    }
+  ],
+  <span class="kw">"meta"</span>: { <span class="kw">"total"</span>: <span class="n">847</span>, <span class="kw">"page"</span>: <span class="n">1</span>, <span class="kw">"per_page"</span>: <span class="n">5</span>, <span class="kw">"pages"</span>: <span class="n">170</span> }
+}</pre>
+        </div>
+      </div>
+
+      <!-- SECTION 3: COMMON WORKFLOWS -->
+      <h2>3. Common workflows</h2>
+
+      <div class="workflow">
+        <div class="workflow-num">WORKFLOW 1</div>
+        <h4>Screen ITC investment deals</h4>
+        <p>Find pre-screened investable projects with high tax credit rates.</p>
+        <div class="tabbed-code">
+          <div class="tabs">
+            <button class="tab active" onclick="showTab(this, 'w1-python')">Python</button>
+            <button class="tab" onclick="showTab(this, 'w1-curl')">curl</button>
+          </div>
+          <div id="w1-python" class="tab-content active">
+            <div class="code-block"><div class="code-body">
+<pre>resp <span class="k">=</span> requests.<span class="fn">get</span>(<span class="s">f"{BASE}/investable"</span>, params<span class="k">=</span>{
+    <span class="s">"min_score"</span>: <span class="n">70</span>,
+    <span class="s">"state"</span>: <span class="s">"NJ"</span>,
+    <span class="s">"per_page"</span>: <span class="n">10</span>,
+}, headers<span class="k">=</span>{<span class="s">"X-API-Key"</span>: API_KEY})
+
+deals <span class="k">=</span> resp.<span class="fn">json</span>()[<span class="s">"data"</span>]
+<span class="k">for</span> d <span class="k">in</span> deals:
+    <span class="fn">print</span>(<span class="s">f"{d['queue_id']}: {d['name']} — Score {d['investability_score']}, "
+          f"Credit {d['effective_credit_rate']}%"</span>)</pre>
+            </div></div>
+          </div>
+          <div id="w1-curl" class="tab-content">
+            <div class="code-block"><div class="code-body">
+<pre>curl -H <span class="s">"X-API-Key: $KEY"</span> \
+  <span class="s">"$BASE/investable?min_score=70&state=NJ&per_page=10"</span></pre>
+            </div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="workflow">
+        <div class="workflow-num">WORKFLOW 2</div>
+        <h4>Calculate tax credits for a project</h4>
+        <p>Get the full ITC/PTC breakdown including energy community, low-income, and domestic content bonuses.</p>
+        <div class="tabbed-code">
+          <div class="tabs">
+            <button class="tab active" onclick="showTab(this, 'w2-python')">Python</button>
+            <button class="tab" onclick="showTab(this, 'w2-curl')">curl</button>
+          </div>
+          <div id="w2-python" class="tab-content active">
+            <div class="code-block"><div class="code-body">
+<pre>resp <span class="k">=</span> requests.<span class="fn">get</span>(<span class="s">f"{BASE}/tax-credits/calculate"</span>, params<span class="k">=</span>{
+    <span class="s">"technology"</span>: <span class="s">"Solar"</span>,
+    <span class="s">"capacity_mw"</span>: <span class="n">2</span>,
+    <span class="s">"state"</span>: <span class="s">"WV"</span>,
+    <span class="s">"county"</span>: <span class="s">"McDowell"</span>,
+    <span class="s">"cod_year"</span>: <span class="n">2027</span>,
+}, headers<span class="k">=</span>{<span class="s">"X-API-Key"</span>: API_KEY})
+
+credit <span class="k">=</span> resp.<span class="fn">json</span>()[<span class="s">"data"</span>]
+<span class="fn">print</span>(<span class="s">f"Base rate: {credit['base_rate']}%"</span>)
+<span class="fn">print</span>(<span class="s">f"Effective rate: {credit['effective_rate']}%"</span>)
+<span class="fn">print</span>(<span class="s">f"Bonuses: {credit['bonuses']}"</span>)</pre>
+            </div></div>
+          </div>
+          <div id="w2-curl" class="tab-content">
+            <div class="code-block"><div class="code-body">
+<pre>curl -H <span class="s">"X-API-Key: $KEY"</span> \
+  <span class="s">"$BASE/tax-credits/calculate?technology=Solar&capacity_mw=2&state=WV&county=McDowell&cod_year=2027"</span></pre>
+            </div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="workflow">
+        <div class="workflow-num">WORKFLOW 3</div>
+        <h4>Research a developer</h4>
+        <p>Search by name, get their full profile and project portfolio.</p>
+        <div class="tabbed-code">
+          <div class="tabs">
+            <button class="tab active" onclick="showTab(this, 'w3-python')">Python</button>
+            <button class="tab" onclick="showTab(this, 'w3-curl')">curl</button>
+          </div>
+          <div id="w3-python" class="tab-content active">
+            <div class="code-block"><div class="code-body">
+<pre><span class="cm"># Search for a developer</span>
+resp <span class="k">=</span> requests.<span class="fn">get</span>(<span class="s">f"{BASE}/developers/search"</span>,
+    params<span class="k">=</span>{<span class="s">"q"</span>: <span class="s">"NextEra"</span>},
+    headers<span class="k">=</span>{<span class="s">"X-API-Key"</span>: API_KEY})
+devs <span class="k">=</span> resp.<span class="fn">json</span>()[<span class="s">"data"</span>]
+
+<span class="cm"># Get their full profile</span>
+dev_id <span class="k">=</span> devs[<span class="n">0</span>][<span class="s">"id"</span>]
+profile <span class="k">=</span> requests.<span class="fn">get</span>(<span class="s">f"{BASE}/developers/{dev_id}"</span>,
+    headers<span class="k">=</span>{<span class="s">"X-API-Key"</span>: API_KEY}).<span class="fn">json</span>()[<span class="s">"data"</span>]
+
+<span class="fn">print</span>(<span class="s">f"{profile['canonical_name']} — {profile['tier']}"</span>)
+<span class="fn">print</span>(<span class="s">f"Projects: {profile['total_projects']}, Completion: {profile['completion_rate']}%"</span>)
+
+<span class="cm"># List their projects</span>
+projects <span class="k">=</span> requests.<span class="fn">get</span>(<span class="s">f"{BASE}/developers/{dev_id}/projects"</span>,
+    headers<span class="k">=</span>{<span class="s">"X-API-Key"</span>: API_KEY}).<span class="fn">json</span>()[<span class="s">"data"</span>]</pre>
+            </div></div>
+          </div>
+          <div id="w3-curl" class="tab-content">
+            <div class="code-block"><div class="code-body">
+<pre><span class="cm"># Search</span>
+curl -H <span class="s">"X-API-Key: $KEY"</span> <span class="s">"$BASE/developers/search?q=NextEra"</span>
+
+<span class="cm"># Profile (replace 42 with actual ID)</span>
+curl -H <span class="s">"X-API-Key: $KEY"</span> <span class="s">"$BASE/developers/42"</span>
+
+<span class="cm"># Their projects</span>
+curl -H <span class="s">"X-API-Key: $KEY"</span> <span class="s">"$BASE/developers/42/projects"</span></pre>
+            </div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="workflow">
+        <div class="workflow-num">WORKFLOW 4</div>
+        <h4>Export data to CSV</h4>
+        <p>Bulk download project data filtered by state, technology, or capacity.</p>
+        <div class="tabbed-code">
+          <div class="tabs">
+            <button class="tab active" onclick="showTab(this, 'w4-python')">Python</button>
+            <button class="tab" onclick="showTab(this, 'w4-curl')">curl</button>
+          </div>
+          <div id="w4-python" class="tab-content active">
+            <div class="code-block"><div class="code-body">
+<pre>resp <span class="k">=</span> requests.<span class="fn">get</span>(<span class="s">f"{BASE}/export/projects"</span>, params<span class="k">=</span>{
+    <span class="s">"state"</span>: <span class="s">"TX"</span>,
+    <span class="s">"type"</span>: <span class="s">"Solar"</span>,
+    <span class="s">"limit"</span>: <span class="n">10000</span>,
+}, headers<span class="k">=</span>{<span class="s">"X-API-Key"</span>: API_KEY})
+
+<span class="k">with</span> <span class="fn">open</span>(<span class="s">"tx_solar.csv"</span>, <span class="s">"w"</span>) <span class="k">as</span> f:
+    f.<span class="fn">write</span>(resp.text)
+<span class="fn">print</span>(<span class="s">f"Exported {len(resp.text.splitlines())-1} projects"</span>)</pre>
+            </div></div>
+          </div>
+          <div id="w4-curl" class="tab-content">
+            <div class="code-block"><div class="code-body">
+<pre>curl -H <span class="s">"X-API-Key: $KEY"</span> \
+  <span class="s">"$BASE/export/projects?state=TX&type=Solar&limit=10000"</span> \
+  -o tx_solar.csv</pre>
+            </div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="workflow">
+        <div class="workflow-num">WORKFLOW 5</div>
+        <h4>Run custom SQL queries</h4>
+        <p>Execute read-only SQL against any of our 9 databases for ad-hoc analysis.</p>
+        <div class="tabbed-code">
+          <div class="tabs">
+            <button class="tab active" onclick="showTab(this, 'w5-python')">Python</button>
+            <button class="tab" onclick="showTab(this, 'w5-curl')">curl</button>
+          </div>
+          <div id="w5-python" class="tab-content active">
+            <div class="code-block"><div class="code-body">
+<pre>resp <span class="k">=</span> requests.<span class="fn">post</span>(<span class="s">f"{BASE}/query"</span>, json<span class="k">=</span>{
+    <span class="s">"sql"</span>: <span class="s">"""
+        SELECT state, COUNT(*) as projects, ROUND(SUM(capacity_mw)) as total_mw
+        FROM projects
+        WHERE type_std = 'Solar' AND status_std = 'Active'
+        GROUP BY state
+        ORDER BY total_mw DESC
+        LIMIT 10
+    """</span>,
+    <span class="s">"database"</span>: <span class="s">"master"</span>,
+}, headers<span class="k">=</span>{<span class="s">"X-API-Key"</span>: API_KEY})
+
+<span class="k">for</span> row <span class="k">in</span> resp.<span class="fn">json</span>()[<span class="s">"data"</span>]:
+    <span class="fn">print</span>(<span class="s">f"{row['state']}: {row['projects']} projects, {row['total_mw']} MW"</span>)</pre>
+            </div></div>
+          </div>
+          <div id="w5-curl" class="tab-content">
+            <div class="code-block"><div class="code-body">
+<pre>curl -X POST -H <span class="s">"X-API-Key: $KEY"</span> \
+  -H <span class="s">"Content-Type: application/json"</span> \
+  -d <span class="s">'{"sql": "SELECT state, COUNT(*) as n FROM projects WHERE type_std = '\''Solar'\'' GROUP BY state ORDER BY n DESC LIMIT 10", "database": "master"}'</span> \
+  <span class="s">"$BASE/query"</span></pre>
+            </div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4: PAGINATION & FILTERING -->
+      <h2>4. Pagination and filtering</h2>
+
+      <p>All list endpoints support these standard parameters:</p>
+
+      <table class="ref-table">
+        <thead>
+          <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>page</code></td><td>int</td><td>Page number (default: 1)</td></tr>
+          <tr><td><code>per_page</code></td><td>int</td><td>Results per page (default: 50, max: 500)</td></tr>
+          <tr><td><code>sort</code></td><td>string</td><td>Sort field (e.g., <code>capacity_mw</code>, <code>queue_date</code>)</td></tr>
+          <tr><td><code>order</code></td><td>string</td><td><code>asc</code> or <code>desc</code></td></tr>
+        </tbody>
+      </table>
+
+      <p>Common filters on <code>/projects</code>:</p>
+
+      <table class="ref-table">
+        <thead>
+          <tr><th>Filter</th><th>Example</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>state</code></td><td><code>NJ</code></td><td>Two-letter state code</td></tr>
+          <tr><td><code>iso</code></td><td><code>PJM</code></td><td>ISO/RTO region</td></tr>
+          <tr><td><code>fuel_type</code></td><td><code>Solar</code></td><td>Technology type (Solar, Wind, Storage, Gas, etc.)</td></tr>
+          <tr><td><code>status</code></td><td><code>Active</code></td><td>Project status</td></tr>
+          <tr><td><code>developer</code></td><td><code>NextEra</code></td><td>Developer name (partial match)</td></tr>
+          <tr><td><code>capacity_min</code></td><td><code>100</code></td><td>Minimum capacity in MW</td></tr>
+          <tr><td><code>capacity_max</code></td><td><code>500</code></td><td>Maximum capacity in MW</td></tr>
+          <tr><td><code>energy_community</code></td><td><code>true</code></td><td>Energy community eligible</td></tr>
+          <tr><td><code>investable</code></td><td><code>true</code></td><td>Pre-screened investable projects</td></tr>
+          <tr><td><code>min_score</code></td><td><code>70</code></td><td>Minimum investability score (0-100)</td></tr>
+        </tbody>
+      </table>
+
+      <!-- SECTION 5: RATE LIMITS -->
+      <h2>5. Rate limits and errors</h2>
+
+      <table class="ref-table">
+        <thead>
+          <tr><th>Tier</th><th>Monthly queries</th><th>Rate limit</th><th>Price</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Free</strong></td><td>50</td><td>10/min</td><td>$0</td></tr>
+          <tr><td><strong>Growth</strong></td><td>2,500</td><td>60/min</td><td>$49/mo</td></tr>
+          <tr><td><strong>Scale</strong></td><td>20,000</td><td>200/min</td><td>$199/mo</td></tr>
+          <tr><td><strong>Enterprise</strong></td><td>Unlimited</td><td>Custom</td><td>Contact us</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Error responses</h3>
+
+      <table class="ref-table">
+        <thead>
+          <tr><th>Status</th><th>Meaning</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>200</code></td><td>Success</td></tr>
+          <tr><td><code>400</code></td><td>Bad request (invalid parameters)</td></tr>
+          <tr><td><code>403</code></td><td>Invalid or missing API key</td></tr>
+          <tr><td><code>404</code></td><td>Resource not found</td></tr>
+          <tr><td><code>429</code></td><td>Rate limit exceeded</td></tr>
+          <tr><td><code>500</code></td><td>Server error</td></tr>
+        </tbody>
+      </table>
+
+      <p>All errors return JSON with a <code>detail</code> field:</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-title">Error response</span>
+          <span class="code-lang">json</span>
+        </div>
+        <div class="code-body">
+<pre>{ <span class="kw">"detail"</span>: <span class="s">"Monthly query limit exceeded. Upgrade at prospectorlabs.io/api"</span> }</pre>
+        </div>
+      </div>
+
+      <!-- SECTION 6: NEXT STEPS -->
+      <h2>6. Next steps</h2>
+
+      <ul>
+        <li><a href="https://prospector-platform-production.up.railway.app/docs">Interactive API Reference</a> — try every endpoint in your browser</li>
+        <li><a href="https://prospector-platform-production.up.railway.app/redoc">ReDoc</a> — detailed endpoint documentation</li>
+        <li><a href="/api/">API Overview</a> — features, pricing, and data coverage</li>
+        <li><a href="mailto:owen@prospectorlabs.io?subject=API Question">Contact us</a> — questions, upgrade requests, or enterprise inquiries</li>
+      </ul>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-left">Prospector Labs &copy; 2026</div>
+      <div class="footer-links">
+        <a href="https://prospector-platform-production.up.railway.app/docs">API Docs</a>
+        <a href="https://prospector-platform-production.up.railway.app/redoc">ReDoc</a>
+        <a href="https://github.com/OwenCoonahan">GitHub</a>
+        <a href="https://prospectorlabs.io">Home</a>
+        <a href="mailto:owen@prospectorlabs.io">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function showTab(button, contentId) {
+      const parent = button.closest('.tabbed-code');
+      parent.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      parent.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      button.classList.add('active');
+      document.getElementById(contentId).classList.add('active');
+    }
+  </script>
+
+</body>
+</html>
