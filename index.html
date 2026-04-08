@@ -399,6 +399,8 @@
       border-radius: 12px;
       padding: 40px 32px;
       transition: transform 0.3s ease, background 0.3s ease;
+      display: flex;
+      flex-direction: column;
     }
 
     .vertical-card:hover {
@@ -430,6 +432,7 @@
       color: var(--gray-400);
       line-height: 1.6;
       margin-bottom: 20px;
+      flex-grow: 1;
     }
 
     .vertical-tags {
@@ -823,20 +826,45 @@
     }
 
     .source-tag {
-      font-size: 13px;
-      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: 'Geist', system-ui, sans-serif;
       color: var(--gray-300);
-      padding: 10px 18px;
-      background: var(--gray-800);
+      padding: 12px 20px;
+      background: transparent;
       border-radius: 6px;
       border: 1px solid var(--gray-700);
       transition: all 0.2s ease;
+      white-space: nowrap;
     }
 
     .source-tag:hover {
-      background: var(--gray-700);
+      background: var(--gray-800);
       border-color: var(--gray-500);
-      transform: translateY(-2px);
+    }
+
+    .source-tag svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    .source-tag img {
+      height: 24px;
+      width: auto;
+      max-width: 80px;
+      flex-shrink: 0;
+      filter: grayscale(100%) brightness(2);
+      opacity: 0.7;
+      object-fit: contain;
+    }
+    /* Logo-only tags (no text label) get bigger logos */
+    .source-tag.logo-only img {
+      height: 32px;
+      max-width: 120px;
     }
 
     /* CONTACT */
@@ -1034,23 +1062,38 @@
       color: var(--gray-600);
     }
 
+    /* TICKER */
+    @keyframes ticker {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .ticker-track:hover {
+      animation-play-state: paused;
+    }
+
     /* RESPONSIVE */
     @media (max-width: 1024px) {
       .intro { padding: 80px 48px; }
       .intro p { font-size: 22px; }
+      .intro .intro-stats { grid-template-columns: 1fr !important; }
+      .data-layer-dark > div { grid-template-columns: 1fr !important; gap: 40px !important; }
       .cap-list { grid-template-columns: 1fr; }
       .verticals-grid { grid-template-columns: 1fr; }
       .verticals { padding: 80px 48px; }
-      .products-grid { grid-template-columns: 1fr; }
+      .product-row { grid-template-columns: 1fr !important; }
       .products { padding: 80px 48px; }
       .project { grid-template-columns: 1fr; }
       .project-visual { height: 240px; }
       .stats { flex-wrap: wrap; gap: 48px; justify-content: center; }
+      .data-layer-grid { grid-template-columns: 1fr !important; }
     }
 
     @media (max-width: 768px) {
       nav { padding: 16px 24px; }
       .nav-links { display: none; }
+      .data-layer { padding: 48px 32px !important; }
+      .data-layer p:first-of-type { font-size: 18px !important; }
 
       /* Mobile: Always frosted white glass after hero */
       nav.nav-scrolled {
@@ -1075,17 +1118,21 @@
       }
       .hero { padding: 32px; min-height: 500px; }
       .hero h1 { font-size: 28px; }
+      .stats { padding: 32px; gap: 24px; }
+      .stat-value { font-size: 32px; }
+      .stat { min-width: 45%; }
       .intro { padding: 48px 32px; }
       .intro p { font-size: 20px; }
+      .data-layer-dark { padding: 48px 32px !important; }
       .capabilities { padding: 48px 32px; }
       .cap-header { flex-direction: column; gap: 24px; }
       .cap-item { padding: 32px; grid-template-columns: 40px 1fr; gap: 16px; }
       .verticals { padding: 48px 32px; }
       .verticals-header p { font-size: 18px; }
       .vertical-card { padding: 32px 24px; }
-      .products { padding: 48px 32px; }
-      .products-header p { font-size: 18px; }
-      .product-card { padding: 24px; }
+      .product-row { min-height: auto !important; }
+      .product-row > div { padding: 48px 32px !important; }
+      .product-row h3 { font-size: 22px !important; }
       .projects-header { padding: 48px 32px 24px; }
       .project-info { padding: 32px; }
       .project-title { font-size: 22px; }
@@ -1124,7 +1171,7 @@
     </div>
     <div class="hero-content">
       <h1>Find, evaluate, and qualify US energy projects.</h1>
-      <p class="hero-subtitle">Source ITC deals, run project diligence, and screen FEOC compliance — backed by 47,000+ interconnection projects, 5.4M DG installations, and 20+ enriched public data sources. Query it all via API.</p>
+      <p class="hero-subtitle">Source ITC-eligible deals, run project diligence, and screen compliance across 47,000+ interconnection projects and 5.4M DG installations. All queryable via API.</p>
       <div style="display: flex; gap: 16px; margin-top: 28px; opacity: 0; animation: heroFadeIn 1s ease 0.6s forwards;">
         <a href="/contact.html" style="background: var(--white); color: var(--black); padding: 14px 28px; border-radius: 8px; text-decoration: none; font-size: 15px; font-weight: 500; transition: background 0.2s;">Book a Call</a>
         <a href="/api" style="border: 1px solid rgba(255,255,255,0.3); color: var(--white); padding: 14px 28px; border-radius: 8px; text-decoration: none; font-size: 15px; font-weight: 500; transition: all 0.2s;">Explore the API</a>
@@ -1132,78 +1179,84 @@
     </div>
   </section>
 
-  <!-- Mission -->
-  <section class="intro animate-on-scroll">
-    <h2>The problem</h2>
-    <p>US energy project data is scattered across 9 ISOs, dozens of state programs, and hundreds of government filings. Nobody has unified it. We aggregate 20+ public data sources into one system — then enrich it with tax credit eligibility, developer track records, and compliance screening so you can actually make decisions with it.</p>
+  <!-- The Opportunity — stats-first, then context -->
+  <section class="intro animate-on-scroll" style="padding-bottom: 80px;">
+    <h2>Why this matters</h2>
+    <!-- Stats row — the hook -->
+    <div class="intro-stats" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px; margin-bottom: 40px;">
+      <div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: clamp(32px, 4vw, 44px); font-weight: 600; color: var(--black); letter-spacing: -0.03em; line-height: 1;">2,000+</div>
+        <div style="font-size: 14px; color: var(--gray-500); margin-top: 6px;">GW in interconnection queues</div>
+      </div>
+      <div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: clamp(32px, 4vw, 44px); font-weight: 600; color: var(--black); letter-spacing: -0.03em; line-height: 1;">$370B+</div>
+        <div style="font-size: 14px; color: var(--gray-500); margin-top: 6px;">in IRA tax credits deployed</div>
+      </div>
+      <div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: clamp(32px, 4vw, 44px); font-weight: 600; color: var(--black); letter-spacing: -0.03em; line-height: 1;">5+ yrs</div>
+        <div style="font-size: 14px; color: var(--gray-500); margin-top: 6px;">average queue to energization</div>
+      </div>
+    </div>
+    <!-- One tight paragraph -->
+    <p style="font-size: 18px; color: var(--gray-500); line-height: 1.7; max-width: 680px;">The grid needs to double. The capital is there. But the data to deploy it sits across dozens of agencies, ISOs, and state programs. We're pulling it into one place so the people building and financing the grid can move faster.</p>
   </section>
 
-  <!-- Capabilities -->
-  <section class="capabilities" id="capabilities">
-    <div class="cap-header animate-on-scroll">
-      <h2>What you can do with it</h2>
-      <p>The same data layer powers deal sourcing, due diligence, compliance, and programmatic access.</p>
-    </div>
-    <div class="cap-list">
-      <div class="cap-item">
-        <div class="cap-icon">
-          <svg viewBox="0 0 48 48">
-            <circle cx="24" cy="24" r="20"/>
-            <path d="M16 24l5 5 11-11"/>
-          </svg>
-        </div>
-        <div class="cap-content">
-          <h3>Source Investable Deals</h3>
-          <p>Screen ITC-eligible projects with 50-70% effective credit rates. We cross-reference queue status, developer track records, energy community bonuses, and low-income overlays to surface opportunities that institutional capital misses. Pre-screened deal packages with credit analysis and developer profiles.</p>
-        </div>
+  <!-- The Data Layer — full-width dark band to break visual rhythm -->
+  <section class="data-layer-dark" style="background: var(--gray-900); color: var(--white); padding: 80px 64px;">
+    <div style="max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;">
+      <div>
+        <h2 class="animate-on-scroll" style="font-size: 14px; font-weight: 500; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 24px;">The Data Layer</h2>
+        <p class="animate-on-scroll" style="font-size: clamp(24px, 3.5vw, 36px); font-weight: 500; letter-spacing: -0.03em; line-height: 1.2; color: var(--white); margin-bottom: 20px;">5.4M+ energy projects.<br>6,593 developers.<br>Updated daily.</p>
+        <p class="animate-on-scroll" style="font-size: 16px; color: var(--gray-400); line-height: 1.7;">We pull from 90+ data feeds — interconnection queues, state DG programs, EIA filings, permit offices, FERC financials — and cross-reference every record with tax credits, developer track records, and construction signals.</p>
       </div>
-      <div class="cap-item">
-        <div class="cap-icon">
-          <svg viewBox="0 0 48 48">
-            <rect x="6" y="6" width="36" height="36" rx="4"/>
-            <line x1="6" y1="18" x2="42" y2="18"/>
-            <line x1="6" y1="30" x2="42" y2="30"/>
-            <line x1="22" y1="6" x2="22" y2="42"/>
-          </svg>
-        </div>
-        <div class="cap-content">
-          <h3>Project Due Diligence</h3>
-          <p>Queue risk analysis, P10-P90 timeline distributions, developer benchmarks, POI congestion scoring, and comparable project analysis. Everything needed to evaluate an energy infrastructure deal — delivered in days, not weeks.</p>
-        </div>
-      </div>
-      <div class="cap-item">
-        <div class="cap-icon">
-          <svg viewBox="0 0 48 48">
-            <polygon points="24,4 44,20 44,36 24,44 4,36 4,20"/>
-            <line x1="24" y1="4" x2="24" y2="44"/>
-            <line x1="4" y1="20" x2="44" y2="20"/>
-          </svg>
-        </div>
-        <div class="cap-content">
-          <h3>FEOC and Compliance Screening</h3>
-          <p>IRA tax credits can stack to 50-70% — but only with the right eligibility data. We check energy community qualification (37% of projects eligible), low-income bonus (70% eligible), domestic content compliance, and FEOC exposure across equipment supply chains.</p>
-        </div>
-      </div>
-      <div class="cap-item">
-        <div class="cap-icon">
-          <svg viewBox="0 0 48 48">
-            <rect x="8" y="8" width="32" height="32" rx="4"/>
-            <path d="M16 20h16M16 28h10"/>
-            <circle cx="36" cy="16" r="4"/>
-          </svg>
-        </div>
-        <div class="cap-content">
-          <h3>Energy Data API</h3>
-          <p>66 REST endpoints and 31 MCP tools. Query projects, calculate tax credits, screen developers, pull market pricing — from your code, your models, or your AI agents. Structured data built for programmatic access, with a free tier to get started.</p>
+      <div class="animate-on-scroll" style="position: relative;">
+        <!-- Data pipeline visualization -->
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <!-- Input feeds -->
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-500); background: var(--gray-800); padding: 6px 10px; border-radius: 6px; border: 1px solid var(--gray-700);">MISO</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-500); background: var(--gray-800); padding: 6px 10px; border-radius: 6px; border: 1px solid var(--gray-700);">PJM</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-500); background: var(--gray-800); padding: 6px 10px; border-radius: 6px; border: 1px solid var(--gray-700);">ERCOT</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-500); background: var(--gray-800); padding: 6px 10px; border-radius: 6px; border: 1px solid var(--gray-700);">NYISO</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-500); background: var(--gray-800); padding: 6px 10px; border-radius: 6px; border: 1px solid var(--gray-700);">CAISO</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-500); background: var(--gray-800); padding: 6px 10px; border-radius: 6px; border: 1px solid var(--gray-700);">SPP</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-500); background: var(--gray-800); padding: 6px 10px; border-radius: 6px; border: 1px solid var(--gray-700);">ISO-NE</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-500); background: var(--gray-800); padding: 6px 10px; border-radius: 6px; border: 1px solid var(--gray-700);">EIA</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-500); background: var(--gray-800); padding: 6px 10px; border-radius: 6px; border: 1px solid var(--gray-700);">FERC</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-500); background: var(--gray-800); padding: 6px 10px; border-radius: 6px; border: 1px solid var(--gray-700);">NREL</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-500); background: var(--gray-800); padding: 6px 10px; border-radius: 6px; border: 1px solid var(--gray-700);">+80 more</span>
+          </div>
+          <!-- Arrow down -->
+          <div style="text-align: center; color: var(--gray-600); font-size: 20px;">↓</div>
+          <!-- Unified record -->
+          <div style="background: var(--gray-800); border: 1px solid var(--gray-600); border-radius: 10px; padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.8; color: var(--gray-400);">
+            <div style="font-size: 11px; font-weight: 600; color: var(--white); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">Unified Project Record</div>
+            <span style="color: #16a34a;">project</span>: Solar Farm, Albany County<br>
+            <span style="color: #16a34a;">capacity</span>: 4.8 MW &middot; <span style="color: #16a34a;">iso</span>: NYISO<br>
+            <span style="color: #16a34a;">itc_rate</span>: 60% &middot; <span style="color: #16a34a;">dev_tier</span>: A<br>
+            <span style="color: #16a34a;">stage</span>: Under Construction<br>
+            <span style="color: var(--gray-600);">+ 130 more fields</span>
+          </div>
+          <!-- Arrow down -->
+          <div style="text-align: center; color: var(--gray-600); font-size: 20px;">↓</div>
+          <!-- Output channels -->
+          <div style="display: flex; gap: 8px; justify-content: center;">
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--white); background: rgba(22,163,74,0.2); border: 1px solid rgba(22,163,74,0.4); padding: 6px 12px; border-radius: 6px;">API</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--white); background: rgba(22,163,74,0.2); border: 1px solid rgba(22,163,74,0.4); padding: 6px 12px; border-radius: 6px;">MCP</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--white); background: rgba(22,163,74,0.2); border: 1px solid rgba(22,163,74,0.4); padding: 6px 12px; border-radius: 6px;">Dashboards</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--white); background: rgba(22,163,74,0.2); border: 1px solid rgba(22,163,74,0.4); padding: 6px 12px; border-radius: 6px;">Reports</span>
+          </div>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- Capabilities section removed - covered by platform rows below -->
 
   <!-- Verticals -->
   <section class="verticals">
     <div class="verticals-header animate-on-scroll">
-      <h2>Who we work with</h2>
+      <h2>Built for</h2>
       <p>Different buyers, same data layer.</p>
     </div>
     <div class="verticals-grid">
@@ -1215,11 +1268,11 @@
           </svg>
         </div>
         <h3>Investors and Advisors</h3>
-        <p>Find ITC-eligible projects with stacked credit rates of 50-70%. Pre-screened deal packages with tax credit analysis, developer track records, and diligence checklists. Built for HNW individuals, family offices, and wealth managers deploying capital into clean energy.</p>
+        <p>Source ITC-eligible projects, evaluate developer track records, and screen tax credit eligibility. Deal packages with credit stacking analysis for family offices, syndicators, and community solar funds.</p>
         <div class="vertical-tags">
-          <span>ITC Deal Sourcing</span>
-          <span>Credit Stacking</span>
-          <span>Deal Packages</span>
+          <span>Deal Sourcing</span>
+          <span>Credit Analysis</span>
+          <span>Due Diligence</span>
         </div>
       </div>
       <div class="vertical-card animate-on-scroll">
@@ -1230,11 +1283,11 @@
           </svg>
         </div>
         <h3>Developers and Analysts</h3>
-        <p>Interconnection queue analytics across 9 ISOs. Withdrawal rates, wait times, capacity mix, POI congestion — benchmarked historically. Developer scorecards with completion rates and peer comparisons. FEOC and domestic content screening for equipment procurement.</p>
+        <p>Benchmark your market across 9 ISOs. Queue analytics, withdrawal rates, capacity trends, developer scorecards with peer comparisons, and DG stage tracking across 10 state programs.</p>
         <div class="vertical-tags">
           <span>Queue Analytics</span>
-          <span>Developer Benchmarks</span>
-          <span>FEOC Compliance</span>
+          <span>Market Intelligence</span>
+          <span>DG Stage Data</span>
         </div>
       </div>
       <div class="vertical-card animate-on-scroll">
@@ -1246,78 +1299,244 @@
           </svg>
         </div>
         <h3>API and Agent Users</h3>
-        <p>66 REST endpoints with JSON responses and CSV export. 31 MCP tools for Claude, GPT, and any agent framework. Query projects, calculate tax credits, screen developers, pull market data. Free tier available — no sales call needed.</p>
+        <p>66 REST endpoints and 31 MCP tools for Claude, GPT, and any agent framework. Query projects, calculate tax credits, screen developers. Free tier available, no sales call needed.</p>
         <div class="vertical-tags">
           <span>REST API</span>
-          <span>MCP Tools</span>
+          <span>MCP Server</span>
           <span>Free Tier</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Products -->
-  <section class="products">
-    <div class="products-header animate-on-scroll">
-      <h2>Products</h2>
-      <p>Data products built on the unified energy project database.</p>
+  <!-- What's In The Platform -->
+  <section class="products" id="capabilities" style="padding: 0; border-bottom: none;">
+    <div style="padding: 80px 64px 48px; text-align: center;">
+      <h2 class="animate-on-scroll" style="font-size: 14px; font-weight: 500; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">What's in the platform</h2>
+      <p class="animate-on-scroll" style="font-size: 24px; font-weight: 400; color: var(--gray-700);">The questions you can answer with the data.</p>
     </div>
-    <div class="products-grid">
-      <a href="/interconnection" class="product-card product-featured animate-on-scroll">
-        <div class="product-badge">Live</div>
-        <h3>Interconnection Due Diligence</h3>
-        <p>Queue risk analysis, developer benchmarks, timeline scenarios, and ITC credit stacking analysis. Project assessments for energy infrastructure investors — delivered in days.</p>
-        <span class="product-link">Learn more →</span>
-      </a>
-      <a href="/api" class="product-card animate-on-scroll" style="text-decoration: none; color: inherit;">
-        <div class="product-badge">Live</div>
-        <h3>Energy Data API</h3>
-        <p>66 REST endpoints and 31 MCP tools. Projects, tax credits, developers, market data, grid infrastructure. Free tier available.</p>
-        <span class="product-link">View API docs →</span>
-      </a>
-      <a href="/contact.html" class="product-card animate-on-scroll" style="text-decoration: none; color: inherit;">
-        <div class="product-badge">Live</div>
-        <h3>ITC Deal Sourcing</h3>
-        <p>Pre-screened project packages for investors deploying capital into IRA tax credits. Credit analysis, developer profiles, and diligence checklists — filtered to your preferences.</p>
-        <span class="product-link">Get started →</span>
-      </a>
-      <a href="/contact.html" class="product-card animate-on-scroll" style="text-decoration: none; color: inherit;">
-        <div class="product-badge">Live</div>
-        <h3>FEOC Compliance Tools</h3>
-        <p>Energy community screening (37% eligible), low-income bonus qualification (70% eligible), domestic content checks, and equipment manufacturer FEOC mapping.</p>
-        <span class="product-link">Get started →</span>
-      </a>
+
+    <!-- Row 1: Project Intelligence — visual right -->
+    <div class="product-row animate-on-scroll" style="display: grid; grid-template-columns: 1fr 1fr; min-height: 560px; border-bottom: 1px solid var(--gray-200);">
+      <div style="padding: 64px; display: flex; flex-direction: column; justify-content: center;">
+        <div style="font-size: 12px; font-weight: 500; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">Project Intelligence</div>
+        <h3 style="font-size: 28px; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 16px;">Is this project worth investing in?</h3>
+        <p style="font-size: 16px; color: var(--gray-500); line-height: 1.7; margin-bottom: 24px;">Every project comes with tax credit analysis, developer track records, construction status, and timeline estimates. Filter by state, technology, credit eligibility, and stage.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-500); background: var(--gray-100); padding: 6px 12px; border-radius: 4px;">ITC/PTC stacking</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-500); background: var(--gray-100); padding: 6px 12px; border-radius: 4px;">Developer scoring</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-500); background: var(--gray-100); padding: 6px 12px; border-radius: 4px;">Stage tracking</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-500); background: var(--gray-100); padding: 6px 12px; border-radius: 4px;">Timeline estimates</span>
+        </div>
+        <a href="/contact.html" style="font-size: 15px; font-weight: 500; color: var(--black); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; margin-top: 24px;">Explore projects <span style="transition: transform 0.2s;">→</span></a>
+      </div>
+      <div style="background: var(--gray-50); display: flex; align-items: center; justify-content: center; padding: 48px; position: relative; overflow: hidden;">
+        <div style="width: 100%; max-width: 580px; position: relative;">
+          <!-- Two cards side by side with gap -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <!-- Left: Tax credit analysis -->
+            <div style="background: var(--white); border: 1px solid var(--gray-200); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+              <div style="padding: 18px 20px; border-bottom: 1px solid var(--gray-200);">
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">Tax Credits</div>
+                <div style="font-size: 15px; font-weight: 500;">Solar Farm, Albany County</div>
+                <div style="font-size: 12px; color: var(--gray-500); margin-top: 3px;">4.8 MW &middot; NYISO &middot; Active</div>
+              </div>
+              <div style="padding: 16px 20px; border-bottom: 1px solid var(--gray-100);">
+                <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px;"><span>Base ITC</span><span style="font-weight: 500;">30%</span></div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px;"><span>Energy Community</span><span style="font-weight: 500; color: #16a34a;">+10%</span></div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px;"><span>Low-Income</span><span style="font-weight: 500; color: #16a34a;">+10%</span></div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px;"><span>Domestic Content</span><span style="font-weight: 500; color: #16a34a;">+10%</span></div>
+                <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; padding-top: 10px; border-top: 1px solid var(--gray-100);"><span>Effective Rate</span><span style="color: #16a34a;">60%</span></div>
+              </div>
+              <!-- Stacked bar -->
+              <div style="padding: 14px 20px; border-bottom: 1px solid var(--gray-100);">
+                <div style="display: flex; height: 32px; border-radius: 6px; overflow: hidden;">
+                  <div style="width: 50%; background: var(--gray-900); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--white);">30%</div>
+                  <div style="width: 16.7%; background: #16a34a; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; color: var(--white);">10</div>
+                  <div style="width: 16.7%; background: #22c55e; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; color: var(--white);">10</div>
+                  <div style="width: 16.6%; background: #4ade80; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; color: var(--gray-900);">10</div>
+                </div>
+              </div>
+              <!-- Developer info -->
+              <div style="padding: 14px 20px;">
+                <div style="font-size: 11px; font-weight: 500; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">Developer</div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px;"><span style="color: var(--gray-500);">Name</span><span style="font-weight: 500;">Sunrise Solar LLC</span></div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px;"><span style="color: var(--gray-500);">Completion Rate</span><span style="font-weight: 500;">78%</span></div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px;"><span style="color: var(--gray-500);">Tier</span><span style="font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 12px; background: var(--gray-900); color: var(--white); padding: 2px 8px; border-radius: 4px;">A</span></div>
+              </div>
+            </div>
+            <!-- Right: Project evaluation & timeline -->
+            <div style="background: var(--white); border: 1px solid var(--gray-200); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+              <div style="padding: 18px 20px; border-bottom: 1px solid var(--gray-200);">
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">Project Evaluation</div>
+                <div style="font-size: 15px; font-weight: 500;">Timeline &amp; Feasibility</div>
+              </div>
+              <div style="padding: 16px 20px; border-bottom: 1px solid var(--gray-100);">
+                <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px;"><span style="color: var(--gray-500);">Stage</span><span style="font-weight: 500;">Under Construction</span></div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px;"><span style="color: var(--gray-500);">Queue Position</span><span style="font-weight: 500;">Filed Q2 2023</span></div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px;"><span style="color: var(--gray-500);">Permit Status</span><span style="font-weight: 500; color: #16a34a;">Approved</span></div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px;"><span style="color: var(--gray-500);">Est. Energization</span><span style="font-family: 'JetBrains Mono', monospace; font-weight: 500;">Q3 2026</span></div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px;"><span style="color: var(--gray-500);">Time in Queue</span><span style="font-family: 'JetBrains Mono', monospace; font-weight: 500;">3.2 yrs</span></div>
+              </div>
+              <!-- Stage progress -->
+              <div style="padding: 14px 20px; border-bottom: 1px solid var(--gray-100);">
+                <div style="font-size: 11px; font-weight: 500; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;">Progress</div>
+                <div style="display: flex; gap: 4px;">
+                  <div style="flex: 1; height: 10px; border-radius: 5px; background: #16a34a;"></div>
+                  <div style="flex: 1; height: 10px; border-radius: 5px; background: #16a34a;"></div>
+                  <div style="flex: 1; height: 10px; border-radius: 5px; background: #16a34a;"></div>
+                  <div style="flex: 1; height: 10px; border-radius: 5px; background: #16a34a;"></div>
+                  <div style="flex: 1; height: 10px; border-radius: 5px; background: var(--gray-200);"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--gray-400); margin-top: 6px;">
+                  <span>Queued</span><span>Study</span><span>Permit</span><span>Build</span><span>COD</span>
+                </div>
+              </div>
+              <!-- Market context -->
+              <div style="padding: 14px 20px;">
+                <div style="font-size: 11px; font-weight: 500; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">Market Context</div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px;"><span style="color: var(--gray-500);">ISO Withdrawal Rate</span><span style="font-family: 'JetBrains Mono', monospace; font-weight: 500;">62%</span></div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px;"><span style="color: var(--gray-500);">Capacity Ahead</span><span style="font-family: 'JetBrains Mono', monospace; font-weight: 500;">12.4 GW</span></div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px;"><span style="color: var(--gray-500);">County Projects</span><span style="font-family: 'JetBrains Mono', monospace; font-weight: 500;">34</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Developer Intelligence — visual left -->
+    <div class="product-row animate-on-scroll" style="display: grid; grid-template-columns: 1fr 1fr; min-height: 420px; border-bottom: 1px solid var(--gray-200);">
+      <div style="background: var(--gray-900); display: flex; align-items: center; justify-content: center; padding: 40px; position: relative; overflow: hidden;">
+        <div style="width: 100%; max-width: 380px; color: var(--white);">
+          <!-- Developer profile card -->
+          <div style="margin-bottom: 20px;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">Developer Profile</div>
+            <div style="font-size: 20px; font-weight: 500; margin-bottom: 4px;">Sunrise Solar LLC</div>
+            <div style="font-size: 13px; color: var(--gray-400);">Independent &middot; Mid-scale &middot; NY, NJ, MA</div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px;">
+            <div style="background: var(--gray-800); border-radius: 8px; padding: 12px; text-align: center;">
+              <div style="font-size: 20px; font-weight: 500;">23</div>
+              <div style="font-size: 11px; color: var(--gray-500); margin-top: 2px;">Projects</div>
+            </div>
+            <div style="background: var(--gray-800); border-radius: 8px; padding: 12px; text-align: center;">
+              <div style="font-size: 20px; font-weight: 500;">78%</div>
+              <div style="font-size: 11px; color: var(--gray-500); margin-top: 2px;">Completion</div>
+            </div>
+            <div style="background: var(--gray-800); border-radius: 8px; padding: 12px; text-align: center;">
+              <div style="font-size: 20px; font-weight: 500; font-family: 'JetBrains Mono', monospace;">A</div>
+              <div style="font-size: 11px; color: var(--gray-500); margin-top: 2px;">Tier</div>
+            </div>
+          </div>
+          <div style="background: var(--gray-800); border-radius: 8px; padding: 16px;">
+            <div style="font-size: 12px; font-weight: 500; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;">Track Record</div>
+            <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--gray-300); margin-bottom: 6px;"><span>Total Pipeline</span><span style="font-family: 'JetBrains Mono', monospace;">142 MW</span></div>
+            <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--gray-300); margin-bottom: 6px;"><span>Operational</span><span style="font-family: 'JetBrains Mono', monospace;">89 MW</span></div>
+            <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--gray-300); margin-bottom: 6px;"><span>Avg. Time to COD</span><span style="font-family: 'JetBrains Mono', monospace;">18 mo</span></div>
+            <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--gray-300);"><span>Years Active</span><span style="font-family: 'JetBrains Mono', monospace;">7</span></div>
+          </div>
+          <!-- Completion rate comparison -->
+          <div style="background: var(--gray-800); border-radius: 8px; padding: 16px; margin-top: 16px;">
+            <div style="font-size: 12px; font-weight: 500; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">Completion vs. Market</div>
+            <div style="margin-bottom: 10px;">
+              <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--gray-400); margin-bottom: 4px;"><span>Sunrise Solar</span><span style="font-family: 'JetBrains Mono', monospace; color: var(--white);">78%</span></div>
+              <div style="background: var(--gray-700); border-radius: 4px; height: 10px; overflow: hidden;"><div style="background: var(--white); width: 78%; height: 100%; border-radius: 4px;"></div></div>
+            </div>
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--gray-400); margin-bottom: 4px;"><span>Market Average</span><span style="font-family: 'JetBrains Mono', monospace; color: var(--gray-500);">52%</span></div>
+              <div style="background: var(--gray-700); border-radius: 4px; height: 10px; overflow: hidden;"><div style="background: var(--gray-500); width: 52%; height: 100%; border-radius: 4px;"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="padding: 64px; display: flex; flex-direction: column; justify-content: center;">
+        <div style="font-size: 12px; font-weight: 500; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">Developer Intelligence</div>
+        <h3 style="font-size: 28px; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 16px;">Who's building what, and can they deliver?</h3>
+        <p style="font-size: 16px; color: var(--gray-500); line-height: 1.7; margin-bottom: 24px;">6,593 developer profiles graded A through E based on actual completion history. Portfolio size, technology mix, parent companies, and capital need signals.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-500); background: var(--gray-100); padding: 6px 12px; border-radius: 4px;">6,593 developers</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-500); background: var(--gray-100); padding: 6px 12px; border-radius: 4px;">A-E tier scoring</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-500); background: var(--gray-100); padding: 6px 12px; border-radius: 4px;">Completion rates</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-500); background: var(--gray-100); padding: 6px 12px; border-radius: 4px;">Capital signals</span>
+        </div>
+        <a href="/contact.html" style="font-size: 15px; font-weight: 500; color: var(--black); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; margin-top: 24px;">Search developers <span style="transition: transform 0.2s;">→</span></a>
+      </div>
+    </div>
+
+    <!-- Row 3: Build on the data — visual right -->
+    <div class="product-row animate-on-scroll" style="display: grid; grid-template-columns: 1fr 1fr; min-height: 420px; border-bottom: 1px solid var(--gray-200);">
+      <div style="padding: 64px; display: flex; flex-direction: column; justify-content: center;">
+        <div style="font-size: 12px; font-weight: 500; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">Data & API</div>
+        <h3 style="font-size: 28px; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 16px;">Build on the data.</h3>
+        <p style="font-size: 16px; color: var(--gray-500); line-height: 1.7; margin-bottom: 24px;">66 REST endpoints and 31 MCP tools. Query projects, calculate tax credits, screen developers, pull market pricing. Works from your code, your models, or your AI agents. Free tier to get started, no sales call needed.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px;">
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-500); background: var(--gray-100); padding: 6px 12px; border-radius: 4px;">66 endpoints</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-500); background: var(--gray-100); padding: 6px 12px; border-radius: 4px;">31 MCP tools</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-500); background: var(--gray-100); padding: 6px 12px; border-radius: 4px;">Free tier</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-500); background: var(--gray-100); padding: 6px 12px; border-radius: 4px;">JSON + CSV</span>
+        </div>
+        <a href="/api" style="font-size: 15px; font-weight: 500; color: var(--black); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">View API docs <span style="transition: transform 0.2s;">→</span></a>
+      </div>
+      <div style="background: var(--gray-900); display: flex; align-items: center; justify-content: center; padding: 48px; position: relative; overflow: hidden;">
+        <div style="width: 100%; max-width: 380px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--gray-500); margin-bottom: 12px;">// Query any project by ID</div>
+          <div style="background: var(--gray-800); border-radius: 8px; padding: 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.8; color: var(--gray-300); border: 1px solid var(--gray-700);">
+            <span style="color: #16a34a;">GET</span> /api/v1/projects/{id}<br>
+            <span style="color: #16a34a;">GET</span> /api/v1/deals/itc<br>
+            <span style="color: #16a34a;">GET</span> /api/v1/developers/{name}<br>
+            <span style="color: #16a34a;">GET</span> /api/v1/dg/investable<br>
+            <span style="color: #16a34a;">GET</span> /api/v1/tax-credits/{id}<br>
+            <span style="color: var(--gray-500);">+ 61 more endpoints</span>
+          </div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--gray-500); margin-top: 16px;">// Sample response</div>
+          <div style="background: var(--gray-800); border-radius: 8px; padding: 16px; font-family: 'JetBrains Mono', monospace; font-size: 11px; line-height: 1.7; color: var(--gray-400); border: 1px solid var(--gray-700); margin-top: 8px;">
+            {<br>
+            &nbsp;&nbsp;<span style="color: #16a34a;">"name"</span>: <span style="color: var(--gray-300);">"Solar Farm Albany"</span>,<br>
+            &nbsp;&nbsp;<span style="color: #16a34a;">"capacity_mw"</span>: <span style="color: var(--gray-300);">4.8</span>,<br>
+            &nbsp;&nbsp;<span style="color: #16a34a;">"effective_itc"</span>: <span style="color: var(--gray-300);">0.60</span>,<br>
+            &nbsp;&nbsp;<span style="color: #16a34a;">"developer_tier"</span>: <span style="color: var(--gray-300);">"A"</span>,<br>
+            &nbsp;&nbsp;<span style="color: #16a34a;">"stage"</span>: <span style="color: var(--gray-300);">"Under Construction"</span><br>
+            }
+          </div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--gray-500); margin-top: 16px;">// Or use MCP with any AI agent</div>
+          <div style="background: var(--gray-800); border-radius: 8px; padding: 12px 16px; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; color: var(--gray-300); border: 1px solid var(--gray-700); margin-top: 8px;">
+            <span style="color: var(--gray-500);">$</span> pip install prospector-energy-mcp
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Projects -->
+  <!-- Explore the Data -->
   <section class="projects" id="projects">
     <div class="projects-header animate-on-scroll">
-      <h2>Selected Work</h2>
+      <h2>Explore the Data</h2>
+      <span class="projects-count">Free tools built on the platform</span>
     </div>
     <div class="project-list stagger-children">
       <a href="/queue-lookup" class="project animate-on-scroll">
         <div class="project-info">
           <div class="project-meta">
-            <span>Energy</span>
-            <span>Dashboard</span>
+            <span>Free Tool</span>
+            <span>Searchable Database</span>
           </div>
-          <h3 class="project-title">US Interconnection Queue <span class="project-arrow">→</span></h3>
-          <p class="project-desc">Aggregated 47,000+ energy projects from 9 ISO queues into a searchable database with developer analytics and regional benchmarks.</p>
+          <h3 class="project-title">US Interconnection Queue Lookup <span class="project-arrow">→</span></h3>
+          <p class="project-desc">Search 47,000+ energy projects across 9 ISOs. Filter by state, technology, developer, capacity, and status. See the data before you buy.</p>
         </div>
         <div class="project-visual">
           <img src="/queue-lookup/screenshots/light-loaded.png" alt="Queue Lookup Tool">
         </div>
       </a>
-      
+
       <a href="/iso-comparison" class="project animate-on-scroll">
         <div class="project-info">
           <div class="project-meta">
-            <span>Energy</span>
-            <span>Analytics</span>
+            <span>Free Tool</span>
+            <span>Interactive Dashboard</span>
           </div>
           <h3 class="project-title">ISO Queue Comparison <span class="project-arrow">→</span></h3>
-          <p class="project-desc">Side-by-side comparison of all 9 US interconnection queues. Capacity trends, approval rates, technology mix, timeline benchmarks.</p>
+          <p class="project-desc">Compare all 9 US interconnection queues side by side. Capacity trends, approval rates, technology mix, and timeline benchmarks updated daily.</p>
         </div>
         <div class="project-visual">
           <img src="/iso-comparison/screenshots/light.jpg" alt="ISO Comparison Tool">
@@ -1327,11 +1546,11 @@
       <a href="/critical-minerals" class="project animate-on-scroll">
         <div class="project-info">
           <div class="project-meta">
-            <span>Supply Chain</span>
-            <span>Intelligence</span>
+            <span>Free Tool</span>
+            <span>Supply Chain Data</span>
           </div>
           <h3 class="project-title">Critical Minerals Tracker <span class="project-arrow">→</span></h3>
-          <p class="project-desc">Global supply chain analysis for 12 energy transition minerals. Production data, processing concentration, company profiles.</p>
+          <p class="project-desc">Global supply chain analysis for 12 energy transition minerals. Production data, processing concentration, and company profiles.</p>
         </div>
         <div class="project-visual">
           <img src="/critical-minerals/screenshots/dark.png" alt="Critical Minerals Tracker">
@@ -1341,75 +1560,66 @@
   </section>
 
 
-  <!-- The Data Layer -->
-  <section class="stats">
-    <div class="stat animate-on-scroll">
-      <div class="stat-value">47,594</div>
-      <div class="stat-label">Interconnection Projects</div>
-    </div>
-    <div class="stat animate-on-scroll">
-      <div class="stat-value">5.4M</div>
-      <div class="stat-label">DG Installations</div>
-    </div>
-    <div class="stat animate-on-scroll">
-      <div class="stat-value">6,593</div>
-      <div class="stat-label">Developer Profiles</div>
-    </div>
-    <div class="stat animate-on-scroll">
-      <div class="stat-value">66</div>
-      <div class="stat-label">API Endpoints</div>
-    </div>
-    <div class="stat animate-on-scroll">
-      <div class="stat-value">9</div>
-      <div class="stat-label">ISOs Covered</div>
-    </div>
-  </section>
 
-  <section class="clients">
-    <h2 class="animate-on-scroll">How it works</h2>
-    <p class="animate-on-scroll" style="font-size: 18px; color: var(--gray-600); line-height: 1.6; max-width: 720px; margin-bottom: 32px;">We aggregate raw project records from 20+ public sources — ISO queues, state DG programs, EIA filings, DOE databases — deduplicate them, and enrich every row with tax credit calculations, developer intelligence, investability scores, and compliance flags. The result is three databases that power everything above.</p>
-    <div class="client-list animate-on-scroll">
-      <span class="client-tag" style="background: var(--gray-900); color: var(--white);">Interconnection Queue — 47,594 projects, ~120 enriched columns, 9 ISOs, daily refresh</span>
-      <span class="client-tag" style="background: var(--gray-900); color: var(--white);">Distributed Generation — 5.4M installations from 16 state programs</span>
-      <span class="client-tag" style="background: var(--gray-900); color: var(--white);">Developer Intelligence — 6,593 profiles with track records, tier classification, completion rates</span>
-    </div>
-    <p class="animate-on-scroll" style="font-size: 14px; color: var(--gray-400); margin-top: 20px;">Plus 16.8M+ reference rows from EIA, FERC, EPA, NREL, USGS, Census Bureau, and more.</p>
-  </section>
-
-  <!-- Data Sources -->
-  <section class="data-sources">
+  <!-- Data Sources Ticker -->
+  <section class="data-sources" style="overflow: hidden;">
     <h2 class="animate-on-scroll">Built with Data From</h2>
-    <div class="source-list animate-on-scroll">
-      <span class="source-tag">EIA</span>
-      <span class="source-tag">DOE</span>
-      <span class="source-tag">FERC</span>
-      <span class="source-tag">NERC</span>
-      <span class="source-tag">Lawrence Berkeley Lab</span>
-      <span class="source-tag">PUDL</span>
-      <span class="source-tag">PJM</span>
-      <span class="source-tag">MISO</span>
-      <span class="source-tag">ERCOT</span>
-      <span class="source-tag">CAISO</span>
-      <span class="source-tag">SPP</span>
-      <span class="source-tag">NYISO</span>
-      <span class="source-tag">ISO-NE</span>
-      <span class="source-tag">EPA</span>
-      <span class="source-tag">NREL</span>
-      <span class="source-tag">USGS</span>
-      <span class="source-tag">USITC</span>
-      <span class="source-tag">Census Bureau</span>
-      <span class="source-tag">USWTDB</span>
-      <span class="source-tag">HIFLD</span>
+    <div style="position: relative; width: 100%; overflow: hidden; mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);">
+      <div class="ticker-track" style="display: flex; gap: 24px; animation: ticker 40s linear infinite; width: max-content;">
+        <span class="source-tag logo-only"><img src="/images/logos/eia.png" alt="EIA"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/doe.png" alt="DOE"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/epa.png" alt="EPA"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/ferc.png" alt="FERC"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/nerc.png" alt="NERC"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/usgs.svg" alt="USGS"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/pjm.png" alt="PJM"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/miso.webp" alt="MISO"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/ercot.svg" alt="ERCOT"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/nyiso.svg" alt="NYISO"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/caiso.png" alt="CAISO"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/spp.png" alt="SPP"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/isone.png" alt="ISO-NE"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/nrel.png" alt="NREL"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/lbnl.svg" alt="LBNL"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/commerce.png" alt="Dept of Commerce"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/njcep.png" alt="NJ Clean Energy"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/ilshines.jpg" alt="Illinois Shines"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/masmart.png" alt="MA SMART"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/uswtdb.png" alt="USWTDB"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/nysir.png" alt="NY Power Authority"></span>
+        <!-- Duplicate for seamless loop -->
+        <span class="source-tag logo-only"><img src="/images/logos/eia.png" alt="EIA"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/doe.png" alt="DOE"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/epa.png" alt="EPA"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/ferc.png" alt="FERC"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/nerc.png" alt="NERC"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/usgs.svg" alt="USGS"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/pjm.png" alt="PJM"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/miso.webp" alt="MISO"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/ercot.svg" alt="ERCOT"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/nyiso.svg" alt="NYISO"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/caiso.png" alt="CAISO"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/spp.png" alt="SPP"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/isone.png" alt="ISO-NE"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/nrel.png" alt="NREL"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/lbnl.svg" alt="LBNL"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/commerce.png" alt="Dept of Commerce"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/njcep.png" alt="NJ Clean Energy"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/ilshines.jpg" alt="Illinois Shines"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/masmart.png" alt="MA SMART"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/uswtdb.png" alt="USWTDB"></span>
+        <span class="source-tag logo-only"><img src="/images/logos/nysir.png" alt="NY Power Authority"></span>
+      </div>
     </div>
   </section>
 
   <!-- Contact -->
   <section class="contact">
-    <h2 class="animate-on-scroll">Have an energy data problem?</h2>
-    <p class="animate-on-scroll">We'll tell you if we can solve it — usually in one conversation.</p>
-    <div class="animate-on-scroll" style="display: flex; gap: 24px; justify-content: center; align-items: center; flex-wrap: wrap;">
-      <a href="/contact.html" class="contact-email" style="background: var(--black); color: var(--white); padding: 14px 28px; border-radius: 8px; text-decoration: none; font-size: 16px; font-weight: 500; border-bottom: none; transition: background 0.2s;">Book a Call</a>
-      <a href="mailto:owen@prospectorlabs.io" class="contact-email" style="font-size: 16px;">owen@prospectorlabs.io</a>
+    <h2 class="animate-on-scroll">See what the data looks like for your use case.</h2>
+    <p class="animate-on-scroll">Whether you're sourcing deals, benchmarking developers, or building on the API, we can show you what we have.</p>
+    <div class="animate-on-scroll" style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+      <a href="/contact.html" style="background: var(--black); color: var(--white); padding: 16px 36px; border-radius: 8px; text-decoration: none; font-size: 17px; font-weight: 500; transition: background 0.2s;">Talk to Us</a>
+      <a href="mailto:owen@prospectorlabs.io" style="font-size: 15px; color: var(--gray-500); text-decoration: none; border-bottom: 1px solid var(--gray-300);">owen@prospectorlabs.io</a>
     </div>
   </section>
 
@@ -1452,7 +1662,7 @@
       // Simple nav color switching based on section
       const nav = document.querySelector('nav');
       const hero = document.querySelector('.hero');
-      const darkSections = document.querySelectorAll('.hero, .verticals, .data-sources');
+      const darkSections = document.querySelectorAll('.hero, .stats, .verticals, .data-sources, .data-layer-dark');
 
       nav.classList.add('nav-light');
 
