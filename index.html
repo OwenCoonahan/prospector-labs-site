@@ -857,14 +857,21 @@
       width: auto;
       max-width: 80px;
       flex-shrink: 0;
-      filter: grayscale(100%) brightness(2);
-      opacity: 0.7;
+      filter: grayscale(100%) brightness(1.8);
+      opacity: 0.75;
       object-fit: contain;
     }
     /* Logo-only tags (no text label) get bigger logos */
     .source-tag.logo-only img {
       height: 32px;
       max-width: 120px;
+    }
+    /* Seal/emblem logos need gentler filter to preserve detail */
+    .source-tag.seal-logo img {
+      height: 38px;
+      max-width: 140px;
+      filter: grayscale(100%) brightness(1.2);
+      opacity: 0.6;
     }
 
     /* CONTACT */
@@ -1566,10 +1573,10 @@
     <h2 class="animate-on-scroll">Built with Data From</h2>
     <div style="position: relative; width: 100%; overflow: hidden; mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);">
       <div class="ticker-track" style="display: flex; gap: 24px; animation: ticker 40s linear infinite; width: max-content;">
-        <span class="source-tag logo-only"><img src="/images/logos/eia.png" alt="EIA"></span>
-        <span class="source-tag logo-only"><img src="/images/logos/doe.png" alt="DOE"></span>
-        <span class="source-tag logo-only"><img src="/images/logos/epa.png" alt="EPA"></span>
-        <span class="source-tag logo-only"><img src="/images/logos/ferc.png" alt="FERC"></span>
+        <span class="source-tag logo-only seal-logo"><img src="/images/logos/eia.png" alt="EIA" style="max-width: 160px;"></span>
+        <span class="source-tag logo-only seal-logo"><img src="/images/logos/doe.png" alt="DOE"></span>
+        <span class="source-tag logo-only seal-logo"><img src="/images/logos/epa.png" alt="EPA"></span>
+        <span class="source-tag logo-only seal-logo"><img src="/images/logos/ferc.png" alt="FERC"></span>
         <span class="source-tag logo-only"><img src="/images/logos/nerc.png" alt="NERC"></span>
         <span class="source-tag logo-only"><img src="/images/logos/usgs.svg" alt="USGS"></span>
         <span class="source-tag logo-only"><img src="/images/logos/pjm.png" alt="PJM"></span>
@@ -1581,17 +1588,17 @@
         <span class="source-tag logo-only"><img src="/images/logos/isone.png" alt="ISO-NE"></span>
         <span class="source-tag logo-only"><img src="/images/logos/nrel.png" alt="NREL"></span>
         <span class="source-tag logo-only"><img src="/images/logos/lbnl.svg" alt="LBNL"></span>
-        <span class="source-tag logo-only"><img src="/images/logos/commerce.png" alt="Dept of Commerce"></span>
+        <span class="source-tag logo-only seal-logo"><img src="/images/logos/commerce.png" alt="Dept of Commerce"></span>
         <span class="source-tag logo-only"><img src="/images/logos/njcep.png" alt="NJ Clean Energy"></span>
         <span class="source-tag logo-only"><img src="/images/logos/ilshines.jpg" alt="Illinois Shines"></span>
         <span class="source-tag logo-only"><img src="/images/logos/masmart.png" alt="MA SMART"></span>
         <span class="source-tag logo-only"><img src="/images/logos/uswtdb.png" alt="USWTDB"></span>
         <span class="source-tag logo-only"><img src="/images/logos/nysir.png" alt="NY Power Authority"></span>
         <!-- Duplicate for seamless loop -->
-        <span class="source-tag logo-only"><img src="/images/logos/eia.png" alt="EIA"></span>
-        <span class="source-tag logo-only"><img src="/images/logos/doe.png" alt="DOE"></span>
-        <span class="source-tag logo-only"><img src="/images/logos/epa.png" alt="EPA"></span>
-        <span class="source-tag logo-only"><img src="/images/logos/ferc.png" alt="FERC"></span>
+        <span class="source-tag logo-only seal-logo"><img src="/images/logos/eia.png" alt="EIA" style="max-width: 160px;"></span>
+        <span class="source-tag logo-only seal-logo"><img src="/images/logos/doe.png" alt="DOE"></span>
+        <span class="source-tag logo-only seal-logo"><img src="/images/logos/epa.png" alt="EPA"></span>
+        <span class="source-tag logo-only seal-logo"><img src="/images/logos/ferc.png" alt="FERC"></span>
         <span class="source-tag logo-only"><img src="/images/logos/nerc.png" alt="NERC"></span>
         <span class="source-tag logo-only"><img src="/images/logos/usgs.svg" alt="USGS"></span>
         <span class="source-tag logo-only"><img src="/images/logos/pjm.png" alt="PJM"></span>
@@ -1603,7 +1610,7 @@
         <span class="source-tag logo-only"><img src="/images/logos/isone.png" alt="ISO-NE"></span>
         <span class="source-tag logo-only"><img src="/images/logos/nrel.png" alt="NREL"></span>
         <span class="source-tag logo-only"><img src="/images/logos/lbnl.svg" alt="LBNL"></span>
-        <span class="source-tag logo-only"><img src="/images/logos/commerce.png" alt="Dept of Commerce"></span>
+        <span class="source-tag logo-only seal-logo"><img src="/images/logos/commerce.png" alt="Dept of Commerce"></span>
         <span class="source-tag logo-only"><img src="/images/logos/njcep.png" alt="NJ Clean Energy"></span>
         <span class="source-tag logo-only"><img src="/images/logos/ilshines.jpg" alt="Illinois Shines"></span>
         <span class="source-tag logo-only"><img src="/images/logos/masmart.png" alt="MA SMART"></span>
