@@ -235,9 +235,48 @@
       margin-bottom: 24px;
     }
 
-    .success-message a {
-      color: var(--black);
+    .success-divider {
+      width: 40px;
+      height: 1px;
+      background: var(--gray-200);
+      margin: 28px auto;
+    }
+
+    .success-cta-label {
+      font-size: 15px;
       font-weight: 500;
+      color: var(--gray-800);
+      margin-bottom: 16px;
+    }
+
+    .book-call-btn {
+      display: inline-block;
+      padding: 14px 32px;
+      font-family: 'Geist', system-ui, sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--white);
+      background: var(--black);
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s;
+      margin-bottom: 20px;
+    }
+
+    .book-call-btn:hover {
+      background: var(--gray-800);
+    }
+
+    .back-link {
+      display: block;
+      color: var(--gray-400);
+      font-size: 13px;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover {
+      color: var(--gray-600);
     }
 
     /* RESPONSIVE */
@@ -305,8 +344,11 @@
 
       <div class="success-message" id="success">
         <h2>Thanks for reaching out!</h2>
-        <p>We've received your project details and will get back to you within 24 hours.</p>
-        <a href="/">← Back to home</a>
+        <p>We've received your details and will be in touch within 24 hours.</p>
+        <div class="success-divider"></div>
+        <p class="success-cta-label">Want to talk sooner?</p>
+        <a href="https://cal.com/owen-coonahan" target="_blank" rel="noopener" class="book-call-btn">Book a 15-minute call</a>
+        <a href="/" class="back-link">← Back to home</a>
       </div>
 
       <div class="form-footer">
@@ -336,6 +378,7 @@
         
         if (response.ok) {
           form.style.display = 'none';
+          document.querySelector('.form-footer').style.display = 'none';
           success.classList.add('show');
         } else {
           throw new Error('Form submission failed');
