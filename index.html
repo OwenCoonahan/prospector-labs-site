@@ -67,11 +67,16 @@
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    html {
+      overflow-x: hidden;
+    }
+
     body {
       font-family: 'Geist', system-ui, sans-serif;
       background: var(--white);
       color: var(--black);
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
     a { color: inherit; }
@@ -1104,9 +1109,10 @@
       gap: 5px;
       cursor: pointer;
       padding: 8px;
-      z-index: 1001;
+      z-index: 10000;
       background: none;
       border: none;
+      position: relative;
     }
     .nav-hamburger span {
       display: block;
@@ -1138,29 +1144,38 @@
       .nav-hamburger { display: flex; }
       .nav-links {
         display: none !important;
+      }
+      .nav-links.open {
+        display: flex !important;
         position: fixed;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
+        right: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
         background: var(--white);
         flex-direction: column;
         align-items: center;
         justify-content: center;
         gap: 32px;
-        z-index: 1000;
+        z-index: 9999;
+        padding: 0;
+        margin: 0;
       }
-      .nav-links.open { display: flex !important; }
       .nav-links a {
         font-size: 20px !important;
         color: var(--black) !important;
         opacity: 1 !important;
       }
       .nav-links .nav-cta {
-        background: var(--black) !important;
-        color: var(--white) !important;
+        background: transparent !important;
+        color: var(--black) !important;
         padding: 14px 32px !important;
+        border: 2px solid var(--black) !important;
         border-radius: 8px !important;
+        font-size: 20px !important;
       }
       .project-intel-cards { grid-template-columns: 1fr !important; }
       .data-layer { padding: 48px 32px !important; }
@@ -1783,7 +1798,10 @@
         hamburger.addEventListener('click', () => {
           hamburger.classList.toggle('open');
           navLinks.classList.toggle('open');
-          document.body.style.overflow = navLinks.classList.contains('open') ? 'hidden' : '';
+          const isOpen = navLinks.classList.contains('open');
+          document.body.style.overflow = isOpen ? 'hidden' : '';
+          // Bump nav z-index so overlay escapes stacking context
+          nav.style.zIndex = isOpen ? '9998' : '';
         });
         // Close menu when a link is clicked
         navLinks.querySelectorAll('a').forEach(link => {
@@ -1791,6 +1809,7 @@
             hamburger.classList.remove('open');
             navLinks.classList.remove('open');
             document.body.style.overflow = '';
+            nav.style.zIndex = '';
           });
         });
       }
