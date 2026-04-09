@@ -75,7 +75,7 @@
 
     /* MAIN */
     main {
-      max-width: 640px;
+      max-width: 700px;
       margin: 0 auto;
       padding: 120px 32px 80px;
     }
@@ -346,8 +346,8 @@
         <h2>Thanks for reaching out!</h2>
         <p>We've received your details and will be in touch within 24 hours.</p>
         <div class="success-divider"></div>
-        <p class="success-cta-label">Want to talk sooner?</p>
-        <a href="https://cal.com/owen-coonahan" target="_blank" rel="noopener" class="book-call-btn">Book a 15-minute call</a>
+        <p class="success-cta-label">Want to talk sooner? Book a time below.</p>
+        <div id="cal-embed" style="min-height: 400px; margin: 16px 0 20px;"></div>
         <a href="/" class="back-link">← Back to home</a>
       </div>
 
@@ -357,34 +357,59 @@
     </div>
   </main>
 
+  <!-- Cal.com embed SDK -->
+  <script type="text/javascript">
+    (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ["initNamespace", namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+  </script>
+
   <script>
-    // Form submission handling
     const form = document.getElementById('contact-form');
     const success = document.getElementById('success');
-    
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
+
       const btn = form.querySelector('.submit-btn');
       btn.textContent = 'Sending...';
       btn.disabled = true;
-      
+
+      const userName = document.getElementById('name').value;
+      const userEmail = document.getElementById('email').value;
+
       try {
         const response = await fetch(form.action, {
           method: 'POST',
           body: new FormData(form),
           headers: { 'Accept': 'application/json' }
         });
-        
+
         if (response.ok) {
           form.style.display = 'none';
           document.querySelector('.form-footer').style.display = 'none';
           success.classList.add('show');
+
+          // Render Cal.com inline calendar, pre-filled with their info
+          Cal("init", "booking", { origin: "https://app.cal.com" });
+          Cal.ns.booking("inline", {
+            calLink: "owen-coonahan",
+            elementOrSelector: "#cal-embed",
+            config: {
+              name: userName,
+              email: userEmail,
+              layout: "month_view",
+              theme: "light"
+            }
+          });
+          Cal.ns.booking("ui", {
+            theme: "light",
+            styles: { branding: { brandColor: "#000000" } },
+            hideEventTypeDetails: false
+          });
         } else {
           throw new Error('Form submission failed');
         }
       } catch (error) {
-        btn.textContent = 'Submit Project Request';
+        btn.textContent = 'Send Message';
         btn.disabled = false;
         alert('Something went wrong. Please try again or email us directly.');
       }
