@@ -1097,9 +1097,72 @@
       .data-layer-grid { grid-template-columns: 1fr !important; }
     }
 
+    /* Hamburger menu */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 8px;
+      z-index: 1001;
+      background: none;
+      border: none;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--white);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    nav.nav-scrolled .nav-hamburger span,
+    nav.nav-light .nav-hamburger span,
+    nav.nav-dark .nav-hamburger span { background: var(--black); }
+
+    .nav-hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+    /* Project intelligence inner cards */
+    .project-intel-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
     @media (max-width: 768px) {
       nav { padding: 16px 24px; }
-      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      .nav-links {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 32px;
+        z-index: 1000;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a {
+        font-size: 20px !important;
+        color: var(--black) !important;
+        opacity: 1 !important;
+      }
+      .nav-links .nav-cta {
+        background: var(--black) !important;
+        color: var(--white) !important;
+        padding: 14px 32px !important;
+        border-radius: 8px !important;
+      }
+      .project-intel-cards { grid-template-columns: 1fr !important; }
       .data-layer { padding: 48px 32px !important; }
       .data-layer p:first-of-type { font-size: 18px !important; }
 
@@ -1158,13 +1221,18 @@
       <img src="images/logo-black.avif" alt="Prospector Labs" class="logo-dark">
       <span>Prospector Labs</span>
     </a>
-    <div class="nav-links">
+    <div class="nav-links" id="navLinks">
       <a href="#capabilities">Platform</a>
       <a href="/api/">API</a>
       <a href="/api/agents/">Agents</a>
       <a href="/blog/">Blog</a>
       <a href="/contact/" class="nav-cta">Book a Call</a>
     </div>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </nav>
 
   <!-- Hero -->
@@ -1341,7 +1409,7 @@
       <div style="background: var(--gray-50); display: flex; align-items: center; justify-content: center; padding: 48px; position: relative; overflow: hidden;">
         <div style="width: 100%; max-width: 580px; position: relative;">
           <!-- Two cards side by side with gap -->
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div class="project-intel-cards">
             <!-- Left: Tax credit analysis -->
             <div style="background: var(--white); border: 1px solid var(--gray-200); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
               <div style="padding: 18px 20px; border-bottom: 1px solid var(--gray-200);">
@@ -1707,6 +1775,25 @@
 
       window.addEventListener('scroll', updateNav, { passive: true });
       updateNav();
+
+      // Hamburger menu toggle
+      const hamburger = document.getElementById('navHamburger');
+      const navLinks = document.getElementById('navLinks');
+      if (hamburger && navLinks) {
+        hamburger.addEventListener('click', () => {
+          hamburger.classList.toggle('open');
+          navLinks.classList.toggle('open');
+          document.body.style.overflow = navLinks.classList.contains('open') ? 'hidden' : '';
+        });
+        // Close menu when a link is clicked
+        navLinks.querySelectorAll('a').forEach(link => {
+          link.addEventListener('click', () => {
+            hamburger.classList.remove('open');
+            navLinks.classList.remove('open');
+            document.body.style.overflow = '';
+          });
+        });
+      }
 
     });
   </script>
