@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Developer — Glass Energy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <!-- Top Bar -->
+  <div style="padding:12px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <a href="/platform/" style="color:var(--text-1);font-size:0.84rem;text-decoration:none">← Back to Explorer</a>
+    <button class="btn-icon" onclick="toggleTheme()" title="Toggle theme">◐</button>
+  </div>
+
+  <div class="app" id="app">
+    <div class="loading-spinner" id="loading"></div>
+  </div>
+
+  <script src="api.js"></script>
+  <script src="utils.js"></script>
+  <script>
+    // ── Sort state ──────────────────────────────────────────
+    let sortCol = null;
+    let sortDir = 'asc';
+
+    // ── Render functions ────────────────────────────────────
+    function renderHeader(dev) {
+      const el = document.createElement('div');
+      el.className = 'dev-header';
+      el.innerHTML = `
+        <div>
+          <h1 class="text-xl font-bold tracking-tight">${esc(dev.canonical_name || dev.display_name)}</h1>
+          <div class="text-secondary mt-2">
+            <span class="badge ${tierClass(dev.tier)}">${tierLabel(dev.tier)}</span>
+            ${dev.parent_company && dev.parent_company !== dev.canonical_name ? `<span class="text-sm" style="margin-left:8px">Parent: ${esc(dev.parent_company)}</span>` : ''}
+            ${dev.headquarters_state ? `<span class="text-sm" style="margin-left:8px">${esc(dev.headquarters_state)}</span>` : ''}
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div class="text-2xl font-bold">${dev.completion_rate != null ? (dev.completion_rate * 100).toFixed(0) : 0}%</div>
+          <div class="text-xs text-secondary uppercase">Completion Rate</div>
+        </div>`;
+      document.getElementById('app').appendChild(el);
+    }
+
+    function renderStats(dev) {
+      const el = document.createElement('div');
+      el.className = 'dev-stats-row';
+      el.innerHTML = `
+        <div class="card kpi"><div class="kpi-label">Total Projects</div><div class="kpi-value">${fmtNum(dev.total_projects)}</div></div>
+        <div class="card kpi"><div class="kpi-label">Total Capacity</div><div class="kpi-value">${fmtMW(dev.total_capacity_mw)}</div></div>
+        <div class="card kpi"><div class="kpi-label">Active</div><div class="kpi-value text-blue">${fmtNum(dev.active_projects)}</div></div>
+        <div class="card kpi"><div class="kpi-label">Operational</div><div class="kpi-value text-green">${fmtNum(dev.operational_projects)}</div></div>
+        <div class="card kpi"><div class="kpi-label">Withdrawn</div><div class="kpi-value text-red">${fmtNum(dev.withdrawn_projects)}</div></div>
+        <div class="card kpi"><div class="kpi-label">Avg Size</div><div class="kpi-value font-mono">${dev.avg_project_size_mw != null ? Math.round(dev.avg_project_size_mw) : '—'} MW</div></div>
+        <div class="card kpi"><div class="kpi-label">Regions</div><div class="kpi-value">${dev.region_count || '—'}</div></div>
+        <div class="card kpi"><div class="kpi-label">States</div><div class="kpi-value">${dev.state_count || '—'}</div></div>`;
+      document.getElementById('app').appendChild(el);
+    }
+
+    function renderPortfolio(projects) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'card';
+      wrapper.style.cssText = 'padding:0;overflow:hidden';
+      wrapper.innerHTML = `
+        <div style="padding:16px 16px 0;display:flex;justify-content:space-between;align-items:center">
+          <h3 class="text-lg font-semibold">Portfolio</h3>
+          <span class="text-secondary text-sm">${projects.length} projects</span>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="data-table" id="portfolio-table">
+            <thead>
+              <tr>
+                <th class="col-name" data-sort="name">Project <span class="sort-arrow">↕</span></th>
+                <th data-sort="queue_id">Queue ID <span class="sort-arrow">↕</span></th>
+                <th data-sort="region">ISO <span class="sort-arrow">↕</span></th>
+                <th class="col-mw" data-sort="capacity_mw">MW <span class="sort-arrow">↕</span></th>
+                <th data-sort="type">Tech <span class="sort-arrow">↕</span></th>
+                <th data-sort="status">Status <span class="sort-arrow">↕</span></th>
+                <th data-sort="recommended_credit">Credit <span class="sort-arrow">↕</span></th>
+                <th data-sort="energy_community_eligible">EC <span class="sort-arrow">↕</span></th>
+                <th data-sort="queue_date">Queue Date <span class="sort-arrow">↕</span></th>
+                <th data-sort="cod">COD <span class="sort-arrow">↕</span></th>
+              </tr>
+            </thead>
+            <tbody id="portfolio-body"></tbody>
+          </table>
+        </div>`;
+      document.getElementById('app').appendChild(wrapper);
+
+      // Render rows
+      renderRows(projects);
+
+      // Sort click handlers
+      wrapper.querySelectorAll('th[data-sort]').forEach(th => {
+        th.addEventListener('click', () => {
+          const col = th.dataset.sort;
+          if (sortCol === col) {
+            sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+          } else {
+            sortCol = col;
+            sortDir = 'asc';
+          }
+          // Update header styles
+          wrapper.querySelectorAll('th').forEach(h => h.classList.remove('sorted'));
+          th.classList.add('sorted');
+          th.querySelector('.sort-arrow').textContent = sortDir === 'asc' ? '↑' : '↓';
+
+          const sorted = [...projects].sort((a, b) => {
+            let va = a[col], vb = b[col];
+            if (col === 'capacity_mw' || col === 'queue_date' || col === 'cod' || col === 'energy_community_eligible') {
+              va = parseFloat(va) || 0;
+              vb = parseFloat(vb) || 0;
+            } else {
+              va = (va || '').toString().toLowerCase();
+              vb = (vb || '').toString().toLowerCase();
+            }
+            if (va < vb) return sortDir === 'asc' ? -1 : 1;
+            if (va > vb) return sortDir === 'asc' ? 1 : -1;
+            return 0;
+          });
+          renderRows(sorted);
+        });
+      });
+    }
+
+    function renderRows(projects) {
+      const tbody = document.getElementById('portfolio-body');
+      tbody.innerHTML = projects.map(p => `
+        <tr onclick="window.location.href='project.html?id=${p.id}'">
+          <td class="col-name">${esc(p.name || p.queue_id || '—')}</td>
+          <td class="font-mono text-sm">${esc(p.queue_id || '—')}</td>
+          <td>${esc(p.region || '—')}</td>
+          <td class="col-mw font-mono">${p.capacity_mw != null ? Math.round(p.capacity_mw).toLocaleString() : '—'}</td>
+          <td><span class="badge ${techClass(p.type)}">${techLabel(p.type)}</span></td>
+          <td><span class="status-dot ${statusDotClass(p.status)}"></span>${statusLabel(p.status)}</td>
+          <td class="text-sm">${creditDisplay(p)}</td>
+          <td>${p.energy_community_eligible ? '<span class="check-yes">✓</span>' : '<span class="check-no">—</span>'}</td>
+          <td class="text-sm">${formatDate(p.queue_date)}</td>
+          <td class="text-sm">${formatDate(p.cod)}</td>
+        </tr>`).join('');
+    }
+
+    function renderCharts(projects) {
+      // Compute data
+      const byTech = {}, byRegion = {}, byStatus = {};
+      projects.forEach(p => {
+        const tech = techLabel(p.type);
+        const region = p.region || 'Unknown';
+        const status = statusLabel(p.status);
+        byTech[tech] = (byTech[tech] || 0) + 1;
+        byRegion[region] = (byRegion[region] || 0) + 1;
+        byStatus[status] = (byStatus[status] || 0) + 1;
+      });
+
+      const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+      const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+      const tickColor = isDark ? '#71717a' : '#a1a1aa';
+      const labelColor = isDark ? '#a1a1aa' : '#52525b';
+      const legendColor = getComputedStyle(document.body).getPropertyValue('--text-1').trim();
+
+      const container = document.createElement('div');
+      container.style.cssText = 'display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:24px';
+      container.innerHTML = `
+        <div class="card" style="padding:16px">
+          <h4 class="text-sm font-medium text-secondary mb-4">Technology Mix</h4>
+          <canvas id="chart-tech" height="200"></canvas>
+        </div>
+        <div class="card" style="padding:16px">
+          <h4 class="text-sm font-medium text-secondary mb-4">ISO Distribution</h4>
+          <canvas id="chart-region" height="200"></canvas>
+        </div>
+        <div class="card" style="padding:16px">
+          <h4 class="text-sm font-medium text-secondary mb-4">Status Breakdown</h4>
+          <canvas id="chart-status" height="200"></canvas>
+        </div>`;
+      document.getElementById('app').appendChild(container);
+
+      // Tech donut
+      new Chart(document.getElementById('chart-tech'), {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(byTech),
+          datasets: [{
+            data: Object.values(byTech),
+            backgroundColor: ['#f59e0b', '#3b82f6', '#a855f7', '#71717a', '#22c55e', '#ef4444', '#f97316', '#06b6d4'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'bottom', labels: { color: legendColor, font: { size: 11 } } }
+          }
+        }
+      });
+
+      // Region horizontal bar
+      new Chart(document.getElementById('chart-region'), {
+        type: 'bar',
+        data: {
+          labels: Object.keys(byRegion),
+          datasets: [{
+            data: Object.values(byRegion),
+            backgroundColor: '#3b82f6',
+            borderRadius: 4
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: gridColor }, ticks: { color: tickColor } },
+            y: { grid: { display: false }, ticks: { color: labelColor, font: { size: 11 } } }
+          }
+        }
+      });
+
+      // Status horizontal bar
+      new Chart(document.getElementById('chart-status'), {
+        type: 'bar',
+        data: {
+          labels: Object.keys(byStatus),
+          datasets: [{
+            data: Object.values(byStatus),
+            backgroundColor: ['#3b82f6', '#22c55e', '#ef4444', '#71717a', '#f59e0b', '#a855f7'],
+            borderRadius: 4
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: gridColor }, ticks: { color: tickColor } },
+            y: { grid: { display: false }, ticks: { color: labelColor, font: { size: 11 } } }
+          }
+        }
+      });
+    }
+
+    function renderTrackRecord(dev) {
+      const total = dev.total_projects || 1;
+      // Compute primary region from projects (if available, fallback)
+      const el = document.createElement('div');
+      el.className = 'card mt-6';
+      el.innerHTML = `
+        <h3 class="text-lg font-semibold mb-4">Track Record</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+          <div>
+            <div class="text-sm text-secondary mb-2">Project Outcomes</div>
+            <div class="score-component">
+              <span class="score-component-label">Completed</span>
+              <div class="score-bar-track">
+                <div class="score-bar-fill" style="width:${(dev.completion_rate || 0) * 100}%;background:var(--green)"></div>
+              </div>
+              <span class="score-component-value">${dev.operational_projects || 0}</span>
+            </div>
+            <div class="score-component" style="margin-top:8px">
+              <span class="score-component-label">Active</span>
+              <div class="score-bar-track">
+                <div class="score-bar-fill" style="width:${((dev.active_projects || 0) / total) * 100}%;background:var(--blue)"></div>
+              </div>
+              <span class="score-component-value">${dev.active_projects || 0}</span>
+            </div>
+            <div class="score-component" style="margin-top:8px">
+              <span class="score-component-label">Withdrawn</span>
+              <div class="score-bar-track">
+                <div class="score-bar-fill" style="width:${((dev.withdrawn_projects || 0) / total) * 100}%;background:var(--red)"></div>
+              </div>
+              <span class="score-component-value">${dev.withdrawn_projects || 0}</span>
+            </div>
+          </div>
+          <div>
+            <div class="text-sm text-secondary mb-2">Summary</div>
+            <table class="detail-table">
+              <tr><td>Completion Rate</td><td>${dev.completion_rate != null ? (dev.completion_rate * 100).toFixed(1) : 0}%</td></tr>
+              <tr><td>Primary Technology</td><td>${esc(dev.primary_technology || '—')}</td></tr>
+              <tr><td>Primary Region</td><td id="primary-region">—</td></tr>
+              <tr><td>Capital Needs</td><td>${dev.needs_capital === null ? 'Unknown' : dev.needs_capital ? 'Yes' : 'No'}</td></tr>
+            </table>
+          </div>
+        </div>`;
+      document.getElementById('app').appendChild(el);
+    }
+
+    function computePrimaryRegion(projects) {
+      const counts = {};
+      projects.forEach(p => {
+        const r = p.region || 'Unknown';
+        counts[r] = (counts[r] || 0) + 1;
+      });
+      let max = 0, primary = '—';
+      Object.entries(counts).forEach(([r, c]) => { if (c > max) { max = c; primary = r; } });
+      return primary;
+    }
+
+    // ── Page load ───────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', async () => {
+      initTheme();
+      const params = new URLSearchParams(window.location.search);
+      let devId = params.get('id');
+      const name = params.get('name');
+
+      if (!devId && name) {
+        try {
+          const searchRes = await api.developerSearch(name);
+          const results = searchRes.data || searchRes;
+          if (Array.isArray(results) && results.length > 0) {
+            devId = results[0].id;
+          }
+        } catch (e) { /* fall through to error */ }
+      }
+
+      if (!devId) {
+        document.getElementById('loading').remove();
+        document.getElementById('app').innerHTML = '<div class="empty-state"><h3>Developer not found</h3><p class="text-secondary mt-2">Try searching from the <a href="/platform/">Explorer</a>.</p></div>';
+        return;
+      }
+
+      try {
+        const [devRes, projRes] = await Promise.all([
+          api.developer(devId),
+          api.developerProjects(devId)
+        ]);
+
+        const dev = devRes.data || devRes;
+        const projects = projRes.data || projRes;
+
+        document.title = `${dev.canonical_name || dev.display_name} — Glass Energy`;
+
+        document.getElementById('loading').remove();
+
+        renderHeader(dev);
+        renderStats(dev);
+        renderPortfolio(Array.isArray(projects) ? projects : []);
+        renderCharts(Array.isArray(projects) ? projects : []);
+        renderTrackRecord(dev);
+
+        // Fill in computed primary region
+        const regionEl = document.getElementById('primary-region');
+        if (regionEl && Array.isArray(projects)) {
+          regionEl.textContent = computePrimaryRegion(projects);
+        }
+      } catch (err) {
+        document.getElementById('loading').remove();
+        document.getElementById('app').innerHTML = `<div class="error-state"><h3>Error loading developer</h3><p>${esc(err.message)}</p></div>`;
+      }
+    });
+  </script>
+
+  <style>
+    /* Responsive overrides for this page */
+    @media (max-width: 768px) {
+      .dev-header { flex-direction: column; }
+      .dev-stats-row { grid-template-columns: repeat(2, 1fr); }
+      #app > div[style*="grid-template-columns:1fr 1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+      }
+      .card .detail-table td:first-child { width: 120px; }
+    }
+    @media (max-width: 768px) {
+      #app > .card.mt-6 > div[style*="grid-template-columns:1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+      }
+    }
+  </style>
+</body>
+</html>
