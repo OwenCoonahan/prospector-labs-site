@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glass Energy — Project Explorer</title>
+  <meta name="description" content="Search and analyze 47,000+ energy projects. Investability scores, tax credit analysis, and developer intelligence.">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/favicon.png">
+</head>
+<body>
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <a href="/platform/" class="topbar-logo"><span>Glass</span> Energy</a>
+    <div class="topbar-search">
+      <span class="search-icon">&#x1F50D;</span>
+      <input type="text" placeholder="Search projects, developers, locations..." id="search-input">
+      <span class="search-shortcut">/</span>
+      <div class="search-dropdown hidden" id="search-dropdown"></div>
+    </div>
+    <nav class="topbar-nav">
+      <a href="/platform/" class="active">Explorer</a>
+      <a href="/platform/developer.html">Developers</a>
+    </nav>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-sm" id="export-btn">Export CSV</button>
+      <button class="btn-icon" id="theme-toggle" title="Toggle theme">&#x25D0;</button>
+    </div>
+  </div>
+
+  <!-- App Content -->
+  <div class="app">
+
+    <!-- Filter Bar -->
+    <div class="filter-bar" id="filter-bar">
+      <div class="filter-group">
+        <label class="filter-label">ISO/RTO</label>
+        <select class="filter-select" id="filter-region">
+          <option value="">All</option>
+          <option value="MISO">MISO</option>
+          <option value="PJM">PJM</option>
+          <option value="ERCOT">ERCOT</option>
+          <option value="CAISO">CAISO</option>
+          <option value="NYISO">NYISO</option>
+          <option value="SPP">SPP</option>
+          <option value="ISO-NE">ISO-NE</option>
+          <option value="West">West</option>
+          <option value="Southeast">Southeast</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Technology</label>
+        <select class="filter-select" id="filter-type">
+          <option value="">All</option>
+          <option value="Solar">Solar</option>
+          <option value="Wind">Wind</option>
+          <option value="Storage">Storage</option>
+          <option value="Gas">Gas</option>
+          <option value="Hybrid">Hybrid</option>
+          <option value="Nuclear">Nuclear</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Status</label>
+        <select class="filter-select" id="filter-status">
+          <option value="">All</option>
+          <option value="active">Active</option>
+          <option value="withdrawn">Withdrawn</option>
+          <option value="operational">Operational</option>
+          <option value="IA Executed">IA Executed</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">State</label>
+        <select class="filter-select" id="filter-state">
+          <option value="">All</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Min MW</label>
+        <input type="number" class="filter-input" id="filter-cap-min" placeholder="Min MW" min="0">
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Max MW</label>
+        <input type="number" class="filter-input" id="filter-cap-max" placeholder="Max MW" min="0">
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Energy Community</label>
+        <select class="filter-select" id="filter-ec">
+          <option value="">All</option>
+          <option value="1">Yes</option>
+          <option value="0">No</option>
+        </select>
+      </div>
+      <div class="filter-group" style="align-self:flex-end">
+        <button class="btn btn-sm btn-ghost hidden" id="clear-filters">Clear All</button>
+      </div>
+    </div>
+
+    <!-- Active Filter Chips -->
+    <div class="filter-chips" id="active-filters"></div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat"><span class="stat-value" id="stat-count">--</span> projects</div>
+      <span class="stat-divider">|</span>
+      <div class="stat"><span class="stat-value" id="stat-capacity">--</span> total</div>
+      <span class="stat-divider">|</span>
+      <div class="stat"><span class="stat-value" id="stat-ec">--</span> EC-eligible</div>
+    </div>
+
+    <!-- View Controls -->
+    <div class="view-controls">
+      <div class="view-toggle">
+        <button class="active" data-view="table">&#x2261; Table</button>
+        <button data-view="cards">&#x25A6; Cards</button>
+      </div>
+      <div class="sort-controls">
+        <select class="filter-select" id="sort-by">
+          <option value="">Sort by...</option>
+          <option value="capacity_mw">Capacity</option>
+          <option value="name">Name</option>
+          <option value="queue_date">Queue Date</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Results Container -->
+    <div class="results-container" id="results-container">
+      <!-- Loading -->
+      <div class="loading-spinner" id="loading"></div>
+
+      <!-- Table View -->
+      <table class="data-table hidden" id="table-view">
+        <thead>
+          <tr>
+            <th class="col-name">Project</th>
+            <th class="col-mw">MW</th>
+            <th>Tech</th>
+            <th>ISO</th>
+            <th>Status</th>
+            <th>Developer</th>
+            <th>Credit</th>
+            <th>EC</th>
+            <th>COD</th>
+          </tr>
+        </thead>
+        <tbody id="results-body"></tbody>
+      </table>
+
+      <!-- Card View -->
+      <div class="card-grid hidden" id="card-view"></div>
+
+      <!-- Empty State -->
+      <div class="empty-state hidden" id="empty">
+        <h3>No projects match your filters</h3>
+        <p>Try adjusting your search criteria or clearing filters.</p>
+      </div>
+
+      <!-- Error State -->
+      <div class="error-state hidden" id="error">
+        <h3>Something went wrong</h3>
+        <p id="error-msg"></p>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" id="pagination">
+      <button id="prev-page" disabled>&larr; Prev</button>
+      <span class="page-info">Page <span id="current-page">1</span> of <span id="total-pages">1</span></span>
+      <button id="next-page">Next &rarr;</button>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span>Glass Energy Platform</span>
+      <span id="total-count"></span>
+    </div>
+
+  </div>
+
+  <script src="api.js"></script>
+  <script src="utils.js"></script>
+  <script>
+    // ── State ─────────────────────────────────────────────────────────
+    let currentPage = 1;
+    let totalPages = 1;
+    let currentView = 'table';
+    let currentData = [];
+    let globalStats = null;
+
+    // US states for filter dropdown
+    const US_STATES = [
+      'AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN',
+      'IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV',
+      'NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN',
+      'TX','UT','VT','VA','WA','WV','WI','WY','DC'
+    ];
+
+    // ── Init ──────────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', async () => {
+      initTheme();
+      populateStateFilter();
+
+      // Read filters from URL
+      const filters = getFiltersFromURL();
+      applyFiltersToControls(filters);
+
+      // Wire up event listeners
+      wireFilters();
+      wirePagination();
+      wireSearch();
+      wireViewToggle();
+      wireExport();
+      wireThemeToggle();
+      wireKeyboard();
+
+      // Load data
+      await loadProjects(filters);
+
+      // Load stats
+      try {
+        const statsRes = await api.stats();
+        globalStats = statsRes.data;
+        updateGlobalStats(globalStats);
+      } catch (e) {
+        // Stats are non-critical
+      }
+    });
+
+    // ── Populate State Filter ─────────────────────────────────────────
+    function populateStateFilter() {
+      const sel = document.getElementById('filter-state');
+      US_STATES.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = s;
+        sel.appendChild(opt);
+      });
+    }
+
+    // ── Load Projects ─────────────────────────────────────────────────
+    async function loadProjects(filters = {}) {
+      showLoading(true);
+      hideError();
+      hideEmpty();
+
+      try {
+        const params = { ...filters, page: currentPage, per_page: 50 };
+
+        // Handle search query
+        let res;
+        if (params.q) {
+          res = await api.search(params.q, params);
+        } else {
+          res = await api.projects(params);
+        }
+
+        currentData = res.data || [];
+        const meta = res.meta || {};
+        totalPages = meta.total_pages || 1;
+        currentPage = meta.page || 1;
+
+        // Update stats bar from response meta
+        document.getElementById('stat-count').textContent = fmtNum(meta.total || currentData.length);
+
+        // Update pagination
+        updatePagination();
+
+        if (currentData.length === 0) {
+          showEmpty();
+        } else {
+          renderResults();
+        }
+      } catch (err) {
+        showError(err.message);
+      } finally {
+        showLoading(false);
+      }
+    }
+
+    // ── Render Results ────────────────────────────────────────────────
+    function renderResults() {
+      if (currentView === 'table') {
+        renderTable();
+      } else {
+        renderCards();
+      }
+    }
+
+    function renderTable() {
+      document.getElementById('table-view').classList.remove('hidden');
+      document.getElementById('card-view').classList.add('hidden');
+
+      const tbody = document.getElementById('results-body');
+      tbody.innerHTML = currentData.map(p => renderRow(p)).join('');
+    }
+
+    function renderRow(p) {
+      return `<tr onclick="window.location='project.html?id=${p.id}'">
+        <td class="col-name">
+          <div style="font-weight:500">${esc(p.name || p.queue_id)}</div>
+          <div class="text-sm text-secondary">${esc(p.developer_canonical || p.developer || '')}</div>
+        </td>
+        <td class="col-mw font-mono">${p.capacity_mw ? Math.round(p.capacity_mw) : '\u2014'}</td>
+        <td><span class="badge ${techClass(p.type)}">${techLabel(p.type)}</span></td>
+        <td>${esc(p.region)}</td>
+        <td><span class="status-dot ${statusDotClass(p.status)}"></span>${statusLabel(p.status)}</td>
+        <td class="truncate" style="max-width:160px">${esc(p.parent_company || p.developer_canonical || p.developer || '')}</td>
+        <td class="font-mono text-sm">${creditDisplay(p)}</td>
+        <td>${p.energy_community_eligible ? '<span class="check-yes">\u2713</span>' : '<span class="check-no">\u2014</span>'}</td>
+        <td class="font-mono text-sm">${formatQuarter(p.cod)}</td>
+      </tr>`;
+    }
+
+    function renderCards() {
+      document.getElementById('table-view').classList.add('hidden');
+      const grid = document.getElementById('card-view');
+      grid.classList.remove('hidden');
+
+      grid.innerHTML = currentData.map(p => `
+        <div class="card project-card" onclick="window.location='project.html?id=${p.id}'">
+          <div class="card-header">
+            <span class="card-title">${esc(p.name || p.queue_id)}</span>
+          </div>
+          <div class="card-row"><span class="label">Capacity</span><span>${fmtMW(p.capacity_mw)} ${techLabel(p.type)}</span></div>
+          <div class="card-row"><span class="label">ISO</span><span>${esc(p.region)}</span></div>
+          <div class="card-row"><span class="label">Status</span><span><span class="status-dot ${statusDotClass(p.status)}"></span>${statusLabel(p.status)}</span></div>
+          <div class="card-row"><span class="label">Developer</span><span class="truncate" style="max-width:180px">${esc(p.developer_canonical || p.developer || '\u2014')}</span></div>
+          <div class="card-row"><span class="label">Credit</span><span class="font-mono">${creditDisplay(p)}</span></div>
+          <div class="card-row"><span class="label">COD</span><span class="font-mono">${formatQuarter(p.cod)}</span></div>
+          <div class="card-row"><span class="label">EC</span><span>${p.energy_community_eligible ? '<span class="check-yes">\u2713 Yes</span>' : '<span class="check-no">\u2014</span>'}</span></div>
+        </div>
+      `).join('');
+    }
+
+    // ── Filters ───────────────────────────────────────────────────────
+    function getActiveFilters() {
+      const f = {};
+      const region = document.getElementById('filter-region').value;
+      const type = document.getElementById('filter-type').value;
+      const status = document.getElementById('filter-status').value;
+      const state = document.getElementById('filter-state').value;
+      const capMin = document.getElementById('filter-cap-min').value;
+      const capMax = document.getElementById('filter-cap-max').value;
+      const ec = document.getElementById('filter-ec').value;
+
+      // API uses 'iso' not 'region', 'fuel_type' not 'type'
+      if (region) f.iso = region;
+      if (type) f.fuel_type = type;
+      if (status) f.status = status;
+      if (state) f.state = state;
+      if (capMin) f.capacity_min = capMin;
+      if (capMax) f.capacity_max = capMax;
+      if (ec) f.energy_community = ec;
+
+      return f;
+    }
+
+    function applyFiltersToControls(filters) {
+      if (filters.iso) document.getElementById('filter-region').value = filters.iso;
+      if (filters.fuel_type) document.getElementById('filter-type').value = filters.fuel_type;
+      if (filters.status) document.getElementById('filter-status').value = filters.status;
+      if (filters.state) document.getElementById('filter-state').value = filters.state;
+      if (filters.capacity_min) document.getElementById('filter-cap-min').value = filters.capacity_min;
+      if (filters.capacity_max) document.getElementById('filter-cap-max').value = filters.capacity_max;
+      if (filters.energy_community) document.getElementById('filter-ec').value = filters.energy_community;
+      if (filters.page) currentPage = parseInt(filters.page) || 1;
+    }
+
+    function onFilterChange() {
+      currentPage = 1;
+      const filters = getActiveFilters();
+      setFiltersToURL(filters);
+      updateFilterChips(filters);
+      updateClearButton(filters);
+      loadProjects(filters);
+    }
+
+    const FILTER_LABELS = {
+      iso: 'ISO', fuel_type: 'Tech', status: 'Status', state: 'State',
+      capacity_min: 'Min MW', capacity_max: 'Max MW', energy_community: 'EC'
+    };
+
+    function updateFilterChips(filters) {
+      const container = document.getElementById('active-filters');
+      const chips = Object.entries(filters).map(([key, val]) => {
+        const label = FILTER_LABELS[key] || key;
+        const display = key === 'energy_community' ? (val === '1' ? 'Yes' : 'No') : val;
+        return `<span class="filter-chip">${label}: ${esc(display)} <button onclick="clearFilter('${key}')">&times;</button></span>`;
+      });
+      container.innerHTML = chips.join('');
+    }
+
+    function updateClearButton(filters) {
+      const btn = document.getElementById('clear-filters');
+      if (Object.keys(filters).length > 0) {
+        btn.classList.remove('hidden');
+      } else {
+        btn.classList.add('hidden');
+      }
+    }
+
+    function clearFilter(key) {
+      const idMap = {
+        iso: 'filter-region', fuel_type: 'filter-type', status: 'filter-status',
+        state: 'filter-state', capacity_min: 'filter-cap-min', capacity_max: 'filter-cap-max',
+        energy_community: 'filter-ec'
+      };
+      const el = document.getElementById(idMap[key]);
+      if (el) el.value = '';
+      onFilterChange();
+    }
+
+    function clearAllFilters() {
+      document.getElementById('filter-region').value = '';
+      document.getElementById('filter-type').value = '';
+      document.getElementById('filter-status').value = '';
+      document.getElementById('filter-state').value = '';
+      document.getElementById('filter-cap-min').value = '';
+      document.getElementById('filter-cap-max').value = '';
+      document.getElementById('filter-ec').value = '';
+      onFilterChange();
+    }
+
+    function wireFilters() {
+      const selects = ['filter-region', 'filter-type', 'filter-status', 'filter-state', 'filter-ec'];
+      selects.forEach(id => {
+        document.getElementById(id).addEventListener('change', onFilterChange);
+      });
+
+      const inputs = ['filter-cap-min', 'filter-cap-max'];
+      const debouncedFilter = debounce(onFilterChange, 500);
+      inputs.forEach(id => {
+        document.getElementById(id).addEventListener('input', debouncedFilter);
+      });
+
+      document.getElementById('clear-filters').addEventListener('click', clearAllFilters);
+
+      // Init chips from URL
+      const filters = getActiveFilters();
+      updateFilterChips(filters);
+      updateClearButton(filters);
+    }
+
+    // ── Pagination ────────────────────────────────────────────────────
+    function updatePagination() {
+      document.getElementById('current-page').textContent = currentPage;
+      document.getElementById('total-pages').textContent = totalPages;
+      document.getElementById('prev-page').disabled = currentPage <= 1;
+      document.getElementById('next-page').disabled = currentPage >= totalPages;
+    }
+
+    function wirePagination() {
+      document.getElementById('prev-page').addEventListener('click', () => {
+        if (currentPage > 1) {
+          currentPage--;
+          const filters = getActiveFilters();
+          filters.page = currentPage;
+          setFiltersToURL(filters);
+          loadProjects(filters);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
+      document.getElementById('next-page').addEventListener('click', () => {
+        if (currentPage < totalPages) {
+          currentPage++;
+          const filters = getActiveFilters();
+          filters.page = currentPage;
+          setFiltersToURL(filters);
+          loadProjects(filters);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
+    }
+
+    // ── Search ────────────────────────────────────────────────────────
+    function wireSearch() {
+      const input = document.getElementById('search-input');
+      const dropdown = document.getElementById('search-dropdown');
+
+      const debouncedSearch = debounce(async (query) => {
+        if (!query || query.length < 2) {
+          dropdown.classList.add('hidden');
+          return;
+        }
+        try {
+          const res = await api.search(query, { per_page: 8 });
+          renderSearchDropdown(res.data || []);
+        } catch (e) {
+          dropdown.classList.add('hidden');
+        }
+      }, 300);
+
+      input.addEventListener('input', (e) => {
+        debouncedSearch(e.target.value.trim());
+      });
+
+      // Enter key: filter main results
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          dropdown.classList.add('hidden');
+          const q = input.value.trim();
+          currentPage = 1;
+          const filters = getActiveFilters();
+          if (q) filters.q = q;
+          setFiltersToURL(filters);
+          loadProjects(filters);
+        }
+        if (e.key === 'Escape') {
+          input.blur();
+          input.value = '';
+          dropdown.classList.add('hidden');
+        }
+      });
+
+      // Click outside to close
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.topbar-search')) {
+          dropdown.classList.add('hidden');
+        }
+      });
+    }
+
+    function renderSearchDropdown(results) {
+      const dropdown = document.getElementById('search-dropdown');
+      if (!results.length) {
+        dropdown.classList.add('hidden');
+        return;
+      }
+      dropdown.classList.remove('hidden');
+      dropdown.innerHTML = results.map(p => `
+        <div class="search-dropdown-item" onclick="window.location='project.html?id=${p.id}'">
+          <div>
+            <div class="name">${esc(p.name || p.queue_id)}</div>
+            <div class="meta">${esc(p.developer || '')} &middot; ${fmtMW(p.capacity_mw)} ${techLabel(p.type)}</div>
+          </div>
+          <span class="badge ${techClass(p.type)}">${esc(p.region)}</span>
+        </div>
+      `).join('');
+    }
+
+    // ── View Toggle ───────────────────────────────────────────────────
+    function wireViewToggle() {
+      document.querySelectorAll('.view-toggle button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentView = btn.dataset.view;
+          if (currentData.length) renderResults();
+        });
+      });
+
+      // Sort
+      document.getElementById('sort-by').addEventListener('change', (e) => {
+        const field = e.target.value;
+        if (!field || !currentData.length) return;
+        currentData.sort((a, b) => {
+          const va = a[field], vb = b[field];
+          if (va === null || va === undefined) return 1;
+          if (vb === null || vb === undefined) return -1;
+          if (typeof va === 'number') return vb - va; // desc for numbers
+          return String(va).localeCompare(String(vb));
+        });
+        renderResults();
+      });
+    }
+
+    // ── Export ─────────────────────────────────────────────────────────
+    function wireExport() {
+      document.getElementById('export-btn').addEventListener('click', async () => {
+        const filters = getActiveFilters();
+        try {
+          const res = await fetch(
+            `${API_BASE}/export/projects?${new URLSearchParams(filters)}`,
+            { headers: { 'X-API-Key': API_KEY } }
+          );
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `glass-energy-export-${new Date().toISOString().slice(0,10)}.csv`;
+          a.click();
+          URL.revokeObjectURL(url);
+        } catch (e) {
+          // Silently fail
+        }
+      });
+    }
+
+    // ── Theme ─────────────────────────────────────────────────────────
+    function wireThemeToggle() {
+      document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+    }
+
+    // ── Keyboard Shortcuts ────────────────────────────────────────────
+    function wireKeyboard() {
+      document.addEventListener('keydown', (e) => {
+        // "/" focuses search (unless already in an input)
+        if (e.key === '/' && !e.target.matches('input, select, textarea')) {
+          e.preventDefault();
+          document.getElementById('search-input').focus();
+        }
+      });
+    }
+
+    // ── Global Stats ──────────────────────────────────────────────────
+    function updateGlobalStats(stats) {
+      if (!stats) return;
+      const cap = stats.total_capacity_gw;
+      document.getElementById('stat-capacity').textContent = cap ? `${cap.toLocaleString('en-US', { maximumFractionDigits: 0 })} GW` : '--';
+      const ec = stats.tax_credits?.energy_community_projects;
+      document.getElementById('stat-ec').textContent = ec ? fmtNum(ec) : '--';
+      document.getElementById('total-count').textContent = `${fmtNum(stats.total_projects)} total projects`;
+    }
+
+    // ── UI State Helpers ──────────────────────────────────────────────
+    function showLoading(show) {
+      document.getElementById('loading').classList.toggle('hidden', !show);
+      if (show) {
+        document.getElementById('table-view').classList.add('hidden');
+        document.getElementById('card-view').classList.add('hidden');
+      }
+    }
+
+    function showEmpty() {
+      document.getElementById('empty').classList.remove('hidden');
+      document.getElementById('table-view').classList.add('hidden');
+      document.getElementById('card-view').classList.add('hidden');
+    }
+
+    function hideEmpty() {
+      document.getElementById('empty').classList.add('hidden');
+    }
+
+    function showError(msg) {
+      document.getElementById('error').classList.remove('hidden');
+      document.getElementById('error-msg').textContent = msg;
+      document.getElementById('table-view').classList.add('hidden');
+      document.getElementById('card-view').classList.add('hidden');
+    }
+
+    function hideError() {
+      document.getElementById('error').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
