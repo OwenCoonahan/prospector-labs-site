@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deal Pipeline — Glass Energy</title>
+  <meta name="description" content="ITC deal pipeline: scored, ranked opportunities with credit stacking analysis and deal sheets.">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <script>
+    (function(){
+      var t = localStorage.getItem('glass-theme');
+      if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+</head>
+<body>
+  <div class="layout">
+    <nav class="sidebar" id="sidebar">
+      <a href="/platform/" class="sidebar-logo">
+        <span class="logo-mark">G</span>
+        Glass Energy
+      </a>
+      <div class="sidebar-section">
+        <a href="/platform/" class="sidebar-item">
+          <span class="icon">&#x25A6;</span> Explorer
+        </a>
+        <a href="/platform/deals.html" class="sidebar-item active">
+          <span class="icon">&#x2605;</span> Deal Pipeline
+        </a>
+        <a href="/platform/developer.html" class="sidebar-item">
+          <span class="icon">&#x2302;</span> Developers
+        </a>
+        <a href="/platform/compare.html" class="sidebar-item">
+          <span class="icon">&#x2194;</span> Compare
+        </a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Tools</div>
+        <a href="/feoc/" class="sidebar-item">
+          <span class="icon">&#x2713;</span> FEOC Lookup
+        </a>
+        <a href="/api/" class="sidebar-item">
+          <span class="icon">&#x007B;</span> API
+        </a>
+      </div>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-footer">
+        <button class="sidebar-item" onclick="toggleTheme()" style="width:100%;border:none;cursor:pointer;background:none;text-align:left;font-family:inherit">
+          <span class="icon">&#x25D0;</span> Toggle theme
+        </button>
+      </div>
+    </nav>
+
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+    <div class="main">
+      <header class="main-header">
+        <button class="btn-icon mobile-menu-btn" onclick="openSidebar()">&#x2630;</button>
+        <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+          <button class="btn btn-ghost btn-sm" id="export-btn">Export CSV</button>
+        </div>
+      </header>
+
+      <div class="main-content">
+        <div class="page-header">
+          <h1>Deal Pipeline</h1>
+          <p class="text-secondary text-sm" style="margin-top:4px">ITC-eligible projects scored and ranked by investability. Credit stacking analysis included.</p>
+        </div>
+
+        <!-- Summary KPIs -->
+        <div class="kpi-row mt-4" id="summary-kpis">
+          <div class="card kpi">
+            <div class="kpi-label">Total Deals</div>
+            <div class="kpi-value" id="kpi-total">--</div>
+          </div>
+          <div class="card kpi">
+            <div class="kpi-label">Total Credit Value</div>
+            <div class="kpi-value" id="kpi-value">--</div>
+          </div>
+          <div class="card kpi">
+            <div class="kpi-label">Avg ITC Rate</div>
+            <div class="kpi-value" id="kpi-rate">--</div>
+          </div>
+          <div class="card kpi">
+            <div class="kpi-label">EC Eligible</div>
+            <div class="kpi-value" id="kpi-ec">--</div>
+          </div>
+          <div class="card kpi">
+            <div class="kpi-label">States</div>
+            <div class="kpi-value" id="kpi-states">--</div>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label class="filter-label">State</label>
+            <select class="filter-select" id="filter-state">
+              <option value="">All</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label class="filter-label">Technology</label>
+            <select class="filter-select" id="filter-type">
+              <option value="">All</option>
+              <option value="Solar">Solar</option>
+              <option value="Storage">Storage</option>
+              <option value="Wind">Wind</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label class="filter-label">Min ITC Rate</label>
+            <select class="filter-select" id="filter-rate">
+              <option value="">Any</option>
+              <option value="0.30">30%+</option>
+              <option value="0.40">40%+</option>
+              <option value="0.50">50%+</option>
+              <option value="0.60">60%+</option>
+              <option value="0.70">70%+</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label class="filter-label">Max MW</label>
+            <input type="number" class="filter-input" id="filter-max-mw" value="5" min="0" step="1">
+          </div>
+          <div class="filter-group">
+            <label class="filter-label">EC Only</label>
+            <select class="filter-select" id="filter-ec" style="min-width:70px">
+              <option value="">No</option>
+              <option value="1">Yes</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div class="view-controls">
+          <div class="stats-bar" style="padding:0">
+            <div class="stat"><span class="stat-value" id="result-count">--</span> deals</div>
+          </div>
+        </div>
+
+        <div class="results-container" id="results-container">
+          <div class="loading-spinner" id="loading"></div>
+
+          <table class="data-table hidden" id="deals-table">
+            <thead>
+              <tr>
+                <th class="col-name">Project</th>
+                <th class="col-numeric">MW</th>
+                <th>Tech</th>
+                <th>State</th>
+                <th class="col-numeric">ITC Rate</th>
+                <th class="col-numeric">Credit Value</th>
+                <th class="col-numeric">Deal Score</th>
+                <th>EC</th>
+                <th>Bonuses</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="deals-body"></tbody>
+          </table>
+
+          <div class="empty-state hidden" id="empty">
+            <h3>No deals match your criteria</h3>
+            <p>Try adjusting filters or increasing the max MW threshold.</p>
+          </div>
+
+          <div class="error-state hidden" id="error">
+            <h3>Failed to load deals</h3>
+            <p id="error-msg"></p>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination">
+          <span class="page-info"><span id="result-range"></span> of <span id="total-display">--</span></span>
+          <div class="pagination-pages">
+            <button id="prev-page" disabled>&larr; Prev</button>
+            <span class="page-info" style="padding:0 8px">Page <span id="current-page">1</span></span>
+            <button id="next-page">Next &rarr;</button>
+          </div>
+        </div>
+
+        <div class="status-bar">
+          <span>Glass Energy Platform</span>
+          <span>Deal Pipeline</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Deal Sheet Modal -->
+  <div id="sheet-modal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);overflow-y:auto">
+    <div style="max-width:900px;margin:40px auto;background:var(--bg-1);border:1px solid var(--border);border-radius:8px;overflow:hidden">
+      <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+        <span class="text-sm font-medium">Deal Sheet</span>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" onclick="printSheet()">Print / Save PDF</button>
+          <button class="btn btn-ghost btn-sm" onclick="closeSheet()">&times; Close</button>
+        </div>
+      </div>
+      <div id="sheet-content" style="padding:0"></div>
+    </div>
+  </div>
+
+  <script src="api.js"></script>
+  <script src="utils.js"></script>
+  <script>
+    let currentPage = 1;
+    let totalDeals = 0;
+
+    const US_STATES = [
+      'AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN',
+      'IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV',
+      'NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN',
+      'TX','UT','VT','VA','WA','WV','WI','WY','DC'
+    ];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      initTheme();
+      populateStateFilter();
+      wireFilters();
+      wirePagination();
+      wireExport();
+      await loadDeals();
+      loadSummary();
+    });
+
+    function populateStateFilter() {
+      const sel = document.getElementById('filter-state');
+      US_STATES.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s; opt.textContent = s;
+        sel.appendChild(opt);
+      });
+    }
+
+    function getFilters() {
+      const f = {};
+      const state = document.getElementById('filter-state').value;
+      const type = document.getElementById('filter-type').value;
+      const rate = document.getElementById('filter-rate').value;
+      const maxMw = document.getElementById('filter-max-mw').value;
+      const ec = document.getElementById('filter-ec').value;
+      if (state) f.state = state;
+      if (type) f.type = type;
+      if (rate) f.min_rate = rate;
+      if (maxMw) f.max_mw = maxMw;
+      if (ec) f.ec_only = 'true';
+      return f;
+    }
+
+    async function loadDeals() {
+      document.getElementById('loading').classList.remove('hidden');
+      document.getElementById('deals-table').classList.add('hidden');
+      document.getElementById('empty').classList.add('hidden');
+      document.getElementById('error').classList.add('hidden');
+
+      try {
+        const filters = getFilters();
+        const params = { ...filters, page: currentPage, per_page: 50 };
+        const res = await apiGet('/deals/itc', params);
+        const deals = res.data || [];
+        const meta = res.meta || {};
+        totalDeals = meta.total || deals.length;
+
+        document.getElementById('result-count').textContent = fmtNum(totalDeals);
+        updatePagination(meta);
+
+        if (deals.length === 0) {
+          document.getElementById('empty').classList.remove('hidden');
+        } else {
+          renderDeals(deals);
+        }
+      } catch (err) {
+        document.getElementById('error').classList.remove('hidden');
+        document.getElementById('error-msg').textContent = err.message;
+      } finally {
+        document.getElementById('loading').classList.add('hidden');
+      }
+    }
+
+    async function loadSummary() {
+      try {
+        const filters = getFilters();
+        const res = await apiGet('/deals/itc/summary', filters);
+        const s = res.data || res;
+        document.getElementById('kpi-total').textContent = fmtNum(s.total_deals || s.total || 0);
+        document.getElementById('kpi-value').textContent = fmtDollars(s.total_credit_value || s.total_itc_value || 0);
+        document.getElementById('kpi-rate').textContent = s.avg_itc_rate ? `${(s.avg_itc_rate * 100).toFixed(0)}%` : '--';
+        document.getElementById('kpi-ec').textContent = fmtNum(s.ec_eligible || s.energy_community_count || 0);
+        document.getElementById('kpi-states').textContent = s.state_count || s.states || '--';
+      } catch (e) {}
+    }
+
+    function renderDeals(deals) {
+      const tbody = document.getElementById('deals-body');
+      tbody.innerHTML = deals.map(d => {
+        const bonuses = [];
+        if (d.energy_community) bonuses.push('EC');
+        if (d.low_income) bonuses.push('LI');
+        if (d.domestic_content) bonuses.push('DC');
+
+        return `<tr>
+          <td class="col-name">
+            <div style="font-weight:500">${esc(d.name || d.queue_id)}</div>
+            <div class="text-sm text-secondary">${esc(d.developer || '')}</div>
+          </td>
+          <td class="col-numeric font-mono">${d.capacity_mw ? d.capacity_mw.toFixed(1) : '--'}</td>
+          <td><span class="badge ${techClass(d.type || d.technology)}">${techLabel(d.type || d.technology)}</span></td>
+          <td>${esc(d.state || '')}</td>
+          <td class="col-numeric font-mono" style="color:var(--accent)">${d.itc_rate ? `${(d.itc_rate * 100).toFixed(0)}%` : '--'}</td>
+          <td class="col-numeric font-mono">${fmtDollars(d.itc_value || d.credit_value)}</td>
+          <td class="col-numeric">
+            ${d.deal_score ? `<span class="score-badge ${scoreClass(d.deal_score)}">${d.deal_score}</span>` : '--'}
+          </td>
+          <td>${d.energy_community ? '<span class="check-yes">&#x2713;</span>' : '<span class="check-no">--</span>'}</td>
+          <td>${bonuses.length ? bonuses.map(b => `<span class="badge badge-green" style="margin-right:2px">${b}</span>`).join('') : '--'}</td>
+          <td>
+            <button class="btn btn-ghost btn-sm" onclick="viewSheet('${esc(d.queue_id)}')">Deal Sheet</button>
+          </td>
+        </tr>`;
+      }).join('');
+
+      document.getElementById('deals-table').classList.remove('hidden');
+    }
+
+    // Deal sheet
+    async function viewSheet(queueId) {
+      const modal = document.getElementById('sheet-modal');
+      const content = document.getElementById('sheet-content');
+      modal.style.display = 'block';
+      content.innerHTML = '<div class="loading-spinner" style="padding:48px"></div>';
+
+      try {
+        const res = await fetch(
+          `${API_BASE}/deals/${encodeURIComponent(queueId)}/sheet`,
+          { headers: { 'X-API-Key': API_KEY } }
+        );
+        if (!res.ok) throw new Error(`${res.status}`);
+        const html = await res.text();
+        content.innerHTML = `<iframe srcdoc="${html.replace(/"/g, '&quot;')}" style="width:100%;height:80vh;border:none"></iframe>`;
+      } catch (e) {
+        content.innerHTML = `<div class="error-state"><h3>Failed to load deal sheet</h3><p>${e.message}</p></div>`;
+      }
+    }
+
+    function closeSheet() {
+      document.getElementById('sheet-modal').style.display = 'none';
+      document.getElementById('sheet-content').innerHTML = '';
+    }
+
+    function printSheet() {
+      const iframe = document.querySelector('#sheet-content iframe');
+      if (iframe) iframe.contentWindow.print();
+    }
+
+    // Pagination
+    function updatePagination(meta) {
+      const total = meta?.total || 0;
+      const perPage = 50;
+      const start = total > 0 ? ((currentPage - 1) * perPage) + 1 : 0;
+      const end = Math.min(currentPage * perPage, total);
+      document.getElementById('result-range').textContent = total > 0 ? `${start}-${end}` : '0';
+      document.getElementById('total-display').textContent = fmtNum(total);
+      document.getElementById('current-page').textContent = currentPage;
+      document.getElementById('prev-page').disabled = currentPage <= 1;
+      document.getElementById('next-page').disabled = end >= total;
+    }
+
+    function wirePagination() {
+      document.getElementById('prev-page').addEventListener('click', () => {
+        if (currentPage > 1) { currentPage--; loadDeals(); }
+      });
+      document.getElementById('next-page').addEventListener('click', () => {
+        currentPage++; loadDeals();
+      });
+    }
+
+    // Filters
+    function wireFilters() {
+      ['filter-state','filter-type','filter-rate','filter-ec'].forEach(id => {
+        document.getElementById(id).addEventListener('change', () => { currentPage = 1; loadDeals(); loadSummary(); });
+      });
+      const debouncedLoad = debounce(() => { currentPage = 1; loadDeals(); loadSummary(); }, 500);
+      document.getElementById('filter-max-mw').addEventListener('input', debouncedLoad);
+    }
+
+    // Export
+    function wireExport() {
+      document.getElementById('export-btn').addEventListener('click', async () => {
+        const filters = getFilters();
+        try {
+          const res = await fetch(
+            `${API_BASE}/export/projects?${new URLSearchParams(filters)}`,
+            { headers: { 'X-API-Key': API_KEY } }
+          );
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `glass-deals-${new Date().toISOString().slice(0,10)}.csv`;
+          a.click();
+          URL.revokeObjectURL(url);
+        } catch (e) {}
+      });
+    }
+
+    // Mobile sidebar
+    function openSidebar() {
+      document.getElementById('sidebar').classList.add('open');
+      document.getElementById('sidebar-overlay').style.display = 'block';
+    }
+    function closeSidebar() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebar-overlay').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

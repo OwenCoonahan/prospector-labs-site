@@ -29,6 +29,9 @@
         <a href="/platform/" class="sidebar-item">
           <span class="icon">&#x25A6;</span> Explorer
         </a>
+        <a href="/platform/deals.html" class="sidebar-item">
+          <span class="icon">&#x2605;</span> Deal Pipeline
+        </a>
         <a href="/platform/developer.html" class="sidebar-item active">
           <span class="icon">&#x2302;</span> Developers
         </a>
@@ -142,10 +145,10 @@
                 <th class="col-mw" data-sort="capacity_mw">MW <span class="sort-arrow">↕</span></th>
                 <th data-sort="type">Tech <span class="sort-arrow">↕</span></th>
                 <th data-sort="status">Status <span class="sort-arrow">↕</span></th>
-                <th data-sort="recommended_credit">Credit <span class="sort-arrow">↕</span></th>
+                <th class="col-numeric" data-sort="recommended_credit">Credit <span class="sort-arrow">↕</span></th>
                 <th data-sort="energy_community_eligible">EC <span class="sort-arrow">↕</span></th>
-                <th data-sort="queue_date">Queue Date <span class="sort-arrow">↕</span></th>
-                <th data-sort="cod">COD <span class="sort-arrow">↕</span></th>
+                <th class="col-date" data-sort="queue_date">Queue Date <span class="sort-arrow">↕</span></th>
+                <th class="col-date" data-sort="cod">COD <span class="sort-arrow">↕</span></th>
               </tr>
             </thead>
             <tbody id="portfolio-body"></tbody>
@@ -199,11 +202,22 @@
           <td class="col-mw font-mono">${p.capacity_mw != null ? Math.round(p.capacity_mw).toLocaleString() : '—'}</td>
           <td><span class="badge ${techClass(p.type)}">${techLabel(p.type)}</span></td>
           <td><span class="status-dot ${statusDotClass(p.status)}"></span>${statusLabel(p.status)}</td>
-          <td class="text-sm">${creditDisplay(p)}</td>
+          <td class="col-numeric text-sm">${creditDisplay(p)}</td>
           <td>${p.energy_community_eligible ? '<span class="check-yes">✓</span>' : '<span class="check-no">—</span>'}</td>
-          <td class="text-sm">${formatDate(p.queue_date)}</td>
-          <td class="text-sm">${formatDate(p.cod)}</td>
+          <td class="col-date text-sm">${formatDate(p.queue_date)}</td>
+          <td class="col-date text-sm">${formatDate(p.cod)}</td>
         </tr>`).join('');
+    }
+
+    function getChartTheme() {
+      const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+      return {
+        isDark,
+        gridColor: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.06)',
+        tickColor: '#71717a',
+        legendColor: '#71717a',
+        fontFamily: "'Inter', sans-serif"
+      };
     }
 
     function renderCharts(projects) {
@@ -218,11 +232,10 @@
         byStatus[status] = (byStatus[status] || 0) + 1;
       });
 
-      const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
-      const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
-      const tickColor = isDark ? '#71717a' : '#a1a1aa';
-      const labelColor = isDark ? '#a1a1aa' : '#52525b';
-      const legendColor = getComputedStyle(document.body).getPropertyValue('--text-1').trim();
+      const theme = getChartTheme();
+
+      // Set Chart.js global defaults for IEA style
+      Chart.defaults.font.family = theme.fontFamily;
 
       const container = document.createElement('div');
       container.style.cssText = 'display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:24px';
@@ -241,7 +254,7 @@
         </div>`;
       document.getElementById('app').appendChild(container);
 
-      // Tech donut
+      // Tech donut — IEA style
       new Chart(document.getElementById('chart-tech'), {
         type: 'doughnut',
         data: {
@@ -254,11 +267,35 @@
         },
         options: {
           responsive: true,
+          cutout: '65%',
           plugins: {
-            legend: { position: 'bottom', labels: { color: legendColor, font: { size: 11 } } }
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: theme.legendColor,
+                font: { size: 11, family: theme.fontFamily },
+                boxWidth: 8,
+                boxHeight: 8,
+                usePointStyle: true,
+                pointStyle: 'circle',
+                padding: 12
+              }
+            }
           }
         }
       });
+
+      // Shared bar scale options — IEA style: horizontal grid only, no vertical grid
+      const barScales = {
+        x: {
+          grid: { color: theme.gridColor, drawBorder: false },
+          ticks: { color: theme.tickColor, font: { size: 11, family: theme.fontFamily } }
+        },
+        y: {
+          grid: { display: false },
+          ticks: { color: theme.tickColor, font: { size: 11, family: theme.fontFamily } }
+        }
+      };
 
       // Region horizontal bar
       new Chart(document.getElementById('chart-region'), {
@@ -268,17 +305,16 @@
           datasets: [{
             data: Object.values(byRegion),
             backgroundColor: '#3b82f6',
-            borderRadius: 4
+            borderRadius: 2
           }]
         },
         options: {
           indexAxis: 'y',
           responsive: true,
-          plugins: { legend: { display: false } },
-          scales: {
-            x: { grid: { color: gridColor }, ticks: { color: tickColor } },
-            y: { grid: { display: false }, ticks: { color: labelColor, font: { size: 11 } } }
-          }
+          plugins: {
+            legend: { display: false }
+          },
+          scales: barScales
         }
       });
 
@@ -290,17 +326,16 @@
           datasets: [{
             data: Object.values(byStatus),
             backgroundColor: ['#3b82f6', '#22c55e', '#ef4444', '#71717a', '#f59e0b', '#a855f7'],
-            borderRadius: 4
+            borderRadius: 2
           }]
         },
         options: {
           indexAxis: 'y',
           responsive: true,
-          plugins: { legend: { display: false } },
-          scales: {
-            x: { grid: { color: gridColor }, ticks: { color: tickColor } },
-            y: { grid: { display: false }, ticks: { color: labelColor, font: { size: 11 } } }
-          }
+          plugins: {
+            legend: { display: false }
+          },
+          scales: barScales
         }
       });
     }
