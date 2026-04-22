@@ -4,27 +4,62 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Compare Projects — Glass Energy</title>
-  <meta name="description" content="Side-by-side comparison of energy infrastructure projects. Compare scores, tax credits, capacity, developers, and more.">
+  <meta name="description" content="Side-by-side comparison of energy infrastructure projects.">
   <link rel="stylesheet" href="styles.css">
-  <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="/favicon.png">
+  <script>
+    (function(){
+      var t = localStorage.getItem('glass-theme');
+      if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
 </head>
 <body>
-  <!-- Topbar -->
-  <div class="topbar">
-    <a href="/platform/" class="topbar-logo">Glass <span>Energy</span></a>
-    <div class="topbar-nav">
-      <a href="/platform/">Explorer</a>
-      <a href="/platform/compare.html" class="active">Compare</a>
-    </div>
-    <div class="topbar-actions">
-      <button class="btn btn-primary btn-sm" id="add-project-btn" onclick="showAddModal()">+ Add Project</button>
-      <button class="btn-icon" onclick="toggleTheme()">&#9684;</button>
-    </div>
-  </div>
-
-  <div class="app" style="padding-top:24px">
+  <div class="layout">
+    <nav class="sidebar" id="sidebar">
+      <a href="/platform/" class="sidebar-logo">
+        <span class="logo-mark">G</span>
+        Glass Energy
+      </a>
+      <div class="sidebar-section">
+        <a href="/platform/" class="sidebar-item">
+          <span class="icon">&#x25A6;</span> Explorer
+        </a>
+        <a href="/platform/developer.html" class="sidebar-item">
+          <span class="icon">&#x2302;</span> Developers
+        </a>
+        <a href="/platform/compare.html" class="sidebar-item active">
+          <span class="icon">&#x2194;</span> Compare
+        </a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Tools</div>
+        <a href="/feoc/" class="sidebar-item">
+          <span class="icon">&#x2713;</span> FEOC Lookup
+        </a>
+        <a href="/api/" class="sidebar-item">
+          <span class="icon">&#x007B;</span> API
+        </a>
+      </div>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-footer">
+        <button class="sidebar-item" onclick="toggleTheme()" style="width:100%;border:none;cursor:pointer;background:none;text-align:left;font-family:inherit">
+          <span class="icon">&#x25D0;</span> Toggle theme
+        </button>
+      </div>
+    </nav>
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+    <div class="main">
+      <header class="main-header">
+        <button class="btn-icon mobile-menu-btn" onclick="openSidebar()">&#x2630;</button>
+        <div style="margin-left:auto">
+          <button class="btn btn-primary btn-sm" id="add-project-btn" onclick="showAddModal()">+ Add Project</button>
+        </div>
+      </header>
+      <div class="main-content">
     <h1 class="text-xl font-bold tracking-tight">Compare Projects</h1>
     <p class="text-secondary text-sm mt-2">Side-by-side comparison of <span id="compare-count">0</span> projects</p>
 
@@ -48,7 +83,6 @@
     <div id="compare-container" class="mt-4" style="display:none">
       <div class="compare-grid" id="compare-grid"></div>
     </div>
-  </div>
 
   <!-- Add project modal -->
   <div id="add-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;align-items:center;justify-content:center">
@@ -345,6 +379,16 @@
       }
     }
 
+    // ── Sidebar ────────────────────────────────────────────────────────
+    function openSidebar() {
+      document.getElementById('sidebar').classList.add('open');
+      document.getElementById('sidebar-overlay').style.display = 'block';
+    }
+    function closeSidebar() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebar-overlay').style.display = 'none';
+    }
+
     // ── Init ──────────────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', () => {
       initTheme();
@@ -356,5 +400,8 @@
       }
     });
   </script>
+      </div><!-- main-content -->
+    </div><!-- main -->
+  </div><!-- layout -->
 </body>
 </html>

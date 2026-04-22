@@ -4,25 +4,86 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Developer — Glass Energy</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/favicon.png">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script>
+    (function(){
+      var t = localStorage.getItem('glass-theme');
+      if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
 </head>
 <body>
-  <!-- Top Bar -->
-  <div style="padding:12px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-    <a href="/platform/" style="color:var(--text-1);font-size:0.84rem;text-decoration:none">← Back to Explorer</a>
-    <button class="btn-icon" onclick="toggleTheme()" title="Toggle theme">◐</button>
-  </div>
-
-  <div class="app" id="app">
-    <div class="loading-spinner" id="loading"></div>
-  </div>
+  <div class="layout">
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <a href="/platform/" class="sidebar-logo">
+        <span class="logo-mark">G</span>
+        Glass Energy
+      </a>
+      <div class="sidebar-section">
+        <a href="/platform/" class="sidebar-item">
+          <span class="icon">&#x25A6;</span> Explorer
+        </a>
+        <a href="/platform/developer.html" class="sidebar-item active">
+          <span class="icon">&#x2302;</span> Developers
+        </a>
+        <a href="/platform/compare.html" class="sidebar-item">
+          <span class="icon">&#x2194;</span> Compare
+        </a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Tools</div>
+        <a href="/feoc/" class="sidebar-item">
+          <span class="icon">&#x2713;</span> FEOC Lookup
+        </a>
+        <a href="/api/" class="sidebar-item">
+          <span class="icon">&#x007B;</span> API
+        </a>
+      </div>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-footer">
+        <button class="sidebar-item" onclick="toggleTheme()" style="width:100%;border:none;cursor:pointer;background:none;text-align:left;font-family:inherit">
+          <span class="icon">&#x25D0;</span> Toggle theme
+        </button>
+      </div>
+    </nav>
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+    <div class="main">
+      <header class="main-header">
+        <button class="btn-icon mobile-menu-btn" onclick="openSidebar()">&#x2630;</button>
+        <div class="search-box">
+          <span class="search-icon">&#x1F50D;</span>
+          <input type="text" placeholder="Search projects, developers, locations..." id="search-input">
+          <span class="search-shortcut">/</span>
+        </div>
+      </header>
+      <div class="main-content">
+        <div style="padding:4px 0 8px">
+          <a href="/platform/" style="color:var(--text-2);font-size:13px">&larr; Back to Explorer</a>
+        </div>
+        <div class="loading-spinner" id="loading"></div>
+        <div id="app"></div>
+      </div><!-- main-content -->
+    </div><!-- main -->
+  </div><!-- layout -->
 
   <script src="api.js"></script>
   <script src="utils.js"></script>
   <script>
+    function openSidebar() {
+      document.getElementById('sidebar').classList.add('open');
+      document.getElementById('sidebar-overlay').style.display = 'block';
+    }
+    function closeSidebar() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebar-overlay').style.display = 'none';
+    }
+
     // ── Sort state ──────────────────────────────────────────
     let sortCol = null;
     let sortDir = 'asc';
