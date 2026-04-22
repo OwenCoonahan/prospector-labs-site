@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-title">FEOC Compliance Status | Prospector Labs</title>
+  <meta name="description" id="page-desc" content="FEOC compliance verification for energy equipment manufacturers. Ownership chain, entity list screening, IRA tax credit eligibility.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --white: #ffffff; --black: #000000; --gray-50: #fafafa; --gray-100: #f5f5f5;
+      --gray-200: #e5e5e5; --gray-300: #d4d4d4; --gray-400: #a3a3a3; --gray-500: #737373;
+      --gray-600: #525252; --gray-700: #404040; --gray-800: #262626; --gray-900: #171717;
+      --red: #dc2626; --red-light: #fef2f2; --red-border: #fecaca;
+      --amber: #d97706; --amber-light: #fffbeb; --amber-border: #fde68a;
+      --green: #16a34a; --green-light: #f0fdf4; --green-border: #bbf7d0;
+      --blue: #2563eb; --blue-light: #eff6ff; --blue-border: #bfdbfe;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Geist', -apple-system, sans-serif; color: var(--gray-800); background: var(--white); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 56px; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--gray-200); z-index: 100; }
+    .nav-logo { font-weight: 700; font-size: 1rem; color: var(--gray-900); text-decoration: none; }
+    .nav-links { display: flex; align-items: center; gap: 1.5rem; }
+    .nav-links a { color: var(--gray-500); text-decoration: none; font-size: 0.875rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--gray-900); }
+
+    .page-wrap { max-width: 720px; margin: 0 auto; padding: 5rem 2rem 3rem; }
+    .breadcrumb { font-size: 0.8125rem; color: var(--gray-400); margin-bottom: 1.5rem; }
+    .breadcrumb a { color: var(--gray-500); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--gray-900); }
+
+    .result-card-inner { border: 1px solid var(--gray-200); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+    .result-status { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.5rem; font-weight: 700; font-size: 0.875rem; letter-spacing: 0.05em; }
+    .result-status.clean { background: var(--green-light); color: var(--green); border-bottom: 2px solid var(--green-border); }
+    .result-status.flagged { background: var(--red-light); color: var(--red); border-bottom: 2px solid var(--red-border); }
+    .result-status.review { background: var(--amber-light); color: var(--amber); border-bottom: 2px solid var(--amber-border); }
+    .result-body { padding: 1.5rem; }
+    .result-name { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.25rem; color: var(--gray-900); }
+    .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+    .result-label { font-size: 0.75rem; font-weight: 600; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.25rem; }
+    .result-value { font-size: 0.9375rem; color: var(--gray-800); }
+    .result-value.yes { color: var(--green); font-weight: 600; }
+    .result-value.no { color: var(--red); font-weight: 600; }
+    .sub-heading { font-size: 0.8125rem; font-weight: 600; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.75rem; }
+    .entity-screening { margin-bottom: 1.5rem; }
+    .entity-row { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--gray-100); font-size: 0.875rem; }
+    .entity-list { color: var(--gray-600); }
+    .entity-status { font-weight: 600; font-size: 0.8125rem; padding: 2px 8px; border-radius: 4px; }
+    .entity-status.clear { background: var(--green-light); color: var(--green); }
+    .entity-status.listed { background: var(--red-light); color: var(--red); }
+    .entity-status.under-review { background: var(--amber-light); color: var(--amber); }
+    .product-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .product-tag { font-size: 0.8125rem; padding: 4px 10px; border-radius: 6px; background: var(--gray-100); color: var(--gray-600); border: 1px solid var(--gray-200); }
+    .result-assessment { margin-bottom: 1.5rem; }
+    .result-assessment p { font-size: 0.9375rem; color: var(--gray-600); margin-bottom: 0.5rem; }
+    .result-notes { font-style: italic; color: var(--gray-500); }
+    .result-domestic { margin-bottom: 1.5rem; font-size: 0.9375rem; color: var(--gray-600); }
+    .result-sources { border-top: 1px solid var(--gray-100); padding-top: 1rem; }
+    .result-sources ul { list-style: none; }
+    .result-sources li { font-size: 0.8125rem; color: var(--gray-500); padding: 0.25rem 0; padding-left: 1rem; position: relative; }
+    .result-sources li::before { content: ''; position: absolute; left: 0; top: 0.6rem; width: 4px; height: 4px; border-radius: 50%; background: var(--gray-300); }
+    .verified-date { font-size: 0.75rem; color: var(--gray-400); margin-top: 0.5rem; }
+
+    .related-section { margin-top: 3rem; }
+    .related-section h3 { font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem; color: var(--gray-900); }
+    .related-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .related-link { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; border: 1px solid var(--gray-200); border-radius: 8px; text-decoration: none; font-size: 0.875rem; color: var(--gray-700); transition: background 0.1s; }
+    .related-link:hover { background: var(--gray-50); }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .status-dot.clean { background: var(--green); }
+    .status-dot.flagged { background: var(--red); }
+    .status-dot.review { background: var(--amber); }
+
+    .cta-section { margin-top: 3rem; padding: 2rem; background: var(--gray-50); border-radius: 12px; border: 1px solid var(--gray-200); text-align: center; }
+    .cta-section h3 { font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .cta-section p { color: var(--gray-500); font-size: 0.9375rem; margin-bottom: 1rem; }
+    .cta-btn { display: inline-block; padding: 0.75rem 1.5rem; background: var(--blue); color: var(--white); border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.875rem; }
+
+    footer { padding: 2rem; text-align: center; font-size: 0.8125rem; color: var(--gray-400); border-top: 1px solid var(--gray-200); margin-top: 3rem; }
+    footer a { color: var(--gray-500); text-decoration: none; }
+
+    @media (max-width: 768px) { .result-grid { grid-template-columns: 1fr; } .related-grid { grid-template-columns: 1fr; } }
+  </style>
+  <script id="schema" type="application/ld+json"></script>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">Prospector Labs</a>
+  <div class="nav-links">
+    <a href="/feoc/">FEOC Lookup</a>
+    <a href="/api/">API</a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="breadcrumb"><a href="/feoc/">FEOC Lookup</a> &rsaquo; <span id="breadcrumb-name">Manufacturer</span></div>
+  <div id="content"></div>
+  <div id="related" class="related-section"></div>
+  <div class="cta-section">
+    <h3>Check another manufacturer</h3>
+    <p>Search 35+ energy equipment manufacturers for IRA compliance</p>
+    <a href="/feoc/" class="cta-btn">Go to FEOC Lookup</a>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2026 Prospector Labs &middot; <a href="/">Home</a> &middot; <a href="/feoc/">FEOC Lookup</a> &middot; <a href="mailto:owen@prospectorlabs.com">Contact</a></p>
+  <p style="margin-top:0.5rem">FEOC data is provided for informational purposes only and does not constitute legal advice.</p>
+</footer>
+
+<script>
+// Same data as index — in production this would be a shared module or API call
+const MANUFACTURERS=[{id:"catl",name:"CATL (Contemporary Amperex Technology)",slug:"catl",country:"China",hq:"Ningde, Fujian, China",ultimate_owner:"Zeng Yuqun (Chinese national, founder & chairman)",ownership_type:"Public (SHE: 300750)",feoc_status:"flagged",reason:"Chinese-headquartered company. Listed on DOD Section 1260H Chinese Military Companies list.",entity_lists:[{list:"DOD Section 1260H",status:"Listed",year:2023},{list:"BIS Entity List",status:"Not Listed",year:2026},{list:"OFAC SDN",status:"Not Listed",year:2026}],products:["LFP battery cells","NMC battery cells","Battery energy storage systems","EV batteries"],category:"Battery Cells & Storage",allied_nation:false,domestic_manufacturing:false,domestic_plans:"Announced Ford joint venture in Michigan (BlueOval SK) but CATL direct US plant plans unclear",data_sources:["DOD Section 1260H List (June 2023)","SEC EDGAR - CATL 20-F Annual Report","Congressional Research Service - FEOC Definitions (2024)"],last_verified:"2026-04-01",notes:"CATL is the world's largest battery manufacturer. Its FEOC status means projects using CATL batteries cannot claim 45X manufacturing credits or full 30D EV credits under IRA."},{id:"byd",name:"BYD Company",slug:"byd",country:"China",hq:"Shenzhen, Guangdong, China",ultimate_owner:"Wang Chuanfu (Chinese national, founder & chairman)",ownership_type:"Public (SHE: 002594)",feoc_status:"flagged",reason:"Chinese-headquartered. Meets FEOC definition under IRA.",entity_lists:[{list:"DOD Section 1260H",status:"Not Listed",year:2026},{list:"BIS Entity List",status:"Not Listed",year:2026},{list:"OFAC SDN",status:"Not Listed",year:2026}],products:["LFP battery cells","Battery storage systems","Electric vehicles","Solar panels"],category:"Battery Cells & Storage",allied_nation:false,domestic_manufacturing:false,domestic_plans:"No announced US facility",data_sources:["IRS Notice 2023-1","SEC EDGAR - BYD 20-F","BIS Consolidated Screening List"],last_verified:"2026-04-01",notes:"China's largest EV and battery manufacturer."},{id:"lg-energy",name:"LG Energy Solution",slug:"lg-energy-solution",country:"South Korea",hq:"Seoul, South Korea",ultimate_owner:"LG Corporation",ownership_type:"Public (KRX: 373220)",feoc_status:"clean",reason:"South Korean-headquartered allied nation. Significant US manufacturing.",entity_lists:[{list:"DOD Section 1260H",status:"Not Listed",year:2026},{list:"BIS Entity List",status:"Not Listed",year:2026},{list:"OFAC SDN",status:"Not Listed",year:2026}],products:["NMC battery cells","LFP battery cells","Battery storage systems"],category:"Battery Cells & Storage",allied_nation:true,domestic_manufacturing:true,domestic_plans:"Operating: Holland, MI (JV with GM). Under construction: Queen Creek, AZ",data_sources:["BIS Consolidated Screening List","SEC EDGAR","DOE Loan Programs Office"],last_verified:"2026-04-01",notes:"Clean FEOC status. Preferred supplier for IRA credit-eligible projects."},{id:"samsung-sdi",name:"Samsung SDI",slug:"samsung-sdi",country:"South Korea",hq:"Yongin, South Korea",ultimate_owner:"Samsung Group",ownership_type:"Public (KRX: 006400)",feoc_status:"clean",reason:"South Korean allied nation. No FEOC links.",entity_lists:[{list:"DOD Section 1260H",status:"Not Listed",year:2026},{list:"BIS Entity List",status:"Not Listed",year:2026},{list:"OFAC SDN",status:"Not Listed",year:2026}],products:["NMC battery cells","ESS batteries"],category:"Battery Cells & Storage",allied_nation:true,domestic_manufacturing:true,domestic_plans:"JV with Stellantis - StarPlus Energy, Kokomo, IN.",data_sources:["BIS Consolidated Screening List","SEC EDGAR"],last_verified:"2026-04-01",notes:"Clean status."},{id:"panasonic-energy",name:"Panasonic Energy",slug:"panasonic-energy",country:"Japan",hq:"Osaka, Japan",ultimate_owner:"Panasonic Holdings",ownership_type:"Public (TYO: 6752)",feoc_status:"clean",reason:"Japanese allied nation. Major US manufacturing.",entity_lists:[{list:"DOD Section 1260H",status:"Not Listed",year:2026},{list:"BIS Entity List",status:"Not Listed",year:2026},{list:"OFAC SDN",status:"Not Listed",year:2026}],products:["NCA battery cells","Cylindrical cells (2170, 4680)"],category:"Battery Cells & Storage",allied_nation:true,domestic_manufacturing:true,domestic_plans:"Operating: Sparks, NV. Under construction: De Soto, KS.",data_sources:["BIS Consolidated Screening List","DOE Loan Programs Office"],last_verified:"2026-04-01",notes:"Tesla's primary battery supplier. Clean FEOC."},{id:"first-solar",name:"First Solar",slug:"first-solar",country:"United States",hq:"Tempe, AZ, USA",ultimate_owner:"Public company",ownership_type:"Public (NASDAQ: FSLR)",feoc_status:"clean",reason:"US-headquartered. 100% domestic thin-film manufacturing.",entity_lists:[{list:"DOD Section 1260H",status:"Not Listed",year:2026},{list:"BIS Entity List",status:"Not Listed",year:2026},{list:"OFAC SDN",status:"Not Listed",year:2026}],products:["CdTe thin-film solar modules (Series 6, Series 7)"],category:"Solar Panels",allied_nation:true,domestic_manufacturing:true,domestic_plans:"Operating: Perrysburg, OH; Lake Township, OH. Expanding: AL, LA.",data_sources:["SEC EDGAR - 10-K","DOE Loan Programs Office"],last_verified:"2026-04-01",notes:"Gold standard for FEOC-compliant solar. Eligible for full domestic content bonus."},{id:"hanwha-qcells",name:"Hanwha Q Cells",slug:"hanwha-qcells",country:"South Korea",hq:"Seoul, South Korea (US HQ: Dalton, GA)",ultimate_owner:"Hanwha Group",ownership_type:"Subsidiary of Hanwha Solutions (KRX: 009830)",feoc_status:"clean",reason:"South Korean allied nation. Fully integrated US manufacturing.",entity_lists:[{list:"DOD Section 1260H",status:"Not Listed",year:2026},{list:"BIS Entity List",status:"Not Listed",year:2026},{list:"OFAC SDN",status:"Not Listed",year:2026}],products:["Solar modules (Q.PEAK DUO)","Solar cells"],category:"Solar Panels",allied_nation:true,domestic_manufacturing:true,domestic_plans:"Operating: Dalton, GA (cells + modules + ingots).",data_sources:["SEC EDGAR","DOE announcements"],last_verified:"2026-04-01",notes:"Strongest FEOC-compliant solar option with integrated US manufacturing."},{id:"enphase",name:"Enphase Energy",slug:"enphase-energy",country:"United States",hq:"Fremont, CA, USA",ultimate_owner:"Public company",ownership_type:"Public (NASDAQ: ENPH)",feoc_status:"clean",reason:"US-headquartered. No FEOC links.",entity_lists:[{list:"DOD Section 1260H",status:"Not Listed",year:2026},{list:"BIS Entity List",status:"Not Listed",year:2026},{list:"OFAC SDN",status:"Not Listed",year:2026}],products:["Microinverters (IQ series)","Battery storage"],category:"Inverters",allied_nation:true,domestic_manufacturing:true,domestic_plans:"US-based contract manufacturing.",data_sources:["SEC EDGAR - ENPH 10-K"],last_verified:"2026-04-01",notes:"Leading residential microinverter manufacturer."},{id:"vestas",name:"Vestas Wind Systems",slug:"vestas",country:"Denmark",hq:"Aarhus, Denmark",ultimate_owner:"Public company",ownership_type:"Public (CPH: VWS)",feoc_status:"clean",reason:"Danish allied nation. Significant US manufacturing.",entity_lists:[{list:"DOD Section 1260H",status:"Not Listed",year:2026},{list:"BIS Entity List",status:"Not Listed",year:2026},{list:"OFAC SDN",status:"Not Listed",year:2026}],products:["Onshore wind turbines","Offshore wind turbines"],category:"Wind Turbines",allied_nation:true,domestic_manufacturing:true,domestic_plans:"Operating: Brighton, CO; Pueblo, CO; Windsor, CO.",data_sources:["SEC filings","DOE Wind Technologies Market Report"],last_verified:"2026-04-01",notes:"World's largest wind turbine manufacturer."},{id:"ge-vernova",name:"GE Vernova",slug:"ge-vernova",country:"United States",hq:"Cambridge, MA, USA",ultimate_owner:"Public company",ownership_type:"Public (NYSE: GEV)",feoc_status:"clean",reason:"US-headquartered with domestic manufacturing.",entity_lists:[{list:"DOD Section 1260H",status:"Not Listed",year:2026},{list:"BIS Entity List",status:"Not Listed",year:2026},{list:"OFAC SDN",status:"Not Listed",year:2026}],products:["Onshore wind turbines","Offshore wind turbines (Haliade-X)","Gas turbines"],category:"Wind Turbines",allied_nation:true,domestic_manufacturing:true,domestic_plans:"Multiple US facilities.",data_sources:["SEC EDGAR - GEV 10-K"],last_verified:"2026-04-01",notes:"US energy equipment giant. Clean FEOC."},{id:"hitachi-energy",name:"Hitachi Energy",slug:"hitachi-energy",country:"Japan / Switzerland",hq:"Zurich, Switzerland",ultimate_owner:"Hitachi, Ltd.",ownership_type:"Subsidiary of Hitachi (TYO: 6501)",feoc_status:"clean",reason:"Japanese parent (allied nation). No FEOC links.",entity_lists:[{list:"DOD Section 1260H",status:"Not Listed",year:2026},{list:"BIS Entity List",status:"Not Listed",year:2026},{list:"OFAC SDN",status:"Not Listed",year:2026}],products:["Power transformers","HVDC systems","Grid automation"],category:"Transformers & Grid",allied_nation:true,domestic_manufacturing:true,domestic_plans:"Multiple US facilities.",data_sources:["SEC filings","BIS Consolidated Screening List"],last_verified:"2026-04-01",notes:"Formerly ABB Power Grids. Clean FEOC."}];
+
+const params=new URLSearchParams(window.location.search);
+const id=params.get('id');
+const m=MANUFACTURERS.find(x=>x.id===id);
+
+if(!m){
+  document.getElementById('content').innerHTML='<h1 style="font-size:1.5rem;margin:3rem 0">Manufacturer not found</h1><p><a href="/feoc/" style="color:var(--blue)">Back to FEOC Lookup</a></p>';
+}else{
+  document.getElementById('page-title').textContent=m.name+' FEOC Compliance Status | Prospector Labs';
+  document.getElementById('page-desc').setAttribute('content',m.name+' FEOC compliance status: '+m.feoc_status.toUpperCase()+'. '+m.reason);
+  document.getElementById('breadcrumb-name').textContent=m.name;
+
+  // Schema.org
+  document.getElementById('schema').textContent=JSON.stringify({
+    "@context":"https://schema.org","@type":"Product",
+    "name":m.name,"brand":{"@type":"Brand","name":m.name},
+    "description":m.reason+" "+m.notes,
+    "category":m.category,"manufacturer":{"@type":"Organization","name":m.name,"address":{"@type":"PostalAddress","addressCountry":m.country}}
+  });
+
+  const icons={clean:'\u2705',flagged:'\u26D4',review:'\u26A0\uFE0F'};
+  const labels={clean:'FEOC CLEAN',flagged:'FEOC FLAGGED',review:'UNDER REVIEW'};
+
+  document.getElementById('content').innerHTML=`
+    <div class="result-card-inner">
+      <div class="result-status ${m.feoc_status}"><span style="font-size:1.25rem">${icons[m.feoc_status]}</span><span>${labels[m.feoc_status]}</span></div>
+      <div class="result-body">
+        <h1 class="result-name">${m.name}</h1>
+        <div class="result-grid">
+          <div><div class="result-label">Country</div><div class="result-value">${m.country}</div></div>
+          <div><div class="result-label">Ultimate Owner</div><div class="result-value">${m.ultimate_owner}</div></div>
+          <div><div class="result-label">Allied Nation</div><div class="result-value ${m.allied_nation?'yes':'no'}">${m.allied_nation?'\u2713 Yes':'\u2717 No'}</div></div>
+          <div><div class="result-label">US Manufacturing</div><div class="result-value ${m.domestic_manufacturing?'yes':'no'}">${m.domestic_manufacturing?'\u2713 Yes':'\u2717 No'}</div></div>
+          <div><div class="result-label">Ownership Type</div><div class="result-value">${m.ownership_type}</div></div>
+          <div><div class="result-label">Category</div><div class="result-value">${m.category}</div></div>
+        </div>
+        <div class="entity-screening"><h4 class="sub-heading">Entity List Screening</h4>${m.entity_lists.map(e=>{let cls='clear';if(e.status==='Listed'||e.status.startsWith('Listed'))cls='listed';else if(e.status.includes('Under'))cls='under-review';return `<div class="entity-row"><span class="entity-list">${e.list}</span><span class="entity-status ${cls}">${e.status}</span></div>`;}).join('')}</div>
+        <div><h4 class="sub-heading">Products</h4><div class="product-tags">${m.products.map(p=>`<span class="product-tag">${p}</span>`).join('')}</div></div>
+        ${m.domestic_plans?`<div class="result-domestic"><h4 class="sub-heading">US Manufacturing</h4><p>${m.domestic_plans}</p></div>`:''}
+        <div class="result-assessment"><h4 class="sub-heading">Assessment</h4><p>${m.reason}</p>${m.notes?`<p class="result-notes">${m.notes}</p>`:''}</div>
+        <div class="result-sources"><h4 class="sub-heading">Data Sources</h4><ul>${m.data_sources.map(s=>`<li>${s}</li>`).join('')}</ul><div class="verified-date">Last verified: ${m.last_verified}</div></div>
+      </div>
+    </div>`;
+
+  // Related manufacturers (same category)
+  const related=MANUFACTURERS.filter(x=>x.category===m.category&&x.id!==m.id);
+  if(related.length){
+    document.getElementById('related').innerHTML=`
+      <h3>Other ${m.category} Manufacturers</h3>
+      <div class="related-grid">${related.map(r=>`<a href="?id=${r.id}" class="related-link"><span class="status-dot ${r.feoc_status}"></span>${r.name}</a>`).join('')}</div>`;
+  }
+}
+</script>
+</body>
+</html>

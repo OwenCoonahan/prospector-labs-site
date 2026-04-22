@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FEOC Manufacturer Compliance Database — Prospector Labs</title>
+  <meta name="description" content="Verified supplier intelligence for clean energy tax credit compliance. FEOC/PFE status, ownership structures, component origin, and MACR calculations for energy equipment manufacturers.">
+  <link rel="canonical" href="https://www.prospectorlabs.io/feoc/">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --white: #ffffff;
+      --black: #000000;
+      --gray-50: #fafafa;
+      --gray-100: #f5f5f5;
+      --gray-200: #e5e5e5;
+      --gray-300: #d4d4d4;
+      --gray-400: #a3a3a3;
+      --gray-500: #737373;
+      --gray-600: #525252;
+      --gray-700: #404040;
+      --gray-800: #262626;
+      --gray-900: #171717;
+      --red: #dc2626;
+      --red-light: #fef2f2;
+      --red-border: #fecaca;
+      --amber: #d97706;
+      --amber-light: #fffbeb;
+      --amber-border: #fde68a;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --green-border: #bbf7d0;
+      --blue: #2563eb;
+      --blue-light: #eff6ff;
+      --blue-border: #bfdbfe;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { overflow-x: hidden; scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Geist', system-ui, -apple-system, sans-serif;
+      background: var(--white);
+      color: var(--black);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+
+    a { color: inherit; }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 20px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    nav.scrolled {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 500;
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-logo img { height: 28px; width: auto; }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      font-size: 13px;
+      text-decoration: none;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+
+    .nav-links a:hover { opacity: 1; }
+
+    .nav-badge {
+      font-size: 11px;
+      padding: 3px 8px;
+      background: var(--gray-900);
+      color: var(--white);
+      border-radius: 4px;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+    }
+
+    /* HERO */
+    .hero {
+      padding: 160px 64px 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: var(--red-light);
+      border: 1px solid var(--red-border);
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--red);
+      margin-bottom: 32px;
+    }
+
+    .hero h1 {
+      font-size: 52px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      max-width: 800px;
+    }
+
+    .hero-sub {
+      font-size: 20px;
+      color: var(--gray-600);
+      max-width: 640px;
+      line-height: 1.5;
+      margin-bottom: 48px;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--gray-200);
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .hero-stat {
+      background: var(--white);
+      padding: 24px;
+    }
+
+    .hero-stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hero-stat-label {
+      font-size: 13px;
+      color: var(--gray-500);
+      margin-top: 4px;
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 80px 64px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-dark {
+      background: var(--gray-900);
+      color: var(--white);
+      max-width: 100%;
+      padding: 80px 64px;
+    }
+
+    .section-dark .inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-alt {
+      background: var(--gray-50);
+      max-width: 100%;
+      padding: 80px 64px;
+    }
+
+    .section-alt .inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gray-400);
+      margin-bottom: 16px;
+    }
+
+    .section-dark .section-label {
+      color: var(--gray-500);
+    }
+
+    h2 {
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 17px;
+      color: var(--gray-500);
+      max-width: 600px;
+      line-height: 1.5;
+      margin-bottom: 48px;
+    }
+
+    .section-dark .section-sub {
+      color: var(--gray-400);
+    }
+
+    /* PROBLEM SECTION */
+    .problem-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 48px;
+    }
+
+    .problem-card {
+      padding: 32px;
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      background: var(--white);
+    }
+
+    .problem-card.highlight {
+      border-color: var(--red-border);
+      background: var(--red-light);
+    }
+
+    .problem-card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+
+    .problem-card p {
+      font-size: 15px;
+      color: var(--gray-600);
+      line-height: 1.6;
+    }
+
+    .problem-card.highlight p {
+      color: var(--gray-700);
+    }
+
+    .problem-stat {
+      font-size: 32px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .problem-card.highlight .problem-stat {
+      color: var(--red);
+    }
+
+    /* MACR THRESHOLD TABLE */
+    .macr-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 32px;
+      font-size: 14px;
+    }
+
+    .macr-table th {
+      text-align: left;
+      padding: 12px 16px;
+      background: var(--gray-800);
+      color: var(--gray-300);
+      font-weight: 500;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .macr-table th:first-child { border-radius: 8px 0 0 0; }
+    .macr-table th:last-child { border-radius: 0 8px 0 0; }
+
+    .macr-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--gray-300);
+    }
+
+    .macr-table tr:last-child td { border-bottom: none; }
+
+    .macr-table .current {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .macr-table .current td {
+      color: var(--white);
+      font-weight: 500;
+    }
+
+    .year-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      background: var(--white);
+      color: var(--black);
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+
+    /* MANUFACTURER PROFILES */
+    .manufacturer-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .mfr-card {
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .mfr-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 28px 28px 0;
+    }
+
+    .mfr-name {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .mfr-meta {
+      font-size: 13px;
+      color: var(--gray-500);
+      margin-top: 4px;
+    }
+
+    .mfr-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .status-clean {
+      background: var(--green-light);
+      color: var(--green);
+      border: 1px solid var(--green-border);
+    }
+
+    .status-flagged {
+      background: var(--red-light);
+      color: var(--red);
+      border: 1px solid var(--red-border);
+    }
+
+    .status-review {
+      background: var(--amber-light);
+      color: var(--amber);
+      border: 1px solid var(--amber-border);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .status-clean .status-dot { background: var(--green); }
+    .status-flagged .status-dot { background: var(--red); }
+    .status-review .status-dot { background: var(--amber); }
+
+    .mfr-body {
+      padding: 24px 28px 28px;
+    }
+
+    .mfr-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .mfr-field {
+      padding: 14px;
+      background: var(--gray-50);
+      border-radius: 8px;
+    }
+
+    .mfr-field-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gray-400);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+
+    .mfr-field-value {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .mfr-field-value.mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .mfr-flags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding-top: 16px;
+      border-top: 1px solid var(--gray-100);
+    }
+
+    .mfr-flag {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+
+    .flag-clear {
+      background: var(--green-light);
+      color: var(--green);
+    }
+
+    .flag-hit {
+      background: var(--red-light);
+      color: var(--red);
+    }
+
+    .flag-na {
+      background: var(--gray-100);
+      color: var(--gray-500);
+    }
+
+    .mfr-ownership {
+      margin-top: 16px;
+      padding: 16px;
+      background: var(--gray-50);
+      border-radius: 8px;
+    }
+
+    .mfr-ownership h4 {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-400);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+
+    .ownership-chain {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+    }
+
+    .ownership-node {
+      padding: 8px 14px;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      font-weight: 500;
+    }
+
+    .ownership-node.flagged {
+      border-color: var(--red-border);
+      background: var(--red-light);
+      color: var(--red);
+    }
+
+    .ownership-arrow {
+      color: var(--gray-300);
+      font-size: 18px;
+    }
+
+    .ownership-pct {
+      font-size: 12px;
+      color: var(--gray-500);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* COMPONENT ORIGIN TABLE */
+    .component-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin-top: 16px;
+    }
+
+    .component-table th {
+      text-align: left;
+      padding: 10px 14px;
+      background: var(--gray-50);
+      font-weight: 500;
+      font-size: 12px;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .component-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .component-table tr:last-child td { border-bottom: none; }
+
+    .origin-flag {
+      display: inline-block;
+      width: 18px;
+      height: 13px;
+      border-radius: 2px;
+      vertical-align: middle;
+      margin-right: 6px;
+      background: var(--gray-200);
+      font-size: 10px;
+      text-align: center;
+      line-height: 13px;
+    }
+
+    /* CUSTOMER SEGMENTS */
+    .segment-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .segment-card {
+      padding: 32px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .segment-card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .segment-card .segment-why {
+      font-size: 14px;
+      color: var(--gray-400);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .segment-price {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .segment-price-label {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+
+    .segment-num {
+      font-size: 48px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 8px;
+      color: var(--white);
+    }
+
+    /* DATA SOURCING */
+    .source-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .source-card {
+      padding: 28px;
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+    }
+
+    .source-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .source-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .source-list li {
+      font-size: 14px;
+      color: var(--gray-600);
+      padding: 6px 0;
+      border-bottom: 1px solid var(--gray-100);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .source-list li:last-child { border-bottom: none; }
+
+    .check { color: var(--green); font-weight: bold; }
+    .cross { color: var(--red); font-weight: bold; }
+
+    /* GTM TIMELINE */
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-top: 48px;
+    }
+
+    .timeline-phase {
+      padding: 28px;
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      position: relative;
+    }
+
+    .timeline-phase::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      right: -13px;
+      width: 24px;
+      height: 2px;
+      background: var(--gray-200);
+    }
+
+    .timeline-phase:last-child::before { display: none; }
+
+    .phase-num {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gray-400);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .phase-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .phase-time {
+      font-size: 13px;
+      color: var(--gray-500);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 16px;
+    }
+
+    .phase-items {
+      list-style: none;
+      padding: 0;
+    }
+
+    .phase-items li {
+      font-size: 13px;
+      color: var(--gray-600);
+      padding: 4px 0;
+      line-height: 1.5;
+    }
+
+    .phase-items li::before {
+      content: '\2022';
+      color: var(--gray-300);
+      margin-right: 8px;
+    }
+
+    .phase-revenue {
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--gray-100);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* SEO STRATEGY */
+    .seo-example {
+      background: var(--gray-900);
+      border-radius: 12px;
+      padding: 32px;
+      margin-top: 32px;
+      font-family: 'JetBrains Mono', monospace;
+      overflow: hidden;
+    }
+
+    .seo-url {
+      font-size: 14px;
+      color: var(--gray-400);
+      margin-bottom: 4px;
+    }
+
+    .seo-title {
+      font-size: 20px;
+      color: var(--blue);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .seo-desc {
+      font-size: 13px;
+      color: var(--gray-400);
+      line-height: 1.5;
+    }
+
+    .seo-searches {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    .seo-search {
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      font-size: 13px;
+      color: var(--gray-400);
+    }
+
+    /* COMPETITIVE */
+    .comp-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .comp-card {
+      padding: 28px;
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+    }
+
+    .comp-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .comp-card p {
+      font-size: 14px;
+      color: var(--gray-600);
+      line-height: 1.5;
+    }
+
+    .comp-card .comp-gap {
+      margin-top: 12px;
+      padding: 8px 12px;
+      background: var(--amber-light);
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--amber);
+      font-weight: 500;
+    }
+
+    /* INTEGRATION */
+    .integration-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin: 48px 0;
+      flex-wrap: wrap;
+    }
+
+    .flow-step {
+      padding: 20px 28px;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      text-align: center;
+      min-width: 180px;
+    }
+
+    .flow-step.active {
+      border-color: var(--black);
+      background: var(--gray-900);
+      color: var(--white);
+    }
+
+    .flow-step h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .flow-step p {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+
+    .flow-step.active p {
+      color: var(--gray-400);
+    }
+
+    .flow-arrow {
+      font-size: 20px;
+      color: var(--gray-300);
+    }
+
+    /* FOOTER / CTA */
+    .cta-section {
+      text-align: center;
+      padding: 100px 64px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .cta-section h2 {
+      margin-bottom: 16px;
+    }
+
+    .cta-section p {
+      font-size: 17px;
+      color: var(--gray-500);
+      max-width: 500px;
+      margin: 0 auto 32px;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      padding: 14px 32px;
+      background: var(--black);
+      color: var(--white);
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 15px;
+      transition: background 0.2s;
+    }
+
+    .cta-btn:hover { background: var(--gray-800); }
+
+    footer {
+      padding: 32px 64px;
+      border-top: 1px solid var(--gray-100);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: var(--gray-400);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .hero-stats { grid-template-columns: repeat(2, 1fr); }
+      .mfr-grid { grid-template-columns: repeat(2, 1fr); }
+      .timeline { grid-template-columns: repeat(2, 1fr); }
+      .timeline-phase::before { display: none; }
+    }
+
+    @media (max-width: 768px) {
+      .hero { padding: 120px 32px 60px; }
+      .hero h1 { font-size: 32px; }
+      .hero-sub { font-size: 17px; }
+      .hero-stats { grid-template-columns: 1fr 1fr; }
+      section { padding: 60px 32px; }
+      .section-dark, .section-alt { padding: 60px 32px; }
+      h2 { font-size: 28px; }
+      .problem-grid { grid-template-columns: 1fr; }
+      .mfr-grid { grid-template-columns: 1fr; }
+      .segment-grid { grid-template-columns: 1fr; }
+      .source-grid { grid-template-columns: 1fr; }
+      .comp-grid { grid-template-columns: 1fr; }
+      .timeline { grid-template-columns: 1fr; }
+      .integration-flow { flex-direction: column; }
+      .flow-arrow { transform: rotate(90deg); }
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      footer { flex-direction: column; gap: 12px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a href="/" class="nav-logo">
+      <img src="/images/logo-dark.svg" alt="Prospector Labs" class="logo-dark">
+      <img src="/images/logo-light.svg" alt="Prospector Labs" class="logo-light" style="display:none;">
+      Prospector Labs
+    </a>
+    <div class="nav-links">
+      <a href="/#capabilities">Platform</a>
+      <a href="/api/">API</a>
+      <a href="/api/agents/">Agents</a>
+      <span class="nav-badge">Internal Briefing</span>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">Compliance Gap</div>
+    <h1>FEOC Manufacturer Compliance Database</h1>
+    <p class="hero-sub">Verified supplier intelligence for the clean energy tax credit market. Ownership structures, component origin, entity list screening, and MACR calculations for every manufacturer that matters.</p>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-value">$0</div>
+        <div class="hero-stat-label">Government-issued FEOC certificates</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">90%+</div>
+        <div class="hero-stat-label">BESS systems with Chinese components</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">65%</div>
+        <div class="hero-stat-label">Tier 1 BESS vendors in China</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">30-60%</div>
+        <div class="hero-stat-label">Tax credit value at risk per project</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE PROBLEM -->
+  <div class="section-alt">
+    <div class="inner">
+      <div class="section-label">The Problem</div>
+      <h2>Everyone says they're FEOC compliant.<br>Almost nobody can prove it.</h2>
+      <p class="section-sub">The OBBBA expanded FEOC rules to every major clean energy tax credit starting January 1, 2026. There is no government database, no standard certificate, and no verification process.</p>
+
+      <div class="problem-grid">
+        <div class="problem-card highlight">
+          <div class="problem-stat">$50-150K</div>
+          <h3>Per-deal legal cost</h3>
+          <p>Law firms charge $50-150K per project for manual FEOC supply chain diligence. Every deal requires fresh analysis across corporate registries, import records, and supplier questionnaires.</p>
+        </div>
+        <div class="problem-card highlight">
+          <div class="problem-stat">6-12 weeks</div>
+          <h3>Diligence timeline</h3>
+          <p>Manual FEOC analysis takes 6-12 weeks per project. In a market where deal timelines are compressing, this is a bottleneck that kills transactions.</p>
+        </div>
+        <div class="problem-card">
+          <h3>Self-certification is the status quo</h3>
+          <p>Manufacturers fill out questionnaires with whatever answers get them the sale. There is no independent verification, no audit trail, and no accountability when attestations turn out to be wrong.</p>
+        </div>
+        <div class="problem-card">
+          <h3>10-year recapture risk</h3>
+          <p>If a manufacturer's ownership changes and becomes FEOC-tainted during the 10-year recapture period, the developer may owe back the entire credit. Ongoing monitoring doesn't exist today.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MACR THRESHOLDS -->
+  <div class="section-dark">
+    <div class="inner">
+      <div class="section-label">MACR Thresholds</div>
+      <h2>Material Assistance Cost Ratio</h2>
+      <p class="section-sub">Minimum percentage of project costs that must come from non-PFE sources. Miss the threshold and the entire credit is disqualified.</p>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+        <div>
+          <h3 style="font-size: 16px; margin-bottom: 16px; color: var(--gray-300);">Power Generation Projects</h3>
+          <table class="macr-table">
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>Min Non-PFE %</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="current">
+                <td>2026 <span class="year-badge">Current</span></td>
+                <td>40%</td>
+                <td>In effect</td>
+              </tr>
+              <tr>
+                <td>2027</td>
+                <td>45%</td>
+                <td>Scheduled</td>
+              </tr>
+              <tr>
+                <td>2028</td>
+                <td>50%</td>
+                <td>Scheduled</td>
+              </tr>
+              <tr>
+                <td>2029</td>
+                <td>55%</td>
+                <td>Scheduled</td>
+              </tr>
+              <tr>
+                <td>2030+</td>
+                <td>60%</td>
+                <td>Scheduled</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <h3 style="font-size: 16px; margin-bottom: 16px; color: var(--gray-300);">Storage Projects</h3>
+          <table class="macr-table">
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>Min Non-PFE %</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="current">
+                <td>2026 <span class="year-badge">Current</span></td>
+                <td>55%</td>
+                <td>In effect</td>
+              </tr>
+              <tr>
+                <td>2027</td>
+                <td>60%</td>
+                <td>Scheduled</td>
+              </tr>
+              <tr>
+                <td>2028</td>
+                <td>65%</td>
+                <td>Scheduled</td>
+              </tr>
+              <tr>
+                <td>2029</td>
+                <td>70%</td>
+                <td>Scheduled</td>
+              </tr>
+              <tr>
+                <td>2030+</td>
+                <td>75%</td>
+                <td>Scheduled</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SAMPLE MANUFACTURER PROFILES -->
+  <section>
+    <div class="section-label">The Product</div>
+    <h2>Verified manufacturer profiles</h2>
+    <p class="section-sub">Every record includes ownership structure, component origin by tier, entity list screening, and MACR contribution estimates. Three examples showing the spectrum.</p>
+
+    <div class="manufacturer-grid">
+
+      <!-- FIRST SOLAR -->
+      <div class="mfr-card">
+        <div class="mfr-header">
+          <div>
+            <div class="mfr-name">First Solar</div>
+            <div class="mfr-meta">Solar Panels (CdTe thin-film) &middot; Tempe, AZ</div>
+          </div>
+          <div class="mfr-status status-clean">
+            <span class="status-dot"></span> Clean
+          </div>
+        </div>
+        <div class="mfr-body">
+          <div class="mfr-grid">
+            <div class="mfr-field">
+              <div class="mfr-field-label">Incorporation</div>
+              <div class="mfr-field-value">United States</div>
+            </div>
+            <div class="mfr-field">
+              <div class="mfr-field-label">Chinese Ownership</div>
+              <div class="mfr-field-value mono">0.0%</div>
+            </div>
+            <div class="mfr-field">
+              <div class="mfr-field-label">MACR Contribution</div>
+              <div class="mfr-field-value mono" style="color: var(--green);">100%</div>
+            </div>
+            <div class="mfr-field">
+              <div class="mfr-field-label">Last Verified</div>
+              <div class="mfr-field-value mono">2026-04-01</div>
+            </div>
+          </div>
+
+          <div class="mfr-ownership">
+            <h4>Ownership Chain</h4>
+            <div class="ownership-chain">
+              <div class="ownership-node">First Solar, Inc.</div>
+              <span class="ownership-arrow">&rarr;</span>
+              <div class="ownership-node">Public (NASDAQ: FSLR)</div>
+              <span class="ownership-pct">No covered-nation beneficial owners above 5%</span>
+            </div>
+          </div>
+
+          <table class="component-table">
+            <thead>
+              <tr>
+                <th>Component</th>
+                <th>Origin</th>
+                <th>PFE Risk</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>CdTe semiconductor</td>
+                <td>Ohio, USA / Malaysia</td>
+                <td style="color: var(--green);">None</td>
+              </tr>
+              <tr>
+                <td>Glass substrate</td>
+                <td>Ohio, USA</td>
+                <td style="color: var(--green);">None</td>
+              </tr>
+              <tr>
+                <td>Module assembly</td>
+                <td>Ohio / Alabama, USA</td>
+                <td style="color: var(--green);">None</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="mfr-flags">
+            <span class="mfr-flag flag-clear">UFLPA: Clear</span>
+            <span class="mfr-flag flag-clear">DOD 1260H: Clear</span>
+            <span class="mfr-flag flag-clear">NDAA: Clear</span>
+            <span class="mfr-flag flag-clear">Certificates: Available</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRINA SOLAR -->
+      <div class="mfr-card">
+        <div class="mfr-header">
+          <div>
+            <div class="mfr-name">Trina Solar</div>
+            <div class="mfr-meta">Solar Panels (c-Si) &middot; Changzhou, China (US assembly: Wilmer, TX)</div>
+          </div>
+          <div class="mfr-status status-review">
+            <span class="status-dot"></span> Under Review
+          </div>
+        </div>
+        <div class="mfr-body">
+          <div class="mfr-grid">
+            <div class="mfr-field">
+              <div class="mfr-field-label">Incorporation</div>
+              <div class="mfr-field-value">China (Cayman holding)</div>
+            </div>
+            <div class="mfr-field">
+              <div class="mfr-field-label">Chinese Ownership</div>
+              <div class="mfr-field-value mono" style="color: var(--amber);">~35%</div>
+            </div>
+            <div class="mfr-field">
+              <div class="mfr-field-label">MACR Contribution</div>
+              <div class="mfr-field-value mono" style="color: var(--amber);">Varies</div>
+            </div>
+            <div class="mfr-field">
+              <div class="mfr-field-label">Last Verified</div>
+              <div class="mfr-field-value mono">2026-03-15</div>
+            </div>
+          </div>
+
+          <div class="mfr-ownership">
+            <h4>Ownership Chain</h4>
+            <div class="ownership-chain">
+              <div class="ownership-node">Trina Solar US Manufacturing</div>
+              <span class="ownership-arrow">&rarr;</span>
+              <div class="ownership-node">Trina Solar Co., Ltd</div>
+              <span class="ownership-arrow">&rarr;</span>
+              <div class="ownership-node flagged">Gao Jifan (~35% beneficial)</div>
+              <span class="ownership-pct">Chinese national &middot; Triggers 25% single-shareholder test</span>
+            </div>
+          </div>
+
+          <table class="component-table">
+            <thead>
+              <tr>
+                <th>Component</th>
+                <th>Origin</th>
+                <th>PFE Risk</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Polysilicon</td>
+                <td>China (Xinjiang region flagged)</td>
+                <td style="color: var(--red);">High</td>
+              </tr>
+              <tr>
+                <td>Wafers</td>
+                <td>China / Vietnam</td>
+                <td style="color: var(--amber);">Medium</td>
+              </tr>
+              <tr>
+                <td>Cells</td>
+                <td>China / Thailand / Vietnam</td>
+                <td style="color: var(--amber);">Medium</td>
+              </tr>
+              <tr>
+                <td>Module assembly</td>
+                <td>Wilmer, TX (US)</td>
+                <td style="color: var(--green);">None</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="mfr-flags">
+            <span class="mfr-flag flag-na">UFLPA: Monitoring</span>
+            <span class="mfr-flag flag-clear">DOD 1260H: Clear</span>
+            <span class="mfr-flag flag-clear">NDAA: Clear</span>
+            <span class="mfr-flag flag-na">Certificates: Requested</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CATL -->
+      <div class="mfr-card">
+        <div class="mfr-header">
+          <div>
+            <div class="mfr-name">CATL</div>
+            <div class="mfr-meta">Battery Energy Storage Systems &middot; Ningde, China</div>
+          </div>
+          <div class="mfr-status status-flagged">
+            <span class="status-dot"></span> Flagged
+          </div>
+        </div>
+        <div class="mfr-body">
+          <div class="mfr-grid">
+            <div class="mfr-field">
+              <div class="mfr-field-label">Incorporation</div>
+              <div class="mfr-field-value">China</div>
+            </div>
+            <div class="mfr-field">
+              <div class="mfr-field-label">Chinese Ownership</div>
+              <div class="mfr-field-value mono" style="color: var(--red);">~100%</div>
+            </div>
+            <div class="mfr-field">
+              <div class="mfr-field-label">MACR Contribution</div>
+              <div class="mfr-field-value mono" style="color: var(--red);">0%</div>
+            </div>
+            <div class="mfr-field">
+              <div class="mfr-field-label">Last Verified</div>
+              <div class="mfr-field-value mono">2026-04-08</div>
+            </div>
+          </div>
+
+          <div class="mfr-ownership">
+            <h4>Ownership Chain</h4>
+            <div class="ownership-chain">
+              <div class="ownership-node flagged">CATL (SHE: 300750)</div>
+              <span class="ownership-arrow">&rarr;</span>
+              <div class="ownership-node flagged">Zeng Yuqun (~25% beneficial)</div>
+              <span class="ownership-pct">Chinese national &middot; HQ in Ningde, Fujian &middot; Manufacturing 100% China</span>
+            </div>
+          </div>
+
+          <table class="component-table">
+            <thead>
+              <tr>
+                <th>Component</th>
+                <th>Origin</th>
+                <th>PFE Risk</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Battery cells (LFP/NMC)</td>
+                <td>China</td>
+                <td style="color: var(--red);">High</td>
+              </tr>
+              <tr>
+                <td>Battery Management System</td>
+                <td>China</td>
+                <td style="color: var(--red);">High</td>
+              </tr>
+              <tr>
+                <td>Cathode materials</td>
+                <td>China</td>
+                <td style="color: var(--red);">High</td>
+              </tr>
+              <tr>
+                <td>System integration</td>
+                <td>China</td>
+                <td style="color: var(--red);">High</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="mfr-flags">
+            <span class="mfr-flag flag-hit">UFLPA: Under Review</span>
+            <span class="mfr-flag flag-hit">DOD 1260H: Listed (battery tech)</span>
+            <span class="mfr-flag flag-clear">NDAA: Clear</span>
+            <span class="mfr-flag flag-na">Certificates: Not Available</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CUSTOMER SEGMENTS -->
+  <div class="section-dark">
+    <div class="inner">
+      <div class="section-label">Market</div>
+      <h2>Who needs this and what they pay</h2>
+      <p class="section-sub">Four customer segments with different delivery formats but the same underlying data.</p>
+
+      <div class="segment-grid">
+        <div class="segment-card">
+          <div class="segment-num">01</div>
+          <h3>Tax Credit Insurance Firms</h3>
+          <p class="segment-why">60-70% of ITC deals included insurance in 2025. Every policy now requires FEOC diligence. Insurers need structured data to price FEOC risk efficiently. API integration into underwriting workflow.</p>
+          <div class="segment-price">$2,000-10,000/mo</div>
+          <div class="segment-price-label">API subscription</div>
+        </div>
+        <div class="segment-card">
+          <div class="segment-num">02</div>
+          <h3>Mid-Market Developers</h3>
+          <p class="segment-why">Can't afford $100K+ legal bills on every deal. Need to verify supply chain before committing to procurement. FEOC non-compliance means losing the entire tax credit.</p>
+          <div class="segment-price">$500-2,000/mo</div>
+          <div class="segment-price-label">Dashboard subscription</div>
+        </div>
+        <div class="segment-card">
+          <div class="segment-num">03</div>
+          <h3>Tax Equity &amp; Credit Buyers</h3>
+          <p class="segment-why">Buyers pay premiums for FEOC-clean credits. When evaluating tech-neutral credits, they need supply chain verification before committing capital.</p>
+          <div class="segment-price">$500-1,500/report</div>
+          <div class="segment-price-label">Per-deal diligence</div>
+        </div>
+        <div class="segment-card">
+          <div class="segment-num">04</div>
+          <h3>Law Firms</h3>
+          <p class="segment-why">Norton Rose, Bracewell, Baker Botts spend weeks assembling ownership data across registries for each engagement. A queryable database replaces associate hours.</p>
+          <div class="segment-price">$5,000-15,000/mo</div>
+          <div class="segment-price-label">Firm-level API</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DATA SOURCING -->
+  <section>
+    <div class="section-label">Data Sourcing</div>
+    <h2>What's public vs. what needs outreach</h2>
+    <p class="section-sub">Phase 1 is entirely desk research. Outreach starts in Phase 2 once we know which manufacturers actually come up in deals.</p>
+
+    <div class="source-grid">
+      <div class="source-card">
+        <h3><span class="check">&#10003;</span> Publicly Available</h3>
+        <ul class="source-list">
+          <li>SEC filings, 10-K, proxy statements (ownership %)</li>
+          <li>Corporate registries (OpenCorporates, state SOS)</li>
+          <li>UFLPA Entity List (Customs &amp; Border Protection)</li>
+          <li>DOD Section 1260H list (Chinese military companies)</li>
+          <li>NDAA restricted entity list</li>
+          <li>Import records (Panjiva/ImportGenius) for volumes &amp; customers</li>
+          <li>EIA manufacturer certifications</li>
+          <li>Patent and IP filings (technology origin)</li>
+          <li>Trade association memberships and press releases</li>
+          <li>LinkedIn org charts and C-suite nationalities</li>
+        </ul>
+      </div>
+      <div class="source-card">
+        <h3><span style="color: var(--amber);">&#9679;</span> Requires Active Sourcing</h3>
+        <ul class="source-list">
+          <li>Actual MACR calculations and cost breakdowns</li>
+          <li>Tier 2 and Tier 3 supplier relationships</li>
+          <li>Ownership below public disclosure thresholds</li>
+          <li>Existing compliance certificates and attestations</li>
+          <li>Inventory availability and lead times</li>
+          <li>Licensing agreements (effective control provisions)</li>
+          <li>Internal compliance documentation</li>
+          <li>Sub-component country of origin certificates</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- GTM TIMELINE -->
+  <div class="section-alt">
+    <div class="inner">
+      <div class="section-label">Go-to-Market</div>
+      <h2>Sell before you build</h2>
+      <p class="section-sub">Manual reports first. Every sale funds the business AND adds a record to the database. Only build product after pattern recognition kicks in.</p>
+
+      <div class="timeline">
+        <div class="timeline-phase">
+          <div class="phase-num">Phase 1</div>
+          <div class="phase-title">Manual Reports</div>
+          <div class="phase-time">Weeks 1-4</div>
+          <ul class="phase-items">
+            <li>PDF reports on specific manufacturers</li>
+            <li>$500-1,500 per report, 5-7 day turnaround</li>
+            <li>Target: 5 paying customers</li>
+            <li>Sell to insurance firms and law firms first</li>
+            <li>Each report = one database record</li>
+          </ul>
+          <div class="phase-revenue" style="color: var(--green);">$5-15K revenue</div>
+        </div>
+        <div class="timeline-phase">
+          <div class="phase-num">Phase 2</div>
+          <div class="phase-title">Pattern Recognition</div>
+          <div class="phase-time">Weeks 4-8</div>
+          <ul class="phase-items">
+            <li>Identify top 30-50 manufacturers from real deals</li>
+            <li>Build structured profiles from public data</li>
+            <li>Begin outreach to manufacturers (free listing pitch)</li>
+            <li>Cross-reference against entity lists automatically</li>
+          </ul>
+          <div class="phase-revenue" style="color: var(--green);">$15-30K cumulative</div>
+        </div>
+        <div class="timeline-phase">
+          <div class="phase-num">Phase 3</div>
+          <div class="phase-title">Light Dashboard</div>
+          <div class="phase-time">Weeks 8-16</div>
+          <ul class="phase-items">
+            <li>Web interface: search, view, download</li>
+            <li>Subscription tier: $300-500/mo</li>
+            <li>Insurance firm API conversations</li>
+            <li>SEO pages ranking for manufacturer names</li>
+          </ul>
+          <div class="phase-revenue" style="color: var(--green);">$30-60K cumulative</div>
+        </div>
+        <div class="timeline-phase">
+          <div class="phase-num">Phase 4</div>
+          <div class="phase-title">API Product</div>
+          <div class="phase-time">Month 4+</div>
+          <ul class="phase-items">
+            <li>100+ verified manufacturer records</li>
+            <li>API for insurance and law firm integration</li>
+            <li>Per-query or monthly subscription pricing</li>
+            <li>Ongoing monitoring for ownership changes</li>
+          </ul>
+          <div class="phase-revenue" style="color: var(--green);">$10K+/mo recurring</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEO STRATEGY -->
+  <section>
+    <div class="section-label">Distribution</div>
+    <h2>One page per manufacturer. Rank for every search.</h2>
+    <p class="section-sub">The same playbook that works for interconnection queue data. Auto-populated pages with public data, compound over time, drive inbound without ongoing effort.</p>
+
+    <div class="seo-example">
+      <div class="seo-url">prospectorlabs.io/feoc/trina-solar</div>
+      <div class="seo-title">Trina Solar FEOC Compliance Status | Prospector Labs</div>
+      <div class="seo-desc">FEOC compliance assessment for Trina Solar. Ownership structure, component origin analysis, entity list screening, and PFE status for US clean energy tax credit eligibility. Updated April 2026.</div>
+      <div class="seo-searches">
+        <span class="seo-search">"trina solar FEOC"</span>
+        <span class="seo-search">"trina solar PFE status"</span>
+        <span class="seo-search">"is trina solar a foreign entity of concern"</span>
+        <span class="seo-search">"trina solar tax credit eligible"</span>
+      </div>
+    </div>
+
+    <div class="seo-example" style="margin-top: 16px;">
+      <div class="seo-url">prospectorlabs.io/feoc/catl</div>
+      <div class="seo-title">CATL FEOC Compliance Status | Prospector Labs</div>
+      <div class="seo-desc">FEOC compliance assessment for CATL (Contemporary Amperex Technology). Ownership analysis, DOD 1260H listing, UFLPA review status, and battery component origin for 45Y/48E tax credit eligibility.</div>
+      <div class="seo-searches">
+        <span class="seo-search">"CATL FEOC compliance"</span>
+        <span class="seo-search">"CATL prohibited foreign entity"</span>
+        <span class="seo-search">"CATL battery storage tax credit"</span>
+        <span class="seo-search">"CATL DOD listed"</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPETITIVE LANDSCAPE -->
+  <div class="section-alt">
+    <div class="inner">
+      <div class="section-label">Competitive Landscape</div>
+      <h2>No direct competitor exists</h2>
+      <p class="section-sub">Adjacent players have pieces of the puzzle. Nobody has assembled them into a verified compliance database.</p>
+
+      <div class="comp-grid">
+        <div class="comp-card">
+          <h3>Panjiva / ImportGenius</h3>
+          <p>Import records showing actual shipments, volumes, and US customers. Useful for verifying manufacturer claims about US presence.</p>
+          <div class="comp-gap">Gap: No compliance assessment, no ownership data, no FEOC analysis</div>
+        </div>
+        <div class="comp-card">
+          <h3>Sayari Analytics</h3>
+          <p>Corporate ownership graphs and beneficial ownership intelligence. Strong on entity resolution across jurisdictions.</p>
+          <div class="comp-gap">Gap: Not energy-specific, no MACR calculations, no component origin</div>
+        </div>
+        <div class="comp-card">
+          <h3>Crux Climate</h3>
+          <p>Tax credit marketplace. References FEOC in deal context but doesn't provide supplier-level compliance data.</p>
+          <div class="comp-gap">Gap: Marketplace not data provider, no manufacturer profiles</div>
+        </div>
+        <div class="comp-card">
+          <h3>Law Firms (Norton Rose, Bracewell)</h3>
+          <p>Doing manual FEOC diligence on every deal. High quality but $50-150K per engagement and 6-12 week timelines.</p>
+          <div class="comp-gap">Gap: Not scalable, not a product. Potential partners, not competitors.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTEGRATION WITH EXISTING PLATFORM -->
+  <section>
+    <div class="section-label">Platform Integration</div>
+    <h2>Additive to the existing data stack</h2>
+    <p class="section-sub">FEOC compliance is the missing layer between finding a project and closing a deal. It fits naturally into the existing Prospector Labs workflow.</p>
+
+    <div class="integration-flow">
+      <div class="flow-step">
+        <h4>Find Project</h4>
+        <p>47K+ queue projects</p>
+      </div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-step">
+        <h4>Evaluate Developer</h4>
+        <p>6,593 profiles</p>
+      </div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-step active">
+        <h4>Verify Supply Chain</h4>
+        <p>FEOC compliance</p>
+      </div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-step">
+        <h4>Calculate Credits</h4>
+        <p>ITC/PTC + MACR</p>
+      </div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-step">
+        <h4>Close Deal</h4>
+        <p>Full diligence stack</p>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-top: 32px;">
+      <div style="padding: 24px; background: var(--gray-50); border-radius: 12px;">
+        <h4 style="font-size: 15px; margin-bottom: 8px;">Developer Database</h4>
+        <p style="font-size: 14px; color: var(--gray-600);">6,593 developer profiles become a warm outreach list. They need FEOC data for every procurement decision.</p>
+      </div>
+      <div style="padding: 24px; background: var(--gray-50); border-radius: 12px;">
+        <h4 style="font-size: 15px; margin-bottom: 8px;">Queue Intelligence</h4>
+        <p style="font-size: 14px; color: var(--gray-600);">Project data provides context for per-project MACR calculations. Know the equipment mix before the developer does.</p>
+      </div>
+      <div style="padding: 24px; background: var(--gray-50); border-radius: 12px;">
+        <h4 style="font-size: 15px; margin-bottom: 8px;">API + MCP</h4>
+        <p style="font-size: 14px; color: var(--gray-600);">Extend existing 66 endpoints and 31 MCP tools with manufacturer compliance queries. Same infrastructure, new data domain.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="section-dark" style="text-align: center; padding: 100px 64px;">
+    <div class="inner">
+      <div class="section-label" style="color: var(--gray-500);">First-Mover Window: 12-18 Months</div>
+      <h2 style="max-width: 600px; margin: 0 auto 16px;">The data everyone needs.<br>Nobody has built it yet.</h2>
+      <p style="color: var(--gray-400); max-width: 480px; margin: 0 auto 40px; font-size: 17px;">Start with manual reports. Build the database one deal at a time. Own the category before anyone else enters.</p>
+      <a href="/contact/" class="cta-btn" style="background: var(--white); color: var(--black);">Start a Conversation</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>Prospector Labs &middot; 2026</span>
+    <span>Internal Briefing &middot; Not for public distribution</span>
+  </footer>
+
+  <script>
+    // Scrolled nav
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 50);
+    });
+  </script>
+
+</body>
+</html>
