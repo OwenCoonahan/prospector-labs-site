@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Detail — Glass Energy</title>
+  <meta name="description" content="Full project intelligence: score breakdown, tax credit analysis, developer info, grid context, and similar projects.">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/favicon.png">
+</head>
+<body>
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <a href="/platform/" class="topbar-logo"><span>Glass</span> Energy</a>
+    <div class="topbar-search">
+      <span class="search-icon">&#x1F50D;</span>
+      <input type="text" placeholder="Search projects, developers, locations..." id="search-input">
+      <span class="search-shortcut">/</span>
+      <div class="search-dropdown hidden" id="search-dropdown"></div>
+    </div>
+    <nav class="topbar-nav">
+      <a href="/platform/">Explorer</a>
+      <a href="/platform/developer.html">Developers</a>
+    </nav>
+    <div class="topbar-actions">
+      <button class="btn-icon" id="theme-toggle" title="Toggle theme">&#x25D0;</button>
+    </div>
+  </div>
+
+  <div class="app">
+
+    <!-- Loading state -->
+    <div class="loading-spinner" id="loading"></div>
+
+    <!-- Error state -->
+    <div class="error-state hidden" id="error">
+      <h3>Something went wrong</h3>
+      <p id="error-msg"></p>
+    </div>
+
+    <!-- Main content (hidden until loaded) -->
+    <div id="main-content" class="hidden">
+
+      <!-- Back link + actions -->
+      <div class="flex justify-between items-center" style="padding-top:16px">
+        <a href="/platform/" style="color:var(--text-1);font-size:0.84rem">&larr; Back to Explorer</a>
+        <div class="flex gap-2">
+          <button class="btn-icon" onclick="toggleTheme()" title="Toggle theme">&#x25D0;</button>
+        </div>
+      </div>
+
+      <!-- Header -->
+      <div class="detail-header" id="detail-header"></div>
+
+      <!-- Tab bar -->
+      <div class="tab-bar">
+        <button class="active" data-tab="overview">Overview</button>
+        <button data-tab="tax-credits">Tax Credits</button>
+        <button data-tab="developer">Developer</button>
+        <button data-tab="grid">Grid Context</button>
+        <button data-tab="similar">Similar Projects</button>
+      </div>
+
+      <!-- Tab: Overview -->
+      <div class="tab-content" id="tab-overview"></div>
+
+      <!-- Tab: Tax Credits -->
+      <div class="tab-content hidden" id="tab-tax-credits">
+        <div class="loading-spinner" id="tax-loading"></div>
+        <div id="tax-content" class="hidden"></div>
+      </div>
+
+      <!-- Tab: Developer -->
+      <div class="tab-content hidden" id="tab-developer">
+        <div class="loading-spinner" id="dev-loading"></div>
+        <div id="dev-content" class="hidden"></div>
+      </div>
+
+      <!-- Tab: Grid Context -->
+      <div class="tab-content hidden" id="tab-grid"></div>
+
+      <!-- Tab: Similar Projects -->
+      <div class="tab-content hidden" id="tab-similar">
+        <div class="loading-spinner" id="similar-loading"></div>
+        <div id="similar-content" class="hidden"></div>
+      </div>
+
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span>Glass Energy Platform</span>
+      <span>Project Detail</span>
+    </div>
+
+  </div>
+
+  <script src="api.js"></script>
+  <script src="utils.js"></script>
+  <script>
+    // ── State ─────────────────────────────────────────────────────────
+    let project = null;
+    let score = null;
+    let taxData = null;
+    let devData = null;
+    let similarData = null;
+
+    // ── Init ──────────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', async () => {
+      initTheme();
+      wireThemeToggle();
+      wireSearch();
+      wireKeyboard();
+      wireTabs();
+
+      const id = new URLSearchParams(window.location.search).get('id');
+      if (!id) { window.location = '/platform/'; return; }
+
+      try {
+        // Fetch project + score in parallel
+        const [projectRes, scoreRes] = await Promise.all([
+          api.project(id),
+          api.score(id).catch(() => null)
+        ]);
+
+        project = projectRes.data || projectRes;
+        score = scoreRes ? (scoreRes.data || scoreRes) : null;
+
+        document.title = `${project.name || project.queue_id || 'Project'} — Glass Energy`;
+
+        // Render the page
+        renderHeader();
+        renderOverviewTab();
+        renderGridTab();
+
+        // Show content
+        document.getElementById('loading').classList.add('hidden');
+        document.getElementById('main-content').classList.remove('hidden');
+
+        // Lazy-load other tabs
+        loadTaxCredits();
+        loadDeveloper();
+        loadSimilar();
+
+      } catch (err) {
+        document.getElementById('loading').classList.add('hidden');
+        document.getElementById('error').classList.remove('hidden');
+        document.getElementById('error-msg').textContent = err.message;
+      }
+    });
+
+    // ── Render Header ─────────────────────────────────────────────────
+    function renderHeader() {
+      const p = project;
+      const s = score;
+      const scoreNum = s ? s.total_score : null;
+      const grade = s ? s.grade : null;
+
+      document.getElementById('detail-header').innerHTML = `
+        <div class="detail-header-left">
+          <h1>${esc(p.name || p.queue_id || 'Unnamed Project')}</h1>
+          <div class="subtitle">${fmtMW(p.capacity_mw)} ${techLabel(p.type)} &middot; ${esc(p.region || '')}</div>
+          <div class="meta">
+            ${p.county || p.state ? `<span>${esc(p.county || '')}${p.county && p.state ? ', ' : ''}${esc(p.state || '')}</span>` : ''}
+            ${p.queue_id ? `<span class="font-mono text-sm">${esc(p.queue_id)}</span>` : ''}
+            <span><span class="status-dot ${statusDotClass(p.status)}"></span>${statusLabel(p.status)}</span>
+          </div>
+        </div>
+        ${scoreNum !== null ? `
+        <div class="detail-score">
+          <div class="score-number" style="color:${scoreColor(scoreNum)}">${scoreNum}</div>
+          <div class="score-label">Score</div>
+          ${grade ? `<div class="score-badge ${scoreClass(scoreNum)}" style="margin-top:4px">Grade ${esc(grade)}</div>` : ''}
+        </div>` : ''}
+      `;
+    }
+
+    // ── Render Overview Tab ───────────────────────────────────────────
+    function renderOverviewTab() {
+      const p = project;
+      const s = score;
+      const qt = queueYears(p.queue_date);
+
+      // Build detail rows
+      const detailRows = [
+        ['Queue ID', `<span class="font-mono">${esc(p.queue_id || '')}</span>`],
+        ['Status', `<span class="status-dot ${statusDotClass(p.status)}"></span>${statusLabel(p.status)}`],
+        ['Construction Stage', esc(p.construction_stage ? p.construction_stage.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) : '') || '&mdash;'],
+        ['IA Status', p.ia_status ? `<span class="badge badge-green">${esc(p.ia_status)}</span>` : '&mdash;'],
+        ['IA Date', formatDate(p.ia_date)],
+        ['Queue Entry', formatDate(p.queue_date)],
+        ['Queue Time', qt !== null ? `${qt} years` : '&mdash;'],
+        ['Projected COD', formatQuarter(p.cod)],
+        ['Capacity', p.capacity_mw !== null && p.capacity_mw !== undefined ? `${p.capacity_mw} MW` : '&mdash;'],
+        ['Technology', p.type ? `<span class="badge ${techClass(p.type)}">${techLabel(p.type)}</span>` : '&mdash;'],
+        ['POI', esc(p.poi || '') || '&mdash;'],
+        ['County', `${esc(p.county || '')}, ${esc(p.state || '')}`.replace(/^, |, $/g, '') || '&mdash;'],
+        ['Source', p.source ? p.source.toUpperCase() : '&mdash;']
+      ];
+
+      const detailTable = `
+        <div class="card mb-4">
+          <h3 class="text-lg font-semibold mb-2">Project Details</h3>
+          <table class="detail-table">
+            ${detailRows.map(([label, val]) => `<tr><td>${label}</td><td>${val}</td></tr>`).join('')}
+          </table>
+        </div>
+      `;
+
+      // Score breakdown
+      let scoreBreakdown = '';
+      if (s && s.breakdown) {
+        const components = Object.entries(s.breakdown);
+        scoreBreakdown = `
+          <div class="card mt-4">
+            <h3 class="text-lg font-semibold mb-4">Score Breakdown</h3>
+            <div class="score-breakdown">
+              ${components.map(([key, comp]) => {
+                const pct = comp.max > 0 ? (comp.score / comp.max) * 100 : 0;
+                const color = scoreColor(pct);
+                const label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                return `
+                  <div class="score-component">
+                    <span class="score-component-label">${esc(label)}</span>
+                    <div class="score-bar-track">
+                      <div class="score-bar-fill" style="width:${pct}%;background:${color}"></div>
+                    </div>
+                    <span class="score-component-value">${comp.score}/${comp.max}</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      // Key metrics
+      const creditVal = p.estimated_credit_value;
+      const creditRate = p.effective_credit_rate;
+      const recCredit = p.recommended_credit;
+
+      let creditRateDisplay = '&mdash;';
+      if (creditRate !== null && creditRate !== undefined) {
+        creditRateDisplay = creditRate > 1 ? `$${creditRate.toFixed(2)}/MWh` : `${(creditRate * 100).toFixed(1)}%`;
+      }
+
+      const metricsGrid = `
+        <div class="metrics-grid mb-4">
+          <div class="card metric-card">
+            <div class="metric-value text-green">${fmtDollars(creditVal)}</div>
+            <div class="metric-label">Credit Value</div>
+          </div>
+          <div class="card metric-card">
+            <div class="metric-value font-mono">${creditRateDisplay}</div>
+            <div class="metric-label">Credit Rate</div>
+          </div>
+          <div class="card metric-card">
+            <div class="metric-value font-mono">${qt !== null ? qt + ' yrs' : '&mdash;'}</div>
+            <div class="metric-label">Queue Time</div>
+          </div>
+          <div class="card metric-card">
+            <div class="metric-value">${recCredit ? recCredit.toUpperCase() : '&mdash;'}</div>
+            <div class="metric-label">Recommended</div>
+          </div>
+        </div>
+      `;
+
+      // Timeline
+      const timeline = renderTimeline();
+
+      document.getElementById('tab-overview').innerHTML = `
+        <div class="two-col">
+          <div>
+            ${detailTable}
+            ${scoreBreakdown}
+          </div>
+          <div>
+            ${metricsGrid}
+            ${timeline}
+          </div>
+        </div>
+      `;
+    }
+
+    // ── Timeline ──────────────────────────────────────────────────────
+    function renderTimeline() {
+      const p = project;
+      const stages = ['Queue Entry', 'Studies', 'IA', 'Construction', 'COD'];
+
+      // Determine current stage
+      let currentStage = 0; // queue entry is always done if we have a project
+      if (p.queue_date) currentStage = 1;
+
+      const iaExecuted = p.ia_status && p.ia_status.toLowerCase().includes('executed');
+      const studyDone = p.study_phase || iaExecuted || (p.feasibility_study_status && p.feasibility_study_status.toLowerCase().includes('complete'));
+
+      if (studyDone || iaExecuted) currentStage = 2;
+      if (iaExecuted) currentStage = 3;
+
+      const inConstruction = p.construction_stage && (
+        p.construction_stage.toLowerCase().includes('construction') ||
+        p.construction_stage.toLowerCase().includes('operational')
+      );
+      if (inConstruction) currentStage = 4;
+      if (p.actual_cod) currentStage = 5;
+
+      const points = stages.map((label, i) => {
+        let cls = 'future';
+        if (i < currentStage) cls = 'complete';
+        else if (i === currentStage) cls = 'current';
+        return { label, cls };
+      });
+
+      const lines = [];
+      for (let i = 0; i < stages.length - 1; i++) {
+        let cls = '';
+        if (i < currentStage - 1) cls = 'complete';
+        else if (i === currentStage - 1) cls = 'current';
+        lines.push(cls);
+      }
+
+      return `
+        <div class="card">
+          <h3 class="text-lg font-semibold mb-4">Project Timeline</h3>
+          <div class="timeline">
+            ${points.map((pt, i) => {
+              let html = `<div class="timeline-point ${pt.cls}"></div>`;
+              if (i < lines.length) {
+                html += `<div class="timeline-line ${lines[i]}"></div>`;
+              }
+              return html;
+            }).join('')}
+          </div>
+          <div class="timeline-labels">
+            ${stages.map(s => `<span>${s}</span>`).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // ── Tax Credits Tab ───────────────────────────────────────────────
+    async function loadTaxCredits() {
+      const p = project;
+      if (!p.type || !p.state) {
+        document.getElementById('tax-loading').classList.add('hidden');
+        document.getElementById('tax-content').classList.remove('hidden');
+        document.getElementById('tax-content').innerHTML = `
+          <div class="empty-state"><h3>Insufficient data</h3><p>Technology or state missing for tax credit calculation.</p></div>
+        `;
+        return;
+      }
+
+      try {
+        const res = await api.taxCredits({
+          technology: p.type,
+          capacity_mw: p.capacity_mw || 100,
+          state: p.state
+        });
+        taxData = res.data || res;
+        renderTaxCredits();
+      } catch (err) {
+        document.getElementById('tax-loading').classList.add('hidden');
+        document.getElementById('tax-content').classList.remove('hidden');
+        document.getElementById('tax-content').innerHTML = `
+          <div class="error-state"><h3>Could not load tax credit data</h3><p>${esc(err.message)}</p></div>
+        `;
+      }
+    }
+
+    function renderTaxCredits() {
+      const t = taxData;
+      if (!t) return;
+
+      document.getElementById('tax-loading').classList.add('hidden');
+      document.getElementById('tax-content').classList.remove('hidden');
+
+      const ecBonus = t.bonuses?.energy_community;
+      const dcBonus = t.bonuses?.domestic_content;
+      const liBonus = t.bonuses?.low_income;
+
+      // Cost benchmark
+      const techLower = (project.type || '').toLowerCase();
+      let costPerMW = 1100000; // solar default
+      if (techLower.includes('storage') || techLower.includes('batter')) costPerMW = 1500000;
+      if (techLower.includes('wind')) costPerMW = 1300000;
+      const estCost = (project.capacity_mw || 0) * costPerMW;
+
+      const itcRows = [
+        ['Base ITC Rate', '30%', '&mdash;'],
+        ['Energy Community Bonus', ecBonus?.eligible ? `+${(ecBonus.bonus * 100).toFixed(0)}%` : 'Not eligible', ecBonus?.type ? esc(ecBonus.type) : '&mdash;'],
+        ['Domestic Content Bonus', dcBonus?.eligible === true ? `+${(dcBonus.bonus * 100).toFixed(0)}%` : (dcBonus?.eligible === null ? 'Unknown' : 'Not eligible'), '&mdash;'],
+        ['Low-Income Bonus', liBonus?.eligible ? `+${(liBonus.bonus * 100).toFixed(0)}%` : 'Not eligible', liBonus?.tier ? esc(liBonus.tier) : '&mdash;'],
+        ['<strong>Effective ITC Rate</strong>', `<strong>${t.effective_itc_rate ? (t.effective_itc_rate * 100).toFixed(0) + '%' : '&mdash;'}</strong>`, '&mdash;'],
+        ['Est. Project Cost', '&mdash;', fmtDollars(estCost)],
+        ['<strong>Estimated ITC Value</strong>', '&mdash;', `<strong class="text-green">${fmtDollars(t.estimated_itc_value)}</strong>`]
+      ];
+
+      let ptcSection = '';
+      if (t.effective_ptc_rate || t.estimated_annual_ptc_value) {
+        const ptcRate = t.effective_ptc_rate ? `$${(t.effective_ptc_rate * 1000).toFixed(1)}/MWh` : '&mdash;';
+        ptcSection = `
+          <div class="card mt-4">
+            <h3 class="text-lg font-semibold mb-4">PTC Alternative</h3>
+            <table class="detail-table">
+              <tr><td>PTC Rate</td><td class="font-mono">${ptcRate}</td></tr>
+              <tr><td>Est. Annual PTC</td><td class="font-mono">${fmtDollars(t.estimated_annual_ptc_value)}</td></tr>
+              <tr><td>10-Year PTC Value</td><td class="font-mono">${fmtDollars(t.estimated_10yr_ptc_value)}</td></tr>
+              <tr><td><strong>Recommendation</strong></td><td><span class="badge badge-blue">${t.recommended_credit ? t.recommended_credit.toUpperCase() : '&mdash;'}</span> ${t.recommended_credit === 'ptc' ? '&mdash; PTC yields higher lifetime value' : t.recommended_credit === 'itc' ? '&mdash; ITC provides greater upfront value' : ''}</td></tr>
+            </table>
+          </div>
+        `;
+      }
+
+      document.getElementById('tax-content').innerHTML = `
+        <div class="card mb-4">
+          <h3 class="text-lg font-semibold mb-2">Recommended Credit</h3>
+          <p class="text-secondary text-sm mb-4">${esc(t.summary || '')}</p>
+          <h4 class="font-semibold mb-2" style="font-size:0.88rem">ITC Analysis</h4>
+          <table class="detail-table">
+            ${itcRows.map(([label, rate, value]) => `
+              <tr>
+                <td>${label}</td>
+                <td class="font-mono">${rate}</td>
+                <td class="font-mono">${value}</td>
+              </tr>
+            `).join('')}
+          </table>
+        </div>
+        ${ptcSection}
+        <div class="card" style="border-color:var(--amber-muted);margin-top:16px">
+          <div class="text-sm"><span class="text-amber font-semibold">FEOC Risk:</span> Equipment manufacturer unknown. Verify battery/panel sourcing before finalizing credit assumptions. Domestic content bonus requires FEOC-compliant supply chain.</div>
+        </div>
+      `;
+    }
+
+    // ── Developer Tab ─────────────────────────────────────────────────
+    async function loadDeveloper() {
+      const p = project;
+      const devName = p.developer_canonical || p.developer;
+      if (!devName) {
+        document.getElementById('dev-loading').classList.add('hidden');
+        document.getElementById('dev-content').classList.remove('hidden');
+        document.getElementById('dev-content').innerHTML = `
+          <div class="empty-state"><h3>No developer data</h3><p>Developer information is not available for this project.</p></div>
+        `;
+        return;
+      }
+
+      try {
+        const res = await api.developerSearch(devName);
+        const results = res.data || res || [];
+        if (Array.isArray(results) && results.length > 0) {
+          devData = results[0];
+          renderDeveloper();
+        } else {
+          renderDeveloperBasic();
+        }
+      } catch (err) {
+        renderDeveloperBasic();
+      }
+    }
+
+    function renderDeveloperBasic() {
+      const p = project;
+      const devName = p.parent_company || p.developer_canonical || p.developer || 'Unknown';
+
+      document.getElementById('dev-loading').classList.add('hidden');
+      document.getElementById('dev-content').classList.remove('hidden');
+      document.getElementById('dev-content').innerHTML = `
+        <div class="card">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h3 class="text-lg font-semibold">${esc(devName)}</h3>
+              <div class="text-secondary text-sm">Developer</div>
+            </div>
+          </div>
+          ${p.parent_company && p.developer_canonical && p.parent_company !== p.developer_canonical ? `
+            <table class="detail-table">
+              <tr><td>Entity</td><td>${esc(p.developer_canonical || p.developer)}</td></tr>
+              <tr><td>Parent Company</td><td>${esc(p.parent_company)}</td></tr>
+            </table>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    function renderDeveloper() {
+      const d = devData;
+      const p = project;
+
+      document.getElementById('dev-loading').classList.add('hidden');
+      document.getElementById('dev-content').classList.remove('hidden');
+
+      const displayName = p.parent_company || d.name || p.developer_canonical || p.developer || 'Unknown';
+      const tier = d.tier || null;
+      const totalProjects = d.total_projects || d.project_count || null;
+      const totalMW = d.total_mw || d.total_capacity_mw || null;
+      const completionRate = d.completion_rate || null;
+      const devId = d.id || null;
+
+      let profileLink = '';
+      if (devId) {
+        profileLink = `<a href="developer.html?id=${devId}" class="btn btn-primary btn-sm">View Full Profile &rarr;</a>`;
+      } else if (d.name) {
+        profileLink = `<a href="developer.html?name=${encodeURIComponent(d.name)}" class="btn btn-primary btn-sm">View Full Profile &rarr;</a>`;
+      }
+
+      let statsRow = '';
+      if (totalProjects || totalMW || completionRate !== null) {
+        statsRow = `
+          <div class="dev-stats-row mt-4">
+            ${totalProjects ? `<div class="card metric-card"><div class="metric-value">${fmtNum(totalProjects)}</div><div class="metric-label">Total Projects</div></div>` : ''}
+            ${totalMW ? `<div class="card metric-card"><div class="metric-value">${fmtMW(totalMW)}</div><div class="metric-label">Total Capacity</div></div>` : ''}
+            ${completionRate !== null ? `<div class="card metric-card"><div class="metric-value">${fmtPct(completionRate)}</div><div class="metric-label">Completion Rate</div></div>` : ''}
+          </div>
+        `;
+      }
+
+      // Mini portfolio
+      let portfolioTable = '';
+      if (d.recent_projects && d.recent_projects.length) {
+        portfolioTable = renderMiniPortfolio(d.recent_projects);
+      }
+
+      document.getElementById('dev-content').innerHTML = `
+        <div class="card mb-4">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h3 class="text-lg font-semibold">${esc(displayName)}</h3>
+              <div class="text-secondary text-sm flex gap-2 items-center">
+                Developer
+                ${tier ? `<span class="badge ${tierClass(tier)}" style="margin-left:8px">${tierLabel(tier)}</span>` : ''}
+              </div>
+            </div>
+            ${profileLink}
+          </div>
+          ${p.parent_company && p.developer_canonical && p.parent_company !== p.developer_canonical ? `
+            <table class="detail-table mb-4">
+              <tr><td>Entity</td><td>${esc(p.developer_canonical || p.developer)}</td></tr>
+              <tr><td>Parent Company</td><td>${esc(p.parent_company)}</td></tr>
+            </table>
+          ` : ''}
+        </div>
+        ${statsRow}
+        ${portfolioTable}
+      `;
+
+      // If we have a developer id but no recent_projects, try to fetch them
+      if (devId && (!d.recent_projects || !d.recent_projects.length)) {
+        loadDevPortfolio(devId);
+      }
+    }
+
+    async function loadDevPortfolio(devId) {
+      try {
+        const res = await api.developerProjects(devId);
+        const projects = res.data || res || [];
+        if (Array.isArray(projects) && projects.length > 0) {
+          const container = document.getElementById('dev-content');
+          container.innerHTML += renderMiniPortfolio(projects.slice(0, 5));
+        }
+      } catch (e) {
+        // Non-critical
+      }
+    }
+
+    function renderMiniPortfolio(projects) {
+      if (!projects || !projects.length) return '';
+      const rows = projects.slice(0, 5);
+      return `
+        <div class="card mt-4">
+          <h3 class="text-lg font-semibold mb-4">Recent Projects</h3>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th class="col-name">Project</th>
+                <th class="col-mw">MW</th>
+                <th>Tech</th>
+                <th>Status</th>
+                <th>COD</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map(r => `
+                <tr onclick="${r.id ? `window.location='project.html?id=${r.id}'` : ''}">
+                  <td class="col-name">${esc(r.name || r.queue_id || '&mdash;')}</td>
+                  <td class="col-mw font-mono">${r.capacity_mw != null ? Math.round(r.capacity_mw) : '&mdash;'}</td>
+                  <td><span class="badge ${techClass(r.type)}">${techLabel(r.type)}</span></td>
+                  <td><span class="status-dot ${statusDotClass(r.status)}"></span>${statusLabel(r.status)}</td>
+                  <td class="font-mono text-sm">${formatQuarter(r.cod)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    // ── Grid Context Tab ──────────────────────────────────────────────
+    function renderGridTab() {
+      const p = project;
+      document.getElementById('tab-grid').innerHTML = `
+        <div class="card">
+          <h3 class="text-lg font-semibold mb-4">Point of Interconnection</h3>
+          <table class="detail-table">
+            <tr><td>POI</td><td>${esc(p.poi || '') || '&mdash;'}</td></tr>
+            <tr><td>Region</td><td>${esc(p.region || '') || '&mdash;'}</td></tr>
+            <tr><td>Study Phase</td><td>${esc(p.study_phase || p.ia_status || '') || '&mdash;'}</td></tr>
+            ${p.study_cycle ? `<tr><td>Study Cycle</td><td>${esc(p.study_cycle)}</td></tr>` : ''}
+            ${p.study_group ? `<tr><td>Study Group</td><td>${esc(p.study_group)}</td></tr>` : ''}
+            ${p.feasibility_study_status ? `<tr><td>Feasibility Study</td><td>${esc(p.feasibility_study_status)}</td></tr>` : ''}
+            ${p.system_impact_study_status ? `<tr><td>System Impact Study</td><td>${esc(p.system_impact_study_status)}</td></tr>` : ''}
+            ${p.facilities_study_status ? `<tr><td>Facilities Study</td><td>${esc(p.facilities_study_status)}</td></tr>` : ''}
+            <tr><td>Source</td><td>${p.source ? p.source.toUpperCase() : '&mdash;'}</td></tr>
+          </table>
+        </div>
+      `;
+    }
+
+    // ── Similar Projects Tab ──────────────────────────────────────────
+    async function loadSimilar() {
+      const p = project;
+      if (!p.region && !p.type) {
+        document.getElementById('similar-loading').classList.add('hidden');
+        document.getElementById('similar-content').classList.remove('hidden');
+        document.getElementById('similar-content').innerHTML = `
+          <div class="empty-state"><h3>No similar projects</h3><p>Region and technology data required to find similar projects.</p></div>
+        `;
+        return;
+      }
+
+      try {
+        const params = { per_page: 11 };
+        if (p.region) params.region = p.region;
+        if (p.type) params.fuel_type = p.type;
+        const res = await api.projects(params);
+        const all = res.data || [];
+        similarData = all.filter(s => s.id !== p.id).slice(0, 10);
+        renderSimilar();
+      } catch (err) {
+        document.getElementById('similar-loading').classList.add('hidden');
+        document.getElementById('similar-content').classList.remove('hidden');
+        document.getElementById('similar-content').innerHTML = `
+          <div class="error-state"><h3>Could not load similar projects</h3><p>${esc(err.message)}</p></div>
+        `;
+      }
+    }
+
+    function renderSimilar() {
+      document.getElementById('similar-loading').classList.add('hidden');
+      document.getElementById('similar-content').classList.remove('hidden');
+
+      if (!similarData || !similarData.length) {
+        document.getElementById('similar-content').innerHTML = `
+          <div class="empty-state"><h3>No similar projects found</h3><p>No other ${techLabel(project.type)} projects in ${esc(project.region || 'this region')}.</p></div>
+        `;
+        return;
+      }
+
+      document.getElementById('similar-content').innerHTML = `
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th class="col-name">Project</th>
+              <th class="col-mw">MW</th>
+              <th>Status</th>
+              <th>Developer</th>
+              <th>Credit</th>
+              <th>COD</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${similarData.map(s => `
+              <tr onclick="window.location='project.html?id=${s.id}'">
+                <td class="col-name">
+                  <div style="font-weight:500">${esc(s.name || s.queue_id || '&mdash;')}</div>
+                </td>
+                <td class="col-mw font-mono">${s.capacity_mw != null ? Math.round(s.capacity_mw) : '&mdash;'}</td>
+                <td><span class="status-dot ${statusDotClass(s.status)}"></span>${statusLabel(s.status)}</td>
+                <td class="truncate" style="max-width:160px">${esc(s.parent_company || s.developer_canonical || s.developer || '')}</td>
+                <td class="font-mono text-sm">${creditDisplay(s)}</td>
+                <td class="font-mono text-sm">${formatQuarter(s.cod)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    // ── Tab Switching ─────────────────────────────────────────────────
+    function wireTabs() {
+      document.querySelectorAll('.tab-bar button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-bar button').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          document.querySelectorAll('.tab-content').forEach(tc => tc.classList.add('hidden'));
+          document.getElementById(`tab-${btn.dataset.tab}`).classList.remove('hidden');
+        });
+      });
+    }
+
+    // ── Search ────────────────────────────────────────────────────────
+    function wireSearch() {
+      const input = document.getElementById('search-input');
+      const dropdown = document.getElementById('search-dropdown');
+
+      const debouncedSearch = debounce(async (query) => {
+        if (!query || query.length < 2) {
+          dropdown.classList.add('hidden');
+          return;
+        }
+        try {
+          const res = await api.search(query, { per_page: 8 });
+          const results = res.data || [];
+          if (!results.length) { dropdown.classList.add('hidden'); return; }
+          dropdown.classList.remove('hidden');
+          dropdown.innerHTML = results.map(p => `
+            <div class="search-dropdown-item" onclick="window.location='project.html?id=${p.id}'">
+              <div>
+                <div class="name">${esc(p.name || p.queue_id)}</div>
+                <div class="meta">${esc(p.developer || '')} &middot; ${fmtMW(p.capacity_mw)} ${techLabel(p.type)}</div>
+              </div>
+              <span class="badge ${techClass(p.type)}">${esc(p.region)}</span>
+            </div>
+          `).join('');
+        } catch (e) { dropdown.classList.add('hidden'); }
+      }, 300);
+
+      input.addEventListener('input', (e) => debouncedSearch(e.target.value.trim()));
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          dropdown.classList.add('hidden');
+          const q = input.value.trim();
+          if (q) window.location = `/platform/?q=${encodeURIComponent(q)}`;
+        }
+        if (e.key === 'Escape') { input.blur(); input.value = ''; dropdown.classList.add('hidden'); }
+      });
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.topbar-search')) dropdown.classList.add('hidden');
+      });
+    }
+
+    // ── Theme ─────────────────────────────────────────────────────────
+    function wireThemeToggle() {
+      document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+    }
+
+    // ── Keyboard Shortcuts ────────────────────────────────────────────
+    function wireKeyboard() {
+      document.addEventListener('keydown', (e) => {
+        if (e.key === '/' && !e.target.matches('input, select, textarea')) {
+          e.preventDefault();
+          document.getElementById('search-input').focus();
+        }
+      });
+    }
+  </script>
+</body>
+</html>
