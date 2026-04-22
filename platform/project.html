@@ -6,96 +6,131 @@
   <title>Project Detail — Glass Energy</title>
   <meta name="description" content="Full project intelligence: score breakdown, tax credit analysis, developer info, grid context, and similar projects.">
   <link rel="stylesheet" href="styles.css">
-  <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="/favicon.png">
+  <script>
+    (function(){
+      var t = localStorage.getItem('glass-theme');
+      if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
 </head>
 <body>
+  <div class="layout">
 
-  <!-- Topbar -->
-  <div class="topbar">
-    <a href="/platform/" class="topbar-logo"><span>Glass</span> Energy</a>
-    <div class="topbar-search">
-      <span class="search-icon">&#x1F50D;</span>
-      <input type="text" placeholder="Search projects, developers, locations..." id="search-input">
-      <span class="search-shortcut">/</span>
-      <div class="search-dropdown hidden" id="search-dropdown"></div>
-    </div>
-    <nav class="topbar-nav">
-      <a href="/platform/">Explorer</a>
-      <a href="/platform/developer.html">Developers</a>
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <a href="/platform/" class="sidebar-logo">
+        <span class="logo-mark">G</span>
+        Glass Energy
+      </a>
+      <div class="sidebar-section">
+        <a href="/platform/" class="sidebar-item">
+          <span class="icon">&#x25A6;</span> Explorer
+        </a>
+        <a href="/platform/developer.html" class="sidebar-item">
+          <span class="icon">&#x2302;</span> Developers
+        </a>
+        <a href="/platform/compare.html" class="sidebar-item">
+          <span class="icon">&#x2194;</span> Compare
+        </a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Tools</div>
+        <a href="/feoc/" class="sidebar-item">
+          <span class="icon">&#x2713;</span> FEOC Lookup
+        </a>
+        <a href="/api/" class="sidebar-item">
+          <span class="icon">&#x007B;</span> API
+        </a>
+      </div>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-footer">
+        <button class="sidebar-item" onclick="toggleTheme()" style="width:100%;border:none;cursor:pointer;background:none;text-align:left;font-family:inherit">
+          <span class="icon">&#x25D0;</span> Toggle theme
+        </button>
+      </div>
     </nav>
-    <div class="topbar-actions">
-      <button class="btn-icon" id="theme-toggle" title="Toggle theme">&#x25D0;</button>
-    </div>
-  </div>
 
-  <div class="app">
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 
-    <!-- Loading state -->
-    <div class="loading-spinner" id="loading"></div>
-
-    <!-- Error state -->
-    <div class="error-state hidden" id="error">
-      <h3>Something went wrong</h3>
-      <p id="error-msg"></p>
-    </div>
-
-    <!-- Main content (hidden until loaded) -->
-    <div id="main-content" class="hidden">
-
-      <!-- Back link + actions -->
-      <div class="flex justify-between items-center" style="padding-top:16px">
-        <a href="/platform/" style="color:var(--text-1);font-size:0.84rem">&larr; Back to Explorer</a>
-        <div class="flex gap-2">
-          <button class="btn-icon" onclick="toggleTheme()" title="Toggle theme">&#x25D0;</button>
+    <div class="main">
+      <header class="main-header">
+        <button class="btn-icon mobile-menu-btn" onclick="openSidebar()">&#x2630;</button>
+        <div class="search-box">
+          <span class="search-icon">&#x1F50D;</span>
+          <input type="text" placeholder="Search projects, developers, locations..." id="search-input">
+          <span class="search-shortcut">/</span>
+          <div class="search-dropdown hidden" id="search-dropdown"></div>
         </div>
+      </header>
+
+      <div class="main-content">
+
+        <!-- Loading state -->
+        <div class="loading-spinner" id="loading"></div>
+
+        <!-- Error state -->
+        <div class="error-state hidden" id="error">
+          <h3>Failed to load project</h3>
+          <p id="error-msg"></p>
+        </div>
+
+        <!-- Main content (hidden until loaded) -->
+        <div id="main-content-inner" class="hidden">
+
+          <!-- Back link -->
+          <div style="padding:4px 0 8px">
+            <a href="/platform/" style="color:var(--text-2);font-size:13px">&larr; Back to Explorer</a>
+          </div>
+
+          <!-- Header -->
+          <div class="detail-header" id="detail-header"></div>
+
+          <!-- Tab bar -->
+          <div class="tab-bar">
+            <button class="active" data-tab="overview">Overview</button>
+            <button data-tab="tax-credits">Tax Credits</button>
+            <button data-tab="developer">Developer</button>
+            <button data-tab="grid">Grid Context</button>
+            <button data-tab="similar">Similar Projects</button>
+          </div>
+
+          <!-- Tab: Overview -->
+          <div class="tab-content" id="tab-overview"></div>
+
+          <!-- Tab: Tax Credits -->
+          <div class="tab-content hidden" id="tab-tax-credits">
+            <div class="loading-spinner" id="tax-loading"></div>
+            <div id="tax-content" class="hidden"></div>
+          </div>
+
+          <!-- Tab: Developer -->
+          <div class="tab-content hidden" id="tab-developer">
+            <div class="loading-spinner" id="dev-loading"></div>
+            <div id="dev-content" class="hidden"></div>
+          </div>
+
+          <!-- Tab: Grid Context -->
+          <div class="tab-content hidden" id="tab-grid"></div>
+
+          <!-- Tab: Similar Projects -->
+          <div class="tab-content hidden" id="tab-similar">
+            <div class="loading-spinner" id="similar-loading"></div>
+            <div id="similar-content" class="hidden"></div>
+          </div>
+
+        </div>
+
+        <div class="status-bar">
+          <span>Glass Energy Platform</span>
+          <span>Project Detail</span>
+        </div>
+
       </div>
-
-      <!-- Header -->
-      <div class="detail-header" id="detail-header"></div>
-
-      <!-- Tab bar -->
-      <div class="tab-bar">
-        <button class="active" data-tab="overview">Overview</button>
-        <button data-tab="tax-credits">Tax Credits</button>
-        <button data-tab="developer">Developer</button>
-        <button data-tab="grid">Grid Context</button>
-        <button data-tab="similar">Similar Projects</button>
-      </div>
-
-      <!-- Tab: Overview -->
-      <div class="tab-content" id="tab-overview"></div>
-
-      <!-- Tab: Tax Credits -->
-      <div class="tab-content hidden" id="tab-tax-credits">
-        <div class="loading-spinner" id="tax-loading"></div>
-        <div id="tax-content" class="hidden"></div>
-      </div>
-
-      <!-- Tab: Developer -->
-      <div class="tab-content hidden" id="tab-developer">
-        <div class="loading-spinner" id="dev-loading"></div>
-        <div id="dev-content" class="hidden"></div>
-      </div>
-
-      <!-- Tab: Grid Context -->
-      <div class="tab-content hidden" id="tab-grid"></div>
-
-      <!-- Tab: Similar Projects -->
-      <div class="tab-content hidden" id="tab-similar">
-        <div class="loading-spinner" id="similar-loading"></div>
-        <div id="similar-content" class="hidden"></div>
-      </div>
-
     </div>
-
-    <!-- Status Bar -->
-    <div class="status-bar">
-      <span>Glass Energy Platform</span>
-      <span>Project Detail</span>
-    </div>
-
   </div>
 
   <script src="api.js"></script>
@@ -111,7 +146,6 @@
     // ── Init ──────────────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', async () => {
       initTheme();
-      wireThemeToggle();
       wireSearch();
       wireKeyboard();
       wireTabs();
@@ -138,7 +172,7 @@
 
         // Show content
         document.getElementById('loading').classList.add('hidden');
-        document.getElementById('main-content').classList.remove('hidden');
+        document.getElementById('main-content-inner').classList.remove('hidden');
 
         // Lazy-load other tabs
         loadTaxCredits();
@@ -740,13 +774,18 @@
         if (e.key === 'Escape') { input.blur(); input.value = ''; dropdown.classList.add('hidden'); }
       });
       document.addEventListener('click', (e) => {
-        if (!e.target.closest('.topbar-search')) dropdown.classList.add('hidden');
+        if (!e.target.closest('.search-box')) dropdown.classList.add('hidden');
       });
     }
 
-    // ── Theme ─────────────────────────────────────────────────────────
-    function wireThemeToggle() {
-      document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+    // ── Mobile sidebar ──────────────────────────────────────────────
+    function openSidebar() {
+      document.getElementById('sidebar').classList.add('open');
+      document.getElementById('sidebar-overlay').style.display = 'block';
+    }
+    function closeSidebar() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebar-overlay').style.display = 'none';
     }
 
     // ── Keyboard Shortcuts ────────────────────────────────────────────

@@ -153,9 +153,16 @@ function tierLabel(tier) {
 
 // ── Theme ───────────────────────────────────────────────────────────
 function initTheme() {
-  const saved = localStorage.getItem('glass-theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', saved);
-  return saved;
+  const saved = localStorage.getItem('glass-theme');
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+    return saved;
+  }
+  // Detect system preference
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme = prefersDark ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', theme);
+  return theme;
 }
 
 function toggleTheme() {

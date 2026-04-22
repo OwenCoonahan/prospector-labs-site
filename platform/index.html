@@ -4,183 +4,233 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Glass Energy — Project Explorer</title>
-  <meta name="description" content="Search and analyze 47,000+ energy projects. Investability scores, tax credit analysis, and developer intelligence.">
+  <meta name="description" content="Search and analyze 47,000+ energy projects across all US interconnection queues. Investability scores, tax credit analysis, developer intelligence.">
   <link rel="stylesheet" href="styles.css">
-  <link href="https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/style.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="/favicon.png">
+  <script>
+    // Prevent flash: apply theme before render
+    (function(){
+      var t = localStorage.getItem('glass-theme');
+      if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
 </head>
 <body>
+  <div class="layout">
 
-  <!-- Topbar -->
-  <div class="topbar">
-    <a href="/platform/" class="topbar-logo"><span>Glass</span> Energy</a>
-    <div class="topbar-search">
-      <span class="search-icon">&#x1F50D;</span>
-      <input type="text" placeholder="Search projects, developers, locations..." id="search-input">
-      <span class="search-shortcut">/</span>
-      <div class="search-dropdown hidden" id="search-dropdown"></div>
-    </div>
-    <nav class="topbar-nav">
-      <a href="/platform/" class="active">Explorer</a>
-      <a href="/platform/developer.html">Developers</a>
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <a href="/platform/" class="sidebar-logo">
+        <span class="logo-mark">G</span>
+        Glass Energy
+      </a>
+
+      <div class="sidebar-section">
+        <a href="/platform/" class="sidebar-item active">
+          <span class="icon">&#x25A6;</span> Explorer
+        </a>
+        <a href="/platform/developer.html" class="sidebar-item">
+          <span class="icon">&#x2302;</span> Developers
+        </a>
+        <a href="/platform/compare.html" class="sidebar-item">
+          <span class="icon">&#x2194;</span> Compare
+        </a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Tools</div>
+        <a href="/feoc/" class="sidebar-item">
+          <span class="icon">&#x2713;</span> FEOC Lookup
+        </a>
+        <a href="/api/" class="sidebar-item">
+          <span class="icon">&#x007B;</span> API
+        </a>
+      </div>
+
+      <div class="sidebar-spacer"></div>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-item" onclick="toggleTheme()" style="width:100%;border:none;cursor:pointer;background:none;text-align:left;font-family:inherit">
+          <span class="icon" id="theme-icon">&#x25D0;</span> Toggle theme
+        </button>
+      </div>
     </nav>
-    <div class="topbar-actions">
-      <button class="btn btn-ghost btn-sm" id="export-btn">Export CSV</button>
-      <button class="btn-icon" id="theme-toggle" title="Toggle theme">&#x25D0;</button>
+
+    <!-- Overlay for mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+    <!-- Main -->
+    <div class="main">
+
+      <!-- Top bar -->
+      <header class="main-header">
+        <button class="btn-icon mobile-menu-btn" id="mobile-menu" onclick="openSidebar()">&#x2630;</button>
+        <div class="search-box">
+          <span class="search-icon">&#x1F50D;</span>
+          <input type="text" placeholder="Search projects, developers, locations..." id="search-input">
+          <span class="search-shortcut">/</span>
+          <div class="search-dropdown hidden" id="search-dropdown"></div>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+          <button class="btn btn-ghost btn-sm" id="export-btn">Export CSV</button>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <div class="main-content">
+
+        <div class="page-header">
+          <h1>Projects</h1>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar" id="filter-bar">
+          <div class="filter-group">
+            <label class="filter-label">ISO/RTO</label>
+            <select class="filter-select" id="filter-region">
+              <option value="">All</option>
+              <option value="MISO">MISO</option>
+              <option value="PJM">PJM</option>
+              <option value="ERCOT">ERCOT</option>
+              <option value="CAISO">CAISO</option>
+              <option value="NYISO">NYISO</option>
+              <option value="SPP">SPP</option>
+              <option value="ISO-NE">ISO-NE</option>
+              <option value="West">West</option>
+              <option value="Southeast">Southeast</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label class="filter-label">Technology</label>
+            <select class="filter-select" id="filter-type">
+              <option value="">All</option>
+              <option value="Solar">Solar</option>
+              <option value="Wind">Wind</option>
+              <option value="Storage">Storage</option>
+              <option value="Gas">Gas</option>
+              <option value="Hybrid">Hybrid</option>
+              <option value="Nuclear">Nuclear</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label class="filter-label">Status</label>
+            <select class="filter-select" id="filter-status">
+              <option value="">All</option>
+              <option value="active">Active</option>
+              <option value="withdrawn">Withdrawn</option>
+              <option value="operational">Operational</option>
+              <option value="IA Executed">IA Executed</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label class="filter-label">State</label>
+            <select class="filter-select" id="filter-state">
+              <option value="">All</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label class="filter-label">Min MW</label>
+            <input type="number" class="filter-input" id="filter-cap-min" placeholder="0" min="0">
+          </div>
+          <div class="filter-group">
+            <label class="filter-label">Max MW</label>
+            <input type="number" class="filter-input" id="filter-cap-max" placeholder="Any" min="0">
+          </div>
+          <div class="filter-group">
+            <label class="filter-label">Energy Community</label>
+            <select class="filter-select" id="filter-ec">
+              <option value="">All</option>
+              <option value="1">Yes</option>
+              <option value="0">No</option>
+            </select>
+          </div>
+          <div class="filter-group" style="align-self:flex-end">
+            <button class="btn btn-sm btn-ghost hidden" id="clear-filters">Clear all</button>
+          </div>
+        </div>
+
+        <!-- Active Filter Chips -->
+        <div class="filter-chips" id="active-filters"></div>
+
+        <!-- Stats + View Controls -->
+        <div class="view-controls">
+          <div class="stats-bar" style="padding:0">
+            <div class="stat"><span class="stat-value" id="stat-count">--</span> projects</div>
+            <span class="stat-divider">&middot;</span>
+            <div class="stat"><span class="stat-value" id="stat-capacity">--</span></div>
+            <span class="stat-divider">&middot;</span>
+            <div class="stat"><span class="stat-value" id="stat-ec">--</span> EC-eligible</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <div class="view-toggle">
+              <button class="active" data-view="table">Table</button>
+              <button data-view="cards">Cards</button>
+            </div>
+            <select class="filter-select" id="sort-by" style="font-size:12px;padding:5px 8px">
+              <option value="">Sort by...</option>
+              <option value="capacity_mw">Capacity</option>
+              <option value="name">Name</option>
+              <option value="queue_date">Queue Date</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Results Container -->
+        <div class="results-container" id="results-container">
+          <div class="loading-spinner" id="loading"></div>
+
+          <table class="data-table hidden" id="table-view">
+            <thead>
+              <tr>
+                <th class="col-name">Project</th>
+                <th class="col-mw">MW</th>
+                <th>Tech</th>
+                <th>ISO</th>
+                <th>Status</th>
+                <th>Developer</th>
+                <th>Credit</th>
+                <th>EC</th>
+                <th>COD</th>
+              </tr>
+            </thead>
+            <tbody id="results-body"></tbody>
+          </table>
+
+          <div class="card-grid hidden" id="card-view"></div>
+
+          <div class="empty-state hidden" id="empty">
+            <h3>No projects match your filters</h3>
+            <p>Try adjusting your search criteria or clearing filters.</p>
+          </div>
+
+          <div class="error-state hidden" id="error">
+            <h3>Failed to load data</h3>
+            <p id="error-msg"></p>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination">
+          <span class="page-info"><span id="result-range"></span> of <span id="total-count-display">--</span></span>
+          <div class="pagination-pages">
+            <button id="prev-page" disabled>&larr; Prev</button>
+            <span class="page-info" style="padding:0 8px">Page <span id="current-page">1</span> of <span id="total-pages">1</span></span>
+            <button id="next-page">Next &rarr;</button>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="status-bar">
+          <span>Glass Energy Platform</span>
+          <span id="total-count"></span>
+        </div>
+
+      </div>
     </div>
-  </div>
-
-  <!-- App Content -->
-  <div class="app">
-
-    <!-- Filter Bar -->
-    <div class="filter-bar" id="filter-bar">
-      <div class="filter-group">
-        <label class="filter-label">ISO/RTO</label>
-        <select class="filter-select" id="filter-region">
-          <option value="">All</option>
-          <option value="MISO">MISO</option>
-          <option value="PJM">PJM</option>
-          <option value="ERCOT">ERCOT</option>
-          <option value="CAISO">CAISO</option>
-          <option value="NYISO">NYISO</option>
-          <option value="SPP">SPP</option>
-          <option value="ISO-NE">ISO-NE</option>
-          <option value="West">West</option>
-          <option value="Southeast">Southeast</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label class="filter-label">Technology</label>
-        <select class="filter-select" id="filter-type">
-          <option value="">All</option>
-          <option value="Solar">Solar</option>
-          <option value="Wind">Wind</option>
-          <option value="Storage">Storage</option>
-          <option value="Gas">Gas</option>
-          <option value="Hybrid">Hybrid</option>
-          <option value="Nuclear">Nuclear</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label class="filter-label">Status</label>
-        <select class="filter-select" id="filter-status">
-          <option value="">All</option>
-          <option value="active">Active</option>
-          <option value="withdrawn">Withdrawn</option>
-          <option value="operational">Operational</option>
-          <option value="IA Executed">IA Executed</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label class="filter-label">State</label>
-        <select class="filter-select" id="filter-state">
-          <option value="">All</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label class="filter-label">Min MW</label>
-        <input type="number" class="filter-input" id="filter-cap-min" placeholder="Min MW" min="0">
-      </div>
-      <div class="filter-group">
-        <label class="filter-label">Max MW</label>
-        <input type="number" class="filter-input" id="filter-cap-max" placeholder="Max MW" min="0">
-      </div>
-      <div class="filter-group">
-        <label class="filter-label">Energy Community</label>
-        <select class="filter-select" id="filter-ec">
-          <option value="">All</option>
-          <option value="1">Yes</option>
-          <option value="0">No</option>
-        </select>
-      </div>
-      <div class="filter-group" style="align-self:flex-end">
-        <button class="btn btn-sm btn-ghost hidden" id="clear-filters">Clear All</button>
-      </div>
-    </div>
-
-    <!-- Active Filter Chips -->
-    <div class="filter-chips" id="active-filters"></div>
-
-    <!-- Stats Bar -->
-    <div class="stats-bar">
-      <div class="stat"><span class="stat-value" id="stat-count">--</span> projects</div>
-      <span class="stat-divider">|</span>
-      <div class="stat"><span class="stat-value" id="stat-capacity">--</span> total</div>
-      <span class="stat-divider">|</span>
-      <div class="stat"><span class="stat-value" id="stat-ec">--</span> EC-eligible</div>
-    </div>
-
-    <!-- View Controls -->
-    <div class="view-controls">
-      <div class="view-toggle">
-        <button class="active" data-view="table">&#x2261; Table</button>
-        <button data-view="cards">&#x25A6; Cards</button>
-      </div>
-      <div class="sort-controls">
-        <select class="filter-select" id="sort-by">
-          <option value="">Sort by...</option>
-          <option value="capacity_mw">Capacity</option>
-          <option value="name">Name</option>
-          <option value="queue_date">Queue Date</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Results Container -->
-    <div class="results-container" id="results-container">
-      <!-- Loading -->
-      <div class="loading-spinner" id="loading"></div>
-
-      <!-- Table View -->
-      <table class="data-table hidden" id="table-view">
-        <thead>
-          <tr>
-            <th class="col-name">Project</th>
-            <th class="col-mw">MW</th>
-            <th>Tech</th>
-            <th>ISO</th>
-            <th>Status</th>
-            <th>Developer</th>
-            <th>Credit</th>
-            <th>EC</th>
-            <th>COD</th>
-          </tr>
-        </thead>
-        <tbody id="results-body"></tbody>
-      </table>
-
-      <!-- Card View -->
-      <div class="card-grid hidden" id="card-view"></div>
-
-      <!-- Empty State -->
-      <div class="empty-state hidden" id="empty">
-        <h3>No projects match your filters</h3>
-        <p>Try adjusting your search criteria or clearing filters.</p>
-      </div>
-
-      <!-- Error State -->
-      <div class="error-state hidden" id="error">
-        <h3>Something went wrong</h3>
-        <p id="error-msg"></p>
-      </div>
-    </div>
-
-    <!-- Pagination -->
-    <div class="pagination" id="pagination">
-      <button id="prev-page" disabled>&larr; Prev</button>
-      <span class="page-info">Page <span id="current-page">1</span> of <span id="total-pages">1</span></span>
-      <button id="next-page">Next &rarr;</button>
-    </div>
-
-    <!-- Status Bar -->
-    <div class="status-bar">
-      <span>Glass Energy Platform</span>
-      <span id="total-count"></span>
-    </div>
-
   </div>
 
   <script src="api.js"></script>
@@ -193,7 +243,6 @@
     let currentData = [];
     let globalStats = null;
 
-    // US states for filter dropdown
     const US_STATES = [
       'AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN',
       'IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV',
@@ -206,39 +255,41 @@
       initTheme();
       populateStateFilter();
 
-      // Read filters from URL
       const filters = getFiltersFromURL();
       applyFiltersToControls(filters);
 
-      // Wire up event listeners
       wireFilters();
       wirePagination();
       wireSearch();
       wireViewToggle();
       wireExport();
-      wireThemeToggle();
       wireKeyboard();
 
-      // Load data
       await loadProjects(filters);
 
-      // Load stats
       try {
         const statsRes = await api.stats();
         globalStats = statsRes.data;
         updateGlobalStats(globalStats);
-      } catch (e) {
-        // Stats are non-critical
-      }
+      } catch (e) {}
     });
+
+    // ── Mobile sidebar ────────────────────────────────────────────────
+    function openSidebar() {
+      document.getElementById('sidebar').classList.add('open');
+      document.getElementById('sidebar-overlay').style.display = 'block';
+    }
+    function closeSidebar() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebar-overlay').style.display = 'none';
+    }
 
     // ── Populate State Filter ─────────────────────────────────────────
     function populateStateFilter() {
       const sel = document.getElementById('filter-state');
       US_STATES.forEach(s => {
         const opt = document.createElement('option');
-        opt.value = s;
-        opt.textContent = s;
+        opt.value = s; opt.textContent = s;
         sel.appendChild(opt);
       });
     }
@@ -251,8 +302,6 @@
 
       try {
         const params = { ...filters, page: currentPage, per_page: 50 };
-
-        // Handle search query
         let res;
         if (params.q) {
           res = await api.search(params.q, params);
@@ -265,11 +314,8 @@
         totalPages = meta.total_pages || 1;
         currentPage = meta.page || 1;
 
-        // Update stats bar from response meta
         document.getElementById('stat-count').textContent = fmtNum(meta.total || currentData.length);
-
-        // Update pagination
-        updatePagination();
+        updatePagination(meta);
 
         if (currentData.length === 0) {
           showEmpty();
@@ -283,21 +329,16 @@
       }
     }
 
-    // ── Render Results ────────────────────────────────────────────────
+    // ── Render ─────────────────────────────────────────────────────────
     function renderResults() {
-      if (currentView === 'table') {
-        renderTable();
-      } else {
-        renderCards();
-      }
+      if (currentView === 'table') renderTable();
+      else renderCards();
     }
 
     function renderTable() {
       document.getElementById('table-view').classList.remove('hidden');
       document.getElementById('card-view').classList.add('hidden');
-
-      const tbody = document.getElementById('results-body');
-      tbody.innerHTML = currentData.map(p => renderRow(p)).join('');
+      document.getElementById('results-body').innerHTML = currentData.map(renderRow).join('');
     }
 
     function renderRow(p) {
@@ -321,19 +362,18 @@
       document.getElementById('table-view').classList.add('hidden');
       const grid = document.getElementById('card-view');
       grid.classList.remove('hidden');
-
       grid.innerHTML = currentData.map(p => `
         <div class="card project-card" onclick="window.location='project.html?id=${p.id}'">
           <div class="card-header">
             <span class="card-title">${esc(p.name || p.queue_id)}</span>
+            <span class="badge ${techClass(p.type)}">${techLabel(p.type)}</span>
           </div>
-          <div class="card-row"><span class="label">Capacity</span><span>${fmtMW(p.capacity_mw)} ${techLabel(p.type)}</span></div>
+          <div class="card-row"><span class="label">Capacity</span><span class="font-mono">${fmtMW(p.capacity_mw)}</span></div>
           <div class="card-row"><span class="label">ISO</span><span>${esc(p.region)}</span></div>
           <div class="card-row"><span class="label">Status</span><span><span class="status-dot ${statusDotClass(p.status)}"></span>${statusLabel(p.status)}</span></div>
           <div class="card-row"><span class="label">Developer</span><span class="truncate" style="max-width:180px">${esc(p.developer_canonical || p.developer || '\u2014')}</span></div>
           <div class="card-row"><span class="label">Credit</span><span class="font-mono">${creditDisplay(p)}</span></div>
           <div class="card-row"><span class="label">COD</span><span class="font-mono">${formatQuarter(p.cod)}</span></div>
-          <div class="card-row"><span class="label">EC</span><span>${p.energy_community_eligible ? '<span class="check-yes">\u2713 Yes</span>' : '<span class="check-no">\u2014</span>'}</span></div>
         </div>
       `).join('');
     }
@@ -348,8 +388,6 @@
       const capMin = document.getElementById('filter-cap-min').value;
       const capMax = document.getElementById('filter-cap-max').value;
       const ec = document.getElementById('filter-ec').value;
-
-      // API uses 'iso' not 'region', 'fuel_type' not 'type'
       if (region) f.iso = region;
       if (type) f.fuel_type = type;
       if (status) f.status = status;
@@ -357,7 +395,6 @@
       if (capMin) f.capacity_min = capMin;
       if (capMax) f.capacity_max = capMax;
       if (ec) f.energy_community = ec;
-
       return f;
     }
 
@@ -398,11 +435,7 @@
 
     function updateClearButton(filters) {
       const btn = document.getElementById('clear-filters');
-      if (Object.keys(filters).length > 0) {
-        btn.classList.remove('hidden');
-      } else {
-        btn.classList.add('hidden');
-      }
+      btn.classList.toggle('hidden', Object.keys(filters).length === 0);
     }
 
     function clearFilter(key) {
@@ -417,38 +450,30 @@
     }
 
     function clearAllFilters() {
-      document.getElementById('filter-region').value = '';
-      document.getElementById('filter-type').value = '';
-      document.getElementById('filter-status').value = '';
-      document.getElementById('filter-state').value = '';
-      document.getElementById('filter-cap-min').value = '';
-      document.getElementById('filter-cap-max').value = '';
-      document.getElementById('filter-ec').value = '';
+      ['filter-region','filter-type','filter-status','filter-state','filter-cap-min','filter-cap-max','filter-ec']
+        .forEach(id => document.getElementById(id).value = '');
       onFilterChange();
     }
 
     function wireFilters() {
-      const selects = ['filter-region', 'filter-type', 'filter-status', 'filter-state', 'filter-ec'];
-      selects.forEach(id => {
-        document.getElementById(id).addEventListener('change', onFilterChange);
-      });
-
-      const inputs = ['filter-cap-min', 'filter-cap-max'];
+      ['filter-region','filter-type','filter-status','filter-state','filter-ec']
+        .forEach(id => document.getElementById(id).addEventListener('change', onFilterChange));
       const debouncedFilter = debounce(onFilterChange, 500);
-      inputs.forEach(id => {
-        document.getElementById(id).addEventListener('input', debouncedFilter);
-      });
-
+      ['filter-cap-min','filter-cap-max']
+        .forEach(id => document.getElementById(id).addEventListener('input', debouncedFilter));
       document.getElementById('clear-filters').addEventListener('click', clearAllFilters);
-
-      // Init chips from URL
       const filters = getActiveFilters();
       updateFilterChips(filters);
       updateClearButton(filters);
     }
 
     // ── Pagination ────────────────────────────────────────────────────
-    function updatePagination() {
+    function updatePagination(meta) {
+      const total = meta?.total || 0;
+      const start = total > 0 ? ((currentPage - 1) * 50) + 1 : 0;
+      const end = Math.min(currentPage * 50, total);
+      document.getElementById('result-range').textContent = total > 0 ? `${fmtNum(start)}-${fmtNum(end)}` : '0';
+      document.getElementById('total-count-display').textContent = fmtNum(total);
       document.getElementById('current-page').textContent = currentPage;
       document.getElementById('total-pages').textContent = totalPages;
       document.getElementById('prev-page').disabled = currentPage <= 1;
@@ -482,25 +507,15 @@
     function wireSearch() {
       const input = document.getElementById('search-input');
       const dropdown = document.getElementById('search-dropdown');
-
       const debouncedSearch = debounce(async (query) => {
-        if (!query || query.length < 2) {
-          dropdown.classList.add('hidden');
-          return;
-        }
+        if (!query || query.length < 2) { dropdown.classList.add('hidden'); return; }
         try {
           const res = await api.search(query, { per_page: 8 });
           renderSearchDropdown(res.data || []);
-        } catch (e) {
-          dropdown.classList.add('hidden');
-        }
+        } catch (e) { dropdown.classList.add('hidden'); }
       }, 300);
 
-      input.addEventListener('input', (e) => {
-        debouncedSearch(e.target.value.trim());
-      });
-
-      // Enter key: filter main results
+      input.addEventListener('input', (e) => debouncedSearch(e.target.value.trim()));
       input.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
@@ -512,27 +527,16 @@
           setFiltersToURL(filters);
           loadProjects(filters);
         }
-        if (e.key === 'Escape') {
-          input.blur();
-          input.value = '';
-          dropdown.classList.add('hidden');
-        }
+        if (e.key === 'Escape') { input.blur(); input.value = ''; dropdown.classList.add('hidden'); }
       });
-
-      // Click outside to close
       document.addEventListener('click', (e) => {
-        if (!e.target.closest('.topbar-search')) {
-          dropdown.classList.add('hidden');
-        }
+        if (!e.target.closest('.search-box')) dropdown.classList.add('hidden');
       });
     }
 
     function renderSearchDropdown(results) {
       const dropdown = document.getElementById('search-dropdown');
-      if (!results.length) {
-        dropdown.classList.add('hidden');
-        return;
-      }
+      if (!results.length) { dropdown.classList.add('hidden'); return; }
       dropdown.classList.remove('hidden');
       dropdown.innerHTML = results.map(p => `
         <div class="search-dropdown-item" onclick="window.location='project.html?id=${p.id}'">
@@ -555,16 +559,14 @@
           if (currentData.length) renderResults();
         });
       });
-
-      // Sort
       document.getElementById('sort-by').addEventListener('change', (e) => {
         const field = e.target.value;
         if (!field || !currentData.length) return;
         currentData.sort((a, b) => {
           const va = a[field], vb = b[field];
-          if (va === null || va === undefined) return 1;
-          if (vb === null || vb === undefined) return -1;
-          if (typeof va === 'number') return vb - va; // desc for numbers
+          if (va == null) return 1;
+          if (vb == null) return -1;
+          if (typeof va === 'number') return vb - va;
           return String(va).localeCompare(String(vb));
         });
         renderResults();
@@ -587,21 +589,13 @@
           a.download = `glass-energy-export-${new Date().toISOString().slice(0,10)}.csv`;
           a.click();
           URL.revokeObjectURL(url);
-        } catch (e) {
-          // Silently fail
-        }
+        } catch (e) {}
       });
     }
 
-    // ── Theme ─────────────────────────────────────────────────────────
-    function wireThemeToggle() {
-      document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
-    }
-
-    // ── Keyboard Shortcuts ────────────────────────────────────────────
+    // ── Keyboard ──────────────────────────────────────────────────────
     function wireKeyboard() {
       document.addEventListener('keydown', (e) => {
-        // "/" focuses search (unless already in an input)
         if (e.key === '/' && !e.target.matches('input, select, textarea')) {
           e.preventDefault();
           document.getElementById('search-input').focus();
@@ -619,7 +613,7 @@
       document.getElementById('total-count').textContent = `${fmtNum(stats.total_projects)} total projects`;
     }
 
-    // ── UI State Helpers ──────────────────────────────────────────────
+    // ── UI Helpers ────────────────────────────────────────────────────
     function showLoading(show) {
       document.getElementById('loading').classList.toggle('hidden', !show);
       if (show) {
@@ -627,27 +621,19 @@
         document.getElementById('card-view').classList.add('hidden');
       }
     }
-
     function showEmpty() {
       document.getElementById('empty').classList.remove('hidden');
       document.getElementById('table-view').classList.add('hidden');
       document.getElementById('card-view').classList.add('hidden');
     }
-
-    function hideEmpty() {
-      document.getElementById('empty').classList.add('hidden');
-    }
-
+    function hideEmpty() { document.getElementById('empty').classList.add('hidden'); }
     function showError(msg) {
       document.getElementById('error').classList.remove('hidden');
       document.getElementById('error-msg').textContent = msg;
       document.getElementById('table-view').classList.add('hidden');
       document.getElementById('card-view').classList.add('hidden');
     }
-
-    function hideError() {
-      document.getElementById('error').classList.add('hidden');
-    }
+    function hideError() { document.getElementById('error').classList.add('hidden'); }
   </script>
 </body>
 </html>
